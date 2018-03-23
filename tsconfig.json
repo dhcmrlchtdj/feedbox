@@ -1,0 +1,38 @@
+{
+    "include": ["src/**/*"],
+    "compilerOptions": {
+        "outDir": "./_build/",
+        "target": "es2017",
+
+        "module": "commonjs",
+        "moduleResolution": "Node",
+        "downlevelIteration": true,
+
+        "noEmitOnError": true,
+        "declaration": true,
+        "sourceMap": true,
+        "removeComments": true,
+
+        "allowJs": false,
+        "checkJs": false,
+
+        "strict": true,
+
+        "alwaysStrict": true,
+        "strictFunctionTypes": true,
+        "strictNullChecks": true,
+        "strictPropertyInitialization": true,
+
+        "allowUnreachableCode": false,
+        "allowUnusedLabels": false,
+
+        "noFallthroughCasesInSwitch": true,
+        "noImplicitAny": false,
+        "noImplicitReturns": true,
+        "noImplicitThis": true,
+        "noUnusedLocals": true,
+        "noUnusedParameters": false,
+
+        "pretty": true
+    }
+}

@@ -1,0 +1,24 @@
+{
+    "name": "feedbox",
+    "version": "1.0.0",
+    "description": "Mail box is the best feed reader.",
+    "main": "_build/index.js",
+    "repository": "git@github.com:dhcmrlchtdj/feedbox.git",
+    "author": "niris <nirisix@gmail.com>",
+    "license": "MIT",
+    "private": true,
+    "scripts": {
+        "build": "rm ./_build/* && tsc",
+        "dev": "nodemon -w ./_build & tsc -w & wait"
+    },
+    "dependencies": {
+        "hapi": "17.2.3",
+        "hapi-pino": "4.0.3",
+        "make-promises-safe": "1.1.0"
+    },
+    "devDependencies": {
+        "@types/node": "9.6.0",
+        "nodemon": "1.17.2",
+        "typescript": "2.7.2"
+    }
+}
