@@ -9,8 +9,8 @@
         "downlevelIteration": true,
 
         "noEmitOnError": true,
-        "declaration": true,
-        "sourceMap": true,
+        "declaration": false,
+        "sourceMap": false,
         "removeComments": true,
 
         "allowJs": false,
