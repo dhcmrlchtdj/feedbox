@@ -1,4 +1,6 @@
 import 'make-promises-safe';
+import 'reflect-metadata';
+
 import * as Hapi from 'hapi';
 import * as pino from 'hapi-pino';
 

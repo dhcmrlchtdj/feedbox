@@ -18,11 +18,17 @@
         "yarn": "1.5.1"
     },
     "dependencies": {
+        "axios": "0.18.0",
+        "feedparser": "2.2.9",
         "hapi": "17.2.3",
         "hapi-pino": "4.0.3",
-        "make-promises-safe": "1.1.0"
+        "make-promises-safe": "1.1.0",
+        "pg": "7.4.1",
+        "reflect-metadata": "0.1.12",
+        "typeorm": "0.1.16"
     },
     "devDependencies": {
+        "@types/feedparser": "2.2.1",
         "@types/node": "9.6.0",
         "nodemon": "1.17.2",
         "typescript": "2.7.2"
