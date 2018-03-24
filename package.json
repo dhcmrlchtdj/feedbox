@@ -11,6 +11,7 @@
         "heroku-postbuild": "yarn build",
         "build": "rm -rf ./_build/* && tsc",
         "dev": "nodemon -w ./_build & tsc -w & wait",
+        "fmt": "prettier --write --parser=typescript 'src/**/*.ts'",
         "start": "node ./_build/index.js"
     },
     "engines": {
@@ -19,6 +20,7 @@
     },
     "dependencies": {
         "axios": "0.18.0",
+        "dotenv": "5.0.1",
         "feedparser": "2.2.9",
         "hapi": "17.2.3",
         "hapi-pino": "4.0.3",
@@ -32,6 +34,16 @@
         "@types/feedparser": "2.2.1",
         "@types/node": "9.6.0",
         "nodemon": "1.17.2",
+        "prettier": "1.11.1",
         "typescript": "2.7.2"
+    },
+    "prettier": {
+        "bracketSpacing": true,
+        "printWidth": 80,
+        "semi": true,
+        "singleQuote": true,
+        "tabWidth": 4,
+        "trailingComma": "all",
+        "useTabs": false
     }
 }

@@ -1,27 +1,23 @@
 import * as Mailgun from 'mailgun-js';
 
-const apiKey = 'TODO';
-const domain = 'TODO';
-const mailgun = Mailgun({ apiKey, domain });
+const mailgun = new Mailgun({
+    apiKey: process.env.MAILGUN_API_KEY,
+    domain: process.env.MAILGUN_DOMAIN,
+});
 const messages = mailgun.messages();
 
-const sender = 'TODO';
+const sender = process.env.MAILGUN_SENDER;
 const email = async (receiver: string, subject: string, text: string) => {
-    var data = {
+    const data = {
         from: sender,
         to: receiver,
         subject,
         text,
     };
 
-    const p = new Promise((resolve, reject) => {
-        messages.send(data, (err, body) => {
-            if (err) reject(err);
-            resolve(body);
-        });
-    });
+    const resp = await messages.send(data);
 
-    return p;
+    return resp;
 };
 
 export default email;
