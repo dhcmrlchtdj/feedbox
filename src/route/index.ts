@@ -28,9 +28,12 @@ const route = [
     {
         path: '/wakeup',
         method: 'get',
+        options: {
+            auth: 'wakeupAuth',
+        },
         async handler(req, h) {
-            await worker();
-            return 'ok';
+            worker();
+            return h.response().code(204);
         },
     },
 

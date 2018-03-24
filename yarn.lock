@@ -2,6 +2,12 @@
 # yarn lockfile v1
 
 
+"@types/dotenv@4.0.2":
+  version "4.0.2"
+  resolved "https://registry.yarnpkg.com/@types/dotenv/-/dotenv-4.0.2.tgz#f2983f0afe9fd7f6eb8aef515a4d77f4cbaa0597"
+  dependencies:
+    "@types/node" "*"
+
 "@types/feedparser@2.2.1":
   version "2.2.1"
   resolved "https://registry.yarnpkg.com/@types/feedparser/-/feedparser-2.2.1.tgz#6804f13a8598d3336a469dabac00e662c4cd9225"
@@ -979,6 +985,13 @@ got@^6.7.1:
 graceful-fs@^4.1.11, graceful-fs@^4.1.2:
   version "4.1.11"
   resolved "https://registry.yarnpkg.com/graceful-fs/-/graceful-fs-4.1.11.tgz#0e8bdfe4d1ddb8854d64e04ea7c00e2a026e5658"
+
+hapi-auth-basic@5.0.0:
+  version "5.0.0"
+  resolved "https://registry.yarnpkg.com/hapi-auth-basic/-/hapi-auth-basic-5.0.0.tgz#0438b00225e4f7baccd7f29e04b4fc5037c012b0"
+  dependencies:
+    boom "7.x.x"
+    hoek "5.x.x"
 
 hapi-pino@4.0.3:
   version "4.0.3"

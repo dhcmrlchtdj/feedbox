@@ -1,29 +1,20 @@
-import 'reflect-metadata';
-import 'make-promises-safe';
-import * as dotenv from 'dotenv';
-dotenv.config();
+import './init';
 
 import * as Hapi from 'hapi';
-import * as pino from 'hapi-pino';
-
+import plugin from './plugin';
 import route from './route';
 
-const init = async () => {
-    const server = new Hapi.server({
+const main = async () => {
+    const server = Hapi.server({
         host: '0.0.0.0',
         port: Number(process.env.PORT || 8000),
     });
 
-    server.route(route);
+    await plugin(server);
 
-    await server.register({
-        plugin: pino,
-        options: {
-            prettyPrint: process.env.NODE_ENV !== 'production',
-        },
-    });
+    server.route(route);
 
     await server.start();
 };
 
-init();
+main();
