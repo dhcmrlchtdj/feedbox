@@ -21,7 +21,7 @@
         "alwaysStrict": true,
         "strictFunctionTypes": true,
         "strictNullChecks": true,
-        "strictPropertyInitialization": true,
+        "strictPropertyInitialization": false,
 
         "allowUnreachableCode": false,
         "allowUnusedLabels": false,

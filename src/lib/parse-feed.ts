@@ -1,32 +1,13 @@
 import * as STREAM from 'stream';
-import axios from 'axios';
 import * as FeedParser from 'feedparser';
+import axios from 'axios';
 
-type Tarticle = {
-    title: string;
-    summary: string;
-    description: string;
-    link: string;
-    guid: string;
-    pubdate: Date;
-    date: Date;
-};
-
-type Tfeed = {
-    title: string;
-    description: string;
-    link: string;
-    pubdate: Date;
-    date: Date;
-    articles: Tarticle[];
-};
+import { Tfeed, Tarticle } from './types';
 
 const emptyFeed = (): Tfeed => {
     return {
         title: '',
-        description: '',
         link: '',
-        pubdate: new Date(),
         date: new Date(),
         articles: [],
     };
@@ -59,12 +40,10 @@ const parseFeed = async (url: string): Promise<Tfeed> => {
             let item;
             while ((item = parser.read())) {
                 feed.articles.push({
+                    guid: item.guid,
                     title: item.title,
                     description: item.description,
-                    summary: item.summary,
                     link: item.link,
-                    guid: item.guid,
-                    pubdate: item.pubdate,
                     date: item.date,
                 });
             }
@@ -73,9 +52,7 @@ const parseFeed = async (url: string): Promise<Tfeed> => {
         parser.on('end', () => {
             const meta = parser.meta;
             feed.title = meta.title;
-            feed.description = meta.description;
             feed.link = meta.link;
-            feed.pubdate = meta.pubdate;
             feed.date = meta.date;
 
             resolve(feed);
