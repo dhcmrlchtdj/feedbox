@@ -6,6 +6,8 @@ import * as UserDB from '../lib/db/user';
 const cache = new LRU({
     maxAge: 10 * 60 * 1000,
 });
+const API_KEY = Buffer.from(process.env.JWT_API_HEX as string, 'hex');
+const LOGIN_KEY = Buffer.from(process.env.JWT_LOGIN_HEX as string, 'hex');
 
 const route = [
     {
@@ -33,11 +35,9 @@ const route = [
                     .code(400);
             } else {
                 const email = req.payload.email;
-                const token = JWT.sign(
-                    { email },
-                    process.env.JWT_LOGIN_HEX as string,
-                    { expiresIn: '30m' },
-                );
+                const token = JWT.sign({ email }, LOGIN_KEY, {
+                    expiresIn: '30m',
+                });
                 cache.set(email, token);
                 const loginLink = `https://abc/login?token=${token}`;
                 console.log(loginLink);
@@ -73,8 +73,9 @@ const route = [
                     .temporary();
             } else {
                 const token = req.query.token as string;
-                const { email } = JWT.verify(token, process.env
-                    .JWT_LOGIN_HEX as string) as { email: string };
+                const { email } = JWT.verify(token, LOGIN_KEY) as {
+                    email: string;
+                };
                 if (cache.get(email) === token) {
                     const user = await UserDB.getByEmail(email);
                     const cookie = JWT.sign(
@@ -82,7 +83,7 @@ const route = [
                             id: user.id,
                             email: user.email,
                         },
-                        process.env.JWT_API_HEX as string,
+                        API_KEY,
                         { expiresIn: '7 days' },
                     );
                     return h

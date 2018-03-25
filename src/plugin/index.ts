@@ -5,14 +5,15 @@ import * as authJWT from 'hapi-auth-jwt2';
 import wakeupAuth from './auth/wakeup';
 import apiAuth from './auth/api';
 
+const API_KEY = Buffer.from(process.env.JWT_API_HEX as string, 'hex');
+
 const register = async server => {
     await server.register(authBasic);
     server.auth.strategy('wakeupAuth', 'basic', { validate: wakeupAuth });
 
     await server.register(authJWT);
     server.auth.strategy('apiAuth', 'jwt', {
-        key: Buffer.from(process.env.JWT_API_HEX as string, 'hex'),
-        // https://github.com/auth0/node-jsonwebtoken#algorithms-supported
+        key: API_KEY,
         verifyOptions: { algorithms: ['HS256'] },
         validate: apiAuth,
         urlKey: false,
