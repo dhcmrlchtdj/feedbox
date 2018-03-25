@@ -87,7 +87,10 @@ const route = [
                     );
                     return h
                         .response()
-                        .state('token', cookie)
+                        .state('token', cookie, {
+                            ttl: 7 * 24 * 60 * 60 * 1000,
+                            path: '/',
+                        })
                         .redirect('/dashboard')
                         .temporary();
                 } else {
@@ -95,6 +98,18 @@ const route = [
                     return h.response().code(401);
                 }
             }
+        },
+    },
+
+    {
+        path: '/logout',
+        method: 'get',
+        async handler(req, h) {
+            return h
+                .response()
+                .unstate('token')
+                .redirect('/')
+                .temporary();
         },
     },
 ];

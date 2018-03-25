@@ -30,8 +30,9 @@ const route = [
                     .response()
                     .redirect('/dashboard')
                     .temporary();
+            } else {
+                return h.response('ok');
             }
-            return 'ok';
         },
     },
 
