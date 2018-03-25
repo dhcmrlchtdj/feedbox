@@ -26,6 +26,9 @@
         "hapi-auth-basic": "5.0.0",
         "hapi-auth-jwt2": "8.0.1",
         "hapi-pino": "4.0.3",
+        "joi": "13.1.2",
+        "jsonwebtoken": "8.2.0",
+        "lru-cache": "4.1.2",
         "mailgun-js": "0.16.0",
         "make-promises-safe": "1.1.0",
         "pg": "7.4.1",
@@ -33,6 +36,9 @@
         "typeorm": "0.1.16"
     },
     "devDependencies": {
+        "@types/joi": "13.0.7",
+        "@types/jsonwebtoken": "7.2.6",
+        "@types/lru-cache": "4.1.0",
         "@types/node": "9.6.0",
         "nodemon": "1.17.2",
         "prettier": "1.11.1",

@@ -1,11 +1,16 @@
-import { getUserById } from '../lib/db/user';
+import * as UserDB from '../lib/db/user';
 
 const route = [
     {
         path: '/api/user/feeds',
         method: 'get',
         options: { auth: 'apiAuth' },
-        async handler(req, h) {},
+        async handler(req, h) {
+            const user = req.auth.credentials;
+            const id = 1;
+            const feeds = await UserDB.getAllFeed(id);
+            return feeds;
+        },
     },
     {
         path: '/api/user/feed/add',

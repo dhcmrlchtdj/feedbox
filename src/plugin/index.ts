@@ -11,13 +11,11 @@ const register = async server => {
 
     await server.register(authJWT);
     server.auth.strategy('apiAuth', 'jwt', {
-        // @ts-ignore
-        key: Buffer.from(process.env.JWT_KEY_HEX, 'hex'),
+        key: Buffer.from(process.env.JWT_API_HEX as string, 'hex'),
         // https://github.com/auth0/node-jsonwebtoken#algorithms-supported
         verifyOptions: { algorithms: ['HS256'] },
         validate: apiAuth,
         urlKey: false,
-        headerKey: false,
     });
 
     await server.register({

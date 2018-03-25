@@ -18,8 +18,29 @@ const route = [
     {
         path: '/',
         method: 'get',
+        options: {
+            auth: {
+                strategy: 'apiAuth',
+                mode: 'try',
+            },
+        },
         async handler(req, h) {
+            if (req.auth.isAuthenticated) {
+                return h
+                    .response()
+                    .redirect('/dashboard')
+                    .temporary();
+            }
             return 'ok';
+        },
+    },
+
+    {
+        path: '/dashboard',
+        method: 'get',
+        options: { auth: 'apiAuth' },
+        async handler(req, h) {
+            return 'dashboard';
         },
     },
 ];

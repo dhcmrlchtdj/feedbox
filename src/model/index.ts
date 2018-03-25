@@ -7,7 +7,6 @@ export default async () => {
         synchronize: process.env.NODE_ENV !== 'production',
         logging: true,
         cache: true,
-        name: 'feedbox',
         entities: [User, Feed],
         type: 'postgres',
         url: process.env.DATABASE_URL,

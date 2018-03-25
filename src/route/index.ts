@@ -1,7 +1,8 @@
 import page from './page';
-import user from './api-user';
-import timer from './api-timer';
+import login from './login';
+import timerApi from './api-timer';
+import userApi from './api-user';
 
-const route = [...page, ...user, ...timer];
+const route = [...page, ...login, ...timerApi, ...userApi];
 
 export default route;

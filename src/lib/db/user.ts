@@ -9,7 +9,7 @@ const cacheOpt = (id: number) => ({
 });
 
 const clearUserCache = async (id: number) => {
-    const conn = getConnection('feedbox');
+    const conn = getConnection();
     const cache = conn.queryResultCache;
     if (!cache) return;
     await cache.remove([`user--${id}`]);
@@ -18,6 +18,17 @@ const clearUserCache = async (id: number) => {
 export const getById = async (id: number): Promise<User | undefined> => {
     const userRepo = getRepository(User);
     const user = await userRepo.findOneById(id, { cache: cacheOpt(id) });
+    return user;
+};
+
+export const getByEmail = async (email: string): Promise<User> => {
+    const userRepo = getRepository(User);
+    let user = await userRepo.findOne({ where: { email } });
+    if (!user) {
+        user = new User();
+        user.email = email;
+        await user.save();
+    }
     return user;
 };
 
