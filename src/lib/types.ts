@@ -1,4 +1,10 @@
-export type Tarticle = {
+export type TArticleSimple = {
+    guid: string;
+    date: Date;
+    link: string;
+    title: string;
+};
+export type TArticleFull = {
     guid: string;
     date: Date;
     link: string;
@@ -6,9 +12,13 @@ export type Tarticle = {
     description: string;
 };
 
-export type Tfeed = {
-    link: string;
-    date: Date;
-    title: string;
-    articles: Tarticle[];
+export type TArticle<T> = {
+    [guid: string]: T;
 };
+
+export interface TFeed {
+    link: string;
+    title: string;
+    date: Date;
+    articles: TArticle<TArticleFull>;
+}

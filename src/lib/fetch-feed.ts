@@ -2,14 +2,15 @@ import * as STREAM from 'stream';
 import * as FeedParser from 'feedparser';
 import axios from 'axios';
 
-import { Tfeed, Tarticle } from './types';
+import { TFeed } from './types';
 
-const emptyFeed = (): Tfeed => {
+const _emptyDate = new Date();
+const newEmptyFeed = (): TFeed => {
     return {
         title: '',
         link: '',
-        date: new Date(),
-        articles: [],
+        date: _emptyDate,
+        articles: {},
     };
 };
 
@@ -24,28 +25,28 @@ const agent = axios.create({
     },
 });
 
-const parseFeed = async (url: string): Promise<Tfeed> => {
+export default async (url: string): Promise<TFeed> => {
     const resp = await agent.get(url);
     const data = resp.data as STREAM.Readable;
 
     const parser = new FeedParser({ feedurl: url });
     data.pipe(parser);
 
-    const p: Promise<Tfeed> = new Promise((resolve, reject) => {
-        const feed = emptyFeed();
+    const p: Promise<TFeed> = new Promise((resolve, reject) => {
+        const feed = newEmptyFeed();
 
         parser.on('error', err => reject(err));
 
         parser.on('readable', () => {
             let item;
             while ((item = parser.read())) {
-                feed.articles.push({
+                feed.articles[item.guid] = {
                     guid: item.guid,
                     title: item.title,
-                    description: item.description,
                     link: item.link,
                     date: item.date,
-                });
+                    description: item.description,
+                };
             }
         });
 
@@ -61,5 +62,3 @@ const parseFeed = async (url: string): Promise<Tfeed> => {
 
     return p;
 };
-
-export default parseFeed;

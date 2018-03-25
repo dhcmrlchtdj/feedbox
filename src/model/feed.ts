@@ -5,9 +5,12 @@ import {
     UpdateDateColumn,
     Column,
     BaseEntity,
+    ManyToMany,
+    JoinTable,
 } from 'typeorm';
 
-import { Tarticle } from '../lib/types';
+import { User } from './user';
+import { TArticle, TArticleSimple } from '../lib/types';
 
 @Entity()
 export class Feed extends BaseEntity {
@@ -16,7 +19,11 @@ export class Feed extends BaseEntity {
     @UpdateDateColumn() updateAt: Date;
 
     @Column() link: string;
-    @Column('timestamp') date: Date;
     @Column() title: string;
-    @Column('json') articles: Tarticle[];
+    @Column('timestamp') date: Date;
+    @Column('json') articles: TArticle<TArticleSimple>;
+
+    @ManyToMany(type => User)
+    @JoinTable()
+    users: User[];
 }
