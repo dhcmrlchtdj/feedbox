@@ -77,6 +77,7 @@ const route = [
                     email: string;
                 };
                 if (cache.get(email) === token) {
+                    cache.del(email);
                     const user = await UserDB.getByEmail(email);
                     const cookie = JWT.sign(
                         {
