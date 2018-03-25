@@ -5,4 +5,8 @@ import 'make-promises-safe';
 import * as dotenv from 'dotenv';
 dotenv.config();
 
-import './model';
+import initModel from './model';
+
+export default async () => {
+    await initModel();
+};

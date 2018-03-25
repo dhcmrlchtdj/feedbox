@@ -5,7 +5,10 @@ import {
     UpdateDateColumn,
     Column,
     BaseEntity,
+    ManyToMany,
 } from 'typeorm';
+
+import { Feed } from './feed';
 
 @Entity()
 export class User extends BaseEntity {
@@ -14,4 +17,7 @@ export class User extends BaseEntity {
     @UpdateDateColumn() updateAt: Date;
 
     @Column() email: string;
+
+    @ManyToMany(type => Feed)
+    feeds: Feed[];
 }

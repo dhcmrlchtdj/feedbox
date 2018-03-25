@@ -1,17 +1,19 @@
 import fetchFeed from './fetch-feed';
 import send from './send';
 
-import { getAllFeeds } from './db/feed';
+import * as FeedDB from './db/feed';
 import { amap, afilter } from './util';
 
 export default async () => {
-    const f0 = await getAllFeeds();
+    // fetch feeds
+    const f0 = await FeedDB.getAll();
     const f1 = await amap(f0, async feed => {
         const url = feed.link;
         const newFeed = await fetchFeed(url);
         return { feed, newFeed };
     });
 
+    // filter new articles
     const f2 = f1.filter(({ feed, newFeed }) => newFeed.date > feed.date);
     const f3 = f2.map(({ feed, newFeed }) => {
         const prevArticles = feed.articles;
@@ -22,16 +24,21 @@ export default async () => {
             if (curr.date > prev.date) return true;
             return false;
         });
-        return { feed, newArticles };
+        return { feed, newFeed, newArticles };
     });
 
-    await amap(f3, async ({ feed, newArticles }) => {
+    // update database
+    await amap(f3, async ({ feed, newFeed, newArticles }) => {
+        feed.link = newFeed.link;
+        feed.title = newFeed.title;
+        feed.date = newFeed.date;
         newArticles.map(article => {
             feed.articles[article.guid] = article;
         });
         await feed.save();
     });
 
+    // send email
     await amap(f3, async ({ feed, newArticles }) => {
         const contents = newArticles.map(article => {
             const text = article.description;

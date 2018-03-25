@@ -1,17 +1,23 @@
-import * as authBasic from 'hapi-auth-basic';
 import * as pino from 'hapi-pino';
+import * as authBasic from 'hapi-auth-basic';
+import * as authJWT from 'hapi-auth-jwt2';
+
+import wakeupAuth from './auth/wakeup';
+import apiAuth from './auth/api';
 
 const register = async server => {
     await server.register(authBasic);
-    server.auth.strategy('wakeupAuth', 'basic', {
-        async validate(req, username, password, h) {
-            return {
-                isValid:
-                    username === process.env.WAKEUP_USERNAME &&
-                    password === process.env.WAKEUP_PASSWORD,
-                credentials: {},
-            };
-        },
+    server.auth.strategy('wakeupAuth', 'basic', { validate: wakeupAuth });
+
+    await server.register(authJWT);
+    server.auth.strategy('apiAuth', 'jwt', {
+        // @ts-ignore
+        key: Buffer.from(process.env.JWT_KEY_HEX, 'hex'),
+        // https://github.com/auth0/node-jsonwebtoken#algorithms-supported
+        verifyOptions: { algorithms: ['HS256'] },
+        validate: apiAuth,
+        urlKey: false,
+        headerKey: false,
     });
 
     await server.register({
