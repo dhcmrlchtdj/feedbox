@@ -36,6 +36,8 @@
         "typeorm": "0.1.16"
     },
     "devDependencies": {
+        "@types/dotenv": "4.0.2",
+        "@types/feedparser": "2.2.1",
         "@types/joi": "13.0.7",
         "@types/jsonwebtoken": "7.2.6",
         "@types/lru-cache": "4.1.0",
