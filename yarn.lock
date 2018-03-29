@@ -29,9 +29,13 @@
   version "4.1.0"
   resolved "https://registry.yarnpkg.com/@types/lru-cache/-/lru-cache-4.1.0.tgz#ef69ce9c3ebb46bd146f0d80f0c1ce38b0508eae"
 
-"@types/node@*", "@types/node@9.6.0":
+"@types/node@*":
   version "9.6.0"
   resolved "https://registry.yarnpkg.com/@types/node/-/node-9.6.0.tgz#d3480ee666df9784b1001a1872a2f6ccefb6c2d7"
+
+"@types/node@9.6.1":
+  version "9.6.1"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-9.6.1.tgz#e2d374ef15b315b48e7efc308fa1a7cd51faa06c"
 
 "@types/sax@*":
   version "1.0.0"
@@ -1034,13 +1038,13 @@ hapi-auth-jwt2@8.0.1:
     cookie "^0.3.1"
     jsonwebtoken "^8.1.0"
 
-hapi-pino@4.0.3:
-  version "4.0.3"
-  resolved "https://registry.yarnpkg.com/hapi-pino/-/hapi-pino-4.0.3.tgz#0b6dfd82b6b3571c7d2c069ea23a31491a7bf0a7"
+hapi-pino@4.0.4:
+  version "4.0.4"
+  resolved "https://registry.yarnpkg.com/hapi-pino/-/hapi-pino-4.0.4.tgz#5cec22d7a5dae2823a9aff57eb73ae0da4e5b78a"
   dependencies:
     abstract-logging "^1.0.0"
     hoek "^5.0.2"
-    pino "^4.10.3"
+    pino "^4.15.3"
 
 hapi@17.2.3:
   version "17.2.3"
@@ -2108,19 +2112,19 @@ pify@^3.0.0:
   version "3.0.0"
   resolved "https://registry.yarnpkg.com/pify/-/pify-3.0.0.tgz#e5a4acd2c101fdf3d9a4d07f0dbc4db49dd28176"
 
-pino-std-serializers@^1.0.0:
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/pino-std-serializers/-/pino-std-serializers-1.0.0.tgz#7607ab8c5b7c32bf7c4dada149da4ce3c14a3b75"
+pino-std-serializers@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/pino-std-serializers/-/pino-std-serializers-2.0.0.tgz#63cbacf34bed8c95dd2c67eec824e48b8dd3445f"
 
-pino@^4.10.3:
-  version "4.15.0"
-  resolved "https://registry.yarnpkg.com/pino/-/pino-4.15.0.tgz#fc96d089db4fad6d5d44f50f4296b5047d452524"
+pino@^4.15.3:
+  version "4.15.3"
+  resolved "https://registry.yarnpkg.com/pino/-/pino-4.15.3.tgz#ce562b3c1094b113fce3e6178e1bb7873c1dbce6"
   dependencies:
     chalk "^2.3.2"
     fast-json-parse "^1.0.3"
     fast-safe-stringify "^1.2.3"
     flatstr "^1.0.5"
-    pino-std-serializers "^1.0.0"
+    pino-std-serializers "^2.0.0"
     pump "^3.0.0"
     quick-format-unescaped "^1.1.2"
     split2 "^2.2.0"
@@ -2829,9 +2833,9 @@ type-check@~0.3.2:
   dependencies:
     prelude-ls "~1.1.2"
 
-typeorm@0.1.16:
-  version "0.1.16"
-  resolved "https://registry.yarnpkg.com/typeorm/-/typeorm-0.1.16.tgz#52a9251f4394c07ce1f4e14d2c8b6cfca89535fc"
+typeorm@0.1.19:
+  version "0.1.19"
+  resolved "https://registry.yarnpkg.com/typeorm/-/typeorm-0.1.19.tgz#7a6b43f120f055942799c2af044f1e2f297a7aa4"
   dependencies:
     app-root-path "^2.0.1"
     chalk "^2.0.1"
@@ -2846,9 +2850,9 @@ typeorm@0.1.16:
     yargonaut "^1.1.2"
     yargs "^9.0.1"
 
-typescript@2.7.2:
-  version "2.7.2"
-  resolved "https://registry.yarnpkg.com/typescript/-/typescript-2.7.2.tgz#2d615a1ef4aee4f574425cdff7026edf81919836"
+typescript@2.8.1:
+  version "2.8.1"
+  resolved "https://registry.yarnpkg.com/typescript/-/typescript-2.8.1.tgz#6160e4f8f195d5ba81d4876f9c0cc1fbc0820624"
 
 uid-number@^0.0.6:
   version "0.0.6"
