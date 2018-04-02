@@ -2,35 +2,25 @@ import * as PATH from 'path';
 
 const route = [
     {
-        path: '/favicon.ico',
-        method: 'get',
-        options: {
-            cache: {
-                expiresIn: 24 * 60 * 60 * 1000,
-            },
-        },
-        async handler(req, h) {
-            return h
-                .response()
-                .code(204)
-                .type('image/x-icon');
-        },
-    },
-
-    {
         path: '/',
         method: 'get',
         handler: {
-            file: PATH.join(__dirname, '../../client/index.html'),
+            file: PATH.resolve(__dirname, '../../client/index.html'),
         },
     },
 
     {
         path: '/asset/{file*}',
         method: 'get',
+        options: {
+            cache: {
+                expiresIn: 30 * 24 * 60 * 60 * 1000,
+            },
+        },
         handler: {
             directory: {
-                path: PATH.join(__dirname, '../../client/'),
+                path: PATH.resolve(__dirname, '../../client/'),
+                index: false,
             },
         },
     },
