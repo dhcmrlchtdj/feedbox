@@ -1,7 +1,7 @@
 import * as Joi from 'joi';
 import * as JWT from 'jsonwebtoken';
 import * as LRU from 'lru-cache';
-import * as UserDB from '../lib/db/user';
+import * as UserDB from '../../lib/db/user';
 
 const cache = new LRU({
     maxAge: 10 * 60 * 1000,
@@ -11,7 +11,18 @@ const LOGIN_KEY = Buffer.from(process.env.JWT_LOGIN_HEX as string, 'hex');
 
 const route = [
     {
-        path: '/login',
+        path: '/v1/logout',
+        method: 'get',
+        async handler(req, h) {
+            return h
+                .response()
+                .code(200)
+                .unstate('token');
+        },
+    },
+
+    {
+        path: '/v1/login',
         method: 'post',
         options: {
             auth: {
@@ -39,7 +50,7 @@ const route = [
                     expiresIn: '30m',
                 });
                 cache.set(email, token);
-                const loginLink = `https://abc/login?token=${token}`;
+                const loginLink = `/api/login?token=${token}`;
                 console.log(loginLink);
                 // TODO send email
                 return h
@@ -52,7 +63,7 @@ const route = [
     },
 
     {
-        path: '/login',
+        path: '/v1/login',
         method: 'get',
         options: {
             auth: {
@@ -69,7 +80,7 @@ const route = [
             if (req.auth.isAuthenticated) {
                 return h
                     .response()
-                    .redirect('/dashboard')
+                    .redirect('/')
                     .temporary();
             } else {
                 const token = req.query.token as string;
@@ -93,25 +104,13 @@ const route = [
                             ttl: 7 * 24 * 60 * 60 * 1000,
                             path: '/',
                         })
-                        .redirect('/dashboard')
+                        .redirect('/')
                         .temporary();
                 } else {
                     cache.del(email);
                     return h.response().code(401);
                 }
             }
-        },
-    },
-
-    {
-        path: '/logout',
-        method: 'get',
-        async handler(req, h) {
-            return h
-                .response()
-                .unstate('token')
-                .redirect('/')
-                .temporary();
         },
     },
 ];

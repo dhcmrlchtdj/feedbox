@@ -1,6 +1,6 @@
 const route = [
     {
-        path: '/api/wakeup',
+        path: '/v1/wakeup',
         method: 'get',
         options: {
             auth: 'wakeupAuth',

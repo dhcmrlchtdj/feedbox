@@ -1,7 +1,7 @@
 {
-    "include": ["src/**/*"],
+    "include": ["src/server/**/*"],
     "compilerOptions": {
-        "outDir": "./_build/",
+        "outDir": "./_build/server/",
         "target": "es2017",
 
         "module": "commonjs",
