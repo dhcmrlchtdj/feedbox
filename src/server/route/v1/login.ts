@@ -50,7 +50,7 @@ const route = [
                     expiresIn: '30m',
                 });
                 cache.set(email, token);
-                const loginLink = `/api/login?token=${token}`;
+                const loginLink = `/v1/login?token=${token}`;
                 console.log(loginLink);
                 // TODO send email
                 return h
@@ -101,6 +101,7 @@ const route = [
                     return h
                         .response()
                         .state('token', cookie, {
+                            isSecure: process.env.NODE_ENV === 'production',
                             ttl: 7 * 24 * 60 * 60 * 1000,
                             path: '/',
                         })

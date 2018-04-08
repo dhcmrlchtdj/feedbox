@@ -35,7 +35,7 @@ export const getByEmail = async (email: string): Promise<User> => {
 export const getAllFeed = async (id: number): Promise<Feed[]> => {
     const userRepo = getRepository(User);
     const user = await userRepo.findOneById(id, { cache: cacheOpt(id) });
-    if (user) {
+    if (user && user.feeds) {
         return user.feeds;
     } else {
         return [];

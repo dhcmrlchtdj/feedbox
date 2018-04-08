@@ -8,13 +8,6 @@ const routes = [
     {
         path: '/dashboard',
         component: () => import('./page/dashboard.vue'),
-        beforeEnter: (to, from, next) => {
-            if (!false) {
-                next('/login');
-            } else {
-                next();
-            }
-        },
     },
     {
         path: '/login',
