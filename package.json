@@ -9,13 +9,13 @@
     "private": true,
     "scripts": {
         "heroku-postbuild": "yarn build",
-        "build": "rm -rf ./_build/* && tsc && parcel build --out-dir=_build/client/ --public-url=/asset/ src/client/index.html",
-        "dev": "nodemon -w ./_build/server & tsc -w & parcel watch --out-dir=_build/client/ --public-url=/asset/ src/client/index.html & wait",
+        "build": "rm -rf ./_build/* && tsc && NODE_ENV=production parcel build --out-dir=_build/client/ --public-url=/asset/ src/client/index.html",
+        "dev": "nodemon -w ./_build/server _build/server/index.js & tsc -w & parcel watch --out-dir=_build/client/ --public-url=/asset/ src/client/index.html & wait",
         "fmt": "prettier --write --parser=typescript 'src/**/*.ts'",
         "start": "node ./_build/index.js"
     },
     "engines": {
-        "node": "9.10.1",
+        "node": "9.*",
         "yarn": "1.5.1"
     },
     "dependencies": {
@@ -43,10 +43,15 @@
         "@types/jsonwebtoken": "7.2.6",
         "@types/lru-cache": "4.1.0",
         "@types/node": "9.6.1",
+        "@vue/component-compiler-utils": "1.0.0",
         "nodemon": "1.17.3",
         "parcel-bundler": "1.7.0",
         "prettier": "1.11.1",
-        "typescript": "2.8.1"
+        "typescript": "2.8.1",
+        "vue": "2.5.16",
+        "vue-hot-reload-api": "2.3.0",
+        "vue-router": "3.0.1",
+        "vue-template-compiler": "2.5.16"
     },
     "prettier": {
         "bracketSpacing": true,
