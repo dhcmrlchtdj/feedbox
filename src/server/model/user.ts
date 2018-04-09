@@ -6,6 +6,7 @@ import {
     Column,
     BaseEntity,
     ManyToMany,
+    JoinTable,
 } from 'typeorm';
 
 import { Feed } from './feed';
@@ -19,5 +20,6 @@ export class User extends BaseEntity {
     @Column() email: string;
 
     @ManyToMany(type => Feed)
+    @JoinTable()
     feeds: Feed[];
 }

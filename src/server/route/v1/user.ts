@@ -1,3 +1,4 @@
+import * as Joi from 'joi';
 import * as UserDB from '../../lib/db/user';
 
 const route = [
@@ -6,10 +7,8 @@ const route = [
         method: 'get',
         options: { auth: 'apiAuth' },
         async handler(req, h) {
-            const user = req.auth.credentials;
-            return {
-                email: user.email,
-            };
+            const { email } = req.auth.credentials;
+            return { email };
         },
     },
     {
@@ -17,8 +16,7 @@ const route = [
         method: 'get',
         options: { auth: 'apiAuth' },
         async handler(req, h) {
-            const user = req.auth.credentials;
-            const id = user.id;
+            const { id } = req.auth.credentials;
             const feeds = await UserDB.getAllFeed(id);
             return { feeds };
         },
@@ -26,9 +24,21 @@ const route = [
     {
         path: '/v1/user/feed/add',
         method: 'put',
-        options: { auth: 'apiAuth' },
+        options: {
+            auth: 'apiAuth',
+            validate: {
+                payload: Joi.object({
+                    feed: Joi.string()
+                        .uri()
+                        .required(),
+                }),
+            },
+        },
         async handler(req, h) {
-            return 'ok';
+            const { id } = req.auth.credentials;
+            const { feed } = req.payload;
+            const f = await UserDB.addFeed(id, feed);
+            return { feed: f };
         },
     },
     {

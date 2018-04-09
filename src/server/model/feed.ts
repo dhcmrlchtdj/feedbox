@@ -19,11 +19,11 @@ export class Feed extends BaseEntity {
     @UpdateDateColumn() updateAt: Date;
 
     @Column() link: string;
+    @Column() website: string;
     @Column() title: string;
     @Column('timestamp') date: Date;
     @Column('json') articles: TArticle<TArticleSimple>;
 
     @ManyToMany(type => User)
-    @JoinTable()
     users: User[];
 }

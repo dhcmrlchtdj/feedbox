@@ -18,6 +18,7 @@ export type TArticle<T> = {
 
 export interface TFeed {
     link: string;
+    website: string;
     title: string;
     date: Date;
     articles: TArticle<TArticleFull>;

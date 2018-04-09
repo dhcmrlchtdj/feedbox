@@ -45,7 +45,7 @@ const route = [
                     })
                     .code(400);
             } else {
-                const email = req.payload.email;
+                const { email } = req.payload;
                 const token = JWT.sign({ email }, LOGIN_KEY, {
                     expiresIn: '30m',
                 });
@@ -83,7 +83,7 @@ const route = [
                     .redirect('/')
                     .temporary();
             } else {
-                const token = req.query.token as string;
+                const { token } = req.query;
                 const { email } = JWT.verify(token, LOGIN_KEY) as {
                     email: string;
                 };

@@ -3,27 +3,18 @@ import { User } from '../../model/user';
 import { Feed } from '../../model/feed';
 import * as FeedDB from './feed';
 
-const cacheOpt = (id: number) => ({
-    id: `user--${id}`,
-    milliseconds: 5 * 60 * 1000,
-});
-
-const clearUserCache = async (id: number) => {
-    const conn = getConnection();
-    const cache = conn.queryResultCache;
-    if (!cache) return;
-    await cache.remove([`user--${id}`]);
-};
-
 export const getById = async (id: number): Promise<User | undefined> => {
     const userRepo = getRepository(User);
-    const user = await userRepo.findOneById(id, { cache: cacheOpt(id) });
+    const user = await userRepo.findOneById(id, { relations: ['feeds'] });
     return user;
 };
 
 export const getByEmail = async (email: string): Promise<User> => {
     const userRepo = getRepository(User);
-    let user = await userRepo.findOne({ where: { email } });
+    let user = await userRepo.findOne({
+        where: { email },
+        relations: ['feeds'],
+    });
     if (!user) {
         user = new User();
         user.email = email;
@@ -34,53 +25,61 @@ export const getByEmail = async (email: string): Promise<User> => {
 
 export const getAllFeed = async (id: number): Promise<Feed[]> => {
     const userRepo = getRepository(User);
-    const user = await userRepo.findOneById(id, { cache: cacheOpt(id) });
-    if (user && user.feeds) {
+    const user = await userRepo.findOneById(id, { relations: ['feeds'] });
+    console.log(user);
+    if (user) {
         return user.feeds;
     } else {
         return [];
     }
 };
 
-export const removeFeed = async (id: number, feedId: number) => {
+export const removeFeed = async (id: number, feedId: number): Promise<void> => {
     const userRepo = getRepository(User);
-    const user = await userRepo.findOneById(id, { cache: cacheOpt(id) });
+    const user = await userRepo.findOneById(id, { relations: ['feeds'] });
     if (!user) return;
 
     user.feeds = user.feeds.filter(feed => feed.id !== feedId);
     await user.save();
-    await clearUserCache(id);
 };
 
-export const removeFeedBatch = async (id: number, feedIds: number[]) => {
+export const removeFeedBatch = async (
+    id: number,
+    feedIds: number[],
+): Promise<void> => {
     const userRepo = getRepository(User);
-    const user = await userRepo.findOneById(id, { cache: cacheOpt(id) });
+    const user = await userRepo.findOneById(id, { relations: ['feeds'] });
     if (!user) return;
 
     user.feeds = user.feeds.filter(feed => !feedIds.includes(feed.id));
     await user.save();
-    await clearUserCache(id);
 };
 
-export const addFeed = async (id: number, feedUrl: string) => {
+export const addFeed = async (
+    id: number,
+    feedUrl: string,
+): Promise<Feed | undefined> => {
     const userRepo = getRepository(User);
-    const user = await userRepo.findOneById(id, { cache: cacheOpt(id) });
+    const user = await userRepo.findOneById(id, { relations: ['feeds'] });
     if (!user) return;
 
     const feed = await FeedDB.getByUrl(feedUrl);
     user.feeds.push(feed);
     await user.save();
-    await clearUserCache(id);
+    return feed;
 };
 
-export const addFeedBatch = async (id: number, feedUrls: string[]) => {
+export const addFeedBatch = async (
+    id: number,
+    feedUrls: string[],
+): Promise<Feed[] | undefined> => {
     const userRepo = getRepository(User);
-    const user = await userRepo.findOneById(id, { cache: cacheOpt(id) });
+    const user = await userRepo.findOneById(id, { relations: ['feeds'] });
     if (!user) return;
 
     const feedsP = feedUrls.map(url => FeedDB.getByUrl(url));
     const feeds = await Promise.all(feedsP);
     user.feeds = user.feeds.concat(feeds);
     await user.save();
-    await clearUserCache(id);
+    return feeds;
 };

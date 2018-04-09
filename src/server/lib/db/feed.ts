@@ -15,7 +15,8 @@ export const getByUrl = async (url: string): Promise<Feed> => {
     if (!feed) {
         const f = await fetchFeed(url);
         feed = new Feed();
-        feed.link = f.link;
+        feed.link = f.link || url;
+        feed.website = f.website;
         feed.title = f.title;
         feed.date = f.date;
         feed.articles = f.articles;
