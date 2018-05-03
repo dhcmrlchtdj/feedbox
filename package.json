@@ -16,7 +16,7 @@
     },
     "engines": {
         "node": "9.*",
-        "yarn": "1.5.1"
+        "yarn": "1.*"
     },
     "dependencies": {
         "axios": "0.18.0",
@@ -27,14 +27,14 @@
         "hapi-auth-jwt2": "8.1.0",
         "hapi-pino": "4.0.4",
         "inert": "5.1.0",
-        "joi": "13.1.2",
+        "joi": "13.2.0",
         "jsonwebtoken": "8.2.1",
         "lru-cache": "4.1.2",
         "mailgun-js": "0.16.0",
         "make-promises-safe": "1.1.0",
         "pg": "7.4.1",
         "reflect-metadata": "0.1.12",
-        "typeorm": "0.1.20"
+        "typeorm": "0.1.21"
     },
     "devDependencies": {
         "@types/dotenv": "4.0.3",
@@ -42,11 +42,11 @@
         "@types/joi": "13.0.7",
         "@types/jsonwebtoken": "7.2.6",
         "@types/lru-cache": "4.1.0",
-        "@types/node": "9.6.2",
+        "@types/node": "9.6.5",
         "@vue/component-compiler-utils": "1.0.0",
         "nodemon": "1.17.3",
-        "parcel-bundler": "1.7.0",
-        "prettier": "1.11.1",
+        "parcel-bundler": "1.7.1",
+        "prettier": "1.12.1",
         "typescript": "2.8.1",
         "vue": "2.5.16",
         "vue-hot-reload-api": "2.3.0",
