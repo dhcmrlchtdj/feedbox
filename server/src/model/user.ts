@@ -19,7 +19,7 @@ export class User extends BaseEntity {
 
     @Column() email: string;
 
-    @ManyToMany(type => Feed)
+    @ManyToMany(_ => Feed)
     @JoinTable()
     feeds: Feed[];
 }

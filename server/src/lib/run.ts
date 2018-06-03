@@ -2,7 +2,7 @@ import fetchFeed from './fetch-feed';
 import send from './send';
 
 import * as FeedDB from './db/feed';
-import { amap, afilter } from './util';
+import { amap } from './util';
 
 export default async () => {
     // fetch feeds

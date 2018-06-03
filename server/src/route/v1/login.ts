@@ -13,7 +13,7 @@ const route = [
     {
         path: '/v1/logout',
         method: 'get',
-        async handler(req, h) {
+        async handler(_req, h) {
             return h
                 .response()
                 .code(200)

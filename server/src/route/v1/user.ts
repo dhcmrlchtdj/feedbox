@@ -6,7 +6,7 @@ const route = [
         path: '/v1/user/info',
         method: 'get',
         options: { auth: 'apiAuth' },
-        async handler(req, h) {
+        async handler(req, _h) {
             const { email } = req.auth.credentials;
             return { email };
         },
@@ -15,7 +15,7 @@ const route = [
         path: '/v1/user/feeds',
         method: 'get',
         options: { auth: 'apiAuth' },
-        async handler(req, h) {
+        async handler(req, _h) {
             const { id } = req.auth.credentials;
             const feeds = await UserDB.getAllFeed(id);
             return { feeds };
@@ -34,7 +34,7 @@ const route = [
                 }),
             },
         },
-        async handler(req, h) {
+        async handler(req, _h) {
             const { id } = req.auth.credentials;
             const { feed } = req.payload;
             const f = await UserDB.addFeed(id, feed);
@@ -45,7 +45,7 @@ const route = [
         path: '/v1/user/feed/remove',
         method: 'delete',
         options: { auth: 'apiAuth' },
-        async handler(req, h) {
+        async handler(_req, _h) {
             return 'ok';
         },
     },
@@ -53,7 +53,7 @@ const route = [
         path: '/v1/user/feed/import',
         method: 'post',
         options: { auth: 'apiAuth' },
-        async handler(req, h) {
+        async handler(_req, _h) {
             return 'ok';
         },
     },
@@ -61,7 +61,7 @@ const route = [
         path: '/v1/user/feed/export',
         method: 'get',
         options: { auth: 'apiAuth' },
-        async handler(req, h) {
+        async handler(_req, _h) {
             return 'ok';
         },
     },

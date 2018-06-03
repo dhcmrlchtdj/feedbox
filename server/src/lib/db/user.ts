@@ -1,4 +1,4 @@
-import { getConnection, getRepository } from 'typeorm';
+import { getRepository } from 'typeorm';
 import { User } from '../../model/user';
 import { Feed } from '../../model/feed';
 import * as FeedDB from './feed';

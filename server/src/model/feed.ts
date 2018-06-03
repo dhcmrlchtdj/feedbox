@@ -6,7 +6,6 @@ import {
     Column,
     BaseEntity,
     ManyToMany,
-    JoinTable,
 } from 'typeorm';
 
 import { User } from './user';
@@ -24,6 +23,6 @@ export class Feed extends BaseEntity {
     @Column('timestamp') date: Date;
     @Column('json') articles: TArticle<TArticleSimple>;
 
-    @ManyToMany(type => User)
+    @ManyToMany(_ => User)
     users: User[];
 }

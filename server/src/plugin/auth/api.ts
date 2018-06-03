@@ -5,7 +5,7 @@ type Ttoken = {
     email: string;
 };
 
-export default async (decoded: Ttoken, req, h) => {
+export default async (decoded: Ttoken, _req, _h) => {
     const user = await User.getById(decoded.id);
     return { isValid: user !== undefined };
 };

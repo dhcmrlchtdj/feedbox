@@ -5,7 +5,7 @@ const route = [
         options: {
             auth: 'wakeupAuth',
         },
-        async handler(req, h) {
+        async handler(_req, h) {
             return h.response().code(204);
         },
     },

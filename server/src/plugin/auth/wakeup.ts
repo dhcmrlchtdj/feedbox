@@ -1,4 +1,4 @@
-export default async (req, username, password, h) => {
+export default async (_req, username, password, _h) => {
     return {
         isValid:
             username === process.env.WAKEUP_USERNAME &&
