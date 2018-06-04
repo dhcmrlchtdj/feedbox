@@ -23,6 +23,7 @@ const register = async server => {
     // auth
     await server.register(authBasic);
     server.auth.strategy('wakeupAuth', 'basic', { validate: wakeupAuth });
+
     await server.register(authJWT);
     server.auth.strategy('apiAuth', 'jwt', {
         key: API_KEY,

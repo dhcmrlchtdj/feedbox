@@ -1,9 +1,9 @@
 import * as Joi from 'joi';
-import * as UserDB from '../../lib/db/user';
+import * as UserDB from '../../../lib/db/user';
 
 const route = [
     {
-        path: '/v1/user/info',
+        path: '/api/v1/user/info',
         method: 'get',
         options: { auth: 'apiAuth' },
         async handler(req, _h) {
@@ -12,7 +12,7 @@ const route = [
         },
     },
     {
-        path: '/v1/user/feeds',
+        path: '/api/v1/user/feeds',
         method: 'get',
         options: { auth: 'apiAuth' },
         async handler(req, _h) {
@@ -22,7 +22,7 @@ const route = [
         },
     },
     {
-        path: '/v1/user/feed/add',
+        path: '/api/v1/user/feed/add',
         method: 'put',
         options: {
             auth: 'apiAuth',
@@ -42,7 +42,7 @@ const route = [
         },
     },
     {
-        path: '/v1/user/feed/remove',
+        path: '/api/v1/user/feed/remove',
         method: 'delete',
         options: { auth: 'apiAuth' },
         async handler(_req, _h) {
@@ -50,7 +50,7 @@ const route = [
         },
     },
     {
-        path: '/v1/user/feed/import',
+        path: '/api/v1/user/feed/import',
         method: 'post',
         options: { auth: 'apiAuth' },
         async handler(_req, _h) {
@@ -58,7 +58,7 @@ const route = [
         },
     },
     {
-        path: '/v1/user/feed/export',
+        path: '/api/v1/user/feed/export',
         method: 'get',
         options: { auth: 'apiAuth' },
         async handler(_req, _h) {

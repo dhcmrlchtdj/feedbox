@@ -1,6 +1,6 @@
-import app from './app';
-import v1 from './v1';
+import wakeup from './wakeup';
+import api from './api';
 
-const route = [...app, ...v1];
+const route = [...wakeup, ...api];
 
 export default route;

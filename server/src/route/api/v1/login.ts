@@ -1,7 +1,7 @@
 import * as Joi from 'joi';
 import * as JWT from 'jsonwebtoken';
 import * as LRU from 'lru-cache';
-import * as UserDB from '../../lib/db/user';
+import * as UserDB from '../../../lib/db/user';
 
 const cache = new LRU({
     maxAge: 10 * 60 * 1000,
@@ -11,7 +11,7 @@ const LOGIN_KEY = Buffer.from(process.env.JWT_LOGIN_HEX as string, 'hex');
 
 const route = [
     {
-        path: '/v1/logout',
+        path: '/api/v1/logout',
         method: 'get',
         async handler(_req, h) {
             return h
@@ -22,7 +22,7 @@ const route = [
     },
 
     {
-        path: '/v1/login',
+        path: '/api/v1/login',
         method: 'post',
         options: {
             auth: {
@@ -63,7 +63,7 @@ const route = [
     },
 
     {
-        path: '/v1/login',
+        path: '/api/v1/login',
         method: 'get',
         options: {
             auth: {

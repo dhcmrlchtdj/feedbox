@@ -5,7 +5,7 @@ import * as FeedDB from './feed';
 
 export const getById = async (id: number): Promise<User | undefined> => {
     const userRepo = getRepository(User);
-    const user = await userRepo.findOneById(id, { relations: ['feeds'] });
+    const user = await userRepo.findOne(id, { relations: ['feeds'] });
     return user;
 };
 
@@ -25,7 +25,7 @@ export const getByEmail = async (email: string): Promise<User> => {
 
 export const getAllFeed = async (id: number): Promise<Feed[]> => {
     const userRepo = getRepository(User);
-    const user = await userRepo.findOneById(id, { relations: ['feeds'] });
+    const user = await userRepo.findOne(id, { relations: ['feeds'] });
     console.log(user);
     if (user) {
         return user.feeds;
@@ -36,7 +36,7 @@ export const getAllFeed = async (id: number): Promise<Feed[]> => {
 
 export const removeFeed = async (id: number, feedId: number): Promise<void> => {
     const userRepo = getRepository(User);
-    const user = await userRepo.findOneById(id, { relations: ['feeds'] });
+    const user = await userRepo.findOne(id, { relations: ['feeds'] });
     if (!user) return;
 
     user.feeds = user.feeds.filter(feed => feed.id !== feedId);
@@ -48,7 +48,7 @@ export const removeFeedBatch = async (
     feedIds: number[],
 ): Promise<void> => {
     const userRepo = getRepository(User);
-    const user = await userRepo.findOneById(id, { relations: ['feeds'] });
+    const user = await userRepo.findOne(id, { relations: ['feeds'] });
     if (!user) return;
 
     user.feeds = user.feeds.filter(feed => !feedIds.includes(feed.id));
@@ -60,7 +60,7 @@ export const addFeed = async (
     feedUrl: string,
 ): Promise<Feed | undefined> => {
     const userRepo = getRepository(User);
-    const user = await userRepo.findOneById(id, { relations: ['feeds'] });
+    const user = await userRepo.findOne(id, { relations: ['feeds'] });
     if (!user) return;
 
     const feed = await FeedDB.getByUrl(feedUrl);
@@ -74,7 +74,7 @@ export const addFeedBatch = async (
     feedUrls: string[],
 ): Promise<Feed[] | undefined> => {
     const userRepo = getRepository(User);
-    const user = await userRepo.findOneById(id, { relations: ['feeds'] });
+    const user = await userRepo.findOne(id, { relations: ['feeds'] });
     if (!user) return;
 
     const feedsP = feedUrls.map(url => FeedDB.getByUrl(url));
