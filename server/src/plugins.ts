@@ -2,9 +2,8 @@ import * as pino from 'hapi-pino';
 import * as inert from 'inert';
 import * as authBasic from 'hapi-auth-basic';
 import * as authJWT from 'hapi-auth-jwt2';
-
-import wakeupAuth from './auth/wakeup';
-import apiAuth from './auth/api';
+import wakeupAuth from './lib/auth/wakeup';
+import apiAuth from './lib/auth/api';
 
 const API_KEY = Buffer.from(process.env.JWT_API_HEX as string, 'hex');
 

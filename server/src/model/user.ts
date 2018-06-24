@@ -1,25 +1,85 @@
-import {
-    Entity,
-    PrimaryGeneratedColumn,
-    CreateDateColumn,
-    UpdateDateColumn,
-    Column,
-    BaseEntity,
-    ManyToMany,
-    JoinTable,
-} from 'typeorm';
+import { getRepository } from 'typeorm';
+import { User } from './entity/user';
+import { Feed } from './entity/feed';
+import * as FeedDB from './feed';
 
-import { Feed } from './feed';
+export const getById = async (id: number): Promise<User | undefined> => {
+    const userRepo = getRepository(User);
+    const user = await userRepo.findOne(id, { relations: ['feeds'] });
+    return user;
+};
 
-@Entity()
-export class User extends BaseEntity {
-    @PrimaryGeneratedColumn() id: number;
-    @CreateDateColumn() createAt: Date;
-    @UpdateDateColumn() updateAt: Date;
+export const getByEmail = async (email: string): Promise<User> => {
+    const userRepo = getRepository(User);
+    let user = await userRepo.findOne({
+        where: { email },
+        relations: ['feeds'],
+    });
+    if (!user) {
+        user = new User();
+        user.email = email;
+        await user.save();
+    }
+    return user;
+};
 
-    @Column() email: string;
+export const getAllFeed = async (id: number): Promise<Feed[]> => {
+    const userRepo = getRepository(User);
+    const user = await userRepo.findOne(id, { relations: ['feeds'] });
+    console.log(user);
+    if (user) {
+        return user.feeds;
+    } else {
+        return [];
+    }
+};
 
-    @ManyToMany(_ => Feed)
-    @JoinTable()
-    feeds: Feed[];
-}
+export const removeFeed = async (id: number, feedId: number): Promise<void> => {
+    const userRepo = getRepository(User);
+    const user = await userRepo.findOne(id, { relations: ['feeds'] });
+    if (!user) return;
+
+    user.feeds = user.feeds.filter(feed => feed.id !== feedId);
+    await user.save();
+};
+
+export const removeFeedBatch = async (
+    id: number,
+    feedIds: number[],
+): Promise<void> => {
+    const userRepo = getRepository(User);
+    const user = await userRepo.findOne(id, { relations: ['feeds'] });
+    if (!user) return;
+
+    user.feeds = user.feeds.filter(feed => !feedIds.includes(feed.id));
+    await user.save();
+};
+
+export const addFeed = async (
+    id: number,
+    feedUrl: string,
+): Promise<Feed | undefined> => {
+    const userRepo = getRepository(User);
+    const user = await userRepo.findOne(id, { relations: ['feeds'] });
+    if (!user) return;
+
+    const feed = await FeedDB.getByUrl(feedUrl);
+    user.feeds.push(feed);
+    await user.save();
+    return feed;
+};
+
+export const addFeedBatch = async (
+    id: number,
+    feedUrls: string[],
+): Promise<Feed[] | undefined> => {
+    const userRepo = getRepository(User);
+    const user = await userRepo.findOne(id, { relations: ['feeds'] });
+    if (!user) return;
+
+    const feedsP = feedUrls.map(url => FeedDB.getByUrl(url));
+    const feeds = await Promise.all(feedsP);
+    user.feeds = user.feeds.concat(feeds);
+    await user.save();
+    return feeds;
+};

@@ -1,28 +1,28 @@
-import {
-    Entity,
-    PrimaryGeneratedColumn,
-    CreateDateColumn,
-    UpdateDateColumn,
-    Column,
-    BaseEntity,
-    ManyToMany,
-} from 'typeorm';
+import { getRepository } from 'typeorm';
+import { Feed } from './entity/feed';
 
-import { User } from './user';
-import { TArticle, TArticleSimple } from '../lib/types';
+// import fetchFeed from '../fetch-feed';
 
-@Entity()
-export class Feed extends BaseEntity {
-    @PrimaryGeneratedColumn() id: number;
-    @CreateDateColumn() createAt: Date;
-    @UpdateDateColumn() updateAt: Date;
+export const getAll = async (): Promise<Feed[]> => {
+    const feedRepo = getRepository(Feed);
+    const feeds = await feedRepo.find();
+    return feeds;
+};
 
-    @Column() link: string;
-    @Column() website: string;
-    @Column() title: string;
-    @Column('timestamp') date: Date;
-    @Column('json') articles: TArticle<TArticleSimple>;
-
-    @ManyToMany(_ => User)
-    users: User[];
-}
+export const getByUrl = async (url: string): Promise<Feed> => {
+    const feedRepo = getRepository(Feed);
+    let feed = await feedRepo.findOne({ where: { link: url } });
+    // if (!feed) {
+        // const f = await fetchFeed(url);
+        // feed = new Feed();
+        // feed.link = f.link || url;
+        // feed.website = f.website;
+        // feed.title = f.title;
+        // feed.date = f.date;
+        // feed.articles = f.articles;
+        // await feed.save();
+    // }
+    // return feed;
+    if (feed) return feed;
+    throw new Error(feed);
+};
