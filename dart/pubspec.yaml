@@ -1,6 +1,0 @@
-name: feedbox
-version: 0.1.0
-description: Mailbox is the best feed reader.
-author: niris <nirisix@gmail.com>
-dependencies:
-    shelf: '0.7.3'
