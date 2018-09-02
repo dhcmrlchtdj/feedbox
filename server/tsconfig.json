@@ -3,7 +3,7 @@
     "compilerOptions": {
         "outDir": "./_build/",
 
-        "module": "esnext",
+        "module": "commonjs",
 
         "target": "es2018",
 
