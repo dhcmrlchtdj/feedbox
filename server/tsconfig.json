@@ -4,12 +4,10 @@
         "outDir": "./_build/",
 
         "module": "commonjs",
-
         "target": "es2018",
 
         "esModuleInterop": false,
         "allowSyntheticDefaultImports": false,
-
 
         "sourceMap": false,
         "importHelpers": false,
@@ -28,7 +26,7 @@
         "noFallthroughCasesInSwitch": true,
         "noImplicitAny": false,
         "noImplicitReturns": true,
-        "noImplicitThis": true,
+        "noImplicitThis": false,
         "noUnusedLocals": true,
         "noUnusedParameters": true,
 
