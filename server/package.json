@@ -23,6 +23,7 @@
         "dotenv": "6.1.0",
         "feedparser": "2.2.9",
         "hapi": "17.6.0",
+        "hapi-auth-cookie": "9.0.0",
         "hapi-pino": "5.1.0",
         "joi": "14.0.0",
         "mailgun-js": "0.21.0",

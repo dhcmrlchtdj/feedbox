@@ -1129,6 +1129,16 @@ graceful-fs@^4.1.11, graceful-fs@^4.1.2:
   resolved "http://registry.npm.taobao.org/graceful-fs/download/graceful-fs-4.1.11.tgz#0e8bdfe4d1ddb8854d64e04ea7c00e2a026e5658"
   integrity sha1-Dovf5NHduIVNZOBOp8AOKgJuVlg=
 
+hapi-auth-cookie@9.0.0:
+  version "9.0.0"
+  resolved "http://registry.npm.taobao.org/hapi-auth-cookie/download/hapi-auth-cookie-9.0.0.tgz#3b0af443334e2bd92490ddb17bed16e3e9edfd01"
+  integrity sha1-Owr0QzNOK9kkkN2xe+0W4+nt/QE=
+  dependencies:
+    boom "7.x.x"
+    bounce "1.x.x"
+    hoek "5.x.x"
+    joi "13.x.x"
+
 hapi-pino@5.1.0:
   version "5.1.0"
   resolved "http://registry.npm.taobao.org/hapi-pino/download/hapi-pino-5.1.0.tgz#a60a9756c0c8963c7276742f1aa25b4e3ed1de9a"
