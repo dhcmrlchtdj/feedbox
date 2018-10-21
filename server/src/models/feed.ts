@@ -23,7 +23,7 @@ class Feed extends BaseEntity {
     @Column({ unique: true })
     url: string;
 
-    @ManyToMany(type => User, user => user.feeds)
+    @ManyToMany(_type => User, user => user.feeds)
     users: User[];
 
     static async takeOne(query) {

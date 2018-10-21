@@ -26,9 +26,9 @@
         "noFallthroughCasesInSwitch": true,
         "noImplicitAny": false,
         "noImplicitReturns": true,
-        "noImplicitThis": false,
+        "noImplicitThis": true,
         "noUnusedLocals": true,
-        "noUnusedParameters": false,
+        "noUnusedParameters": true,
 
         "experimentalDecorators": true,
         "emitDecoratorMetadata": true,

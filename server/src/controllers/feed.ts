@@ -67,13 +67,13 @@ export const remove = {
 };
 
 export const importFeeds = {
-    async handler(request, h) {
-        return { name: "x" };
+    async handler(_request, h) {
+        return h.response().code(501);
     },
 };
 
 export const exportFeeds = {
-    async handler(request, h) {
-        return { name: "x" };
+    async handler(_request, h) {
+        return h.response().code(501);
     },
 };

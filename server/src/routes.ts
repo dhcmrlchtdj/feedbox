@@ -18,7 +18,7 @@ const routes = [
     {
         path: "/favicon.ico",
         method: "get",
-        async handler(request, h) {
+        async handler(_request, h) {
             const icon = Buffer.from(
                 "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAAEElEQVR42gEFAPr/AP///wAI/AL+Sr4t6gAAAABJRU5ErkJggg",
                 "base64",

@@ -1,6 +1,6 @@
 import * as authBasic from "hapi-auth-basic";
 
-const validate = async (request, username, password, h) => {
+const validate = async (_request, username, password, h) => {
     if (
         username === process.env.CRON_USERNAME &&
         password === process.env.CRON_PASSWORD

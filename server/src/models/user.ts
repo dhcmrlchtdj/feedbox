@@ -27,7 +27,7 @@ class User extends BaseEntity {
     @Column({ unique: true, nullable: true })
     githubId: number;
 
-    @ManyToMany(type => Feed, feed => feed.users)
+    @ManyToMany(_type => Feed, feed => feed.users)
     @JoinTable()
     feeds: Feed[];
 
@@ -41,8 +41,13 @@ class User extends BaseEntity {
         }
     }
 
-    static async updateByKV(key, value, updateKey, updateValue) {
-        const user = await User.takeOne({ where: { key: value } });
+    static async updateByKV(
+        key: string,
+        value: any,
+        updateKey: string,
+        updateValue: any,
+    ) {
+        const user = await User.takeOne({ where: { [key]: value } });
         if (user) {
             if (user[updateKey] !== updateValue) {
                 user[updateKey] = updateValue;

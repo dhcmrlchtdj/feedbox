@@ -1,7 +1,7 @@
 import * as authJWT from "hapi-auth-jwt2";
 import User from "../models/user";
 
-const validate = async (decoded, request, h) => {
+const validate = async (decoded, _request, h) => {
     const user = await User.takeOne({
         select: ["id"],
         where: { id: decoded.id },
