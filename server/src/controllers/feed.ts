@@ -1,17 +1,11 @@
 import * as Joi from "joi";
-import User from "../models/user";
 import Feed from "../models/feed";
 
 export const list = {
     async handler(request, h) {
         const { userId } = request.auth.credentials;
-        const user = await User.takeOne({
-            where: { id: userId },
-            relations: ["feeds"],
-        });
-        if (!user) throw new Error("invalid user id");
-
-        return h.response(user.feeds);
+        const feeds = await Feed.takeByUser(userId);
+        return h.response(feeds);
     },
 };
 
@@ -22,47 +16,40 @@ export const add = {
         },
     },
     async handler(request, h) {
-        const { userId } = request.auth.credentials;
-        const user = await User.takeOne({
-            where: { id: userId },
-            relations: ["feeds"],
-        });
-        if (!user) throw new Error("invalid user id");
-
         const { url } = request.payload;
-        const idx = user.feeds.findIndex(feed => feed.url === url);
-        if (idx !== -1) return h.response().code(400);
-
         const feed = await Feed.takeOrCreate(url);
-        user.feeds.push(feed);
-        await user.save();
 
-        return h.response(feed);
+        const { userId } = request.auth.credentials;
+        try {
+            await Feed.createQueryBuilder("feed")
+                .relation(Feed, "users")
+                .of(feed)
+                .add(userId);
+        } catch (err) {
+            if (!err.message.includes("UNIQUE")) throw err;
+        }
+
+        const feeds = await Feed.takeByUser(userId);
+        return h.response(feeds);
     },
 };
 
 export const remove = {
     validate: {
         payload: {
-            url: Joi.string().uri(),
+            feedId: Joi.string(),
         },
     },
     async handler(request, h) {
+        const { feedId } = request.payload;
         const { userId } = request.auth.credentials;
-        const user = await User.takeOne({
-            where: { id: userId },
-            relations: ["feeds"],
-        });
-        if (!user) throw new Error("invalid user id");
+        await Feed.createQueryBuilder("feed")
+            .relation(Feed, "users")
+            .of(feedId)
+            .remove(userId);
 
-        const { url } = request.payload;
-        const idx = user.feeds.findIndex(feed => feed.url === url);
-        if (idx === -1) return h.response().code(400);
-
-        const feed = user.feeds.splice(idx, 1);
-        await user.save();
-
-        return h.response(feed);
+        const feeds = await Feed.takeByUser(userId);
+        return h.response(feeds);
     },
 };
 

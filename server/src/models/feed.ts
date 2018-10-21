@@ -45,6 +45,14 @@ class Feed extends BaseEntity {
         }
         return feed;
     }
+
+    static async takeByUser(userId: number) {
+        const feeds = await Feed.createQueryBuilder("feed")
+            .select(["feed.id", "feed.url"])
+            .innerJoin("feed.users", "user", "user.id = :userId", { userId })
+            .getMany();
+        return feeds;
+    }
 }
 
 export default Feed;
