@@ -14,6 +14,18 @@ const routes = [
     { path: "/api/v1/user", method: "get", options: User.info },
     { path: "/logout", method: "get", options: User.logout },
     { path: "/connect/github", method: "get", options: User.connectGithub },
+
+    {
+        path: "/favicon.ico",
+        method: "get",
+        async handler(request, h) {
+            const icon = Buffer.from(
+                "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAAEElEQVR42gEFAPr/AP///wAI/AL+Sr4t6gAAAABJRU5ErkJggg",
+                "base64",
+            );
+            return h.response(icon).type("image/png");
+        },
+    },
 ];
 
 export default routes;
