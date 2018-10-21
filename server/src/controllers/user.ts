@@ -1,24 +1,22 @@
-// import { getConnection } from "typeorm";
+import * as jwt from "jsonwebtoken";
+import User from "../models/user";
 
 export const info = {
-    auth: "sessions",
+    auth: "jwt",
     async handler(request, h) {
-        if (request.auth.isAuthenticated) {
-            const credentials = request.auth.credentials;
-            const sid = credentials.sid;
-            const x = await request.server.app.cache.get(sid);
-            return x;
-        }
+        const user = request.auth.credentials;
+        return h.response(user);
     },
 };
 
 export const logout = {
     async handler(request, h) {
         console.log(request.state);
-        const sid = request.state.sid.sid;
-        request.server.app.cache.drop(sid);
-        request.cookieAuth.clear();
-        return h.response("done");
+        h.unstate("token", {
+            path: "/",
+            isSecure: process.env.NODE_ENV === "production",
+        });
+        return h.response("done | logout");
     },
 };
 
@@ -26,13 +24,21 @@ export const connectGithub = {
     auth: "github",
     async handler(request, h) {
         if (request.auth.isAuthenticated) {
-            const credentials = request.auth.credentials;
-            const profile = credentials.profile;
+            // get user info
+            const { id, email } = request.auth.credentials.profile;
+            const user = await User.findOrUpdateByGithub(id, email);
 
-            const sid = "1";
-            await request.server.app.cache.set(sid, { profile }, 0);
-            request.cookieAuth.set({ sid });
+            // set cookie
+            const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET);
+            h.state("token", token, {
+                path: "/",
+                isSecure: process.env.NODE_ENV === "production",
+                ttl: 7 * 24 * 60 * 60 * 1000,
+                clearInvalid: true,
+                encoding: "none",
+            });
 
+            // redirect to user info
             return h.redirect("/api/v1/user");
         } else {
             const errMsg = request.auth.error.message;

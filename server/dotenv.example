@@ -8,8 +8,8 @@ MAILGUN_SENDER="example <example@example.com>"
 WAKEUP_USERNAME="example"
 WAKEUP_PASSWORD="example"
 
-JWT_API_HEX="crypto.randomBytes(256).toString('hex')"
-JWT_LOGIN_HEX="crypto.randomBytes(256).toString('hex')"
-
 GITHUB_CLIENT_ID="https://github.com/settings/developers"
 GITHUB_CLIENT_SECRET="https://github.com/settings/developers"
+GITHUB_AUTH_SECRET="crypto.randomBytes(256).toString('hex')"
+
+JWT_SECRET="crypto.randomBytes(256).toString('hex')"

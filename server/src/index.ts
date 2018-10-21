@@ -1,6 +1,6 @@
 import prepare from "./prepare";
 import * as Hapi from "hapi";
-import register from "./plugin";
+import plugins from "./plugins";
 import routes from "./routes";
 
 const main = async () => {
@@ -11,7 +11,7 @@ const main = async () => {
         port: Number(process.env.PORT || 8000),
     });
 
-    await register(server);
+    await plugins(server);
 
     server.route(routes);
 
