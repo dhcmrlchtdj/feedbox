@@ -41,7 +41,7 @@ class User extends BaseEntity {
         }
     }
 
-    static async byKey(key, value, updateKey, updateValue) {
+    static async updateByKV(key, value, updateKey, updateValue) {
         const user = await User.takeOne({ where: { key: value } });
         if (user) {
             if (user[updateKey] !== updateValue) {
@@ -55,10 +55,10 @@ class User extends BaseEntity {
     static async findOrUpdateByGithub(githubId: number, email: string) {
         let user: User | null;
 
-        user = await User.byKey("githubId", githubId, "email", email);
+        user = await User.updateByKV("githubId", githubId, "email", email);
         if (user) return user;
 
-        user = await User.byKey("email", email, "githubId", githubId);
+        user = await User.updateByKV("email", email, "githubId", githubId);
         if (user) return user;
 
         user = new User();

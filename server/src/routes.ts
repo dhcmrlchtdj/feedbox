@@ -3,7 +3,7 @@ import * as User from "./controllers/user";
 import * as Cron from "./controllers/cron";
 
 const routes = [
-    { path: "/api/v1/feeds", method: "get", options: Feed.getAll },
+    { path: "/api/v1/feeds", method: "get", options: Feed.list },
     { path: "/api/v1/feeds/add", method: "put", options: Feed.add },
     { path: "/api/v1/feeds/remove", method: "delete", options: Feed.remove },
     { path: "/api/v1/feeds/import", method: "post", options: Feed.importFeeds },

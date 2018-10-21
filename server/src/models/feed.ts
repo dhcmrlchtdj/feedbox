@@ -25,6 +25,16 @@ class Feed extends BaseEntity {
 
     @ManyToMany(type => User, user => user.feeds)
     users: User[];
+
+    static async takeOne(query) {
+        query.take = 1;
+        const arr = await this.find(query);
+        if (arr.length) {
+            return arr[0];
+        } else {
+            return null;
+        }
+    }
 }
 
 export default Feed;
