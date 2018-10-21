@@ -1,7 +1,7 @@
 import * as pino from "hapi-pino";
-import * as bell from "bell";
+import authBasic from "./auth-basic";
 import authJWT from "./auth-jwt";
-import authGithub from "./auth-github";
+import OAuth from "./oauth";
 
 const register = async server => {
     // log
@@ -13,12 +13,12 @@ const register = async server => {
     });
 
     // auth
+    await authBasic(server);
     await authJWT(server);
-    // server.auth.default('jwt');
+    server.auth.default("jwt");
 
-    // oauth github
-    await server.register(bell);
-    await authGithub(server);
+    // oauth
+    await OAuth(server);
 };
 
 export default register;

@@ -1,10 +1,8 @@
-import * as Wakeup from "./controllers/wakeup";
-import * as User from "./controllers/user";
 import * as Feed from "./controllers/feed";
+import * as User from "./controllers/user";
+import * as Cron from "./controllers/cron";
 
 const routes = [
-    { path: "/api/v1/wakeup", method: "get", options: Wakeup.wakeup },
-
     { path: "/api/v1/feeds", method: "get", options: Feed.getAll },
     { path: "/api/v1/feeds/add", method: "put", options: Feed.add },
     { path: "/api/v1/feeds/remove", method: "delete", options: Feed.remove },
@@ -14,6 +12,8 @@ const routes = [
     { path: "/api/v1/user", method: "get", options: User.info },
     { path: "/logout", method: "get", options: User.logout },
     { path: "/connect/github", method: "get", options: User.connectGithub },
+
+    { path: "/api/v1/cron", method: "get", options: Cron.cron },
 
     {
         path: "/favicon.ico",

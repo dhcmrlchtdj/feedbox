@@ -1146,6 +1146,14 @@ graceful-fs@^4.1.11, graceful-fs@^4.1.2:
   resolved "http://registry.npm.taobao.org/graceful-fs/download/graceful-fs-4.1.11.tgz#0e8bdfe4d1ddb8854d64e04ea7c00e2a026e5658"
   integrity sha1-Dovf5NHduIVNZOBOp8AOKgJuVlg=
 
+hapi-auth-basic@5.0.0:
+  version "5.0.0"
+  resolved "http://registry.npm.taobao.org/hapi-auth-basic/download/hapi-auth-basic-5.0.0.tgz#0438b00225e4f7baccd7f29e04b4fc5037c012b0"
+  integrity sha1-BDiwAiXk97rM1/KeBLT8UDfAErA=
+  dependencies:
+    boom "7.x.x"
+    hoek "5.x.x"
+
 hapi-auth-jwt2@8.1.0:
   version "8.1.0"
   resolved "http://registry.npm.taobao.org/hapi-auth-jwt2/download/hapi-auth-jwt2-8.1.0.tgz#4e3497cdb3925a315861f60f4057ddd11466e68c"

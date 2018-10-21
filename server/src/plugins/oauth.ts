@@ -1,4 +1,8 @@
-const auth = async server => {
+import * as bell from "bell";
+
+export default async server => {
+    await server.register(bell);
+
     server.auth.strategy("github", "bell", {
         provider: "github",
         clientId: process.env.GITHUB_CLIENT_ID,
@@ -7,5 +11,3 @@ const auth = async server => {
         isSecure: process.env.NODE_ENV === "production",
     });
 };
-
-export default auth;
