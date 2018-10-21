@@ -24,6 +24,9 @@ class User extends BaseEntity {
     @Column({ unique: true })
     email: string;
 
+    @Column({ unique: true, nullable: true })
+    githubId: number;
+
     @ManyToMany(type => Feed, feed => feed.users)
     @JoinTable()
     feeds: Feed[];

@@ -253,6 +253,18 @@ bcrypt-pbkdf@^1.0.0:
   dependencies:
     tweetnacl "^0.14.3"
 
+bell@9.3.1:
+  version "9.3.1"
+  resolved "http://registry.npm.taobao.org/bell/download/bell-9.3.1.tgz#3be110b8d93c1d429274ccd30be2a9b32e9bb2eb"
+  integrity sha1-O+EQuNk8HUKSdMzTC+Kpsy6bsus=
+  dependencies:
+    boom "7.x.x"
+    bounce "1.x.x"
+    cryptiles "4.x.x"
+    hoek "5.x.x"
+    joi "13.x.x"
+    wreck "14.x.x"
+
 big-time@2.x.x:
   version "2.0.1"
   resolved "http://registry.npm.taobao.org/big-time/download/big-time-2.0.1.tgz#68c7df8dc30f97e953f25a67a76ac9713c16c9de"
