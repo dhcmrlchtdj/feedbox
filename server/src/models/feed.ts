@@ -35,6 +35,16 @@ class Feed extends BaseEntity {
             return null;
         }
     }
+
+    static async takeOrCreate(url: string) {
+        let feed = await Feed.takeOne({ where: { url } });
+        if (!feed) {
+            feed = new Feed();
+            feed.url = url;
+            await feed.save();
+        }
+        return feed;
+    }
 }
 
 export default Feed;

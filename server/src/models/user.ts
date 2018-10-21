@@ -52,7 +52,7 @@ class User extends BaseEntity {
         return user;
     }
 
-    static async findOrUpdateByGithub(githubId: number, email: string) {
+    static async takeOrCreateByGithub(githubId: number, email: string) {
         let user: User | null;
 
         user = await User.updateByKV("githubId", githubId, "email", email);

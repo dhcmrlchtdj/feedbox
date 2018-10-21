@@ -10,9 +10,9 @@ const initDB = async () => {
         type: "sqlite",
         database: path.resolve(__dirname, "../../src/databases/feedbox.sqlite"),
         entities: [User, Feed],
-        cache: true,
         maxQueryExecutionTime: 1000,
         logging: true,
+        logger: "simple-console",
         synchronize: true,
     });
 };

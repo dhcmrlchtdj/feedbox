@@ -3,7 +3,8 @@ import User from "../models/user";
 
 export const info = {
     async handler(request, h) {
-        const { user } = request.auth.credentials;
+        const { userId } = request.auth.credentials;
+        const user = await User.takeOne({ where: { id: userId } });
         return h.response(user);
     },
 };
@@ -26,7 +27,7 @@ export const connectGithub = {
         if (request.auth.isAuthenticated) {
             // get user info
             const { id, email } = request.auth.credentials.profile;
-            const user = await User.findOrUpdateByGithub(id, email);
+            const user = await User.takeOrCreateByGithub(id, email);
 
             // set cookie
             const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET);
