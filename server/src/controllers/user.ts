@@ -1,5 +1,8 @@
+// import { getConnection } from "typeorm";
+
 export const info = {
     async handler(_request, _h) {
+        // const conn = getConnection();
         return { name: "x" };
     },
 };

@@ -1,5 +1,7 @@
+import "reflect-metadata";
 import * as dotenv from "dotenv";
 import * as path from "path";
+import initDB from "./models";
 
 process.on("unhandledRejection", err => {
     console.error(err);
@@ -10,4 +12,6 @@ dotenv.config({
     path: path.resolve(__dirname, "../dotenv"),
 });
 
-export default async () => {};
+export default async () => {
+    await initDB();
+};

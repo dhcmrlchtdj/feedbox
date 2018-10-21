@@ -11,7 +11,7 @@
 
         "sourceMap": false,
         "importHelpers": false,
-        "declaration": true,
+        "declaration": false,
         "removeComments": true,
         "noEmitOnError": true,
         "moduleResolution": "node",
@@ -20,7 +20,7 @@
         "alwaysStrict": true,
         "strictFunctionTypes": true,
         "strictNullChecks": true,
-        "strictPropertyInitialization": true,
+        "strictPropertyInitialization": false,
         "allowUnreachableCode": false,
         "allowUnusedLabels": false,
         "noFallthroughCasesInSwitch": true,
@@ -28,10 +28,10 @@
         "noImplicitReturns": true,
         "noImplicitThis": false,
         "noUnusedLocals": true,
-        "noUnusedParameters": true,
+        "noUnusedParameters": false,
 
-        "experimentalDecorators": false,
-        "emitDecoratorMetadata": false,
+        "experimentalDecorators": true,
+        "emitDecoratorMetadata": true,
 
         "pretty": true
     }
