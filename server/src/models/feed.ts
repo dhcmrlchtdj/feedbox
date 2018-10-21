@@ -20,7 +20,7 @@ class Feed extends BaseEntity {
     @UpdateDateColumn()
     updateAt: Date;
 
-    @Column({ unique: true })
+    @Column({ unique: true, length: 2048 })
     url: string;
 
     @ManyToMany(_type => User, user => user.feeds)

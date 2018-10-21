@@ -21,7 +21,7 @@ class User extends BaseEntity {
     @UpdateDateColumn()
     updateAt: Date;
 
-    @Column({ unique: true })
+    @Column({ unique: true, length: 256 })
     email: string;
 
     @Column({ unique: true, nullable: true })
