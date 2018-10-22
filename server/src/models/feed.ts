@@ -14,10 +14,10 @@ export default class Feed extends BaseEntity {
     @PrimaryGeneratedColumn()
     id: number;
 
-    @CreateDateColumn()
+    @CreateDateColumn({ select: false })
     createAt: Date;
 
-    @UpdateDateColumn()
+    @UpdateDateColumn({ select: false })
     updateAt: Date;
 
     @Column({ unique: true, length: 2048 })
@@ -48,7 +48,6 @@ export default class Feed extends BaseEntity {
 
     static async takeByUser(userId: number) {
         const feeds = await Feed.createQueryBuilder("feed")
-            .select(["feed.id", "feed.url"])
             .innerJoin("feed.users", "user", "user.id = :userId", { userId })
             .getMany();
         return feeds;

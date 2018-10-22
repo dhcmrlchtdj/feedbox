@@ -4,18 +4,14 @@ import User from "../models/user";
 export const info = {
     async handler(request, h) {
         const { userId } = request.auth.credentials;
-        const user = await User.takeOne({
-            select: ["id", "email", "githubId"],
-            where: { id: userId },
-        });
+        const user = await User.takeOneById(userId);
         return h.response(user);
     },
 };
 
 export const logout = {
     auth: false,
-    async handler(request, h) {
-        console.log(request.state);
+    async handler(_request, h) {
         h.unstate("token", {
             path: "/",
             isSecure: process.env.NODE_ENV === "production",

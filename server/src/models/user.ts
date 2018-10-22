@@ -15,10 +15,10 @@ export default class User extends BaseEntity {
     @PrimaryGeneratedColumn()
     id: number;
 
-    @CreateDateColumn()
+    @CreateDateColumn({ select: false })
     createAt: Date;
 
-    @UpdateDateColumn()
+    @UpdateDateColumn({ select: false })
     updateAt: Date;
 
     @Column({ unique: true, length: 256 })
@@ -39,6 +39,10 @@ export default class User extends BaseEntity {
         } else {
             return null;
         }
+    }
+    static async takeOneById(userId: number) {
+        const user = await User.takeOne({ where: { id: userId } });
+        return user;
     }
 
     static async updateByKV(
