@@ -23,6 +23,12 @@ export default class Feed extends BaseEntity {
     @Column({ unique: true, length: 2048 })
     url: string;
 
+    @Column({ nullable: true })
+    lastUpdated: Date;
+
+    @Column({ type: "text", nullable: true })
+    content: string;
+
     @ManyToMany(_type => User, user => user.feeds)
     users: User[];
 
@@ -34,6 +40,13 @@ export default class Feed extends BaseEntity {
         } else {
             return null;
         }
+    }
+
+    static async takeAll() {
+        const feeds = await Feed.createQueryBuilder("feed")
+            .innerJoinAndSelect("feed.users", "user")
+            .getMany();
+        return feeds;
     }
 
     static async takeOrCreate(url: string) {
@@ -51,5 +64,23 @@ export default class Feed extends BaseEntity {
             .innerJoin("feed.users", "user", "user.id = :userId", { userId })
             .getMany();
         return feeds;
+    }
+
+    static async addUser(feedId: number, userId: number) {
+        try {
+            await Feed.createQueryBuilder("feed")
+                .relation(Feed, "users")
+                .of(feedId)
+                .add(userId);
+        } catch (err) {
+            if (!err.message.includes("UNIQUE")) throw err;
+        }
+    }
+
+    static async removeUser(feedId: number, userId: number) {
+        await Feed.createQueryBuilder("feed")
+            .relation(Feed, "users")
+            .of(feedId)
+            .remove(userId);
     }
 }

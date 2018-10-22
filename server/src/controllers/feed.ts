@@ -18,16 +18,8 @@ export const add = {
     async handler(request, h) {
         const { url } = request.payload;
         const feed = await Feed.takeOrCreate(url);
-
         const { userId } = request.auth.credentials;
-        try {
-            await Feed.createQueryBuilder("feed")
-                .relation(Feed, "users")
-                .of(feed)
-                .add(userId);
-        } catch (err) {
-            if (!err.message.includes("UNIQUE")) throw err;
-        }
+        await Feed.addUser(feed.id, userId);
 
         const feeds = await Feed.takeByUser(userId);
         return h.response(feeds);
@@ -43,10 +35,7 @@ export const remove = {
     async handler(request, h) {
         const { feedId } = request.payload;
         const { userId } = request.auth.credentials;
-        await Feed.createQueryBuilder("feed")
-            .relation(Feed, "users")
-            .of(feedId)
-            .remove(userId);
+        await Feed.removeUser(feedId, userId);
 
         const feeds = await Feed.takeByUser(userId);
         return h.response(feeds);
