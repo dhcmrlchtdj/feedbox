@@ -10,7 +10,7 @@ import {
 import User from "./user";
 
 @Entity()
-class Feed extends BaseEntity {
+export default class Feed extends BaseEntity {
     @PrimaryGeneratedColumn()
     id: number;
 
@@ -54,5 +54,3 @@ class Feed extends BaseEntity {
         return feeds;
     }
 }
-
-export default Feed;

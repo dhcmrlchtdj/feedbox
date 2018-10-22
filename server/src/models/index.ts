@@ -3,8 +3,6 @@ import { createConnection } from "typeorm";
 import User from "./user";
 import Feed from "./feed";
 
-// import { getConnection } from "typeorm";
-
 const initDB = async () => {
     await createConnection({
         type: "sqlite",
@@ -18,4 +16,3 @@ const initDB = async () => {
 };
 
 export default initDB;
-export { User, Feed };

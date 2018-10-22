@@ -4,7 +4,10 @@ import User from "../models/user";
 export const info = {
     async handler(request, h) {
         const { userId } = request.auth.credentials;
-        const user = await User.takeOne({ where: { id: userId } });
+        const user = await User.takeOne({
+            select: ["id", "email", "githubId"],
+            where: { id: userId },
+        });
         return h.response(user);
     },
 };
