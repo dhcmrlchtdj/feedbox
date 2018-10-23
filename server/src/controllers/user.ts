@@ -34,7 +34,9 @@ export const connectGithub = {
             const user = await User.takeOrCreateByGithub(id, email);
 
             // set cookie
-            const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET);
+            const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, {
+                expiresIn: "7d",
+            });
             h.state("token", token, stateTokenOpt);
 
             // redirect to user info
