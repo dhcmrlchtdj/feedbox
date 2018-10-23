@@ -9,13 +9,18 @@ export const info = {
     },
 };
 
+const stateTokenOpt = {
+    path: "/",
+    isSecure: process.env.NODE_ENV === "production",
+    ttl: 7 * 24 * 60 * 60 * 1000,
+    clearInvalid: true,
+    encoding: "none",
+};
+
 export const logout = {
     auth: false,
     async handler(_request, h) {
-        h.unstate("token", {
-            path: "/",
-            isSecure: process.env.NODE_ENV === "production",
-        });
+        h.unstate("token", stateTokenOpt);
         return h.response("done | logout");
     },
 };
@@ -30,13 +35,7 @@ export const connectGithub = {
 
             // set cookie
             const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET);
-            h.state("token", token, {
-                path: "/",
-                isSecure: process.env.NODE_ENV === "production",
-                ttl: 7 * 24 * 60 * 60 * 1000,
-                clearInvalid: true,
-                encoding: "none",
-            });
+            h.state("token", token, stateTokenOpt);
 
             // redirect to user info
             return h.redirect("/api/v1/user");
