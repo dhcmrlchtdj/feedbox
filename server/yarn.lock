@@ -1624,10 +1624,10 @@ joi@13.x.x:
     isemail "3.x.x"
     topo "3.x.x"
 
-joi@14.0.0:
-  version "14.0.0"
-  resolved "http://registry.npm.taobao.org/joi/download/joi-14.0.0.tgz#05a206b259e702f426eb2b2e523d642fb383e6ad"
-  integrity sha1-BaIGslnnAvQm6ysuUj1kL7OD5q0=
+joi@14.0.1:
+  version "14.0.1"
+  resolved "http://registry.npm.taobao.org/joi/download/joi-14.0.1.tgz#5bc53e8fff6e6da19d6cd8c76e2afe5c0815a2d3"
+  integrity sha1-W8U+j/9ubaGdbNjHbir+XAgVotM=
   dependencies:
     hoek "5.x.x"
     isemail "3.x.x"
@@ -2926,10 +2926,10 @@ sprintf-js@~1.0.2:
   resolved "http://registry.npm.taobao.org/sprintf-js/download/sprintf-js-1.0.3.tgz#04e6926f662895354f3dd015203633b857297e2c"
   integrity sha1-BOaSb2YolTVPPdAVIDYzuFcpfiw=
 
-sqlite3@4.0.2:
-  version "4.0.2"
-  resolved "http://registry.npm.taobao.org/sqlite3/download/sqlite3-4.0.2.tgz#1bbeb68b03ead5d499e42a3a1b140064791c5a64"
-  integrity sha1-G762iwPq1dSZ5Co6GxQAZHkcWmQ=
+sqlite3@4.0.3:
+  version "4.0.3"
+  resolved "http://registry.npm.taobao.org/sqlite3/download/sqlite3-4.0.3.tgz#da8c167a87941657fd22e27b248aa371e192b715"
+  integrity sha1-2owWeoeUFlf9IuJ7JIqjceGStxU=
   dependencies:
     nan "~2.10.0"
     node-pre-gyp "^0.10.3"
