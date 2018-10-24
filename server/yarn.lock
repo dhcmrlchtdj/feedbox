@@ -74,6 +74,13 @@
   dependencies:
     "@types/node" "*"
 
+"@types/mailgun-js@0.16.1":
+  version "0.16.1"
+  resolved "http://registry.npm.taobao.org/@types/mailgun-js/download/@types/mailgun-js-0.16.1.tgz#6d97245ebeaf34cea9a8cdac95dddb1cb5170011"
+  integrity sha1-bZckXr6vNM6pqM2sld3bHLUXABE=
+  dependencies:
+    "@types/node" "*"
+
 "@types/node-fetch@2.1.2":
   version "2.1.2"
   resolved "http://registry.npm.taobao.org/@types/node-fetch/download/@types/node-fetch-2.1.2.tgz#8c5da14d70321e4c4ecd5db668e3f93cf6c7399f"

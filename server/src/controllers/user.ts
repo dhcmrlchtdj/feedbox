@@ -29,18 +29,18 @@ export const connectGithub = {
     auth: "github",
     async handler(request, h) {
         if (request.auth.isAuthenticated) {
-            if (typeof process.env.JWT_SECRET !== "string") {
-                throw new Error("env | JWT_SECRET is required");
-            }
-
             // get user info
             const { id, email } = request.auth.credentials.profile;
             const user = await User.takeOrCreateByGithub(id, email);
 
             // set cookie
-            const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, {
-                expiresIn: "7d",
-            });
+            const token = jwt.sign(
+                { id: user.id },
+                process.env.JWT_SECRET as string,
+                {
+                    expiresIn: "7d",
+                },
+            );
             h.state("token", token, stateTokenOpt);
 
             // redirect to user info
