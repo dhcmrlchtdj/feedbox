@@ -29,6 +29,10 @@ export const connectGithub = {
     auth: "github",
     async handler(request, h) {
         if (request.auth.isAuthenticated) {
+            if (typeof process.env.JWT_SECRET !== "string") {
+                throw new Error("env | JWT_SECRET is required");
+            }
+
             // get user info
             const { id, email } = request.auth.credentials.profile;
             const user = await User.takeOrCreateByGithub(id, email);
