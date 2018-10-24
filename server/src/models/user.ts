@@ -31,7 +31,7 @@ export default class User extends BaseEntity {
     @JoinTable()
     feeds: Feed[];
 
-    static async takeOne(query) {
+    static async takeOne(query): Promise<User | null> {
         query.take = 1;
         const arr = await this.find(query);
         if (arr.length) {
@@ -40,7 +40,7 @@ export default class User extends BaseEntity {
             return null;
         }
     }
-    static async takeOneById(userId: number) {
+    static async takeOneById(userId: number): Promise<User | null> {
         const user = await User.takeOne({ where: { id: userId } });
         return user;
     }
@@ -50,7 +50,7 @@ export default class User extends BaseEntity {
         value: any,
         updateKey: string,
         updateValue: any,
-    ) {
+    ): Promise<User | null> {
         const user = await User.takeOne({ where: { [key]: value } });
         if (user) {
             if (user[updateKey] !== updateValue) {
@@ -61,7 +61,10 @@ export default class User extends BaseEntity {
         return user;
     }
 
-    static async takeOrCreateByGithub(githubId: number, email: string) {
+    static async takeOrCreateByGithub(
+        githubId: number,
+        email: string,
+    ): Promise<User> {
         let user: User | null;
 
         user = await User.updateByKV("githubId", githubId, "email", email);

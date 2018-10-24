@@ -3,7 +3,7 @@ import authBasic from "./auth-basic";
 import authJWT from "./auth-jwt";
 import OAuth from "./oauth";
 
-const register = async server => {
+const register = async (server): Promise<void> => {
     // log
     await server.register({
         plugin: pino,

@@ -1,6 +1,6 @@
 import * as authBasic from "hapi-auth-basic";
 
-const validate = async (_request, username, password, h) => {
+const validate = async (_request, username: string, password: string, h) => {
     if (
         username === process.env.CRON_USERNAME &&
         password === process.env.CRON_PASSWORD
@@ -11,7 +11,7 @@ const validate = async (_request, username, password, h) => {
     }
 };
 
-export default async server => {
+export default async (server): Promise<void> => {
     await server.register(authBasic);
     server.auth.strategy("cron", "basic", { validate });
 };

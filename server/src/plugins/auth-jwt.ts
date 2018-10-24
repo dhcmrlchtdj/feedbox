@@ -13,7 +13,7 @@ const validate = async (decoded, _request, h) => {
     }
 };
 
-export default async server => {
+export default async (server): Promise<void> => {
     await server.register(authJWT);
     server.auth.strategy("jwt", "jwt", {
         key: process.env.JWT_SECRET,

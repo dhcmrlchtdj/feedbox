@@ -1,6 +1,6 @@
 import * as bell from "bell";
 
-export default async server => {
+export default async (server): Promise<void> => {
     await server.register(bell);
 
     server.auth.strategy("github", "bell", {

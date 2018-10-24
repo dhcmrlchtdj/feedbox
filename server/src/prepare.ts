@@ -12,6 +12,6 @@ dotenv.config({
     path: path.resolve(__dirname, "../dotenv"),
 });
 
-export default async () => {
+export default async (): Promise<void> => {
     await initDB();
 };

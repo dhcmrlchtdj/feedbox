@@ -3,7 +3,7 @@ import * as Hapi from "hapi";
 import plugins from "./plugins";
 import routes from "./routes";
 
-const main = async () => {
+const main = async (): Promise<void> => {
     await prepare();
 
     const server = Hapi.server({
