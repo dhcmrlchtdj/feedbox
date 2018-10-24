@@ -2,6 +2,8 @@ MAILGUN_API_KEY="example"
 MAILGUN_DOMAIN="example.com"
 MAILGUN_SENDER="example <example@example.com>"
 
+DATABASE_URL="postgres://example"
+
 CRON_USERNAME="username"
 CRON_PASSWORD="crypto.randomBytes(2).toString('hex')"
 
@@ -11,4 +13,4 @@ GITHUB_CLIENT_ID="https://github.com/settings/developers"
 GITHUB_CLIENT_SECRET="https://github.com/settings/developers"
 GITHUB_AUTH_SECRET="crypto.randomBytes(2).toString('hex')"
 
-DATABASE_URL="postgres://example"
+SENTRY_DSN="https://sentry.io"

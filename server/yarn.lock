@@ -2,6 +2,58 @@
 # yarn lockfile v1
 
 
+"@sentry/core@4.2.1":
+  version "4.2.1"
+  resolved "http://registry.npm.taobao.org/@sentry/core/download/@sentry/core-4.2.1.tgz#156b1fa03ebc8dbc9e13bdf162631bdae6fb110e"
+  integrity sha1-FWsfoD68jbyeE73xYmMb2ub7EQ4=
+  dependencies:
+    "@sentry/hub" "4.2.1"
+    "@sentry/minimal" "4.2.1"
+    "@sentry/types" "4.2.1"
+    "@sentry/utils" "4.2.1"
+
+"@sentry/hub@4.2.1":
+  version "4.2.1"
+  resolved "http://registry.npm.taobao.org/@sentry/hub/download/@sentry/hub-4.2.1.tgz#8adfe7657e69a60c1689e10a98b89f3c664e7e25"
+  integrity sha1-it/nZX5ppgwWieEKmLifPGZOfiU=
+  dependencies:
+    "@sentry/types" "4.2.1"
+    "@sentry/utils" "4.2.1"
+
+"@sentry/minimal@4.2.1":
+  version "4.2.1"
+  resolved "http://registry.npm.taobao.org/@sentry/minimal/download/@sentry/minimal-4.2.1.tgz#bdd5f2bbf6ea6981b9e7b8a36aa5224aa36f9693"
+  integrity sha1-vdXyu/bqaYG557ijaqUiSqNvlpM=
+  dependencies:
+    "@sentry/hub" "4.2.1"
+    "@sentry/types" "4.2.1"
+
+"@sentry/node@4.2.1":
+  version "4.2.1"
+  resolved "http://registry.npm.taobao.org/@sentry/node/download/@sentry/node-4.2.1.tgz#4b65d33c381c2215f4467217e322704bad0d48a9"
+  integrity sha1-S2XTPDgcIhX0RnIX4yJwS60NSKk=
+  dependencies:
+    "@sentry/core" "4.2.1"
+    "@sentry/hub" "4.2.1"
+    "@sentry/types" "4.2.1"
+    "@sentry/utils" "4.2.1"
+    cookie "0.3.1"
+    lsmod "1.0.0"
+    md5 "2.2.1"
+    stack-trace "0.0.10"
+
+"@sentry/types@4.2.1":
+  version "4.2.1"
+  resolved "http://registry.npm.taobao.org/@sentry/types/download/@sentry/types-4.2.1.tgz#b0b290f0021d1ce005eac864ff4740578afad379"
+  integrity sha1-sLKQ8AIdHOAF6shk/0dAV4r603k=
+
+"@sentry/utils@4.2.1":
+  version "4.2.1"
+  resolved "http://registry.npm.taobao.org/@sentry/utils/download/@sentry/utils-4.2.1.tgz#8ea2bf2c2ee8bbe85b94df4834eb3b3ae2c3d034"
+  integrity sha1-jqK/LC7ou+hblN9INOs7OuLD0DQ=
+  dependencies:
+    "@sentry/types" "4.2.1"
+
 "@types/node@*", "@types/node@10.12.0":
   version "10.12.0"
   resolved "http://registry.npm.taobao.org/@types/node/download/@types/node-10.12.0.tgz#ea6dcbddbc5b584c83f06c60e82736d8fbb0c235"
@@ -423,6 +475,11 @@ chalk@^1.1.1:
     strip-ansi "^3.0.0"
     supports-color "^2.0.0"
 
+charenc@~0.0.1:
+  version "0.0.2"
+  resolved "http://registry.npm.taobao.org/charenc/download/charenc-0.0.2.tgz#c0a1d2f3a7092e03774bfa83f14c0fc5790a8667"
+  integrity sha1-wKHS86cJLgN3S/qD8UwPxXkKhmc=
+
 chokidar@^2.0.2:
   version "2.0.4"
   resolved "http://registry.npm.taobao.org/chokidar/download/chokidar-2.0.4.tgz#356ff4e2b0e8e43e322d18a372460bbcf3accd26"
@@ -559,7 +616,7 @@ content@4.x.x:
   dependencies:
     boom "7.x.x"
 
-cookie@^0.3.1:
+cookie@0.3.1, cookie@^0.3.1:
   version "0.3.1"
   resolved "http://registry.npm.taobao.org/cookie/download/cookie-0.3.1.tgz#e7e0a1f9ef43b4c8ba925c5c5a96e806d16873bb"
   integrity sha1-5+Ch+e9DtMi6klxcWpboBtFoc7s=
@@ -589,6 +646,11 @@ cross-spawn@^5.0.1:
     lru-cache "^4.0.1"
     shebang-command "^1.2.0"
     which "^1.2.9"
+
+crypt@~0.0.1:
+  version "0.0.2"
+  resolved "http://registry.npm.taobao.org/crypt/download/crypt-0.0.2.tgz#88d7ff7ec0dfb86f713dc87bbb42d044d3e6c41b"
+  integrity sha1-iNf/fsDfuG9xPch7u0LQRNPmxBs=
 
 cryptiles@4.x.x:
   version "4.1.2"
@@ -1405,7 +1467,7 @@ is-binary-path@^1.0.0:
   dependencies:
     binary-extensions "^1.0.0"
 
-is-buffer@^1.1.5:
+is-buffer@^1.1.5, is-buffer@~1.1.1:
   version "1.1.6"
   resolved "http://registry.npm.taobao.org/is-buffer/download/is-buffer-1.1.6.tgz#efaa2ea9daa0d7ab2ea13a97b2b8ad51fefbe8be"
   integrity sha1-76ouqdqg16suoTqXsritUf776L4=
@@ -1825,6 +1887,11 @@ lru-cache@^4.0.1, lru-cache@^4.1.2:
     pseudomap "^1.0.2"
     yallist "^2.1.2"
 
+lsmod@1.0.0:
+  version "1.0.0"
+  resolved "http://registry.npm.taobao.org/lsmod/download/lsmod-1.0.0.tgz#9a00f76dca36eb23fa05350afe1b585d4299e64b"
+  integrity sha1-mgD3bco26yP6BTUK/htYXUKZ5ks=
+
 mailgun-js@0.21.0:
   version "0.21.0"
   resolved "http://registry.npm.taobao.org/mailgun-js/download/mailgun-js-0.21.0.tgz#2fc3b84b10279a8bb7974bc3cc955913d3d6438d"
@@ -1863,6 +1930,15 @@ map-visit@^1.0.0:
   integrity sha1-7Nyo8TFE5mDxtb1B8S80edmN+48=
   dependencies:
     object-visit "^1.0.0"
+
+md5@2.2.1:
+  version "2.2.1"
+  resolved "http://registry.npm.taobao.org/md5/download/md5-2.2.1.tgz#53ab38d5fe3c8891ba465329ea23fac0540126f9"
+  integrity sha1-U6s41f48iJG6RlMp6iP6wFQBJvk=
+  dependencies:
+    charenc "~0.0.1"
+    crypt "~0.0.1"
+    is-buffer "~1.1.1"
 
 mem@^1.1.0:
   version "1.1.0"
@@ -2939,6 +3015,11 @@ sshpk@^1.7.0:
     jsbn "~0.1.0"
     safer-buffer "^2.0.2"
     tweetnacl "~0.14.0"
+
+stack-trace@0.0.10:
+  version "0.0.10"
+  resolved "http://registry.npm.taobao.org/stack-trace/download/stack-trace-0.0.10.tgz#547c70b347e8d32b4e108ea1a2a159e5fdde19c0"
+  integrity sha1-VHxws0fo0ytOEI6hoqFZ5f3eGcA=
 
 statehood@6.x.x:
   version "6.0.6"

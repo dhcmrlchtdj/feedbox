@@ -18,6 +18,7 @@
         "yarn": "1.10.*"
     },
     "dependencies": {
+        "@sentry/node": "4.2.1",
         "bell": "9.3.1",
         "dotenv": "6.1.0",
         "feedparser": "2.2.9",
