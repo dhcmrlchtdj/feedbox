@@ -2,57 +2,57 @@
 # yarn lockfile v1
 
 
-"@sentry/core@4.2.1":
-  version "4.2.1"
-  resolved "http://registry.npm.taobao.org/@sentry/core/download/@sentry/core-4.2.1.tgz#156b1fa03ebc8dbc9e13bdf162631bdae6fb110e"
-  integrity sha1-FWsfoD68jbyeE73xYmMb2ub7EQ4=
+"@sentry/core@4.2.3":
+  version "4.2.3"
+  resolved "http://registry.npm.taobao.org/@sentry/core/download/@sentry/core-4.2.3.tgz#58d45e0e6b3f805e9ccd2c32fdff40bc612a7f80"
+  integrity sha1-WNReDms/gF6czSwy/f9AvGEqf4A=
   dependencies:
-    "@sentry/hub" "4.2.1"
-    "@sentry/minimal" "4.2.1"
-    "@sentry/types" "4.2.1"
-    "@sentry/utils" "4.2.1"
+    "@sentry/hub" "4.2.3"
+    "@sentry/minimal" "4.2.3"
+    "@sentry/types" "4.2.3"
+    "@sentry/utils" "4.2.3"
 
-"@sentry/hub@4.2.1":
-  version "4.2.1"
-  resolved "http://registry.npm.taobao.org/@sentry/hub/download/@sentry/hub-4.2.1.tgz#8adfe7657e69a60c1689e10a98b89f3c664e7e25"
-  integrity sha1-it/nZX5ppgwWieEKmLifPGZOfiU=
+"@sentry/hub@4.2.3":
+  version "4.2.3"
+  resolved "http://registry.npm.taobao.org/@sentry/hub/download/@sentry/hub-4.2.3.tgz#90b84d351051cd537e36836d38dd4ae4b90617bb"
+  integrity sha1-kLhNNRBRzVN+NoNtON1K5LkGF7s=
   dependencies:
-    "@sentry/types" "4.2.1"
-    "@sentry/utils" "4.2.1"
+    "@sentry/types" "4.2.3"
+    "@sentry/utils" "4.2.3"
 
-"@sentry/minimal@4.2.1":
-  version "4.2.1"
-  resolved "http://registry.npm.taobao.org/@sentry/minimal/download/@sentry/minimal-4.2.1.tgz#bdd5f2bbf6ea6981b9e7b8a36aa5224aa36f9693"
-  integrity sha1-vdXyu/bqaYG557ijaqUiSqNvlpM=
+"@sentry/minimal@4.2.3":
+  version "4.2.3"
+  resolved "http://registry.npm.taobao.org/@sentry/minimal/download/@sentry/minimal-4.2.3.tgz#f7cde49e797fa75df652bcb95fb06a8a4df4d7ac"
+  integrity sha1-983knnl/p132Ury5X7Bqik3016w=
   dependencies:
-    "@sentry/hub" "4.2.1"
-    "@sentry/types" "4.2.1"
+    "@sentry/hub" "4.2.3"
+    "@sentry/types" "4.2.3"
 
-"@sentry/node@4.2.1":
-  version "4.2.1"
-  resolved "http://registry.npm.taobao.org/@sentry/node/download/@sentry/node-4.2.1.tgz#4b65d33c381c2215f4467217e322704bad0d48a9"
-  integrity sha1-S2XTPDgcIhX0RnIX4yJwS60NSKk=
+"@sentry/node@4.2.3":
+  version "4.2.3"
+  resolved "http://registry.npm.taobao.org/@sentry/node/download/@sentry/node-4.2.3.tgz#7e0c46919836afb76fb6d54212eb7800872379cc"
+  integrity sha1-fgxGkZg2r7dvttVCEut4AIcjecw=
   dependencies:
-    "@sentry/core" "4.2.1"
-    "@sentry/hub" "4.2.1"
-    "@sentry/types" "4.2.1"
-    "@sentry/utils" "4.2.1"
+    "@sentry/core" "4.2.3"
+    "@sentry/hub" "4.2.3"
+    "@sentry/types" "4.2.3"
+    "@sentry/utils" "4.2.3"
     cookie "0.3.1"
     lsmod "1.0.0"
     md5 "2.2.1"
     stack-trace "0.0.10"
 
-"@sentry/types@4.2.1":
-  version "4.2.1"
-  resolved "http://registry.npm.taobao.org/@sentry/types/download/@sentry/types-4.2.1.tgz#b0b290f0021d1ce005eac864ff4740578afad379"
-  integrity sha1-sLKQ8AIdHOAF6shk/0dAV4r603k=
+"@sentry/types@4.2.3":
+  version "4.2.3"
+  resolved "http://registry.npm.taobao.org/@sentry/types/download/@sentry/types-4.2.3.tgz#e53df8ac5c2419d333be8671972a2db6d34de230"
+  integrity sha1-5T34rFwkGdMzvoZxlyotttNN4jA=
 
-"@sentry/utils@4.2.1":
-  version "4.2.1"
-  resolved "http://registry.npm.taobao.org/@sentry/utils/download/@sentry/utils-4.2.1.tgz#8ea2bf2c2ee8bbe85b94df4834eb3b3ae2c3d034"
-  integrity sha1-jqK/LC7ou+hblN9INOs7OuLD0DQ=
+"@sentry/utils@4.2.3":
+  version "4.2.3"
+  resolved "http://registry.npm.taobao.org/@sentry/utils/download/@sentry/utils-4.2.3.tgz#46119e0938308245054984303ee1b049a7ab7523"
+  integrity sha1-RhGeCTgwgkUFSYQwPuGwSaerdSM=
   dependencies:
-    "@sentry/types" "4.2.1"
+    "@sentry/types" "4.2.3"
 
 "@types/feedparser@2.2.1":
   version "2.2.1"
