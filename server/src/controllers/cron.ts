@@ -1,12 +1,12 @@
 import Feed from "../models/feed";
-
 import fetch from "node-fetch";
+import parseFeed from "../utils/parse-feed";
 
 const f = async (feed: Feed) => {
     const url = feed.url;
     const curr = await fetch(url).then(res => res.text());
-    const prev = feed.content;
-    if (curr === prev) return;
+    const f = await parseFeed(url, curr);
+    console.log(f);
     const articles = [];
     return articles;
 };
