@@ -18,7 +18,7 @@ const parse = async (feedurl: string, content: string) => {
 
         const pass = new PassThrough();
         pass.pipe(feedparser);
-        pass.write(content);
+        pass.end(content);
     });
 };
 
