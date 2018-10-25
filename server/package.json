@@ -24,6 +24,7 @@
         "feedparser": "2.2.9",
         "good": "8.1.1",
         "good-console": "7.1.0",
+        "good-squeeze": "5.1.0",
         "hapi": "17.6.0",
         "hapi-auth-basic": "5.0.0",
         "hapi-auth-jwt2": "8.1.0",
