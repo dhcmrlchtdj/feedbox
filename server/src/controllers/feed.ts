@@ -2,10 +2,10 @@ import * as Joi from "joi";
 import Feed from "../models/feed";
 
 export const list = {
-    async handler(request, h) {
+    async handler(request, _h) {
         const { userId } = request.auth.credentials;
         const feeds = await Feed.takeByUser(userId);
-        return h.response(feeds);
+        return feeds;
     },
 };
 
@@ -15,14 +15,14 @@ export const add = {
             url: Joi.string().uri(),
         },
     },
-    async handler(request, h) {
+    async handler(request, _h) {
         const { url } = request.payload;
         const feed = await Feed.takeOrCreate(url);
         const { userId } = request.auth.credentials;
         await Feed.addUser(feed.id, userId);
 
         const feeds = await Feed.takeByUser(userId);
-        return h.response(feeds);
+        return feeds;
     },
 };
 

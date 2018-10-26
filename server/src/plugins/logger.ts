@@ -1,42 +1,11 @@
-import * as Good from "good";
-import * as GoodConsole from "good-console";
-import * as GoodSqueeze from "good-squeeze";
+import * as pino from "hapi-pino";
 
-const logger = {
-    plugin: Good,
+export default {
+    plugin: pino,
     options: {
-        ops: false,
-        includes: {
-            request: ["headers"],
-            response: ["headers"],
-        },
-        reporters: {
-            simple: [
-                {
-                    module: GoodSqueeze.Squeeze,
-                    args: [
-                        {
-                            log: "*",
-                            error: "*",
-                            request: "*",
-                            response: "*",
-                        },
-                    ],
-                },
-                {
-                    module: GoodConsole,
-                    args: [{ format: "YYYY-MM-DDTHH:mm:ss.SSS" }],
-                },
-                "stdout",
-            ],
-            detail: [
-                {
-                    module: GoodSqueeze.SafeJson,
-                },
-                "stdout",
-            ],
-        },
+        logPayload: true,
+        logRouteTags: true,
+        level: "trace",
+        prettyPrint: process.env.NODE_ENV !== "production",
     },
 };
-
-export default logger;

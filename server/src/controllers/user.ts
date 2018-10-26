@@ -2,10 +2,10 @@ import * as jwt from "jsonwebtoken";
 import User from "../models/user";
 
 export const info = {
-    async handler(request, h) {
+    async handler(request, _h) {
         const { userId } = request.auth.credentials;
         const user = await User.takeOneById(userId);
-        return h.response(user);
+        return user;
     },
 };
 
@@ -21,7 +21,7 @@ export const logout = {
     auth: false,
     async handler(_request, h) {
         h.unstate("token", stateTokenOpt);
-        return h.response("done | logout");
+        return "done | logout";
     },
 };
 

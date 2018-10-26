@@ -5,7 +5,11 @@ const mg = new Mailgun({
     domain: process.env.MAILGUN_DOMAIN as string,
 });
 
-const send = async (addr: string, subject: string, text: string) => {
+const send = async (
+    addr: string,
+    subject: string,
+    text: string,
+): Promise<Mailgun.messages.SendResponse> => {
     const data = {
         from: process.env.MAILGUN_FROM,
         to: addr,

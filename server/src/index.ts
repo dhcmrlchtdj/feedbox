@@ -16,7 +16,6 @@ const main = async (): Promise<void> => {
     server.route(routes);
 
     await server.start();
-    server.log(["info"], `Server running at: ${server.info.uri}`);
 };
 
 main();

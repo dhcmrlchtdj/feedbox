@@ -1,10 +1,13 @@
 import { PassThrough } from "stream";
 import * as FeedParser from "feedparser";
 
-const parse = async (feedurl: string, content: string) => {
-    return new Promise((resolve, reject) => {
+type FeedItem = FeedParser.Item;
+export { FeedItem };
+
+const parse = async (feedurl: string, content: string): Promise<FeedItem[]> => {
+    return new Promise<FeedItem[]>((resolve, reject) => {
         const feedparser = new FeedParser({ feedurl });
-        const feed: FeedParser.Item[] = [];
+        const feed: FeedItem[] = [];
 
         feedparser.on("end", () => resolve(feed));
         feedparser.on("error", err => reject(err));
