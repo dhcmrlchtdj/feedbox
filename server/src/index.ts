@@ -7,7 +7,7 @@ const main = async (): Promise<void> => {
     await prepare();
 
     const server = Hapi.server({
-        host: "0.0.0.0",
+        host: "localhost",
         port: Number(process.env.PORT || 8000),
     });
 
