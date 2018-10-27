@@ -5,12 +5,15 @@ type FeedItem = FeedParser.Item;
 export { FeedItem };
 
 const parse = async (feedurl: string, content: string): Promise<FeedItem[]> => {
-    return new Promise<FeedItem[]>((resolve, reject) => {
+    return new Promise<FeedItem[]>(resolve => {
         const feedparser = new FeedParser({ feedurl });
         const feed: FeedItem[] = [];
 
         feedparser.on("end", () => resolve(feed));
-        feedparser.on("error", err => reject(err));
+        feedparser.on("error", err => {
+            console.error(err);
+            resolve([]);
+        });
         feedparser.on("readable", function(this: any) {
             let item = this.read();
             while (item) {

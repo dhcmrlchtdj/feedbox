@@ -12,7 +12,6 @@ type Tfeeds = {
 type Tentries = {
     feed: Feed;
     entries: Array<{
-        URL: string;
         title: string;
         content: string;
     }>;
@@ -25,13 +24,21 @@ type Tmail = {
 
 const feed2feeds = async (feed: Feed): Promise<Tfeeds | null> => {
     const url = feed.url;
-    const curr = await fetch(url).then(res => res.text());
+    const curr = await fetch(url)
+        .then(res => res.text())
+        .catch(err => {
+            console.error(err);
+            return null;
+        });
 
+    if (!curr) return null;
     if (curr === feed.content) return null;
+
+    const currFeed = await parseFeed(url, curr);
+    if (currFeed.length === 0) return null;
 
     let prevFeed: FeedItem[] = [];
     if (feed.content) prevFeed = await parseFeed(url, feed.content);
-    const currFeed = await parseFeed(url, curr);
     return {
         feed,
         prev: prevFeed,
@@ -54,10 +61,11 @@ const feeds2entries = async (feeds: Tfeeds): Promise<Tentries | null> => {
             const title = m.title || "unknown";
             const author = m.author || m.meta.author || "unknown";
             const site = m.meta.title || "unknown";
+            const link = m.origlink || m.link || m.meta.link || feeds.feed.url;
+            const article = m.description || m.summary || "unknown";
             return {
-                URL: m.origlink || m.link || m.meta.link || feeds.feed.url,
                 title: `${title} by ${author} at ${site}`,
-                content: m.description || m.summary || "unknown content",
+                content: `${article}\n---\n${link}`,
             };
         });
     if (entries.length === 0) return null;
@@ -89,11 +97,11 @@ export const cron = {
 
             // save new feed
             feed.content = f.currText;
-            feed.lastUpdated = new Date();
-            if (f.prev.length === 0) {
-                await feed.save();
-                return;
-            }
+            feed.lastUpdated = f.curr[0].date || new Date();
+            await feed.save();
+
+            // first time
+            if (f.prev.length === 0) return;
 
             // extract entry
             const e = await feeds2entries(f);
@@ -103,9 +111,7 @@ export const cron = {
             const m = await entries2mails(e);
             const s = m.map(m => sendEmail(m.addr, m.subject, m.text));
             await Promise.all(s);
-
-            await feed.save();
         });
-        return 'ok';
+        return "ok";
     },
 };

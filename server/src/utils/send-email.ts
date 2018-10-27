@@ -9,15 +9,19 @@ const send = async (
     addr: string,
     subject: string,
     text: string,
-): Promise<Mailgun.messages.SendResponse> => {
+): Promise<void> => {
     const data = {
         from: process.env.MAILGUN_FROM,
-        to: addr,
+        to: [addr],
         subject,
         text,
+        html: text,
     };
-    const reply = await mg.messages().send(data);
-    return reply;
+    try {
+        await mg.messages().send(data);
+    } catch (err) {
+        console.error(err);
+    }
 };
 
 export default send;
