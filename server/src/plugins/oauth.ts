@@ -9,5 +9,6 @@ export default async (server): Promise<void> => {
         clientSecret: process.env.GITHUB_CLIENT_SECRET,
         password: process.env.GITHUB_AUTH_SECRET,
         isSecure: process.env.NODE_ENV === "production",
+        forceHttps: process.env.NODE_ENV === "production",
     });
 };
