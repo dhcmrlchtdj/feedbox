@@ -24,7 +24,7 @@ const initDB = async (): Promise<void> => {
     const postgres = Object.assign(
         {
             type: "postgres",
-            url: process.env.DATABSE_URL,
+            url: process.env.DATABASE_URL,
         },
         base,
     );
