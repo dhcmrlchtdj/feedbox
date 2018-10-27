@@ -9,9 +9,11 @@ process.on("unhandledRejection", err => {
     process.exit(1);
 });
 
-dotenv.config({
-    path: path.resolve(__dirname, "../dotenv"),
-});
+if (process.env.NODE_ENV !== "production") {
+    dotenv.config({
+        path: path.resolve(__dirname, "../dotenv"),
+    });
+}
 
 export default async (): Promise<void> => {
     Sentry.init({ dsn: process.env.SENTRY_DSN });
