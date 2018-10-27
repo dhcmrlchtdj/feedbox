@@ -521,7 +521,7 @@ charenc@~0.0.1:
   resolved "http://registry.npm.taobao.org/charenc/download/charenc-0.0.2.tgz#c0a1d2f3a7092e03774bfa83f14c0fc5790a8667"
   integrity sha1-wKHS86cJLgN3S/qD8UwPxXkKhmc=
 
-chokidar@^2.0.2:
+chokidar@^2.0.4:
   version "2.0.4"
   resolved "http://registry.npm.taobao.org/chokidar/download/chokidar-2.0.4.tgz#356ff4e2b0e8e43e322d18a372460bbcf3accd26"
   integrity sha1-NW/04rDo5D4yLRijckYLvPOszSY=
@@ -729,7 +729,7 @@ debug@2, debug@^2.1.2, debug@^2.2.0, debug@^2.3.3:
   dependencies:
     ms "2.0.0"
 
-debug@3.1.0, debug@~3.1.0:
+debug@3.1.0:
   version "3.1.0"
   resolved "http://registry.npm.taobao.org/debug/download/debug-3.1.0.tgz#5bb5a0672628b64149566ba16819e61518c67261"
   integrity sha1-W7WgZyYotkFJVmuhaBnmFRjGcmE=
@@ -740,6 +740,13 @@ debug@^3.1.0:
   version "3.2.6"
   resolved "http://registry.npm.taobao.org/debug/download/debug-3.2.6.tgz#e83d17de16d8a7efb7717edbe5fb10135eee629b"
   integrity sha1-6D0X3hbYp++3cX7b5fsQE17uYps=
+  dependencies:
+    ms "^2.1.1"
+
+debug@^4.1.0:
+  version "4.1.0"
+  resolved "http://registry.npm.taobao.org/debug/download/debug-4.1.0.tgz#373687bffa678b38b1cd91f861b63850035ddc87"
+  integrity sha1-NzaHv/pnizixzZH4YbY4UANd3Ic=
   dependencies:
     ms "^2.1.1"
 
@@ -1088,7 +1095,7 @@ forever-agent@~0.6.1:
   resolved "http://registry.npm.taobao.org/forever-agent/download/forever-agent-0.6.1.tgz#fbc71f0c41adeb37f96c577ad1ed42d8fdacca91"
   integrity sha1-+8cfDEGt6zf5bFd60e1C2P2sypE=
 
-form-data@^2.3.2, form-data@~2.3.2:
+form-data@^2.3.3, form-data@~2.3.2:
   version "2.3.3"
   resolved "http://registry.npm.taobao.org/form-data/download/form-data-2.3.3.tgz#dcce52c05f644f298c6a7ab936bd724ceffbf3a6"
   integrity sha1-3M5SwF9kTymManq5Nr1yTO/786Y=
@@ -1933,14 +1940,14 @@ lsmod@1.0.0:
   resolved "http://registry.npm.taobao.org/lsmod/download/lsmod-1.0.0.tgz#9a00f76dca36eb23fa05350afe1b585d4299e64b"
   integrity sha1-mgD3bco26yP6BTUK/htYXUKZ5ks=
 
-mailgun-js@0.21.0:
-  version "0.21.0"
-  resolved "http://registry.npm.taobao.org/mailgun-js/download/mailgun-js-0.21.0.tgz#2fc3b84b10279a8bb7974bc3cc955913d3d6438d"
-  integrity sha1-L8O4SxAnmou3l0vDzJVZE9PWQ40=
+mailgun-js@0.22.0:
+  version "0.22.0"
+  resolved "http://registry.npm.taobao.org/mailgun-js/download/mailgun-js-0.22.0.tgz#128942b5e47a364a470791608852bf68c96b3a05"
+  integrity sha1-EolCteR6NkpHB5FgiFK/aMlrOgU=
   dependencies:
     async "^2.6.1"
-    debug "~3.1.0"
-    form-data "^2.3.2"
+    debug "^4.1.0"
+    form-data "^2.3.3"
     inflection "~1.12.0"
     is-stream "^1.1.0"
     path-proxy "~1.0.0"
@@ -2173,12 +2180,12 @@ node-pre-gyp@^0.10.0, node-pre-gyp@^0.10.3:
     semver "^5.3.0"
     tar "^4"
 
-nodemon@1.18.4:
-  version "1.18.4"
-  resolved "http://registry.npm.taobao.org/nodemon/download/nodemon-1.18.4.tgz#873f65fdb53220eb166180cf106b1354ac5d714d"
-  integrity sha1-hz9l/bUyIOsWYYDPEGsTVKxdcU0=
+nodemon@1.18.5:
+  version "1.18.5"
+  resolved "http://registry.npm.taobao.org/nodemon/download/nodemon-1.18.5.tgz#3d3924df23d06806952e8b6d3de052f2a3351807"
+  integrity sha1-PTkk3yPQaAaVLottPeBS8qM1GAc=
   dependencies:
-    chokidar "^2.0.2"
+    chokidar "^2.0.4"
     debug "^3.1.0"
     ignore-by-default "^1.0.1"
     minimatch "^3.0.4"
@@ -2481,10 +2488,10 @@ pg-types@~1.12.1:
     postgres-date "~1.0.0"
     postgres-interval "^1.1.0"
 
-pg@7.5.0:
-  version "7.5.0"
-  resolved "http://registry.npm.taobao.org/pg/download/pg-7.5.0.tgz#c2853bef2fcb91424ba2f649fd951ce866a84760"
-  integrity sha1-woU77y/LkUJLovZJ/ZUc6GaoR2A=
+pg@7.6.0:
+  version "7.6.0"
+  resolved "http://registry.npm.taobao.org/pg/download/pg-7.6.0.tgz#0c9ecaf0ce6f3c7e3c68ce8f621df79e741a89e3"
+  integrity sha1-DJ7K8M5vPH48aM6PYh33nnQaieM=
   dependencies:
     buffer-writer "1.0.1"
     packet-reader "0.3.1"
