@@ -9,6 +9,7 @@ const main = async (): Promise<void> => {
     const server = Hapi.server({
         host: "0.0.0.0",
         port: Number(process.env.PORT || 8000),
+        routes: { cors: { credentials: true } },
     });
 
     await plugins(server);
