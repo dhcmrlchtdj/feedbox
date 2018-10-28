@@ -1,5 +1,6 @@
 const path = require("path");
 const webpack = require("webpack");
+const DotenvPlugin = require("webpack-dotenv-plugin");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const ScriptExtHtmlWebpackPlugin = require("script-ext-html-webpack-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
@@ -81,6 +82,10 @@ const config = {
             }),
         !prod && new webpack.NoEmitOnErrorsPlugin(),
         !prod && new webpack.HotModuleReplacementPlugin(),
+        new DotenvPlugin({
+            sample: path.resolve(__dirname, "./dotenv.example"),
+            path: path.resolve(__dirname, "./dotenv"),
+        }),
         new webpack.HashedModuleIdsPlugin(),
         new HtmlWebpackPlugin({
             filename: "index.html",

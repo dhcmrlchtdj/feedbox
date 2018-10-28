@@ -618,16 +618,6 @@ cache-base@^1.0.1:
     union-value "^1.0.0"
     unset-value "^1.0.0"
 
-cache-loader@1.2.2:
-  version "1.2.2"
-  resolved "http://registry.npm.taobao.org/cache-loader/download/cache-loader-1.2.2.tgz#6d5c38ded959a09cc5d58190ab5af6f73bd353f5"
-  integrity sha1-bVw43tlZoJzF1YGQq1r29zvTU/U=
-  dependencies:
-    loader-utils "^1.1.0"
-    mkdirp "^0.5.1"
-    neo-async "^2.5.0"
-    schema-utils "^0.4.2"
-
 camel-case@3.0.x:
   version "3.0.0"
   resolved "http://registry.npm.taobao.org/camel-case/download/camel-case-3.0.0.tgz#ca3c3688a4e9cf3a4cda777dc4dcbc713249cf73"
@@ -1405,6 +1395,18 @@ dot-prop@^4.1.1:
   integrity sha1-HxngwuGqDjJ5fEl5nyg3rGr2nFc=
   dependencies:
     is-obj "^1.0.0"
+
+dotenv-safe@^5.0.1:
+  version "5.0.1"
+  resolved "http://registry.npm.taobao.org/dotenv-safe/download/dotenv-safe-5.0.1.tgz#8c4a79b8978fd4271b3d8ef17be2b2f04588af71"
+  integrity sha1-jEp5uJeP1CcbPY7xe+Ky8EWIr3E=
+  dependencies:
+    dotenv "^5.0.0"
+
+dotenv@^5.0.0:
+  version "5.0.1"
+  resolved "http://registry.npm.taobao.org/dotenv/download/dotenv-5.0.1.tgz#a5317459bd3d79ab88cff6e44057a6a3fbb1fcef"
+  integrity sha1-pTF0Wb09eauIz/bkQFemo/ux/O8=
 
 duplexify@^3.4.2, duplexify@^3.6.0:
   version "3.6.1"
@@ -4100,7 +4102,7 @@ sax@^1.2.4, sax@~1.2.4:
   resolved "http://registry.npm.taobao.org/sax/download/sax-1.2.4.tgz#2816234e2378bddc4e5354fab5caa895df7100d9"
   integrity sha1-KBYjTiN4vdxOU1T6tcqold9xANk=
 
-schema-utils@^0.4.2, schema-utils@^0.4.4, schema-utils@^0.4.5:
+schema-utils@^0.4.4, schema-utils@^0.4.5:
   version "0.4.7"
   resolved "http://registry.npm.taobao.org/schema-utils/download/schema-utils-0.4.7.tgz#ba74f597d2be2ea880131746ee17d0a093c68187"
   integrity sha1-unT1l9K+LqiAExdG7hfQoJPGgYc=
@@ -4951,6 +4953,13 @@ webpack-dev-server@3.1.10:
     webpack-dev-middleware "3.4.0"
     webpack-log "^2.0.0"
     yargs "12.0.2"
+
+webpack-dotenv-plugin@2.1.0:
+  version "2.1.0"
+  resolved "http://registry.npm.taobao.org/webpack-dotenv-plugin/download/webpack-dotenv-plugin-2.1.0.tgz#366bb18712f414e8b86aa66408a9039d03dd7165"
+  integrity sha1-NmuxhxL0FOi4aqZkCKkDnQPdcWU=
+  dependencies:
+    dotenv-safe "^5.0.1"
 
 webpack-log@^2.0.0:
   version "2.0.0"
