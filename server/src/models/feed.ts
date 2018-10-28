@@ -82,7 +82,9 @@ export default class Feed extends BaseEntity {
                 .of(feedId)
                 .add(userId);
         } catch (err) {
-            if (!err.message.includes("UNIQUE")) throw err;
+            const msg = err.message;
+            if (msg && /unique/i.test(msg)) return;
+            throw err;
         }
     }
 
