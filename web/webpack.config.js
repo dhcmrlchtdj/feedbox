@@ -70,7 +70,10 @@ const config = {
         ],
     },
     plugins: [
-        prod && new CleanWebpackPlugin(path.resolve(__dirname, "./dist")),
+        prod &&
+            new CleanWebpackPlugin(path.resolve(__dirname, "./dist/*.*"), {
+                exclude: ["CNAME"],
+            }),
         !prod && new webpack.NoEmitOnErrorsPlugin(),
         !prod && new webpack.HotModuleReplacementPlugin(),
         new webpack.HashedModuleIdsPlugin(),
