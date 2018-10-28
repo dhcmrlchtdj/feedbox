@@ -32,10 +32,16 @@ const feed2feeds = async (feed: Feed): Promise<Tfeeds | null> => {
         });
 
     if (!curr) return null;
-    if (curr === feed.content) return null;
+    if (curr === feed.content) {
+        console.debug(`${feed.url} - no change`);
+        return null;
+    }
 
     const currFeed = await parseFeed(url, curr);
-    if (currFeed.length === 0) return null;
+    if (currFeed.length === 0) {
+        console.debug(`${feed.url} - no content`);
+        return null;
+    }
 
     let prevFeed: FeedItem[] = [];
     if (feed.content) prevFeed = await parseFeed(url, feed.content);
@@ -54,18 +60,18 @@ const feeds2entries = async (feeds: Tfeeds): Promise<Tentries | null> => {
         .filter(m => {
             const date = prevMap.get(m.guid);
             if (!date) return true;
-            if (date !== m.date) return true;
+            if (!m.date) return false;
+            if (date.getTime() !== m.date.getTime()) return true;
             return false;
         })
         .map(m => {
             const title = m.title || "unknown";
             const author = m.author || m.meta.author || "unknown";
-            const site = m.meta.title || "unknown";
             const link = m.origlink || m.link || m.meta.link || feeds.feed.url;
             const article = m.description || m.summary || "unknown";
             return {
-                title: `${title} by ${author} at ${site}`,
-                content: `${article}\n---\n${link}`,
+                title: `${author} - ${title}`,
+                content: `${link}<br><br><br>${article}`,
             };
         });
     if (entries.length === 0) return null;

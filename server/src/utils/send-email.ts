@@ -5,6 +5,10 @@ const mg = new Mailgun({
     domain: process.env.MAILGUN_DOMAIN as string,
 });
 
+const sendEmail = async data => mg.messages().send(data);
+const debugEmail = async data => console.log(data.to, data.subject);
+const used = process.env.NODE_ENV === "production" ? sendEmail : debugEmail;
+
 const send = async (
     addr: string,
     subject: string,
@@ -18,7 +22,7 @@ const send = async (
         html: text,
     };
     try {
-        await mg.messages().send(data);
+        await used(data);
     } catch (err) {
         console.error(err);
     }
