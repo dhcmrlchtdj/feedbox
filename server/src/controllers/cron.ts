@@ -99,13 +99,17 @@ export const cron = {
         feeds.forEach(async feed => {
             // fetch feed
             const f = await feed2feeds(feed);
-            if (!f) return;
 
-            // save new feed
-            feed.content = f.currText;
-            feed.lastUpdated = f.curr[0].date || new Date();
+            // save state
+            feed.lastCheck = new Date();
+            if (f) {
+                feed.content = f.currText;
+                feed.lastUpdated = f.curr[0].date || new Date();
+            }
             await feed.save();
 
+            // no content
+            if (!f) return;
             // first time
             if (f.prev.length === 0) return;
 

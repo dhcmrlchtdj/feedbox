@@ -26,6 +26,9 @@ export default class Feed extends BaseEntity {
     @Column({ nullable: true })
     lastUpdated: Date;
 
+    @Column({ nullable: true })
+    lastCheck: Date;
+
     @Column({ type: "text", nullable: true })
     content: string;
 
