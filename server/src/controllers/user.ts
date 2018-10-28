@@ -12,9 +12,11 @@ export const info = {
 const stateTokenOpt = {
     path: "/",
     isSecure: process.env.NODE_ENV === "production",
+    isHttpOnly: true,
+    isSameSite: false,
     ttl: 7 * 24 * 60 * 60 * 1000,
-    clearInvalid: true,
     encoding: "none",
+    clearInvalid: true,
 };
 
 export const logout = {

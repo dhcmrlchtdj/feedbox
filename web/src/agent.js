@@ -3,7 +3,6 @@ const API = process.env.API;
 const auth = r => {
     if (r.status === 401) {
         location.href = `${API}/connect/github`;
-        debugger;
         throw new Error(r.status);
     } else {
         return r;
@@ -16,6 +15,7 @@ const req = async (path, method, data) => {
         headers: { "Content-Type": "application/json; charset=utf-8" },
         body: data && JSON.stringify(data),
         redirect: "follow",
+        mode: "cors",
         credentials: "include",
     })
         .then(auth)
