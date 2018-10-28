@@ -77,7 +77,6 @@ const config = {
         new HtmlWebpackPlugin({
             filename: "index.html",
             template: "./src/template.html",
-            inject: "body",
         }),
         new ScriptExtHtmlWebpackPlugin({
             defaultAttribute: "defer",
