@@ -31,17 +31,28 @@ export default class User extends BaseEntity {
     @JoinTable()
     feeds: Feed[];
 
-    static async takeOne(query): Promise<User | null> {
+    static async takeOne(query): Promise<User | undefined> {
         query.take = 1;
         const arr = await this.find(query);
         if (arr.length) {
             return arr[0];
         } else {
-            return null;
+            return;
         }
     }
-    static async takeOneById(userId: number): Promise<User | null> {
-        const user = await User.takeOne({ where: { id: userId } });
+
+    static async takeById(userId: number): Promise<User | undefined> {
+        const user = await User.takeOne({
+            where: { id: userId },
+        });
+        return user;
+    }
+
+    static async takeByIdWithFeeds(userId: number): Promise<User | undefined> {
+        const user = await User.createQueryBuilder("user")
+            .where("user.id = :userId", { userId })
+            .leftJoinAndSelect("user.feeds", "feed")
+            .getOne();
         return user;
     }
 
@@ -50,7 +61,7 @@ export default class User extends BaseEntity {
         value: any,
         updateKey: string,
         updateValue: any,
-    ): Promise<User | null> {
+    ): Promise<User | undefined> {
         const user = await User.takeOne({ where: { [key]: value } });
         if (user && updateValue) {
             if (user[updateKey] !== updateValue) {
@@ -65,7 +76,7 @@ export default class User extends BaseEntity {
         githubId: number,
         email: string,
     ): Promise<User> {
-        let user: User | null;
+        let user: User | undefined;
 
         user = await User.updateByKV("githubId", githubId, "email", email);
         if (user) return user;

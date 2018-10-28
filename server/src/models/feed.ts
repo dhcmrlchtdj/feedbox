@@ -29,24 +29,25 @@ export default class Feed extends BaseEntity {
     @Column({ nullable: true })
     lastCheck: Date;
 
-    @Column({ type: "text", nullable: true })
+    @Column({ type: "text", nullable: true, select: false })
     content: string;
 
     @ManyToMany(_type => User, user => user.feeds)
     users: User[];
 
-    static async takeOne(query): Promise<Feed | null> {
+    static async takeOne(query): Promise<Feed | undefined> {
         query.take = 1;
         const arr = await this.find(query);
         if (arr.length) {
             return arr[0];
         } else {
-            return null;
+            return;
         }
     }
 
     static async takeAll(): Promise<Feed[]> {
         const feeds = await Feed.createQueryBuilder("feed")
+            .addSelect("feed.content")
             .innerJoinAndSelect("feed.users", "user")
             .getMany();
         return feeds;
@@ -64,12 +65,6 @@ export default class Feed extends BaseEntity {
 
     static async takeByUser(userId: number): Promise<Feed[]> {
         const feeds = await Feed.createQueryBuilder("feed")
-            .select([
-                "feed.id",
-                "feed.url",
-                "feed.lastUpdated",
-                "feed.lastCheck",
-            ])
             .innerJoin("feed.users", "user", "user.id = :userId", { userId })
             .getMany();
         return feeds;

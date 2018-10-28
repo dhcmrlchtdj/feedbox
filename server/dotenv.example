@@ -1,11 +1,13 @@
 CRON_USERNAME="username"
 CRON_PASSWORD="crypto.randomBytes(2).toString('hex')"
 
+LOGIN_REDIRECT="https://feedbox.example.com"
+
 JWT_SECRET="crypto.randomBytes(2).toString('hex')"
 
+GITHUB_AUTH_SECRET="crypto.randomBytes(2).toString('hex')"
 GITHUB_CLIENT_ID="https://github.com/settings/developers"
 GITHUB_CLIENT_SECRET="https://github.com/settings/developers"
-GITHUB_AUTH_SECRET="crypto.randomBytes(2).toString('hex')"
 
 SENTRY_DSN="https://sentry.io"
 

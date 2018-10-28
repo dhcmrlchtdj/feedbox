@@ -4,7 +4,7 @@ import User from "../models/user";
 export const info = {
     async handler(request, _h) {
         const { userId } = request.auth.credentials;
-        const user = await User.takeOneById(userId);
+        const user = await User.takeByIdWithFeeds(userId);
         return user;
     },
 };
@@ -45,7 +45,7 @@ export const connectGithub = {
             h.state("token", token, stateTokenOpt);
 
             // redirect to user info
-            return h.redirect("/api/v1/user");
+            return h.redirect(process.env.LOGIN_REDIRECT);
         } else {
             const errMsg = request.auth.error.message;
             return `Authentication failed due to: ${errMsg}`;
