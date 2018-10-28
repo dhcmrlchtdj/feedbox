@@ -3837,6 +3837,11 @@ punycode@^2.1.0:
   resolved "http://registry.npm.taobao.org/punycode/download/punycode-2.1.1.tgz#b58b010ac40c22c5657616c8d2c2c02c7bf479ec"
   integrity sha1-tYsBCsQMIsVldhbI0sLALHv0eew=
 
+purecss@1.0.0:
+  version "1.0.0"
+  resolved "http://registry.npm.taobao.org/purecss/download/purecss-1.0.0.tgz#3dbcd9e2a7592448a69acb705cce16311bf4b785"
+  integrity sha1-PbzZ4qdZJEimmstwXM4WMRv0t4U=
+
 q@^1.1.2:
   version "1.5.1"
   resolved "http://registry.npm.taobao.org/q/download/q-1.5.1.tgz#7e32f75b41381291d04611f1bf14109ac00651d7"
@@ -4363,11 +4368,6 @@ spdy@^3.4.1:
     safe-buffer "^5.0.1"
     select-hose "^2.0.0"
     spdy-transport "^2.0.18"
-
-spectre.css@0.5.3:
-  version "0.5.3"
-  resolved "http://registry.npm.taobao.org/spectre.css/download/spectre.css-0.5.3.tgz#90d9b08dec06f1379c8ebf6deb4580e01e705101"
-  integrity sha1-kNmwjewG8Tecjr9t60WA4B5wUQE=
 
 split-string@^3.0.1, split-string@^3.0.2:
   version "3.1.0"

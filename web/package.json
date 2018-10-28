@@ -16,7 +16,7 @@
         "yarn": "1.10.*"
     },
     "dependencies": {
-        "spectre.css": "0.5.3",
+        "purecss": "1.0.0",
         "svelte": "2.14.3"
     },
     "devDependencies": {
