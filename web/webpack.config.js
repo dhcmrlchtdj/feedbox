@@ -47,7 +47,12 @@ const config = {
                 use: [
                     {
                         loader: "svelte-loader",
-                        options: { emitCss: true },
+                        options: {
+                            emitCss: true,
+                            shared: false,
+                            skipIntroByDefault: true,
+                            nestedTransitions: true,
+                        },
                     },
                 ],
             },
