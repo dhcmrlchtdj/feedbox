@@ -1,8 +1,6 @@
-# [feedbox](https://fbox.herokuapp.com/)
+# feedbox
 
 ---
 
-###### TODO
-- UI
-- log
-- cache
+- heroku.com
+- uptimerobot.com

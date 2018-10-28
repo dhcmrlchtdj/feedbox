@@ -62,10 +62,10 @@
     "@types/node" "*"
     "@types/sax" "*"
 
-"@types/joi@13.6.1":
-  version "13.6.1"
-  resolved "http://registry.npm.taobao.org/@types/joi/download/@types/joi-13.6.1.tgz#325486a397504f8e22c8c551dc8b0e1d41d5d5ae"
-  integrity sha1-MlSGo5dQT44iyMVR3IsOHUHV1a4=
+"@types/joi@13.6.2":
+  version "13.6.2"
+  resolved "http://registry.npm.taobao.org/@types/joi/download/@types/joi-13.6.2.tgz#7eb18c092ac2b16ea387922f8095f981e460ad6e"
+  integrity sha1-frGMCSrCsW6jh5IvgJX5geRgrW4=
 
 "@types/jsonwebtoken@7.2.8":
   version "7.2.8"
