@@ -52,7 +52,7 @@ export default class User extends BaseEntity {
         updateValue: any,
     ): Promise<User | null> {
         const user = await User.takeOne({ where: { [key]: value } });
-        if (user) {
+        if (user && updateValue) {
             if (user[updateKey] !== updateValue) {
                 user[updateKey] = updateValue;
                 await user.save();

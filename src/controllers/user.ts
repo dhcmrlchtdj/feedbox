@@ -31,6 +31,7 @@ export const connectGithub = {
         if (request.auth.isAuthenticated) {
             // get user info
             const { id, email } = request.auth.credentials.profile;
+            // TODO: empty email
             const user = await User.takeOrCreateByGithub(id, email);
 
             // set cookie

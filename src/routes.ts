@@ -27,6 +27,15 @@ const routes = [
             return h.response(icon).type("image/png");
         },
     },
+
+    {
+        path: "/{p*}",
+        method: "get",
+        options: { auth: false },
+        async handler(_request, h) {
+            return h.redirect("/connect/github");
+        },
+    },
 ];
 
 export default routes;
