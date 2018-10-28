@@ -17,17 +17,11 @@ const stats = {
     modules: false,
 };
 
-const cacheLoader = {
-    loader: "cache-loader",
-    options: {
-        cacheDirectory: path.resolve(
-            __dirname,
-            "./node_modules/.cache/cache-loader/",
-        ),
-    },
-};
-
-const common = {
+const config = {
+    mode: prod ? "production" : "development",
+    bail: prod,
+    cache: !prod,
+    devtool: prod ? "source-map" : "eval-source-map",
     target: "web",
     entry: "./src/index.js",
     output: {
@@ -43,16 +37,9 @@ const common = {
                     MiniCssExtractPlugin.loader,
                     {
                         loader: "css-loader",
-                        options: {
-                            sourceMap: true,
-                        },
+                        options: { sourceMap: true },
                     },
-                    cacheLoader,
                 ],
-            },
-            {
-                test: /\.js$/,
-                use: [cacheLoader],
             },
             {
                 test: /\.svelte$/,
@@ -60,26 +47,13 @@ const common = {
                 use: [
                     {
                         loader: "svelte-loader",
-                        options: {
-                            emitCss: true,
-                        },
+                        options: { emitCss: true },
                     },
-                    cacheLoader,
                 ],
             },
         ],
     },
     optimization: {
-        // runtimeChunk: "single",
-        // splitChunks: {
-        // cacheGroups: {
-        // commons: {
-        // test: /\/node_modules\//,
-        // name: "vendor",
-        // chunks: "initial",
-        // },
-        // },
-        // },
         minimizer: [
             new TerserPlugin({
                 cache: true,
@@ -123,21 +97,16 @@ const common = {
         extensions: [".svelte", ".js", ".json", ".css"],
         mainFields: ["svelte", "browser", "module", "main"],
     },
-    performance: {
-        hints: false,
-    },
     node: {
-        console: false,
-        global: false,
         process: false,
+        global: false,
         Buffer: false,
         setImmediate: false,
     },
+    performance: {
+        hints: false,
+    },
     stats,
-    cache: !prod,
-    bail: prod,
-    devtool: prod ? "source-map" : "eval-source-map",
-    mode: prod ? "production" : "development",
     devServer: {
         disableHostCheck: true,
         host: "localhost",
@@ -148,4 +117,4 @@ const common = {
     },
 };
 
-module.exports = common;
+module.exports = config;
