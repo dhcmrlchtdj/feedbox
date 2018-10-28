@@ -828,15 +828,22 @@ dot-prop@^4.1.0:
   dependencies:
     is-obj "^1.0.0"
 
-dotenv@6.1.0:
+dotenv-safe@6.1.0:
   version "6.1.0"
-  resolved "http://registry.npm.taobao.org/dotenv/download/dotenv-6.1.0.tgz#9853b6ca98292acb7dec67a95018fa40bccff42c"
-  integrity sha1-mFO2ypgpKst97GepUBj6QLzP9Cw=
+  resolved "http://registry.npm.taobao.org/dotenv-safe/download/dotenv-safe-6.1.0.tgz#df6e72ced7d5bcfd9d870c9f656962a02197337b"
+  integrity sha1-325yztfVvP2dhwyfZWlioCGXM3s=
+  dependencies:
+    dotenv "^6.1.0"
 
 dotenv@^5.0.1:
   version "5.0.1"
   resolved "http://registry.npm.taobao.org/dotenv/download/dotenv-5.0.1.tgz#a5317459bd3d79ab88cff6e44057a6a3fbb1fcef"
   integrity sha1-pTF0Wb09eauIz/bkQFemo/ux/O8=
+
+dotenv@^6.1.0:
+  version "6.1.0"
+  resolved "http://registry.npm.taobao.org/dotenv/download/dotenv-6.1.0.tgz#9853b6ca98292acb7dec67a95018fa40bccff42c"
+  integrity sha1-mFO2ypgpKst97GepUBj6QLzP9Cw=
 
 duplexer3@^0.1.4:
   version "0.1.4"
@@ -2514,9 +2521,9 @@ pify@^3.0.0:
   integrity sha1-5aSs0sEB/fPZpNB/DbxNtJ3SgXY=
 
 pino-pretty@^2.1.0:
-  version "2.2.2"
-  resolved "http://registry.npm.taobao.org/pino-pretty/download/pino-pretty-2.2.2.tgz#4bba2d1a89458bdc3be6e4f15bcf12c126ddfd82"
-  integrity sha1-S7otGolFi9w75uTxW88SwSbd/YI=
+  version "2.2.3"
+  resolved "http://registry.npm.taobao.org/pino-pretty/download/pino-pretty-2.2.3.tgz#ece6029803b773a3e9a3e572de4b5ef90e40ee1b"
+  integrity sha1-7OYCmAO3c6Ppo+Vy3kte+Q5A7hs=
   dependencies:
     args "^5.0.0"
     chalk "^2.3.2"
@@ -2524,7 +2531,7 @@ pino-pretty@^2.1.0:
     fast-json-parse "^1.0.3"
     jmespath "^0.15.0"
     pump "^3.0.0"
-    readable-stream "^3.0.2"
+    readable-stream "^3.0.6"
     split2 "^3.0.0"
 
 pino-std-serializers@^2.3.0:
@@ -2722,7 +2729,7 @@ readable-stream@2, readable-stream@^2.0.2, readable-stream@^2.0.6, readable-stre
     string_decoder "~1.1.1"
     util-deprecate "~1.0.1"
 
-readable-stream@^3.0.0, readable-stream@^3.0.2:
+readable-stream@^3.0.0, readable-stream@^3.0.6:
   version "3.0.6"
   resolved "http://registry.npm.taobao.org/readable-stream/download/readable-stream-3.0.6.tgz#351302e4c68b5abd6a2ed55376a7f9a25be3057a"
   integrity sha1-NRMC5MaLWr1qLtVTdqf5olvjBXo=

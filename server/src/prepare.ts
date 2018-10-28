@@ -1,6 +1,6 @@
 import "reflect-metadata";
 import * as path from "path";
-import * as dotenv from "dotenv";
+import * as dotenv from "dotenv-safe";
 import * as Sentry from "@sentry/node";
 import initDB from "./models";
 
@@ -12,6 +12,7 @@ process.on("unhandledRejection", err => {
 if (process.env.NODE_ENV !== "production") {
     dotenv.config({
         path: path.resolve(__dirname, "../dotenv"),
+        example: path.resolve(__dirname, "../dotenv.example"),
     });
 }
 

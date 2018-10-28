@@ -33,7 +33,7 @@ const routes = [
         method: "get",
         options: { auth: false },
         async handler(_request, h) {
-            return h.redirect("/connect/github");
+            return h.redirect("/api/v1/user");
         },
     },
 ];
