@@ -25,6 +25,12 @@ export const logout = {
     },
 };
 
+export const login = {
+    async handler(_request, h) {
+        return h.redirect(process.env.LOGIN_REDIRECT);
+    },
+};
+
 export const connectGithub = {
     auth: "github",
     async handler(request, h) {
@@ -45,7 +51,7 @@ export const connectGithub = {
             h.state("token", token, stateTokenOpt);
 
             // redirect to user info
-            return h.redirect(process.env.LOGIN_REDIRECT);
+            return h.redirect("/login");
         } else {
             const errMsg = request.auth.error.message;
             return `Authentication failed due to: ${errMsg}`;

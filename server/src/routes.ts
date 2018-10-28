@@ -11,6 +11,7 @@ const routes = [
 
     { path: "/api/v1/user", method: "get", options: User.info },
     { path: "/logout", method: "get", options: User.logout },
+    { path: "/login", method: "get", options: User.login },
     { path: "/connect/github", method: "get", options: User.connectGithub },
 
     { path: "/api/v1/cron", method: "get", options: Cron.cron },
