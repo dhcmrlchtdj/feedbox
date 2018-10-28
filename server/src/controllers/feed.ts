@@ -29,7 +29,7 @@ export const add = {
 export const remove = {
     validate: {
         payload: {
-            feedId: Joi.string(),
+            feedId: Joi.number(),
         },
     },
     async handler(request, h) {

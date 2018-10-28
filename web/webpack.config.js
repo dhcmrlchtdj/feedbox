@@ -121,8 +121,8 @@ const config = {
     stats,
     devServer: {
         disableHostCheck: true,
-        host: "localhost",
-        port: 9000,
+        host: "0.0.0.0",
+        port: Number(process.env.PORT || 9000),
         hot: true,
         inline: true,
         stats,
