@@ -16,8 +16,9 @@
         "yarn": "1.10.*"
     },
     "dependencies": {
-        "purecss": "1.0.0",
-        "svelte": "2.14.3"
+        "dayjs": "1.7.7",
+        "spectre.css": "0.5.3",
+        "svelte": "2.15.0"
     },
     "devDependencies": {
         "clean-webpack-plugin": "0.1.19",
