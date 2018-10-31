@@ -1430,6 +1430,11 @@ duplexify@^3.4.2, duplexify@^3.6.0:
     readable-stream "^2.0.0"
     stream-shift "^1.0.0"
 
+eases-jsnext@^1.0.9:
+  version "1.0.10"
+  resolved "http://registry.npm.taobao.org/eases-jsnext/download/eases-jsnext-1.0.10.tgz#384fcf75058093dc65d6a52afada56b9e1fd5c7d"
+  integrity sha1-OE/PdQWAk9xl1qUq+tpWueH9XH0=
+
 ee-first@1.1.1:
   version "1.1.1"
   resolved "http://registry.npm.taobao.org/ee-first/download/ee-first-1.1.1.tgz#590c61156b0ae2f4f0255732a158b266bc56b21d"
@@ -4546,6 +4551,42 @@ svelte-loader@2.11.0:
     loader-utils "^1.1.0"
     require-relative "^0.8.7"
     svelte-dev-helper "^1.1.9"
+
+svelte-transitions-draw@^1.0.0:
+  version "1.0.0"
+  resolved "http://registry.npm.taobao.org/svelte-transitions-draw/download/svelte-transitions-draw-1.0.0.tgz#48426c5c2cf43a8d17c1118ace939a42f23cd91d"
+  integrity sha1-SEJsXCz0Oo0XwRGKzpOaQvI82R0=
+  dependencies:
+    eases-jsnext "^1.0.9"
+
+svelte-transitions-fade@^1.0.0:
+  version "1.0.0"
+  resolved "http://registry.npm.taobao.org/svelte-transitions-fade/download/svelte-transitions-fade-1.0.0.tgz#dbe1520df1f5b5370bd61afefc67f2d2fff63303"
+  integrity sha1-2+FSDfH1tTcL1hr+/Gfy0v/2MwM=
+
+svelte-transitions-fly@^1.0.1:
+  version "1.0.4"
+  resolved "http://registry.npm.taobao.org/svelte-transitions-fly/download/svelte-transitions-fly-1.0.4.tgz#a1694cb13d06586936fd3e1d9fd5e670c691557d"
+  integrity sha1-oWlMsT0GWGk2/T4dn9XmcMaRVX0=
+  dependencies:
+    eases-jsnext "^1.0.9"
+
+svelte-transitions-slide@^1.0.0:
+  version "1.0.0"
+  resolved "http://registry.npm.taobao.org/svelte-transitions-slide/download/svelte-transitions-slide-1.0.0.tgz#150dd9cb8e79fa9e2f250e198c7d69960bf21994"
+  integrity sha1-FQ3Zy455+p4vJQ4ZjH1plgvyGZQ=
+  dependencies:
+    eases-jsnext "^1.0.9"
+
+svelte-transitions@1.2.0:
+  version "1.2.0"
+  resolved "http://registry.npm.taobao.org/svelte-transitions/download/svelte-transitions-1.2.0.tgz#a4021dcd88da24f7387bf9557340d3076baeff54"
+  integrity sha1-pAIdzYjaJPc4e/lVc0DTB2uu/1Q=
+  dependencies:
+    svelte-transitions-draw "^1.0.0"
+    svelte-transitions-fade "^1.0.0"
+    svelte-transitions-fly "^1.0.1"
+    svelte-transitions-slide "^1.0.0"
 
 svelte@2.15.1:
   version "2.15.1"

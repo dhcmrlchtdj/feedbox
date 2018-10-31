@@ -18,7 +18,8 @@
     "dependencies": {
         "dayjs": "1.7.7",
         "spectre.css": "0.5.3",
-        "svelte": "2.15.1"
+        "svelte": "2.15.1",
+        "svelte-transitions": "1.2.0"
     },
     "devDependencies": {
         "clean-webpack-plugin": "0.1.19",
