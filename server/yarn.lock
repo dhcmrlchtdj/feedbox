@@ -62,10 +62,10 @@
     "@types/node" "*"
     "@types/sax" "*"
 
-"@types/joi@13.6.2":
-  version "13.6.2"
-  resolved "http://registry.npm.taobao.org/@types/joi/download/@types/joi-13.6.2.tgz#7eb18c092ac2b16ea387922f8095f981e460ad6e"
-  integrity sha1-frGMCSrCsW6jh5IvgJX5geRgrW4=
+"@types/joi@14.0.0":
+  version "14.0.0"
+  resolved "http://registry.npm.taobao.org/@types/joi/download/@types/joi-14.0.0.tgz#7906aca6850868f39f888efcaef28bbcbbab5498"
+  integrity sha1-eQaspoUIaPOfiI78rvKLvLurVJg=
 
 "@types/jsonwebtoken@7.2.8":
   version "7.2.8"
@@ -88,10 +88,10 @@
   dependencies:
     "@types/node" "*"
 
-"@types/node@*", "@types/node@10.12.0":
-  version "10.12.0"
-  resolved "http://registry.npm.taobao.org/@types/node/download/@types/node-10.12.0.tgz#ea6dcbddbc5b584c83f06c60e82736d8fbb0c235"
-  integrity sha1-6m3L3bxbWEyD8Gxg6Cc22PuwwjU=
+"@types/node@*", "@types/node@10.12.1":
+  version "10.12.1"
+  resolved "http://registry.npm.taobao.org/@types/node/download/@types/node-10.12.1.tgz#da61b64a2930a80fa708e57c45cd5441eb379d5b"
+  integrity sha1-2mG2SikwqA+nCOV8Rc1UQes3nVs=
 
 "@types/sax@*":
   version "1.0.1"
@@ -111,9 +111,9 @@ abstract-logging@^1.0.0:
   integrity sha1-i33q/TEFWbwo93ck3RuzAXcnjBs=
 
 accept@3.x.x:
-  version "3.0.2"
-  resolved "http://registry.npm.taobao.org/accept/download/accept-3.0.2.tgz#83e41cec7e1149f3fd474880423873db6c6cc9ac"
-  integrity sha1-g+Qc7H4RSfP9R0iAQjhz22xsyaw=
+  version "3.1.1"
+  resolved "http://registry.npm.taobao.org/accept/download/accept-3.1.1.tgz#479a9bc12d99f8499ea8b354b6dfd6fcd34ecc56"
+  integrity sha1-R5qbwS2Z+EmeqLNUtt/W/NNOzFY=
   dependencies:
     boom "7.x.x"
     hoek "5.x.x"
@@ -304,9 +304,11 @@ aws4@^1.8.0:
   integrity sha1-8OAD2cqef1nHpQiUXXsu+aBKVC8=
 
 b64@4.x.x:
-  version "4.0.0"
-  resolved "http://registry.npm.taobao.org/b64/download/b64-4.0.0.tgz#c37f587f0a383c7019e821120e8c3f58f0d22772"
-  integrity sha1-w39Yfwo4PHAZ6CESDow/WPDSJ3I=
+  version "4.1.0"
+  resolved "http://registry.npm.taobao.org/b64/download/b64-4.1.0.tgz#6a90a91c447a44c5555c180a35f33245685c9fc7"
+  integrity sha1-apCpHER6RMVVXBgKNfMyRWhcn8c=
+  dependencies:
+    hoek "5.x.x"
 
 balanced-match@^1.0.0:
   version "1.0.0"
@@ -1726,10 +1728,10 @@ joi@13.x.x:
     isemail "3.x.x"
     topo "3.x.x"
 
-joi@14.0.1:
-  version "14.0.1"
-  resolved "http://registry.npm.taobao.org/joi/download/joi-14.0.1.tgz#5bc53e8fff6e6da19d6cd8c76e2afe5c0815a2d3"
-  integrity sha1-W8U+j/9ubaGdbNjHbir+XAgVotM=
+joi@14.0.2:
+  version "14.0.2"
+  resolved "http://registry.npm.taobao.org/joi/download/joi-14.0.2.tgz#b8116fa85d35bf0be5ab885a5afb0201882d7e43"
+  integrity sha1-uBFvqF01vwvlq4haWvsCAYgtfkM=
   dependencies:
     hoek "5.x.x"
     isemail "3.x.x"
@@ -2159,9 +2161,9 @@ netmask@^1.0.6:
   integrity sha1-ICl+idhvb2QA8lDZ9Pa0wZRfzTU=
 
 nigel@3.x.x:
-  version "3.0.1"
-  resolved "http://registry.npm.taobao.org/nigel/download/nigel-3.0.1.tgz#48a08859d65177312f1c25af7252c1e07bb07c2a"
-  integrity sha1-SKCIWdZRdzEvHCWvclLB4HuwfCo=
+  version "3.0.2"
+  resolved "http://registry.npm.taobao.org/nigel/download/nigel-3.0.2.tgz#52b452d9a6e4e85f5ef5caef42b79a8f65aa4975"
+  integrity sha1-UrRS2abk6F9e9crvQreaj2WqSXU=
   dependencies:
     hoek "5.x.x"
     vise "3.x.x"
@@ -2465,9 +2467,9 @@ performance-now@^2.1.0:
   integrity sha1-Ywn04OX6kT7BxpMHrjZLSzd8nns=
 
 pez@4.x.x:
-  version "4.0.2"
-  resolved "http://registry.npm.taobao.org/pez/download/pez-4.0.2.tgz#0a7c81b64968e90b0e9562b398f390939e9c4b53"
-  integrity sha1-CnyBtklo6QsOlWKzmPOQk56cS1M=
+  version "4.0.3"
+  resolved "http://registry.npm.taobao.org/pez/download/pez-4.0.3.tgz#3ab853403465a541cfb35df86e17ce7169a63b1f"
+  integrity sha1-OrhTQDRlpUHPs134bhfOcWmmOx8=
   dependencies:
     b64 "4.x.x"
     boom "7.x.x"
@@ -3057,9 +3059,9 @@ sqlite3@4.0.3:
     request "^2.87.0"
 
 sshpk@^1.7.0:
-  version "1.15.1"
-  resolved "http://registry.npm.taobao.org/sshpk/download/sshpk-1.15.1.tgz#b79a089a732e346c6e0714830f36285cd38191a2"
-  integrity sha1-t5oImnMuNGxuBxSDDzYoXNOBkaI=
+  version "1.15.2"
+  resolved "http://registry.npm.taobao.org/sshpk/download/sshpk-1.15.2.tgz#c946d6bd9b1a39d0e8635763f5242d6ed6dcb629"
+  integrity sha1-yUbWvZsaOdDoY1dj9SQtbtbctik=
   dependencies:
     asn1 "~0.2.3"
     assert-plus "^1.0.0"
@@ -3329,10 +3331,10 @@ typeorm@0.2.8:
     yargonaut "^1.1.2"
     yargs "^11.1.0"
 
-typescript@3.1.3:
-  version "3.1.3"
-  resolved "http://registry.npm.taobao.org/typescript/download/typescript-3.1.3.tgz#01b70247a6d3c2467f70c45795ef5ea18ce191d5"
-  integrity sha1-AbcCR6bTwkZ/cMRXle9eoYzhkdU=
+typescript@3.1.4:
+  version "3.1.4"
+  resolved "http://registry.npm.taobao.org/typescript/download/typescript-3.1.4.tgz#c74ef7b3c2da65beff548b903022cb8c3cd997ed"
+  integrity sha1-x073s8LaZb7/VIuQMCLLjDzZl+0=
 
 undefsafe@^2.0.2:
   version "2.0.2"
@@ -3490,9 +3492,9 @@ wrappy@1:
   integrity sha1-tSQ9jz7BqjXxNkYFvA0QNuMKtp8=
 
 wreck@14.x.x:
-  version "14.1.0"
-  resolved "http://registry.npm.taobao.org/wreck/download/wreck-14.1.0.tgz#b13e526b6a8318e5ebc6969c0b21075c06337067"
-  integrity sha1-sT5Sa2qDGOXrxpacCyEHXAYzcGc=
+  version "14.1.1"
+  resolved "http://registry.npm.taobao.org/wreck/download/wreck-14.1.1.tgz#89c7c2b28729637a584a7f3f70aa83ea5f5c9e91"
+  integrity sha1-icfCsocpY3pYSn8/cKqD6l9cnpE=
   dependencies:
     boom "7.x.x"
     hoek "5.x.x"
