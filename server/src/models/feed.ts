@@ -66,6 +66,7 @@ export default class Feed extends BaseEntity {
     static async takeByUser(userId: number): Promise<Feed[]> {
         const feeds = await Feed.createQueryBuilder("feed")
             .innerJoin("feed.users", "user", "user.id = :userId", { userId })
+            .orderBy("feed.lastUpdated", "DESC")
             .getMany();
         return feeds;
     }
