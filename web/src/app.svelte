@@ -28,7 +28,7 @@
         <div class="column col-12" transition:slide>
             <div class="tile">
                 <div class="tile-content">
-                    <div class="tile-title text-break"><span>{feed.url}</span></div>
+                    <div class="tile-title text-break"><a target="_blank" rel="noopener" href="{feed.url}">{feed.url}</a></div>
                     <div class="tile-subtitle text-gray"><span>updated @ {format(feed.lastUpdated)}</span></div>
                 </div>
                 <div class="tile-action">
