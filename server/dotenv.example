@@ -9,8 +9,6 @@ GITHUB_AUTH_SECRET="crypto.randomBytes(2).toString('hex')"
 GITHUB_CLIENT_ID="https://github.com/settings/developers"
 GITHUB_CLIENT_SECRET="https://github.com/settings/developers"
 
-SENTRY_DSN="https://sentry.io"
-
 MAILGUN_API_KEY="key-example"
 MAILGUN_DOMAIN="feedbox.example.com"
 MAILGUN_FROM="feedbox <feedbox@example.com>"

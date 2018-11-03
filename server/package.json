@@ -18,15 +18,14 @@
         "yarn": "1.12.*"
     },
     "dependencies": {
-        "@sentry/node": "4.2.3",
         "bell": "9.3.1",
         "dotenv-safe": "6.1.0",
         "feedparser": "2.2.9",
-        "hapi": "17.6.0",
+        "hapi": "17.6.3",
         "hapi-auth-basic": "5.0.0",
         "hapi-auth-jwt2": "8.1.0",
         "hapi-pino": "5.1.0",
-        "joi": "14.0.2",
+        "joi": "14.0.4",
         "jsonwebtoken": "8.3.0",
         "mailgun-js": "0.22.0",
         "node-fetch": "2.2.0",
@@ -38,13 +37,13 @@
     "devDependencies": {
         "@types/feedparser": "2.2.1",
         "@types/joi": "14.0.0",
-        "@types/jsonwebtoken": "7.2.8",
+        "@types/jsonwebtoken": "8.3.0",
         "@types/mailgun-js": "0.16.1",
-        "@types/node": "10.12.1",
+        "@types/node": "10.12.2",
         "@types/node-fetch": "2.1.2",
         "nodemon": "1.18.5",
         "prettier": "1.14.3",
-        "typescript": "3.1.4"
+        "typescript": "3.1.6"
     },
     "prettier": {
         "printWidth": 80,
