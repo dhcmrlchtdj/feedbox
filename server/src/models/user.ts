@@ -52,6 +52,7 @@ export default class User extends BaseEntity {
         const user = await User.createQueryBuilder("user")
             .where("user.id = :userId", { userId })
             .leftJoinAndSelect("user.feeds", "feed")
+            .orderBy("feed.lastUpdated", "DESC")
             .getOne();
         return user;
     }
