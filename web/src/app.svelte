@@ -15,7 +15,7 @@
 
         <div class="column col-12">
             <div class="input-group">
-                <input type="text" class="form-input" placeholder="feed url" bind:value="url">
+                <input class="form-input" type="text" label="feed" placeholder="feed url" bind:value="url">
                 <button type="button" class="btn btn-primary input-group-btn"
                     class:loading="addLoading"
                     class:disabled="addLoading"
