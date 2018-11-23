@@ -8,10 +8,6 @@ show:
 push-heroku:
 	git subtree push --prefix=server heroku master
 
-.PHONY:
-push-gh-pages:
-	git subtree push --prefix=web/dist origin gh-pages
-
 # make -j2 dev
 .PHONY:
 dev: dev-server dev-web
