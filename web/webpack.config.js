@@ -7,6 +7,7 @@ const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const OptimizeCSSAssetsPlugin = require("optimize-css-assets-webpack-plugin");
 const TerserPlugin = require("terser-webpack-plugin");
 const CleanWebpackPlugin = require("clean-webpack-plugin");
+const ServiceWorkerWebpackPlugin = require("serviceworker-webpack-plugin");
 
 const prod = process.env.NODE_ENV === "production";
 const filename = prod ? "[name].[contenthash]" : "[name]";
@@ -99,6 +100,9 @@ const config = {
         new MiniCssExtractPlugin({
             filename: `${filename}.css`,
             chunkFilename: `${filename}.css`,
+        }),
+        new ServiceWorkerWebpackPlugin({
+            entry: path.resolve(__dirname, "./src/sw.js"),
         }),
     ].filter(Boolean),
     devServer: {

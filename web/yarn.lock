@@ -4145,6 +4145,13 @@ serve-static@1.13.2:
     parseurl "~1.3.2"
     send "0.16.2"
 
+serviceworker-webpack-plugin@1.0.1:
+  version "1.0.1"
+  resolved "http://registry.npm.taobao.org/serviceworker-webpack-plugin/download/serviceworker-webpack-plugin-1.0.1.tgz#481863288487e92da01d49745336c72ef8a6136b"
+  integrity sha1-SBhjKISH6S2gHUl0UzbHLvimE2s=
+  dependencies:
+    minimatch "^3.0.4"
+
 set-blocking@^2.0.0, set-blocking@~2.0.0:
   version "2.0.0"
   resolved "http://registry.npm.taobao.org/set-blocking/download/set-blocking-2.0.0.tgz#045f9782d011ae9a6803ddd382b24392b3d890f7"
