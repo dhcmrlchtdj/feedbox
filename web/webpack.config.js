@@ -20,10 +20,6 @@ const stats = {
 
 const config = {
     mode: prod ? "production" : "development",
-    bail: prod,
-    cache: !prod,
-    devtool: prod ? "source-map" : "eval-source-map",
-    target: "web",
     entry: "./src/index.js",
     output: {
         path: path.resolve(__dirname, "./dist"),
@@ -59,6 +55,10 @@ const config = {
             },
         ],
     },
+    resolve: {
+        extensions: [".svelte", ".js", ".json", ".css"],
+        mainFields: ["svelte", "browser", "module", "main"],
+    },
     optimization: {
         minimizer: [
             new TerserPlugin({
@@ -74,19 +74,16 @@ const config = {
                 },
             }),
         ],
+        moduleIds: "hashed",
     },
     plugins: [
-        prod &&
-            new CleanWebpackPlugin(path.resolve(__dirname, "./dist/*.*"), {
-                exclude: ["CNAME"],
-            }),
-        !prod && new webpack.NoEmitOnErrorsPlugin(),
+        !prod && new webpack.ProgressPlugin(),
         !prod && new webpack.HotModuleReplacementPlugin(),
+        prod && new CleanWebpackPlugin(path.resolve(__dirname, "./dist")),
         new DotenvPlugin({
             sample: path.resolve(__dirname, "./dotenv.example"),
             path: path.resolve(__dirname, "./dotenv"),
         }),
-        new webpack.HashedModuleIdsPlugin(),
         new HtmlWebpackPlugin({
             filename: "index.html",
             template: "./src/template.html",
@@ -103,12 +100,17 @@ const config = {
             filename: `${filename}.css`,
             chunkFilename: `${filename}.css`,
         }),
-        !prod && new webpack.ProgressPlugin(),
     ].filter(Boolean),
-    resolve: {
-        extensions: [".svelte", ".js", ".json", ".css"],
-        mainFields: ["svelte", "browser", "module", "main"],
+    devServer: {
+        disableHostCheck: true,
+        host: "0.0.0.0",
+        port: Number(process.env.PORT || 9000),
+        hot: true,
+        inline: true,
+        stats,
     },
+    devtool: prod ? "source-map" : "eval-source-map",
+    target: "web",
     node: {
         process: false,
         global: false,
@@ -119,14 +121,7 @@ const config = {
         hints: false,
     },
     stats,
-    devServer: {
-        disableHostCheck: true,
-        host: "0.0.0.0",
-        port: Number(process.env.PORT || 9000),
-        hot: true,
-        inline: true,
-        stats,
-    },
+    bail: prod,
 };
 
 module.exports = config;

@@ -1,2 +1,3 @@
 dotenv
 server/src/databases/
+web/dist
