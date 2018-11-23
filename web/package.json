@@ -36,19 +36,5 @@
         "webpack-dev-server": "3.1.10",
         "webpack-dotenv-plugin": "2.1.0",
         "webpack-merge": "4.1.4"
-    },
-    "prettier": {
-        "tabWidth": 4,
-        "trailingComma": "all",
-        "htmlWhitespaceSensitivity": "ignore",
-        "printWidth": 80,
-        "useTabs": false,
-        "singleQuote": false,
-        "semi": true,
-        "proseWrap": "preserve",
-        "jsxSingleQuote": false,
-        "jsxBracketSameLine": false,
-        "bracketSpacing": true,
-        "arrowParens": "avoid"
     }
 }
