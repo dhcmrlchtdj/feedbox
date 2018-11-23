@@ -103,7 +103,7 @@ const config = {
             filename: `${filename}.css`,
             chunkFilename: `${filename}.css`,
         }),
-        new webpack.ProgressPlugin(),
+        !prod && new webpack.ProgressPlugin(),
     ].filter(Boolean),
     resolve: {
         extensions: [".svelte", ".js", ".json", ".css"],
