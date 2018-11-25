@@ -24,6 +24,7 @@ type Tmail = {
 
 const feed2feeds = async (feed: Feed): Promise<Tfeeds | null> => {
     const url = feed.url;
+    console.debug(`${url} - fetching`);
     const curr = await fetch(url)
         .then(res => res.text())
         .catch(err => {
@@ -31,17 +32,20 @@ const feed2feeds = async (feed: Feed): Promise<Tfeeds | null> => {
             return null;
         });
 
+    console.debug(`${url} - fetched`);
     if (!curr) return null;
     if (curr === feed.content) {
-        console.debug(`${feed.url} - no change`);
+        console.debug(`${url} - no change`);
         return null;
     }
 
     const currFeed = await parseFeed(url, curr);
     if (currFeed.length === 0) {
-        console.debug(`${feed.url} - no content`);
+        console.debug(`${url} - no content`);
         return null;
     }
+
+    console.debug(`${url} - processing`);
 
     let prevFeed: FeedItem[] = [];
     if (feed.content) prevFeed = await parseFeed(url, feed.content);

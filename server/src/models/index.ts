@@ -7,7 +7,7 @@ const initDB = async (): Promise<void> => {
     const base = {
         entities: [User, Feed],
         // maxQueryExecutionTime: 1000,
-        logging: true,
+        // logging: true,
         logger: "simple-console",
         synchronize: true,
     };
