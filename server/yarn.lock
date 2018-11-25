@@ -215,9 +215,9 @@ assign-symbols@^1.0.0:
   integrity sha1-WWZ/QfrdTyDMvCu5a41Pf3jsA2c=
 
 ast-types@0.x.x:
-  version "0.11.6"
-  resolved "http://registry.npm.taobao.org/ast-types/download/ast-types-0.11.6.tgz#4e2266c2658829aef3b40cc33ad599c4e9eb89ef"
-  integrity sha1-TiJmwmWIKa7ztAzDOtWZxOnrie8=
+  version "0.11.7"
+  resolved "http://registry.npm.taobao.org/ast-types/download/ast-types-0.11.7.tgz#f318bf44e339db6a320be0009ded64ec1471f46c"
+  integrity sha1-8xi/ROM522oyC+AAne1k7BRx9Gw=
 
 async-each@^1.0.0:
   version "1.0.1"
@@ -1291,9 +1291,9 @@ hoek@5.x.x, hoek@^5.0.4:
   integrity sha1-D3+icKHK/rNkpLLd+qM/hk5BV9o=
 
 hoek@6.x.x:
-  version "6.0.3"
-  resolved "http://registry.npm.taobao.org/hoek/download/hoek-6.0.3.tgz#7884360426d927865a0a1251fc9c59313af5b798"
-  integrity sha1-eIQ2BCbZJ4ZaChJR/JxZMTr1t5g=
+  version "6.0.4"
+  resolved "http://registry.npm.taobao.org/hoek/download/hoek-6.0.4.tgz#8db638130825534575e8e4e80f97ca66108e6382"
+  integrity sha1-jbY4EwglU0V16OToD5fKZhCOY4I=
 
 http-errors@1.6.3:
   version "1.6.3"
@@ -1635,10 +1635,10 @@ jmespath@^0.15.0:
   resolved "http://registry.npm.taobao.org/jmespath/download/jmespath-0.15.0.tgz#a3f222a9aae9f966f5d27c796510e28091764217"
   integrity sha1-o/Iiqarp+Wb10nx5ZRDigJF2Qhc=
 
-joi@14.1.0, joi@14.x.x:
-  version "14.1.0"
-  resolved "http://registry.npm.taobao.org/joi/download/joi-14.1.0.tgz#98a7923108a9f361192551b29f538488d07953cc"
-  integrity sha1-mKeSMQip82EZJVGyn1OEiNB5U8w=
+joi@14.1.1, joi@14.x.x:
+  version "14.1.1"
+  resolved "http://registry.npm.taobao.org/joi/download/joi-14.1.1.tgz#7b548b146b7809b9e3495a18ede234748642262e"
+  integrity sha1-e1SLFGt4CbnjSVoY7eI0dIZCJi4=
   dependencies:
     hoek "6.x.x"
     isemail "3.x.x"
