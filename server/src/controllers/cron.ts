@@ -107,7 +107,8 @@ export const cron = {
             // save state
             feed.lastCheck = new Date();
             if (f) {
-                feed.content = f.currText;
+                // invalid byte sequence for encoding "UTF8": 0x00
+                feed.content = f.currText.replace(/\0/g, "");
                 feed.lastUpdated = f.curr[0].date || new Date();
             }
             await feed.save();
