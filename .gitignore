@@ -1,5 +1,4 @@
 dotenv
 server/src/databases/
-server/_build/
-web/dist/
+_build/
 node_modules/

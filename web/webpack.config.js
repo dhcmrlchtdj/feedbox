@@ -23,7 +23,7 @@ const config = {
     mode: prod ? "production" : "development",
     entry: "./src/index.js",
     output: {
-        path: path.resolve(__dirname, "./dist"),
+        path: path.resolve(__dirname, "./_build"),
         filename: `${filename}.js`,
         chunkFilename: `${filename}.js`,
     },
@@ -80,7 +80,7 @@ const config = {
     plugins: [
         !prod && new webpack.ProgressPlugin(),
         !prod && new webpack.HotModuleReplacementPlugin(),
-        prod && new CleanWebpackPlugin(path.resolve(__dirname, "./dist")),
+        prod && new CleanWebpackPlugin(path.resolve(__dirname, "./_build")),
         new DotenvPlugin({
             sample: path.resolve(__dirname, "./dotenv.example"),
             path: path.resolve(__dirname, "./dotenv"),
