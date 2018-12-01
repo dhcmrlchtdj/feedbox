@@ -15,11 +15,21 @@
 
         <div class="column col-12">
             <div class="input-group">
-                <input class="form-input" type="text" placeholder="feed url" bind:value="url">
-                <button type="button" class="btn btn-primary input-group-btn"
+                <input
+                    class="form-input"
+                    type="text"
+                    placeholder="feed url"
+                    bind:value="url"
+                />
+                <button
+                    type="button"
+                    class="btn btn-primary input-group-btn"
                     class:loading="addLoading"
                     class:disabled="addLoading"
-                    on:click="add(url)">add</button>
+                    on:click="add(url)"
+                >
+                    add
+                </button>
             </div>
         </div>
         <div class="column col-12"><div class="divider"></div></div>
@@ -28,14 +38,27 @@
         <div class="column col-12" transition:slide>
             <div class="tile">
                 <div class="tile-content">
-                    <div class="tile-title text-break"><a target="_blank" rel="noopener" href="{feed.url}">{feed.url}</a></div>
-                    <div class="tile-subtitle text-gray"><span>updated @ {format(feed.lastUpdated)}</span></div>
+                    <div class="tile-title text-break">
+                        <a target="_blank" rel="noopener" href="{feed.url}">
+                            {feed.url}
+                        </a>
+                    </div>
+                    <div class="tile-subtitle text-gray">
+                        <span>updated @ {format(feed.lastUpdated)}</span>
+                    </div>
                 </div>
                 <div class="tile-action">
-                    <div><button type="button" class="btn btn-error"
-                        class:loading="feed.loading"
-                        class:disabled="feed.loading"
-                        on:click="del(feed)">delete</button></div>
+                    <div>
+                        <button
+                            type="button"
+                            class="btn btn-error"
+                            class:loading="feed.loading"
+                            class:disabled="feed.loading"
+                            on:click="del(feed)"
+                        >
+                            delete
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -70,8 +93,8 @@ export default {
             if (date) {
                 return dayjs(date).format(fmt);
             } else {
-            return 'unknown'
-        }
+                return "unknown";
+            }
         },
     },
     methods: {
@@ -80,7 +103,8 @@ export default {
             if (c) {
                 feed.loading = true;
                 this.set({ feeds: this.get().feeds });
-                agent.del("/api/v1/feeds/remove", { feedId: feed.id })
+                agent
+                    .del("/api/v1/feeds/remove", { feedId: feed.id })
                     .then(feeds => this.set({ feeds }))
                     .catch(err => alert(err.message));
             }

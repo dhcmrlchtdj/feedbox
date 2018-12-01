@@ -1,15 +1,17 @@
 const assets = serviceWorkerOption.assets;
 assets.push("/");
 
-const assetsToCache = assets.filter(p => !p.endsWith("json"));
-const CACHE_VERSION = assetsToCache.join(":");
+const cacheFirst = assets.filter(p => !p.endsWith("json"));
+const staleWhileRevalidate = [`${process.env.API}/api/v1/user`];
+
+const CACHE_VERSION = cacheFirst.join(":");
 console.log("[SW] current version", CACHE_VERSION);
 
 self.addEventListener("install", event => {
     console.log("[SW] install | start", CACHE_VERSION);
     const done = caches
         .open(CACHE_VERSION)
-        .then(cache => cache.addAll(assetsToCache))
+        .then(cache => cache.addAll(cacheFirst))
         .then(() => self.skipWaiting())
         .then(() => console.log("[SW] install | done"))
         .catch(error => {
@@ -38,10 +40,27 @@ self.addEventListener("activate", event => {
     event.waitUntil(done);
 });
 
+const strategyCacheFirst = async (cache, req) => {
+    const cached = await cache.match(req);
+    return cached || fetch(req);
+};
+const strategyStaleWhileRevalidate = async (cache, req) => {
+    const fetched = fetch(req).then(resp => {
+        console.log("[SW] revalidate", req.url);
+        cache.put(req, resp.clone());
+        return resp;
+    });
+    const cached = await cache.match(req);
+    return cached || fetched;
+};
 self.addEventListener("fetch", event => {
-    const done = caches
-        .open(CACHE_VERSION)
-        .then(cache => cache.match(event.request))
-        .then(resp => resp || fetch(event.request));
+    const done = caches.open(CACHE_VERSION).then(cache => {
+        const req = event.request;
+        if (staleWhileRevalidate.includes(req.url)) {
+            return strategyStaleWhileRevalidate(cache, req);
+        } else {
+            return strategyCacheFirst(cache, req);
+        }
+    });
     event.respondWith(done);
 });
