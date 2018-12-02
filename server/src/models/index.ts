@@ -6,7 +6,7 @@ import Feed from "./feed";
 const initDB = async (): Promise<void> => {
     const base = {
         entities: [User, Feed],
-        // maxQueryExecutionTime: 1000,
+        maxQueryExecutionTime: 10,
         // logging: true,
         logger: "simple-console",
         synchronize: true,
