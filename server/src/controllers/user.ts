@@ -4,7 +4,7 @@ import User from "../models/user";
 export const info = {
     async handler(request, _h) {
         const { userId } = request.auth.credentials;
-        const user = await User.takeByIdWithFeeds(userId);
+        const user = await User.takeById(userId);
         return user;
     },
 };
@@ -46,9 +46,7 @@ export const connectGithub = {
             const token = jwt.sign(
                 { id: user.id },
                 process.env.JWT_SECRET as string,
-                {
-                    expiresIn: "7d",
-                },
+                { expiresIn: "7d" },
             );
             h.state("token", token, stateTokenOpt);
 

@@ -9,10 +9,13 @@ const auth = r => {
     }
 };
 
-const req = async (path, method, data) => {
+const req = async (method, path, data, headers = {}) => {
+    if (!headers["Content-Type"]) {
+        headers["Content-Type"] = "application/json; charset=utf-8";
+    }
     return fetch(`${API}${path}`, {
         method,
-        headers: { "Content-Type": "application/json; charset=utf-8" },
+        headers,
         body: data && JSON.stringify(data),
         redirect: "follow",
         mode: "cors",
@@ -22,9 +25,9 @@ const req = async (path, method, data) => {
         .then(r => r.json());
 };
 
-const get = async path => req(path, "GET");
-const post = async (path, data) => req(path, "POST", data);
-const put = async (path, data) => req(path, "PUT", data);
-const del = async (path, data) => req(path, "DELETE", data);
+const get = async (path, headers) => req("GET", path, null, headers);
+const post = async (path, data, headers) => req("POST", path, data, headers);
+const put = async (path, data, headers) => req("PUT", path, data, headers);
+const del = async (path, data, headers) => req("DELETE", path, data, headers);
 
 export { get, post, put, del };

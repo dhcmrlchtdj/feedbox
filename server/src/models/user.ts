@@ -48,15 +48,6 @@ export default class User extends BaseEntity {
         return user;
     }
 
-    static async takeByIdWithFeeds(userId: number): Promise<User | undefined> {
-        const user = await User.createQueryBuilder("user")
-            .where("user.id = :userId", { userId })
-            .leftJoinAndSelect("user.feeds", "feed")
-            .orderBy("feed.lastUpdated", "DESC")
-            .getOne();
-        return user;
-    }
-
     static async updateByKV(
         key: string,
         value: any,

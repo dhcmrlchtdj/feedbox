@@ -20,14 +20,14 @@
                     type="text"
                     placeholder="feed url"
                     bind:value="url"
-                />
+                    />
                 <button
                     type="button"
                     class="btn btn-primary input-group-btn"
                     class:loading="addLoading"
                     class:disabled="addLoading"
                     on:click="add(url)"
-                >
+                    >
                     add
                 </button>
             </div>
@@ -55,7 +55,7 @@
                             class:loading="feed.loading"
                             class:disabled="feed.loading"
                             on:click="del(feed)"
-                        >
+                            >
                             delete
                         </button>
                     </div>
@@ -79,14 +79,22 @@ export default {
         return {
             loading: true,
             addLoading: false,
-            feeds: [],
-            email: "",
             url: "",
+            email: "",
+            feeds: [],
         };
     },
     async oncreate() {
-        const user = await agent.get("/api/v1/user");
-        this.set({ loading: false, email: user.email, feeds: user.feeds });
+        Promise.all([
+            agent.get("/api/v1/user", {
+                "X-SW-STRATEGY": "staleWhileRevalidate",
+            }),
+            agent.get("/api/v1/feeds", {
+                "X-SW-STRATEGY": "staleWhileRevalidate",
+            }),
+        ]).then(([user, feeds]) => {
+            this.set({ loading: false, email: user.email, feeds: feeds });
+        });
     },
     helpers: {
         format(date, fmt = "YYYY-MM-DD HH:mm:ss") {
@@ -100,18 +108,31 @@ export default {
     methods: {
         async del(feed) {
             const c = window.confirm(`DELETE "${feed.url}"`);
-            if (c) {
-                feed.loading = true;
-                this.set({ feeds: this.get().feeds });
-                agent
-                    .del("/api/v1/feeds/remove", { feedId: feed.id })
-                    .then(feeds => this.set({ feeds }))
-                    .catch(err => alert(err.message));
-            }
+            if (!c) return;
+            feed.loading = true;
+            this.set({ feeds: this.get().feeds });
+            agent
+                .del(
+                    "/api/v1/feeds/remove",
+                    { feedId: feed.id },
+                    {
+                        "X-SW-STRATEGY": "networkOnly",
+                        "X-SW-ACTION": `update;${process.env.API}/api/v1/feeds`,
+                    },
+                )
+                .then(feeds => this.set({ feeds }))
+                .catch(err => alert(err.message));
         },
         async add(url) {
             this.set({ addLoading: true });
-            const feeds = await agent.put("/api/v1/feeds/add", { url });
+            const feeds = await agent.put(
+                "/api/v1/feeds/add",
+                { url },
+                {
+                    "X-SW-STRATEGY": "networkOnly",
+                    "X-SW-ACTION": `update;${process.env.API}/api/v1/feeds`,
+                },
+            );
             this.set({ addLoading: false, url: "", feeds });
         },
     },
