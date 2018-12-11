@@ -67,7 +67,6 @@ const strategies = {
     },
     async staleWhileRevalidate(cache, req) {
         const fetched = fetch(req).then(resp => {
-            console.log("[SW] revalidate", req.url);
             if (resp.ok) {
                 cache.put(req, resp.clone());
             } else {
