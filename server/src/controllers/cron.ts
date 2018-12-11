@@ -74,7 +74,7 @@ const feeds2entries = async (feeds: Tfeeds): Promise<Tentries | null> => {
             const link = m.origlink || m.link || m.meta.link || feeds.feed.url;
             const article = m.description || m.summary || "unknown";
             return {
-                title: `${author} - ${title}`,
+                title: `"${title}" by "${author}" on "${feeds.feed.url}"`,
                 content: `${link}<br><br><br>${article}`,
             };
         });
