@@ -6,7 +6,6 @@ const ScriptExtHtmlWebpackPlugin = require("script-ext-html-webpack-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const OptimizeCSSAssetsPlugin = require("optimize-css-assets-webpack-plugin");
 const TerserPlugin = require("terser-webpack-plugin");
-const CleanWebpackPlugin = require("clean-webpack-plugin");
 const ServiceWorkerWebpackPlugin = require("serviceworker-webpack-plugin");
 
 const prod = process.env.NODE_ENV === "production";
@@ -80,7 +79,6 @@ const config = {
     plugins: [
         !prod && new webpack.ProgressPlugin(),
         !prod && new webpack.HotModuleReplacementPlugin(),
-        prod && new CleanWebpackPlugin(path.resolve(__dirname, "./_build")),
         new DotenvPlugin({
             sample: path.resolve(__dirname, "./dotenv.example"),
             path: path.resolve(__dirname, "./dotenv"),

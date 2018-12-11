@@ -2,6 +2,11 @@
 # yarn lockfile v1
 
 
+"@types/q@^1.5.1":
+  version "1.5.1"
+  resolved "http://registry.npm.taobao.org/@types/q/download/@types/q-1.5.1.tgz#48fd98c1561fe718b61733daed46ff115b496e18"
+  integrity sha1-SP2YwVYf5xi2FzPa7Ub/EVtJbhg=
+
 "@webassemblyjs/ast@1.7.11":
   version "1.7.11"
   resolved "http://registry.npm.taobao.org/@webassemblyjs/ast/download/@webassemblyjs/ast-1.7.11.tgz#b988582cafbb2b095e8b556526f30c90d057cace"
@@ -181,9 +186,9 @@ acorn@^5.0.0, acorn@^5.6.2:
   integrity sha1-Z6ojG/iBKXS4UjWpZ3Hra9B+onk=
 
 ajv-errors@^1.0.0:
-  version "1.0.0"
-  resolved "http://registry.npm.taobao.org/ajv-errors/download/ajv-errors-1.0.0.tgz#ecf021fa108fd17dfb5e6b383f2dd233e31ffc59"
-  integrity sha1-7PAh+hCP0X37Xms4Py3SM+Mf/Fk=
+  version "1.0.1"
+  resolved "http://registry.npm.taobao.org/ajv-errors/download/ajv-errors-1.0.1.tgz#f35986aceb91afadec4102fbd85014950cefa64d"
+  integrity sha1-81mGrOuRr63sQQL72FAUlQzvpk0=
 
 ajv-keywords@^3.1.0:
   version "3.2.0"
@@ -206,9 +211,9 @@ alphanum-sort@^1.0.0:
   integrity sha1-l6ERlkmyEa0zaR2fn0hqjsn74KM=
 
 ansi-colors@^3.0.0:
-  version "3.2.2"
-  resolved "http://registry.npm.taobao.org/ansi-colors/download/ansi-colors-3.2.2.tgz#e49349137dbeb6d381b91e607c189915e53265ba"
-  integrity sha1-5JNJE32+ttOBuR5gfBiZFeUyZbo=
+  version "3.2.3"
+  resolved "http://registry.npm.taobao.org/ansi-colors/download/ansi-colors-3.2.3.tgz#57d35b8686e851e2cc04c403f1c00203976a1813"
+  integrity sha1-V9NbhoboUeLMBMQD8cACA5dqGBM=
 
 ansi-html@0.0.7:
   version "0.0.7"
@@ -633,9 +638,9 @@ caniuse-api@^3.0.0:
     lodash.uniq "^4.5.0"
 
 caniuse-lite@^1.0.0, caniuse-lite@^1.0.30000912:
-  version "1.0.30000916"
-  resolved "http://registry.npm.taobao.org/caniuse-lite/download/caniuse-lite-1.0.30000916.tgz#3428d3f529f0a7b2bfaaec65e796037bdd433aab"
-  integrity sha1-NCjT9Snwp7K/quxl55YDe91DOqs=
+  version "1.0.30000918"
+  resolved "http://registry.npm.taobao.org/caniuse-lite/download/caniuse-lite-1.0.30000918.tgz#6288f79da3c5c8b45e502f47ad8f3eb91f1379a9"
+  integrity sha1-Yoj3naPFyLReUC9HrY8+uR8Teak=
 
 chalk@^2.4.1:
   version "2.4.1"
@@ -703,13 +708,6 @@ clean-css@4.2.x:
   dependencies:
     source-map "~0.6.0"
 
-clean-webpack-plugin@1.0.0:
-  version "1.0.0"
-  resolved "http://registry.npm.taobao.org/clean-webpack-plugin/download/clean-webpack-plugin-1.0.0.tgz#f184b9c26d12983d639828e0548ae2080e84b6a7"
-  integrity sha1-8YS5wm0SmD1jmCjgVIriCA6Etqc=
-  dependencies:
-    rimraf "^2.6.1"
-
 cliui@^4.0.0:
   version "4.1.0"
   resolved "http://registry.npm.taobao.org/cliui/download/cliui-4.1.0.tgz#348422dbe82d800b3022eef4f6ac10bf2e4d1b49"
@@ -720,10 +718,12 @@ cliui@^4.0.0:
     wrap-ansi "^2.0.0"
 
 coa@~2.0.1:
-  version "2.0.1"
-  resolved "http://registry.npm.taobao.org/coa/download/coa-2.0.1.tgz#f3f8b0b15073e35d70263fb1042cb2c023db38af"
-  integrity sha1-8/iwsVBz411wJj+xBCyywCPbOK8=
+  version "2.0.2"
+  resolved "http://registry.npm.taobao.org/coa/download/coa-2.0.2.tgz#43f6c21151b4ef2bf57187db0d73de229e3e7ec3"
+  integrity sha1-Q/bCEVG07yv1cYfbDXPeIp4+fsM=
   dependencies:
+    "@types/q" "^1.5.1"
+    chalk "^2.4.1"
     q "^1.1.2"
 
 code-point-at@^1.0.0:
@@ -1420,9 +1420,9 @@ ee-first@1.1.1:
   integrity sha1-WQxhFWsK4vTwJVcyoViyZrxWsh0=
 
 electron-to-chromium@^1.3.86:
-  version "1.3.88"
-  resolved "http://registry.npm.taobao.org/electron-to-chromium/download/electron-to-chromium-1.3.88.tgz#f36ab32634f49ef2b0fdc1e82e2d1cc17feb29e7"
-  integrity sha1-82qzJjT0nvKw/cHoLi0cwX/rKec=
+  version "1.3.90"
+  resolved "http://registry.npm.taobao.org/electron-to-chromium/download/electron-to-chromium-1.3.90.tgz#b4c51b8303beff18f2b74817402bf4898e09558a"
+  integrity sha1-tMUbgwO+/xjyt0gXQCv0iY4JVYo=
 
 elliptic@^6.0.0:
   version "6.4.1"
@@ -2786,9 +2786,9 @@ minipass@^2.2.1, minipass@^2.3.4:
     yallist "^3.0.0"
 
 minizlib@^1.1.1:
-  version "1.2.0"
-  resolved "http://registry.npm.taobao.org/minizlib/download/minizlib-1.2.0.tgz#59517387478fd98d8017ed0299c6cb16cbd12da3"
-  integrity sha1-WVFzh0eP2Y2AF+0CmcbLFsvRLaM=
+  version "1.2.1"
+  resolved "http://registry.npm.taobao.org/minizlib/download/minizlib-1.2.1.tgz#dd27ea6136243c7c880684e8672bb3a45fd9b614"
+  integrity sha1-3SfqYTYkPHyIBoToZyuzpF/ZthQ=
   dependencies:
     minipass "^2.2.1"
 
@@ -2962,9 +2962,9 @@ node-pre-gyp@^0.10.0:
     tar "^4"
 
 node-releases@^1.0.5:
-  version "1.1.0"
-  resolved "http://registry.npm.taobao.org/node-releases/download/node-releases-1.1.0.tgz#be7464fa8d877808237520fd49436d5e79191c3d"
-  integrity sha1-vnRk+o2HeAgjdSD9SUNtXnkZHD0=
+  version "1.1.1"
+  resolved "http://registry.npm.taobao.org/node-releases/download/node-releases-1.1.1.tgz#8fff8aea1cfcad1fb4205f805149054fbf73cafd"
+  integrity sha1-j/+K6hz8rR+0IF+AUUkFT79zyv0=
   dependencies:
     semver "^5.3.0"
 
@@ -4893,10 +4893,10 @@ webpack-log@^2.0.0:
     ansi-colors "^3.0.0"
     uuid "^3.3.2"
 
-webpack-merge@4.1.4:
-  version "4.1.4"
-  resolved "http://registry.npm.taobao.org/webpack-merge/download/webpack-merge-4.1.4.tgz#0fde38eabf2d5fd85251c24a5a8c48f8a3f4eb7b"
-  integrity sha1-D9446r8tX9hSUcJKWoxI+KP063s=
+webpack-merge@4.1.5:
+  version "4.1.5"
+  resolved "http://registry.npm.taobao.org/webpack-merge/download/webpack-merge-4.1.5.tgz#2be31e846c20767d1bef56bdca64c328a681190a"
+  integrity sha1-K+MehGwgdn0b71a9ymTDKKaBGQo=
   dependencies:
     lodash "^4.17.5"
 

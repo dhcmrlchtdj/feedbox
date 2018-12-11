@@ -22,10 +22,10 @@
   dependencies:
     "@types/node" "*"
 
-"@types/mailgun-js@0.16.2":
-  version "0.16.2"
-  resolved "http://registry.npm.taobao.org/@types/mailgun-js/download/@types/mailgun-js-0.16.2.tgz#18fc42590f761cf6584139fd227a73e4be947e27"
-  integrity sha1-GPxCWQ92HPZYQTn9Inpz5L6Ufic=
+"@types/mailgun-js@0.16.3":
+  version "0.16.3"
+  resolved "http://registry.npm.taobao.org/@types/mailgun-js/download/@types/mailgun-js-0.16.3.tgz#655fade2c72c430a7a248d84839f8adc2c400e62"
+  integrity sha1-ZV+t4scsQwp6JI2Eg5+K3CxADmI=
   dependencies:
     "@types/node" "*"
 
@@ -952,9 +952,9 @@ fast-levenshtein@~2.0.4:
   integrity sha1-PYpcZog6FqMMqGQ+hR8Zuqd5eRc=
 
 fast-redact@^1.4.0:
-  version "1.4.1"
-  resolved "http://registry.npm.taobao.org/fast-redact/download/fast-redact-1.4.1.tgz#c8e78201b1870ab0b4feac2c6ff8b7e0491f2288"
-  integrity sha1-yOeCAbGHCrC0/qwsb/i34EkfIog=
+  version "1.4.2"
+  resolved "http://registry.npm.taobao.org/fast-redact/download/fast-redact-1.4.2.tgz#14989f452ee07f0723fbb483ee778d363135b7ad"
+  integrity sha1-FJifRS7gfwcj+7SD7neNNjE1t60=
 
 fast-safe-stringify@^2.0.6:
   version "2.0.6"
@@ -1962,9 +1962,9 @@ minipass@^2.2.1, minipass@^2.3.4:
     yallist "^3.0.0"
 
 minizlib@^1.1.1:
-  version "1.2.0"
-  resolved "http://registry.npm.taobao.org/minizlib/download/minizlib-1.2.0.tgz#59517387478fd98d8017ed0299c6cb16cbd12da3"
-  integrity sha1-WVFzh0eP2Y2AF+0CmcbLFsvRLaM=
+  version "1.2.1"
+  resolved "http://registry.npm.taobao.org/minizlib/download/minizlib-1.2.1.tgz#dd27ea6136243c7c880684e8672bb3a45fd9b614"
+  integrity sha1-3SfqYTYkPHyIBoToZyuzpF/ZthQ=
   dependencies:
     minipass "^2.2.1"
 
@@ -2077,21 +2077,21 @@ node-pre-gyp@^0.10.0, node-pre-gyp@^0.10.3:
     semver "^5.3.0"
     tar "^4"
 
-nodemon@1.18.7:
-  version "1.18.7"
-  resolved "http://registry.npm.taobao.org/nodemon/download/nodemon-1.18.7.tgz#716b66bf3e89ac4fcfb38a9e61887a03fc82efbb"
-  integrity sha1-cWtmvz6JrE/Ps4qeYYh6A/yC77s=
+nodemon@1.18.8:
+  version "1.18.8"
+  resolved "http://registry.npm.taobao.org/nodemon/download/nodemon-1.18.8.tgz#eb4c0052dc81395bdc503f3c8ae3cba86ca7146a"
+  integrity sha1-60wAUtyBOVvcUD88iuPLqGynFGo=
   dependencies:
     chokidar "^2.0.4"
     debug "^3.1.0"
     ignore-by-default "^1.0.1"
     minimatch "^3.0.4"
-    pstree.remy "^1.1.2"
+    pstree.remy "^1.1.3"
     semver "^5.5.0"
     supports-color "^5.2.0"
     touch "^3.1.0"
     undefsafe "^2.0.2"
-    update-notifier "^2.3.0"
+    update-notifier "^2.5.0"
 
 nopt@^4.0.1:
   version "4.0.1"
@@ -2364,9 +2364,9 @@ pg-connection-string@0.1.3:
   integrity sha1-2hhHsglA5C7hSSvq9l1J2RskXfc=
 
 pg-pool@^2.0.4:
-  version "2.0.4"
-  resolved "http://registry.npm.taobao.org/pg-pool/download/pg-pool-2.0.4.tgz#05ad0f2d9437d89c94ccc4f4d0a44ac65ade865b"
-  integrity sha1-Ba0PLZQ32JyUzMT00KRKxlrehls=
+  version "2.0.5"
+  resolved "http://registry.npm.taobao.org/pg-pool/download/pg-pool-2.0.5.tgz#f00556fab23f1bbb14b0650ba8d0e447434a1b04"
+  integrity sha1-8AVW+rI/G7sUsGULqNDkR0NKGwQ=
 
 pg-types@~1.12.1:
   version "1.12.1"
@@ -2404,14 +2404,15 @@ pify@^3.0.0:
   integrity sha1-5aSs0sEB/fPZpNB/DbxNtJ3SgXY=
 
 pino-pretty@^2.1.0:
-  version "2.4.0"
-  resolved "http://registry.npm.taobao.org/pino-pretty/download/pino-pretty-2.4.0.tgz#ac613738fc55c7e7f658be4abaa65dd02ffd609d"
-  integrity sha1-rGE3OPxVx+f2WL5KuqZd0C/9YJ0=
+  version "2.5.0"
+  resolved "http://registry.npm.taobao.org/pino-pretty/download/pino-pretty-2.5.0.tgz#fade5b6d2acbdbf2c7e77adf220e7b7d89d04437"
+  integrity sha1-+t5bbSrL2/LH53rfIg57fYnQRDc=
   dependencies:
     args "^5.0.0"
     chalk "^2.3.2"
     dateformat "^3.0.3"
     fast-json-parse "^1.0.3"
+    fast-safe-stringify "^2.0.6"
     jmespath "^0.15.0"
     pump "^3.0.0"
     readable-stream "^3.0.6"
@@ -2423,9 +2424,9 @@ pino-std-serializers@^2.3.0:
   integrity sha1-NO6quXwFXCjiLAVCrlWXjn5Cd4Y=
 
 pino@^5.5.0:
-  version "5.9.0"
-  resolved "http://registry.npm.taobao.org/pino/download/pino-5.9.0.tgz#4a436289ea90cefd0fad1e3ca5726b6d58922c71"
-  integrity sha1-SkNiieqQzv0PrR48pXJrbViSLHE=
+  version "5.10.0"
+  resolved "http://registry.npm.taobao.org/pino/download/pino-5.10.0.tgz#e8aa7b5b6dd42fbbe104bcf2cb2d6bacd6453d06"
+  integrity sha1-6Kp7W23UL7vhBLzyyy1rrNZFPQY=
   dependencies:
     fast-json-parse "^1.0.3"
     fast-redact "^1.4.0"
@@ -2527,10 +2528,10 @@ psl@^1.1.24:
   resolved "http://registry.npm.taobao.org/psl/download/psl-1.1.29.tgz#60f580d360170bb722a797cc704411e6da850c67"
   integrity sha1-YPWA02AXC7cip5fMcEQR5tqFDGc=
 
-pstree.remy@^1.1.2:
-  version "1.1.2"
-  resolved "http://registry.npm.taobao.org/pstree.remy/download/pstree.remy-1.1.2.tgz#4448bbeb4b2af1fed242afc8dc7416a6f504951a"
-  integrity sha1-REi760sq8f7SQq/I3HQWpvUElRo=
+pstree.remy@^1.1.3:
+  version "1.1.4"
+  resolved "http://registry.npm.taobao.org/pstree.remy/download/pstree.remy-1.1.4.tgz#a03d5dbc06ba639fb6dd4874644c4bad9882ec21"
+  integrity sha1-oD1dvAa6Y5+23Uh0ZExLrZiC7CE=
 
 pump@^3.0.0:
   version "3.0.0"
@@ -3257,7 +3258,7 @@ upath@^1.0.5:
   resolved "http://registry.npm.taobao.org/upath/download/upath-1.1.0.tgz#35256597e46a581db4793d0ce47fa9aebfc9fabd"
   integrity sha1-NSVll+RqWB20eT0M5H+prr/J+r0=
 
-update-notifier@^2.3.0:
+update-notifier@^2.5.0:
   version "2.5.0"
   resolved "http://registry.npm.taobao.org/update-notifier/download/update-notifier-2.5.0.tgz#d0744593e13f161e406acb1d9408b72cad08aff6"
   integrity sha1-0HRFk+E/Fh5AassdlAi3LK0Ir/Y=
