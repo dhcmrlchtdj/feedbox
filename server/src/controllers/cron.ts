@@ -71,12 +71,11 @@ const feeds2entries = async (feeds: Tfeeds): Promise<Tentries | null> => {
         })
         .map(m => {
             const title = m.title || "unknown";
-            const author = m.author || m.meta.author || "unknown";
             const site = extractSite(feeds.feed.url);
             const link = m.origlink || m.link || m.meta.link || feeds.feed.url;
             const article = m.description || m.summary || "unknown";
             return {
-                title: `"${title}" by "${author}" on "${site}"`,
+                title: `"${title}" from ${site}`,
                 content: `${link}<br><br><br>${article}`,
             };
         });
