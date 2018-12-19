@@ -5,10 +5,9 @@ const extractSite = (url: string): string => {
     const u = new Url.URL(url);
     switch (u.hostname) {
         case "feeds.feedburner.com":
-            return `feedburner/${u.pathname}`;
         case "medium.com":
             const site = Path.basename(u.pathname);
-            return `medium/${site}`;
+            return `${u.hostname}/${site}`;
         default:
             return u.hostname;
     }
