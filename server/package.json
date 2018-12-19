@@ -24,7 +24,7 @@
         "hapi": "17.8.1",
         "hapi-auth-basic": "5.0.0",
         "hapi-auth-jwt2": "8.2.0",
-        "hapi-pino": "5.1.0",
+        "hapi-pino": "5.2.0",
         "joi": "14.3.0",
         "jsonwebtoken": "8.4.0",
         "mailgun-js": "0.22.0",
@@ -36,12 +36,12 @@
     },
     "devDependencies": {
         "@types/feedparser": "2.2.1",
-        "@types/joi": "14.0.0",
+        "@types/joi": "14.0.1",
         "@types/jsonwebtoken": "8.3.0",
         "@types/mailgun-js": "0.16.3",
-        "@types/node": "10.12.12",
+        "@types/node": "10.12.17",
         "@types/node-fetch": "2.1.4",
-        "nodemon": "1.18.8",
+        "nodemon": "1.18.9",
         "prettier": "1.15.3",
         "typescript": "3.2.2"
     }
