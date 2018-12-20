@@ -30,7 +30,7 @@ export default [
             replace(envs),
             resolve(),
             commonjs(),
-            svelte(),
+            svelte({ hydratable: true }),
             prod && terser({ output: { comments: "all" } }),
             hash({
                 dest: "./_build/index.[hash:6].js",
@@ -59,7 +59,7 @@ export default [
             resolve(),
             commonjs(),
             json(),
-            svelte({ generate: "ssr", hydratable: true }),
+            svelte({ generate: "ssr" }),
             prod && terser(),
         ].filter(Boolean),
     },
