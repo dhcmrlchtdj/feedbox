@@ -7,8 +7,9 @@
     "author": "niris <nirisix@gmail.com>",
     "license": "MIT",
     "scripts": {
-        "build": "rm -rf ./_build && NODE_ENV=production webpack",
-        "dev": "webpack-dev-server",
+        "prebuild": "rm -rf ./_build",
+        "build": "NODE_ENV=${NODE_ENV:-production} rollup -c",
+        "dev": "DEV_SERVER=true API=http://cadr.io:8000 rollup -c -w",
         "fmt": "prettier --write 'src/**/*'"
     },
     "engines": {
@@ -16,25 +17,19 @@
         "yarn": "1.12.*"
     },
     "dependencies": {
-        "dayjs": "1.7.8",
-        "spectre.css": "0.5.7",
-        "svelte": "2.16.0",
-        "svelte-transitions": "1.2.0"
+        "dayjs": "1.7.8"
     },
     "devDependencies": {
-        "css-loader": "2.0.1",
-        "html-webpack-plugin": "3.2.0",
-        "mini-css-extract-plugin": "0.5.0",
-        "optimize-css-assets-webpack-plugin": "5.0.1",
         "prettier": "1.15.3",
-        "script-ext-html-webpack-plugin": "2.1.3",
-        "serviceworker-webpack-plugin": "1.0.1",
-        "svelte-loader": "2.11.0",
-        "terser-webpack-plugin": "1.1.0",
-        "webpack": "4.28.0",
-        "webpack-cli": "3.1.2",
-        "webpack-dev-server": "3.1.10",
-        "webpack-dotenv-plugin": "2.1.0",
-        "webpack-merge": "4.1.5"
+        "rollup": "0.68.1",
+        "rollup-plugin-commonjs": "9.2.0",
+        "rollup-plugin-hash": "1.3.0",
+        "rollup-plugin-json": "3.1.0",
+        "rollup-plugin-node-resolve": "4.0.0",
+        "rollup-plugin-replace": "2.1.0",
+        "rollup-plugin-serve": "0.6.0",
+        "rollup-plugin-svelte": "5.0.0",
+        "rollup-plugin-terser": "3.0.0",
+        "svelte": "2.16.0"
     }
 }

@@ -1,12 +1,5 @@
 <div class="container grid-sm">
-    {#if loading}
     <div class="columns">
-        <div class="column col-12">
-            <button class="btn btn-link loading"></button>
-        </div>
-    </div>
-    {:else}
-    <div class="columns" transition:fade>
         <div class="column col-12">
             <h1 class="d-inline-block">feedbox</h1>
             <span class="chip">{email}</span>
@@ -35,7 +28,7 @@
         <div class="column col-12"><div class="divider"></div></div>
 
         {#each feeds as feed (feed.id)}
-        <div class="column col-12" transition:slide>
+        <div class="column col-12">
             <div class="tile">
                 <div class="tile-content">
                     <div class="tile-title text-break">
@@ -65,19 +58,15 @@
         <div class="column col-12"><div class="divider"></div></div>
         {/each}
     </div>
-    {/if}
 </div>
 
 <script>
 import dayjs from "dayjs";
-import { fade, slide } from "svelte-transitions";
 import * as agent from "./agent.js";
 
 export default {
-    transitions: { fade, slide },
     data() {
         return {
-            loading: true,
             addLoading: false,
             url: "",
             email: "",
@@ -93,7 +82,7 @@ export default {
                 "X-SW-STRATEGY": "staleWhileRevalidate",
             }),
         ]).then(([user, feeds]) => {
-            this.set({ loading: false, email: user.email, feeds: feeds });
+            this.set({ email: user.email, feeds: feeds });
         });
     },
     helpers: {

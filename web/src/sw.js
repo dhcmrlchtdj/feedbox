@@ -1,5 +1,11 @@
-const assets = serviceWorkerOption.assets;
+import manifest from "../_build/manifest.json";
+import App from "./app.svelte";
+
+const assets = Object.values(manifest).map(f => f.replace("./_build", ""));
 assets.push("/");
+assets.push(
+    "https://cdn.jsdelivr.net/npm/spectre.css@0.5.7/dist/spectre.min.css",
+);
 
 const files = assets.filter(p => !p.endsWith("json"));
 const CACHE_VERSION = files.join(":");
@@ -11,11 +17,7 @@ self.addEventListener("install", event => {
         .open(CACHE_VERSION)
         .then(cache => cache.addAll(files))
         .then(() => self.skipWaiting())
-        .then(() => console.log("[SW] install | done"))
-        .catch(err => {
-            console.error(err.stack);
-            throw err;
-        });
+        .then(() => console.log("[SW] install | done"));
     event.waitUntil(done);
 });
 
@@ -30,11 +32,7 @@ self.addEventListener("activate", event => {
             return Promise.all(cs);
         })
         .then(() => self.clients.claim())
-        .then(() => console.log("[SW] activate | done"))
-        .catch(err => {
-            console.error(err.stack);
-            throw err;
-        });
+        .then(() => console.log("[SW] activate | done"));
     event.waitUntil(done);
 });
 
@@ -60,7 +58,7 @@ const strategies = {
             return resp;
         });
         const resp = fetched.catch(err => {
-            console.error(err.stack);
+            console.error(err);
             return cached;
         });
         return resp;
@@ -78,19 +76,15 @@ const strategies = {
         return cached || fetched;
     },
     async race(cache, req) {
-        const cached = caches
-            .match(event.request)
-            .cache(err => console.error(err.stack));
-        const fetched = fetch(req)
-            .then(resp => {
-                if (resp.ok) {
-                    cache.put(req, resp.clone());
-                } else {
-                    cache.delete(req);
-                }
-                return resp;
-            })
-            .cache(err => console.error(err.stack));
+        const cached = caches.match(event.request);
+        const fetched = fetch(req).then(resp => {
+            if (resp.ok) {
+                cache.put(req, resp.clone());
+            } else {
+                cache.delete(req);
+            }
+            return resp;
+        });
         const timeout = Number(req.headers.get("X-SW-RACE") || "500");
         const timer = new Promise((resolve, reject) =>
             setTimeout(reject, timeout),
@@ -111,9 +105,36 @@ const dispatch = async (action, cache, req, resp) => {
     }
 };
 
+const renderIndex = async (cache, req) => {
+    const resp = await strategies.cacheFirst(cache, req);
+    return Promise.all([
+        strategies.cacheOnly(cache, "http://cadr.io:8000/api/v1/user"),
+        strategies.cacheOnly(cache, "http://cadr.io:8000/api/v1/feeds"),
+    ])
+        .then(([user, feeds]) => Promise.all([user.json(), feeds.json()]))
+        .then(([user, feeds]) => ({ email: user.email, feeds: feeds }))
+        .then(async state => {
+            const tpl = await resp.clone().text();
+            const app = App.render(state);
+            const html = tpl.replace(
+                '<div id="app"></div>',
+                `<div id="app">${app.html}</div>`,
+            );
+            return new Response(html, {
+                headers: { "content-type": "text/html; charset=utf-8" },
+            });
+        })
+        .catch(err => {
+            console.error(err);
+            return resp;
+        });
+};
+
 self.addEventListener("fetch", event => {
     const done = caches.open(CACHE_VERSION).then(async cache => {
         const req = event.request;
+
+        if (req.url.endsWith("/")) return renderIndex(cache, req);
 
         // X-SW-STRATEGY: cacheFirst
         // X-SW-RACE: 500
