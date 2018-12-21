@@ -1,5 +1,6 @@
 import * as fs from "fs";
 import * as path from "path";
+import * as dotenv from "dotenv-safe";
 import replace from "rollup-plugin-replace";
 import resolve from "rollup-plugin-node-resolve";
 import commonjs from "rollup-plugin-commonjs";
@@ -9,7 +10,10 @@ import hash from "rollup-plugin-hash";
 import serve from "rollup-plugin-serve";
 import json from "rollup-plugin-json";
 
-const pr = file => path.resolve(__dirname, file);
+dotenv.config({
+    path: path.resolve(__dirname, "./dotenv"),
+    example: path.resolve(__dirname, "./dotenv.example"),
+});
 
 const prod = process.env.NODE_ENV === "production";
 const envs = Object.entries(process.env).reduce((acc, curr) => {

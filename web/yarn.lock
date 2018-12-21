@@ -125,6 +125,18 @@ dayjs@1.7.8:
   resolved "http://registry.npm.taobao.org/dayjs/download/dayjs-1.7.8.tgz#05d288f8d4b2140110cc1519cfe317d6f1f11a3c"
   integrity sha1-BdKI+NSyFAEQzBUZz+MX1vHxGjw=
 
+dotenv-safe@6.1.0:
+  version "6.1.0"
+  resolved "http://registry.npm.taobao.org/dotenv-safe/download/dotenv-safe-6.1.0.tgz#df6e72ced7d5bcfd9d870c9f656962a02197337b"
+  integrity sha1-325yztfVvP2dhwyfZWlioCGXM3s=
+  dependencies:
+    dotenv "^6.1.0"
+
+dotenv@^6.1.0:
+  version "6.2.0"
+  resolved "http://registry.npm.taobao.org/dotenv/download/dotenv-6.2.0.tgz#941c0410535d942c8becf28d3f357dbd9d476064"
+  integrity sha1-lBwEEFNdlCyL7PKNPzV9vZ1HYGQ=
+
 escape-string-regexp@^1.0.5:
   version "1.0.5"
   resolved "http://registry.npm.taobao.org/escape-string-regexp/download/escape-string-regexp-1.0.5.tgz#1b61c0562190a8dff6ae3bb2cf0200ca130b86d4"

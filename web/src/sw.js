@@ -125,7 +125,7 @@ const renderIndex = async (cache, req) => {
             });
         })
         .catch(err => {
-            console.error(err);
+            console.log(err);
             return resp;
         });
 };

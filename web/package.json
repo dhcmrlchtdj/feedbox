@@ -16,10 +16,9 @@
         "node": "10.*",
         "yarn": "1.12.*"
     },
-    "dependencies": {
-        "dayjs": "1.7.8"
-    },
+    "dependencies": {},
     "devDependencies": {
+        "dotenv-safe": "6.1.0",
         "prettier": "1.15.3",
         "rollup": "0.68.1",
         "rollup-plugin-commonjs": "9.2.0",
