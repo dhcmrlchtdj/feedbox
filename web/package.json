@@ -16,9 +16,7 @@
         "node": "10.*",
         "yarn": "1.12.*"
     },
-    "dependencies": {
-        "svelte-transitions": "1.2.0"
-    },
+    "dependencies": {},
     "devDependencies": {
         "dotenv-safe": "6.1.0",
         "prettier": "1.15.3",
