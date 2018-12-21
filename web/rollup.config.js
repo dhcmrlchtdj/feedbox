@@ -3,12 +3,11 @@ import * as path from "path";
 import * as dotenv from "dotenv-safe";
 import replace from "rollup-plugin-replace";
 import resolve from "rollup-plugin-node-resolve";
-import commonjs from "rollup-plugin-commonjs";
 import svelte from "rollup-plugin-svelte";
 import { terser } from "rollup-plugin-terser";
 import hash from "rollup-plugin-hash";
-import serve from "rollup-plugin-serve";
 import json from "rollup-plugin-json";
+import serve from "rollup-plugin-serve";
 
 dotenv.config({
     path: path.resolve(__dirname, "./dotenv"),
@@ -33,9 +32,7 @@ export default [
         plugins: [
             replace(envs),
             resolve(),
-            commonjs(),
             svelte({ hydratable: true }),
-            prod && terser({ output: { comments: "all" } }),
             hash({
                 dest: "./_build/index.[hash:6].js",
                 manifest: "./_build/manifest.json",
@@ -47,8 +44,8 @@ export default [
                     fs.writeFileSync("./_build/index.html", html);
                 },
             }),
-            process.env.DEV_SERVER &&
-                serve({ port: 9000, contentBase: "./_build" }),
+            prod && terser({ output: { comments: "all" } }),
+            !prod && serve({ port: 9000, contentBase: "./_build" }),
         ].filter(Boolean),
     },
     {
@@ -61,7 +58,6 @@ export default [
         plugins: [
             replace(envs),
             resolve(),
-            commonjs(),
             json(),
             svelte({ generate: "ssr" }),
             prod && terser(),

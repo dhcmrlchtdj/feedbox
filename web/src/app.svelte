@@ -1,4 +1,5 @@
 <div class="container grid-sm">
+    {#if email}
     <div class="columns">
         <div class="column col-12">
             <h1 class="d-inline-block">feedbox</h1>
@@ -58,6 +59,13 @@
         <div class="column col-12"><div class="divider"></div></div>
         {/each}
     </div>
+    {:else}
+    <div class="columns">
+        <div class="column col-12">
+            <button class="btn btn-link loading"></button>
+        </div>
+    </div>
+    {/if}
 </div>
 
 <script>
@@ -65,11 +73,12 @@ import * as agent from "./agent.js";
 
 export default {
     data() {
+        const state = self.__STATE__ || {}
         return {
             addLoading: false,
             url: "",
-            email: "",
-            feeds: [],
+            email: state.email || "",
+            feeds: state.feeds || [],
         };
     },
     async oncreate() {
@@ -85,10 +94,11 @@ export default {
         });
     },
     helpers: {
-        format(date, fmt = "YYYY-MM-DD HH:mm:ss") {
-            if (!date) return "unknown"
+        format(dateStr, fmt = "YYYY-MM-DD hh:mm:ss") {
+            if (!dateStr) return "unknown"
 
             const pad = (value) => `0${value}`.slice(-2);
+            const date = new Date(dateStr)
             const _year = date.getFullYear();
             const _month = date.getMonth() + 1;
             const _date = date.getDate();

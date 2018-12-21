@@ -107,9 +107,10 @@ const dispatch = async (action, cache, req, resp) => {
 
 const renderIndex = async (cache, req) => {
     const resp = await strategies.cacheFirst(cache, req);
+    const API = process.env.API;
     return Promise.all([
-        strategies.cacheOnly(cache, "http://cadr.io:8000/api/v1/user"),
-        strategies.cacheOnly(cache, "http://cadr.io:8000/api/v1/feeds"),
+        strategies.cacheOnly(cache, `${API}/api/v1/user`),
+        strategies.cacheOnly(cache, `${API}/api/v1/feeds`),
     ])
         .then(([user, feeds]) => Promise.all([user.json(), feeds.json()]))
         .then(([user, feeds]) => ({ email: user.email, feeds: feeds }))
@@ -118,7 +119,7 @@ const renderIndex = async (cache, req) => {
             const app = App.render(state);
             const html = tpl.replace(
                 '<div id="app"></div>',
-                `<div id="app">${app.html}</div>`,
+                `<div id="app">${app.html}</div><script>window.__STATE__=${JSON.stringify(state)}</script>`,
             );
             return new Response(html, {
                 headers: { "content-type": "text/html; charset=utf-8" },

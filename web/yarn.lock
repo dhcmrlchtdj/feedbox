@@ -120,11 +120,6 @@ core-util-is@~1.0.0:
   resolved "http://registry.npm.taobao.org/core-util-is/download/core-util-is-1.0.2.tgz#b5fd54220aa2bc5ab57aab7140c940754503c1a7"
   integrity sha1-tf1UIgqivFq1eqtxQMlAdUUDwac=
 
-dayjs@1.7.8:
-  version "1.7.8"
-  resolved "http://registry.npm.taobao.org/dayjs/download/dayjs-1.7.8.tgz#05d288f8d4b2140110cc1519cfe317d6f1f11a3c"
-  integrity sha1-BdKI+NSyFAEQzBUZz+MX1vHxGjw=
-
 dotenv-safe@6.1.0:
   version "6.1.0"
   resolved "http://registry.npm.taobao.org/dotenv-safe/download/dotenv-safe-6.1.0.tgz#df6e72ced7d5bcfd9d870c9f656962a02197337b"
@@ -136,6 +131,11 @@ dotenv@^6.1.0:
   version "6.2.0"
   resolved "http://registry.npm.taobao.org/dotenv/download/dotenv-6.2.0.tgz#941c0410535d942c8becf28d3f357dbd9d476064"
   integrity sha1-lBwEEFNdlCyL7PKNPzV9vZ1HYGQ=
+
+eases-jsnext@^1.0.9:
+  version "1.0.10"
+  resolved "http://registry.npm.taobao.org/eases-jsnext/download/eases-jsnext-1.0.10.tgz#384fcf75058093dc65d6a52afada56b9e1fd5c7d"
+  integrity sha1-OE/PdQWAk9xl1qUq+tpWueH9XH0=
 
 escape-string-regexp@^1.0.5:
   version "1.0.5"
@@ -504,16 +504,6 @@ resolve@^1.8.1:
   dependencies:
     path-parse "^1.0.6"
 
-rollup-plugin-commonjs@9.2.0:
-  version "9.2.0"
-  resolved "http://registry.npm.taobao.org/rollup-plugin-commonjs/download/rollup-plugin-commonjs-9.2.0.tgz#4604e25069e0c78a09e08faa95dc32dec27f7c89"
-  integrity sha1-RgTiUGngx4oJ4I+qldwy3sJ/fIk=
-  dependencies:
-    estree-walker "^0.5.2"
-    magic-string "^0.25.1"
-    resolve "^1.8.1"
-    rollup-pluginutils "^2.3.3"
-
 rollup-plugin-hash@1.3.0:
   version "1.3.0"
   resolved "http://registry.npm.taobao.org/rollup-plugin-hash/download/rollup-plugin-hash-1.3.0.tgz#6f87442cb432a8bf45356855fec69aab5dc22b07"
@@ -630,6 +620,42 @@ supports-color@^5.3.0:
   integrity sha1-4uaaRKyHcveKHsCzW2id9lMO/I8=
   dependencies:
     has-flag "^3.0.0"
+
+svelte-transitions-draw@^1.0.0:
+  version "1.0.0"
+  resolved "http://registry.npm.taobao.org/svelte-transitions-draw/download/svelte-transitions-draw-1.0.0.tgz#48426c5c2cf43a8d17c1118ace939a42f23cd91d"
+  integrity sha1-SEJsXCz0Oo0XwRGKzpOaQvI82R0=
+  dependencies:
+    eases-jsnext "^1.0.9"
+
+svelte-transitions-fade@^1.0.0:
+  version "1.0.0"
+  resolved "http://registry.npm.taobao.org/svelte-transitions-fade/download/svelte-transitions-fade-1.0.0.tgz#dbe1520df1f5b5370bd61afefc67f2d2fff63303"
+  integrity sha1-2+FSDfH1tTcL1hr+/Gfy0v/2MwM=
+
+svelte-transitions-fly@^1.0.1:
+  version "1.0.4"
+  resolved "http://registry.npm.taobao.org/svelte-transitions-fly/download/svelte-transitions-fly-1.0.4.tgz#a1694cb13d06586936fd3e1d9fd5e670c691557d"
+  integrity sha1-oWlMsT0GWGk2/T4dn9XmcMaRVX0=
+  dependencies:
+    eases-jsnext "^1.0.9"
+
+svelte-transitions-slide@^1.0.0:
+  version "1.0.0"
+  resolved "http://registry.npm.taobao.org/svelte-transitions-slide/download/svelte-transitions-slide-1.0.0.tgz#150dd9cb8e79fa9e2f250e198c7d69960bf21994"
+  integrity sha1-FQ3Zy455+p4vJQ4ZjH1plgvyGZQ=
+  dependencies:
+    eases-jsnext "^1.0.9"
+
+svelte-transitions@1.2.0:
+  version "1.2.0"
+  resolved "http://registry.npm.taobao.org/svelte-transitions/download/svelte-transitions-1.2.0.tgz#a4021dcd88da24f7387bf9557340d3076baeff54"
+  integrity sha1-pAIdzYjaJPc4e/lVc0DTB2uu/1Q=
+  dependencies:
+    svelte-transitions-draw "^1.0.0"
+    svelte-transitions-fade "^1.0.0"
+    svelte-transitions-fly "^1.0.1"
+    svelte-transitions-slide "^1.0.0"
 
 svelte@2.16.0:
   version "2.16.0"
