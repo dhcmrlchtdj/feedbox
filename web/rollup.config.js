@@ -2,7 +2,6 @@ import * as fs from "fs";
 import * as path from "path";
 import * as dotenv from "dotenv-safe";
 import replace from "rollup-plugin-replace";
-import resolve from "rollup-plugin-node-resolve";
 import svelte from "rollup-plugin-svelte";
 import { terser } from "rollup-plugin-terser";
 import hash from "rollup-plugin-hash";
@@ -31,7 +30,6 @@ export default [
         },
         plugins: [
             replace(envs),
-            resolve(),
             svelte({ hydratable: true }),
             hash({
                 dest: "./_build/index.[hash:6].js",
@@ -57,7 +55,6 @@ export default [
         },
         plugins: [
             replace(envs),
-            resolve(),
             json(),
             svelte({ generate: "ssr" }),
             prod && terser(),
