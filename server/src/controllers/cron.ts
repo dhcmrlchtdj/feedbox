@@ -59,16 +59,9 @@ const feed2feeds = async (feed: Feed): Promise<Tfeeds | null> => {
 };
 
 const feeds2entries = async (feeds: Tfeeds): Promise<Tentries | null> => {
-    const prevId = feeds.prev.map(m => [m.guid, m.date] as [string, Date]);
-    const prevMap = new Map(prevId);
+    const prevIds = new Set(feeds.prev.map(m => m.guid));
     const entries = feeds.curr
-        .filter(m => {
-            const date = prevMap.get(m.guid);
-            if (!date) return true;
-            if (!m.date) return false;
-            if (date.getTime() !== m.date.getTime()) return true;
-            return false;
-        })
+        .filter(m => prevIds.has(m.guid))
         .map(m => {
             const title = m.title || "unknown";
             const site = extractSite(feeds.feed.url);
