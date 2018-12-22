@@ -61,7 +61,7 @@ const feed2feeds = async (feed: Feed): Promise<Tfeeds | null> => {
 const feeds2entries = async (feeds: Tfeeds): Promise<Tentries | null> => {
     const prevIds = new Set(feeds.prev.map(m => m.guid));
     const entries = feeds.curr
-        .filter(m => prevIds.has(m.guid))
+        .filter(m => !prevIds.has(m.guid))
         .map(m => {
             const title = m.title || "unknown";
             const site = extractSite(feeds.feed.url);
