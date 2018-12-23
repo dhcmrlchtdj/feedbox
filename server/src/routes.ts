@@ -28,15 +28,6 @@ const routes = [
             return h.response(icon).type("image/png");
         },
     },
-
-    {
-        path: "/{p*}",
-        method: "get",
-        options: { auth: false },
-        async handler(_request, h) {
-            return h.redirect("/api/v1/user");
-        },
-    },
 ];
 
 export default routes;
