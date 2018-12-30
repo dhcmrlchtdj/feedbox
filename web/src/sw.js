@@ -1,6 +1,6 @@
 import Router from "./router";
-import App from "./app.svelte";
 import manifest from "../_build/manifest.json";
+import App from "./app.svelte";
 
 const assets = manifest.bundle;
 const builtins = [

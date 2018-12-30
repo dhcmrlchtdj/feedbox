@@ -45,7 +45,9 @@ export default [
     {
         input: "./src/sw.js",
         output: {
-            file: "./_build/sw.js",
+            dir: "./_build",
+            entryFileNames: "[name].js",
+            chunkFileNames: "[name].[hash].js",
             format: "esm",
             sourcemap: true,
         },
