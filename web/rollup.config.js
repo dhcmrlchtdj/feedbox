@@ -25,6 +25,7 @@ export default [
         output: {
             dir: "./_build",
             entryFileNames: "[name].[hash].js",
+            chunkFileNames: "[name].[hash].js",
             format: "esm",
             sourcemap: true,
         },

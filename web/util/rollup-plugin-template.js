@@ -13,8 +13,8 @@ export default opt => {
 
             const manifest = await readJSON(opt.manifest);
             const replace = s => {
-                return Object.keys(manifest).reduce((acc, key) => {
-                    const val = manifest[key];
+                return Object.keys(manifest.entry).reduce((acc, key) => {
+                    const val = manifest.entry[key];
                     const r = acc.replace(
                         new RegExp("\\$\\{" + key + "\\}", "g"),
                         val,

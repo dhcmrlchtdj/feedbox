@@ -2,7 +2,7 @@ import Router from "./router";
 import App from "./app.svelte";
 import manifest from "../_build/manifest.json";
 
-const assets = Object.values(manifest);
+const assets = manifest.bundle;
 const builtins = [
     "/",
     "https://cdn.jsdelivr.net/npm/spectre.css@0.5.7/dist/spectre.min.css",
