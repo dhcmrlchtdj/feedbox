@@ -1,13 +1,13 @@
-import manifest from "../_build/manifest.json";
 import App from "./app.svelte";
+import manifest from "../_build/manifest.json";
 
-const assets = Object.values(manifest).map(f => f.replace("./_build", ""));
-assets.push("/");
-assets.push(
+const assets = Object.values(manifest);
+const builtins = [
+    "/",
     "https://cdn.jsdelivr.net/npm/spectre.css@0.5.7/dist/spectre.min.css",
-);
+];
 
-const files = assets.filter(p => !p.endsWith("json"));
+const files = [].concat(assets, builtins);
 const CACHE_VERSION = files.join(":");
 console.log("[SW] current version", CACHE_VERSION);
 
@@ -105,38 +105,37 @@ const dispatch = async (action, cache, req, resp) => {
     }
 };
 
-const renderIndex = async (cache, req) => {
-    const resp = await strategies.cacheFirst(cache, req);
-    const API = process.env.API;
-    return Promise.all([
-        strategies.cacheOnly(cache, `${API}/api/v1/user`),
-        strategies.cacheOnly(cache, `${API}/api/v1/feeds`),
-    ])
-        .then(([user, feeds]) => Promise.all([user.json(), feeds.json()]))
-        .then(([user, feeds]) => ({ email: user.email, feeds: feeds }))
-        .then(async state => {
-            const tpl = await resp.clone().text();
-            const app = App.render(state);
-            const html = tpl.replace(
-                '<div id="app"></div>',
-                `<div id="app">${app.html}</div><script>window.__STATE__=${JSON.stringify(state)}</script>`,
-            );
-            return new Response(html, {
-                headers: { "content-type": "text/html; charset=utf-8" },
+const handlers = {
+    index: async (cache, req) => {
+        const resp = await strategies.cacheFirst(cache, req);
+        const API = process.env.API;
+        return Promise.all([
+            strategies.cacheOnly(cache, `${API}/api/v1/user`),
+            strategies.cacheOnly(cache, `${API}/api/v1/feeds`),
+        ])
+            .then(([user, feeds]) => Promise.all([user.json(), feeds.json()]))
+            .then(([user, feeds]) => ({ email: user.email, feeds: feeds }))
+            .then(async state => {
+                const tpl = await resp.clone().text();
+                const app = App.render(state);
+                const html = tpl.replace(
+                    '<div id="app"></div>',
+                    `<div id="app">${
+                        app.html
+                    }</div><script>window.__STATE__=${JSON.stringify(
+                        state,
+                    )}</script>`,
+                );
+                return new Response(html, {
+                    headers: { "content-type": "text/html; charset=utf-8" },
+                });
+            })
+            .catch(err => {
+                console.log(err);
+                return resp;
             });
-        })
-        .catch(err => {
-            console.log(err);
-            return resp;
-        });
-};
-
-self.addEventListener("fetch", event => {
-    const done = caches.open(CACHE_VERSION).then(async cache => {
-        const req = event.request;
-
-        if (req.url.endsWith("/")) return renderIndex(cache, req);
-
+    },
+    default: async (cache, req) => {
         // X-SW-STRATEGY: cacheFirst
         // X-SW-RACE: 500
         // X-SW-ACTION: update;url
@@ -148,6 +147,19 @@ self.addEventListener("fetch", event => {
         if (action) dispatch(action, cache, req, resp);
 
         return resp;
+    },
+};
+
+self.addEventListener("fetch", event => {
+    const done = caches.open(CACHE_VERSION).then(async cache => {
+        const req = event.request;
+
+        // TODO: router
+        if (req.url.endsWith("/")) {
+            return handlers.index(cache, req);
+        } else {
+            return handlers.default(cache, req);
+        }
     });
     event.respondWith(done);
 });
