@@ -1,3 +1,4 @@
+import Router from "./router";
 import App from "./app.svelte";
 import manifest from "../_build/manifest.json";
 
@@ -105,8 +106,9 @@ const dispatch = async (action, cache, req, resp) => {
     }
 };
 
-const handlers = {
-    index: async (cache, req) => {
+const router = new Router();
+router
+    .add("get", `${process.env.SITE}/`, async (cache, req) => {
         const resp = await strategies.cacheFirst(cache, req);
         const API = process.env.API;
         return Promise.all([
@@ -134,8 +136,8 @@ const handlers = {
                 console.log(err);
                 return resp;
             });
-    },
-    default: async (cache, req) => {
+    })
+    .fallback(async (cache, req) => {
         // X-SW-STRATEGY: cacheFirst
         // X-SW-RACE: 500
         // X-SW-ACTION: update;url
@@ -147,19 +149,13 @@ const handlers = {
         if (action) dispatch(action, cache, req, resp);
 
         return resp;
-    },
-};
+    });
 
 self.addEventListener("fetch", event => {
     const done = caches.open(CACHE_VERSION).then(async cache => {
         const req = event.request;
-
-        // TODO: router
-        if (req.url.endsWith("/")) {
-            return handlers.index(cache, req);
-        } else {
-            return handlers.default(cache, req);
-        }
+        const fn = router.match(req.method, req.url);
+        return fn(cache, req);
     });
     event.respondWith(done);
 });
