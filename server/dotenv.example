@@ -1,7 +1,7 @@
 CRON_USERNAME="username"
 CRON_PASSWORD="crypto.randomBytes(2).toString('hex')"
 
-LOGIN_REDIRECT="https://feedbox.example.com"
+HOST="https://feedbox.example.com"
 
 JWT_SECRET="crypto.randomBytes(2).toString('hex')"
 

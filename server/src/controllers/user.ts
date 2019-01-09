@@ -29,7 +29,7 @@ export const logout = {
 
 export const login = {
     async handler(_request, h) {
-        return h.redirect(process.env.LOGIN_REDIRECT);
+        return h.redirect(process.env.HOST);
     },
 };
 
