@@ -20,7 +20,7 @@ export default async (server): Promise<void> => {
         ttl: 7 * 24 * 60 * 60 * 1000,
         clearInvalid: true,
         isHttpOnly: true,
-        isSameSite: "Strict",
+        isSameSite: process.env.API === process.env.SITE ? "Strict" : false,
         isSecure: process.env.NODE_ENV === "production",
         validateFunc: validate,
     });
