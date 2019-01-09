@@ -14,6 +14,7 @@ class Router {
     }
 
     add(method, url, fn) {
+        method = method.toUpperCase();
         if (!this._routes[method]) this._routes[method] = {};
         const routes = this._routes[method];
         routes[url] = fn;
@@ -21,6 +22,7 @@ class Router {
     }
 
     match(method, url) {
+        method = method.toUpperCase();
         if (!this._routes[method]) this._routes[method] = {};
         const routes = this._routes[method];
         return routes[url] || this._fallback;
