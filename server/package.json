@@ -32,7 +32,7 @@
         "pg": "7.7.1",
         "reflect-metadata": "0.1.12",
         "sqlite3": "4.0.4",
-        "typeorm": "0.2.9"
+        "typeorm": "0.2.11"
     },
     "devDependencies": {
         "@types/feedparser": "2.2.1",
