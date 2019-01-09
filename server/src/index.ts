@@ -11,19 +11,19 @@ const main = async (): Promise<void> => {
         port: Number(process.env.PORT || 8000),
         routes: {
             payload: { allow: ["application/json"] },
-            cors: {
-                headers: [
-                    "Accept",
-                    "Authorization",
-                    "Content-Type",
-                    "If-None-Match",
-                    "Content-Type",
-                    "X-SW-Strategy",
-                    "X-SW-Race",
-                    "X-SW-Action",
-                ],
-                credentials: true,
-            },
+            // cors: {
+                // headers: [
+                    // "Accept",
+                    // "Authorization",
+                    // "Content-Type",
+                    // "If-None-Match",
+                    // "Content-Type",
+                    // "X-SW-Strategy",
+                    // "X-SW-Race",
+                    // "X-SW-Action",
+                // ],
+                // credentials: true,
+            // },
         },
     });
 
