@@ -7,4 +7,10 @@ command = "yarn run build"
 NODE_VERSION = "10"
 YARN_VERSION = "1.12.3"
 SITE = "https://feedbox.h11.io"
-API = "https://fbox.herokuapp.com"
+API = "https://feedbox.h11.io"
+
+[[redirects]]
+from = "/api/*"
+to = "https://fbox.herokuapp.com/api/:splat"
+status = 200
+force = false

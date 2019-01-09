@@ -51,7 +51,7 @@ export const connectGithub = {
             h.state("token", token, stateTokenOpt);
 
             // redirect to user info
-            return h.redirect("/login");
+            return h.redirect("/api/login");
         } else {
             const errMsg = request.auth.error.message;
             return `Authentication failed due to: ${errMsg}`;
