@@ -1,9 +1,10 @@
 CRON_USERNAME="username"
 CRON_PASSWORD="crypto.randomBytes(2).toString('hex')"
 
-HOST="https://feedbox.example.com"
+SITE="https://feedbox.example.com"
+API="https://feedbox.example.com"
 
-JWT_SECRET="crypto.randomBytes(2).toString('hex')"
+COOKIE_SECRET="crypto.randomBytes(2).toString('hex')"
 
 GITHUB_AUTH_SECRET="crypto.randomBytes(2).toString('hex')"
 GITHUB_CLIENT_ID="https://github.com/settings/developers"

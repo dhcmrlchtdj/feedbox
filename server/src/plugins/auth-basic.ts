@@ -1,4 +1,5 @@
 import * as authBasic from "hapi-auth-basic";
+import * as Boom from "boom";
 
 const validate = async (_request, username: string, password: string, h) => {
     if (
@@ -7,7 +8,7 @@ const validate = async (_request, username: string, password: string, h) => {
     ) {
         return { isValid: true, credentials: { username } };
     } else {
-        return h.response().code(401);
+        return h.unauthenticated(Boom.unauthorized(null, "basic"));
     }
 };
 

@@ -15,13 +15,6 @@
   resolved "http://registry.npm.taobao.org/@types/joi/download/@types/joi-14.0.1.tgz#739be8a8899a75631a3c9f15611e54bbab06c024"
   integrity sha1-c5voqImadWMaPJ8VYR5Uu6sGwCQ=
 
-"@types/jsonwebtoken@8.3.0":
-  version "8.3.0"
-  resolved "http://registry.npm.taobao.org/@types/jsonwebtoken/download/@types/jsonwebtoken-8.3.0.tgz#1fe79489df97b49273401ac3c8019cbf1dae4578"
-  integrity sha1-H+eUid+XtJJzQBrDyAGcvx2uRXg=
-  dependencies:
-    "@types/node" "*"
-
 "@types/mailgun-js@0.16.3":
   version "0.16.3"
   resolved "http://registry.npm.taobao.org/@types/mailgun-js/download/@types/mailgun-js-0.16.3.tgz#655fade2c72c430a7a248d84839f8adc2c400e62"
@@ -310,7 +303,7 @@ binary-extensions@^1.0.0:
   resolved "http://registry.npm.taobao.org/binary-extensions/download/binary-extensions-1.12.0.tgz#c2d780f53d45bba8317a8902d4ceeaf3a6385b14"
   integrity sha1-wteA9T1Fu6gxeokC1M7q86Y4WxQ=
 
-boom@7.x.x, boom@^7.1.1:
+boom@7.3.0, boom@7.x.x:
   version "7.3.0"
   resolved "http://registry.npm.taobao.org/boom/download/boom-7.3.0.tgz#733a6d956d33b0b1999da3fe6c12996950d017b9"
   integrity sha1-czptlW0zsLGZnaP+bBKZaVDQF7k=
@@ -361,11 +354,6 @@ braces@^2.3.0, braces@^2.3.1:
     snapdragon-node "^2.0.1"
     split-string "^3.0.2"
     to-regex "^3.0.1"
-
-buffer-equal-constant-time@1.0.1:
-  version "1.0.1"
-  resolved "http://registry.npm.taobao.org/buffer-equal-constant-time/download/buffer-equal-constant-time-1.0.1.tgz#f8e71132f7ffe6e01a5c9697a4c6f3e48d5cc819"
-  integrity sha1-+OcRMvf/5uAaXJaXpMbz5I1cyBk=
 
 buffer-writer@2.0.0:
   version "2.0.0"
@@ -611,11 +599,6 @@ content@4.x.x:
   dependencies:
     boom "7.x.x"
 
-cookie@^0.3.1:
-  version "0.3.1"
-  resolved "http://registry.npm.taobao.org/cookie/download/cookie-0.3.1.tgz#e7e0a1f9ef43b4c8ba925c5c5a96e806d16873bb"
-  integrity sha1-5+Ch+e9DtMi6klxcWpboBtFoc7s=
-
 copy-descriptor@^0.1.0:
   version "0.1.1"
   resolved "http://registry.npm.taobao.org/copy-descriptor/download/copy-descriptor-0.1.1.tgz#676f6eb3c39997c2ee1ac3a924fd6124748f578d"
@@ -817,13 +800,6 @@ ecc-jsbn@~0.1.1:
   dependencies:
     jsbn "~0.1.0"
     safer-buffer "^2.1.0"
-
-ecdsa-sig-formatter@1.0.10:
-  version "1.0.10"
-  resolved "http://registry.npm.taobao.org/ecdsa-sig-formatter/download/ecdsa-sig-formatter-1.0.10.tgz#1c595000f04a8897dfb85000892a0f4c33af86c3"
-  integrity sha1-HFlQAPBKiJffuFAAiSoPTDOvhsM=
-  dependencies:
-    safe-buffer "^5.0.1"
 
 end-of-stream@^1.1.0:
   version "1.4.1"
@@ -1214,14 +1190,15 @@ hapi-auth-basic@5.0.0:
     boom "7.x.x"
     hoek "5.x.x"
 
-hapi-auth-jwt2@8.2.0:
-  version "8.2.0"
-  resolved "http://registry.npm.taobao.org/hapi-auth-jwt2/download/hapi-auth-jwt2-8.2.0.tgz#40093bdd4d51e14576f92c73072e8ab0a92f87b5"
-  integrity sha1-QAk73U1R4UV2+SxzBy6KsKkvh7U=
+hapi-auth-cookie@9.1.0:
+  version "9.1.0"
+  resolved "http://registry.npm.taobao.org/hapi-auth-cookie/download/hapi-auth-cookie-9.1.0.tgz#6593d5d37c34b8fcdf0c47624510395f7bc793e2"
+  integrity sha1-ZZPV03w0uPzfDEdiRRA5X3vHk+I=
   dependencies:
-    boom "^7.1.1"
-    cookie "^0.3.1"
-    jsonwebtoken "^8.1.0"
+    boom "7.x.x"
+    bounce "1.x.x"
+    hoek "6.x.x"
+    joi "14.x.x"
 
 hapi-pino@5.2.0:
   version "5.2.0"
@@ -1724,21 +1701,6 @@ json-stringify-safe@~5.0.1:
   resolved "http://registry.npm.taobao.org/json-stringify-safe/download/json-stringify-safe-5.0.1.tgz#1296a2d58fd45f19a0f6ce01d65701e2c735b6eb"
   integrity sha1-Epai1Y/UXxmg9s4B1lcB4sc1tus=
 
-jsonwebtoken@8.4.0, jsonwebtoken@^8.1.0:
-  version "8.4.0"
-  resolved "http://registry.npm.taobao.org/jsonwebtoken/download/jsonwebtoken-8.4.0.tgz#8757f7b4cb7440d86d5e2f3becefa70536c8e46a"
-  integrity sha1-h1f3tMt0QNhtXi877O+nBTbI5Go=
-  dependencies:
-    jws "^3.1.5"
-    lodash.includes "^4.3.0"
-    lodash.isboolean "^3.0.3"
-    lodash.isinteger "^4.0.4"
-    lodash.isnumber "^3.0.3"
-    lodash.isplainobject "^4.0.6"
-    lodash.isstring "^4.0.1"
-    lodash.once "^4.0.0"
-    ms "^2.1.1"
-
 jsprim@^1.2.2:
   version "1.4.1"
   resolved "http://registry.npm.taobao.org/jsprim/download/jsprim-1.4.1.tgz#313e66bc1e5cc06e438bc1b7499c2e5c56acb6a2"
@@ -1748,23 +1710,6 @@ jsprim@^1.2.2:
     extsprintf "1.3.0"
     json-schema "0.2.3"
     verror "1.10.0"
-
-jwa@^1.1.5:
-  version "1.1.6"
-  resolved "http://registry.npm.taobao.org/jwa/download/jwa-1.1.6.tgz#87240e76c9808dbde18783cf2264ef4929ee50e6"
-  integrity sha1-hyQOdsmAjb3hh4PPImTvSSnuUOY=
-  dependencies:
-    buffer-equal-constant-time "1.0.1"
-    ecdsa-sig-formatter "1.0.10"
-    safe-buffer "^5.0.1"
-
-jws@^3.1.5:
-  version "3.1.5"
-  resolved "http://registry.npm.taobao.org/jws/download/jws-3.1.5.tgz#80d12d05b293d1e841e7cb8b4e69e561adcf834f"
-  integrity sha1-gNEtBbKT0ehB58uLTmnlYa3Pg08=
-  dependencies:
-    jwa "^1.1.5"
-    safe-buffer "^5.0.1"
 
 kind-of@^3.0.2, kind-of@^3.0.3, kind-of@^3.2.0:
   version "3.2.2"
@@ -1859,41 +1804,6 @@ lodash.has@^4.5.2:
   version "4.5.2"
   resolved "http://registry.npm.taobao.org/lodash.has/download/lodash.has-4.5.2.tgz#d19f4dc1095058cccbe2b0cdf4ee0fe4aa37c862"
   integrity sha1-0Z9NwQlQWMzL4rDN9O4P5Ko3yGI=
-
-lodash.includes@^4.3.0:
-  version "4.3.0"
-  resolved "http://registry.npm.taobao.org/lodash.includes/download/lodash.includes-4.3.0.tgz#60bb98a87cb923c68ca1e51325483314849f553f"
-  integrity sha1-YLuYqHy5I8aMoeUTJUgzFISfVT8=
-
-lodash.isboolean@^3.0.3:
-  version "3.0.3"
-  resolved "http://registry.npm.taobao.org/lodash.isboolean/download/lodash.isboolean-3.0.3.tgz#6c2e171db2a257cd96802fd43b01b20d5f5870f6"
-  integrity sha1-bC4XHbKiV82WgC/UOwGyDV9YcPY=
-
-lodash.isinteger@^4.0.4:
-  version "4.0.4"
-  resolved "http://registry.npm.taobao.org/lodash.isinteger/download/lodash.isinteger-4.0.4.tgz#619c0af3d03f8b04c31f5882840b77b11cd68343"
-  integrity sha1-YZwK89A/iwTDH1iChAt3sRzWg0M=
-
-lodash.isnumber@^3.0.3:
-  version "3.0.3"
-  resolved "http://registry.npm.taobao.org/lodash.isnumber/download/lodash.isnumber-3.0.3.tgz#3ce76810c5928d03352301ac287317f11c0b1ffc"
-  integrity sha1-POdoEMWSjQM1IwGsKHMX8RwLH/w=
-
-lodash.isplainobject@^4.0.6:
-  version "4.0.6"
-  resolved "http://registry.npm.taobao.org/lodash.isplainobject/download/lodash.isplainobject-4.0.6.tgz#7c526a52d89b45c45cc690b88163be0497f550cb"
-  integrity sha1-fFJqUtibRcRcxpC4gWO+BJf1UMs=
-
-lodash.isstring@^4.0.1:
-  version "4.0.1"
-  resolved "http://registry.npm.taobao.org/lodash.isstring/download/lodash.isstring-4.0.1.tgz#d527dfb5456eca7cc9bb95d5daeaf88ba54a5451"
-  integrity sha1-1SfftUVuynzJu5XV2ur4i6VKVFE=
-
-lodash.once@^4.0.0:
-  version "4.1.1"
-  resolved "http://registry.npm.taobao.org/lodash.once/download/lodash.once-4.1.1.tgz#0dd3971213c7c56df880977d504c88fb471a97ac"
-  integrity sha1-DdOXEhPHxW34gJd9UEyI+0cal6w=
 
 lodash.uniq@^4.5.0:
   version "4.5.0"

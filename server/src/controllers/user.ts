@@ -1,4 +1,3 @@
-import * as jwt from "jsonwebtoken";
 import User from "../models/user";
 
 export const info = {
@@ -9,27 +8,17 @@ export const info = {
     },
 };
 
-const stateTokenOpt = {
-    path: "/",
-    isSecure: process.env.NODE_ENV === "production",
-    isHttpOnly: true,
-    isSameSite: false,
-    ttl: 7 * 24 * 60 * 60 * 1000,
-    encoding: "none",
-    clearInvalid: true,
-};
-
 export const logout = {
     auth: false,
-    async handler(_request, h) {
-        h.unstate("token", stateTokenOpt);
+    async handler(request, _h) {
+        request.cookieAuth.clear();
         return "done | logout";
     },
 };
 
 export const login = {
     async handler(_request, h) {
-        return h.redirect(process.env.HOST);
+        return h.redirect(process.env.SITE);
     },
 };
 
@@ -39,16 +28,10 @@ export const connectGithub = {
         if (request.auth.isAuthenticated) {
             // get user info
             const { id, email } = request.auth.credentials.profile;
-            // TODO: empty email
-            const user = await User.takeOrCreateByGithub(id, email);
+            const user = await User.takeOrCreateByGithub(id, email); // FIXME: empty email
 
             // set cookie
-            const token = jwt.sign(
-                { id: user.id },
-                process.env.JWT_SECRET as string,
-                { expiresIn: "7d" },
-            );
-            h.state("token", token, stateTokenOpt);
+            request.cookieAuth.set({ id: user.id });
 
             // redirect to user info
             return h.redirect("/api/login");
