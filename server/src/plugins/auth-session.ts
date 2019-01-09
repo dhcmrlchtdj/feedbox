@@ -14,15 +14,14 @@ export default async (server): Promise<void> => {
     await server.register(authCookie);
 
     server.auth.strategy("session", "cookie", {
-        cookie: "token",
         password: process.env.COOKIE_SECRET,
-        ttl: 7 * 24 * 60 * 60 * 1000,
+        cookie: "token",
         path: "/api",
+        ttl: 7 * 24 * 60 * 60 * 1000,
         clearInvalid: true,
-        keepAlive: true,
+        isHttpOnly: true,
         isSameSite: "Strict",
         isSecure: process.env.NODE_ENV === "production",
-        isHttpOnly: true,
         validateFunc: validate,
     });
 };
