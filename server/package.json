@@ -15,7 +15,7 @@
     },
     "engines": {
         "node": "10.*",
-        "yarn": "1.12.*"
+        "yarn": "1.*"
     },
     "dependencies": {
         "bell": "9.4.0",
@@ -29,7 +29,7 @@
         "joi": "14.3.1",
         "mailgun-js": "0.22.0",
         "node-fetch": "2.3.0",
-        "pg": "7.7.1",
+        "pg": "7.8.0",
         "reflect-metadata": "0.1.12",
         "sqlite3": "4.0.4",
         "typeorm": "0.2.11"

@@ -322,9 +322,9 @@ isobject@^2.0.0:
     isarray "1.0.0"
 
 jest-worker@^24.0.0-alpha.9:
-  version "24.0.0-alpha.9"
-  resolved "http://registry.npm.taobao.org/jest-worker/download/jest-worker-24.0.0-alpha.9.tgz#2d8a35687744461b5aa8ed553dc4d5a5da2ceab8"
-  integrity sha1-LYo1aHdERhtaqO1VPcTVpdos6rg=
+  version "24.0.0-alpha.12"
+  resolved "http://registry.npm.taobao.org/jest-worker/download/jest-worker-24.0.0-alpha.12.tgz#b7ca1fb774b4eddc342768b7a63d89be5e6a762f"
+  integrity sha1-t8oft3S07dw0J2i3pj2Jvl5qdi8=
   dependencies:
     merge-stream "^1.0.1"
     supports-color "^5.5.0"
@@ -397,10 +397,10 @@ micromatch@^2.3.11:
     parse-glob "^3.0.4"
     regex-cache "^0.4.2"
 
-mime@^1.3.6:
-  version "1.6.0"
-  resolved "http://registry.npm.taobao.org/mime/download/mime-1.6.0.tgz#32cd9e5c64553bd58d19a568af452acff04981b1"
-  integrity sha1-Ms2eXGRVO9WNGaVor0Uqz/BJgbE=
+mime@2:
+  version "2.4.0"
+  resolved "http://registry.npm.taobao.org/mime/download/mime-2.4.0.tgz#e051fd881358585f3279df333fe694da0bcffdd6"
+  integrity sha1-4FH9iBNYWF8yed8zP+aU2gvP/dY=
 
 minimatch@^3.0.2:
   version "3.0.4"
@@ -424,7 +424,7 @@ object.omit@^2.0.0:
     for-own "^0.1.4"
     is-extendable "^0.1.1"
 
-opener@^1.4.3:
+opener@1:
   version "1.5.1"
   resolved "http://registry.npm.taobao.org/opener/download/opener-1.5.1.tgz#6d2f0e77f1a0af0032aca716c2c1fbb8e7e8abed"
   integrity sha1-bS8Od/GgrwAyrKcWwsH7uOfoq+0=
@@ -536,13 +536,13 @@ rollup-plugin-replace@2.1.0:
     minimatch "^3.0.2"
     rollup-pluginutils "^2.0.1"
 
-rollup-plugin-serve@0.6.1:
-  version "0.6.1"
-  resolved "http://registry.npm.taobao.org/rollup-plugin-serve/download/rollup-plugin-serve-0.6.1.tgz#0acc23157e136e2e4d1e866467961d4d696c7908"
-  integrity sha1-CswjFX4Tbi5NHoZkZ5YdTWlseQg=
+rollup-plugin-serve@1.0.0:
+  version "1.0.0"
+  resolved "http://registry.npm.taobao.org/rollup-plugin-serve/download/rollup-plugin-serve-1.0.0.tgz#8c842d95d8561ef89483e912d04dfa0bcd8d5998"
+  integrity sha1-jIQtldhWHviUg+kS0E36C82NWZg=
   dependencies:
-    mime "^1.3.6"
-    opener "^1.4.3"
+    mime "2"
+    opener "1"
 
 rollup-plugin-svelte@5.0.1:
   version "5.0.1"
