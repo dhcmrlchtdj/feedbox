@@ -106,55 +106,54 @@ const dispatch = async (action, cache, req, resp) => {
     }
 };
 
-const router = new Router();
-router
-    .add("get", `${process.env.SITE}/`, async (cache, req) => {
-        const resp = await strategies.cacheFirst(cache, req);
-        const API = process.env.API;
-        return Promise.all([
-            strategies.cacheOnly(cache, `${API}/api/v1/user`),
-            strategies.cacheOnly(cache, `${API}/api/v1/feeds`),
-        ])
-            .then(([user, feeds]) => Promise.all([user.json(), feeds.json()]))
-            .then(([user, feeds]) => ({ email: user.email, feeds: feeds }))
-            .then(async state => {
-                const tpl = await resp.clone().text();
-                const app = App.render(state);
-                const html = tpl.replace(
-                    '<div id="app"></div>',
-                    `<div id="app">${
-                        app.html
-                    }</div><script>window.__STATE__=${JSON.stringify(
-                        state,
-                    )}</script>`,
-                );
-                return new Response(html, {
-                    headers: { "content-type": "text/html; charset=utf-8" },
-                });
-            })
-            .catch(err => {
-                console.log(err);
-                return resp;
+const router = Router.add("get", `${process.env.SITE}/`, async (cache, req) => {
+    const resp = await strategies.cacheFirst(cache, req);
+    const API = process.env.API;
+    return Promise.all([
+        strategies.cacheOnly(cache, `${API}/api/v1/user`),
+        strategies.cacheOnly(cache, `${API}/api/v1/feeds`),
+    ])
+        .then(([user, feeds]) => Promise.all([user.json(), feeds.json()]))
+        .then(([user, feeds]) => ({ email: user.email, feeds: feeds }))
+        .then(async state => {
+            const tpl = await resp.clone().text();
+            const app = App.render(state);
+            const html = tpl.replace(
+                '<div id="app"></div>',
+                `<div id="app">${
+                    app.html
+                }</div><script>window.__STATE__=${JSON.stringify(
+                    state,
+                )}</script>`,
+            );
+            return new Response(html, {
+                headers: { "content-type": "text/html; charset=utf-8" },
             });
-    })
-    .fallback(async (cache, req) => {
-        // X-SW-STRATEGY: cacheFirst
-        // X-SW-RACE: 500
-        // X-SW-ACTION: update;url
+        })
+        .catch(err => {
+            console.log(err);
+            return resp;
+        });
+});
+const fallbackRouter = async (cache, req) => {
+    // X-SW-STRATEGY: cacheFirst
+    // X-SW-RACE: 500
+    // X-SW-ACTION: update;url
 
-        const strategy = req.headers.get("X-SW-STRATEGY") || "cacheFirst";
-        const resp = await strategies[strategy](cache, req);
+    const strategy = req.headers.get("X-SW-STRATEGY") || "cacheFirst";
+    const resp = await strategies[strategy](cache, req);
 
-        const action = req.headers.get("X-SW-ACTION");
-        if (action) dispatch(action, cache, req, resp);
+    const action = req.headers.get("X-SW-ACTION");
+    if (action) dispatch(action, cache, req, resp);
 
-        return resp;
-    });
+    return resp;
+};
 
 self.addEventListener("fetch", event => {
     const done = caches.open(CACHE_VERSION).then(async cache => {
         const req = event.request;
-        const fn = router.match(req.method, req.url);
+        const fnOpt = router.route(req.method, req.url);
+        const fn = fnOpt.isSome ? fnOpt.getExn()[0] : fallbackRouter;
         return fn(cache, req);
     });
     event.respondWith(done);
