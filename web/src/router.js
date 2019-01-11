@@ -1,3 +1,5 @@
+// https://github.com/dhcmrlchtdj/router
+
 const None = {
     isNone: true,
     isSome: false,
@@ -11,11 +13,6 @@ const Some = (data) => ({
     isSome: true,
     map: f => Some(f(data)),
     getExn: () => data,
-});
-
-var option = /*#__PURE__*/Object.freeze({
-    Some: Some,
-    None: None
 });
 
 const pattern = new RegExp("^(?:([^:]+)://([^/]+))?(?:/([^?#]*))*");
@@ -124,3 +121,4 @@ class Router {
 var mod = new Router(newRoute());
 
 export default mod;
+export { newRoute, add, route };
