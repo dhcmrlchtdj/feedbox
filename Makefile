@@ -8,12 +8,14 @@ show:
 push-heroku:
 	git subtree push --prefix=server heroku master
 
-# make -j2 dev
 .PHONY:
-dev: dev-server dev-web
+dev: 
+	$(MAKE) -j dev-server dev-web
+
 .PHONY:
 dev-server:
 	cd ./server && yarn dev
+
 .PHONY:
 dev-web:
 	cd ./web && yarn dev
