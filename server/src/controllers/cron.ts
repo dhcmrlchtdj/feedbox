@@ -26,7 +26,9 @@ type Tmail = {
 const feed2feeds = async (feed: Feed): Promise<Tfeeds | null> => {
     const url = feed.url;
     console.debug(`${url} - fetching`);
-    const curr = await fetch(url)
+    const curr = await fetch(url, {
+        headers: { "user-agent": "feedbox.h11.io" },
+    })
         .then(res => res.text())
         .catch(err => {
             console.error(err);
