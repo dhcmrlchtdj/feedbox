@@ -1,0 +1,27 @@
+<div class="columns">
+    <div class="column col-12 mt-2">
+        <div class="toast toast-error">
+            <p>{err}</p>
+        </div>
+    </div>
+    <div class="column col-12"><div class="divider"></div></div>
+
+    <div class="column col-12 text-center">
+        <a
+            class="btn btn-lg btn-secondary"
+            href="{process.env.API}/api/connect/github"
+        >
+            Login with GitHub
+        </a>
+    </div>
+</div>
+
+<script>
+    export default {
+        data() {
+            return {
+                err: "unknown error",
+            };
+        },
+    };
+</script>

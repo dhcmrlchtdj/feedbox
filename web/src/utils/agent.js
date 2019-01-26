@@ -2,7 +2,6 @@ const API = process.env.API;
 
 const auth = r => {
     if (r.status === 401) {
-        location.href = `${API}/api/connect/github`;
         throw new Error(r.status);
     } else {
         return r;

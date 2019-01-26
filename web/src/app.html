@@ -1,0 +1,48 @@
+<div class="container grid-sm">
+    {#await loading}
+    <Loading></Loading>
+    {:then}
+    <List {email} {feeds}></List>
+    {:catch err}
+    <Auth {err}></Auth>
+    {/await}
+</div>
+
+<script>
+    import * as agent from "./utils/agent.js";
+    import Deferred from "./utils/deferred.js";
+    import Loading from "./components/loading.html";
+    import Auth from "./components/auth.html";
+    import List from "./components/list.html";
+
+    export default {
+        components: { Loading, Auth, List },
+        data() {
+            const state = self.__STATE__ || {};
+            return {
+                loading: state.loading || new Deferred(),
+                email: state.email || "",
+                feeds: state.feeds || [],
+            };
+        },
+        async oncreate() {
+            Promise.all([
+                agent.get("/api/v1/user", {
+                    "X-SW-STRATEGY": "staleWhileRevalidate",
+                }),
+                agent.get("/api/v1/feeds", {
+                    "X-SW-STRATEGY": "staleWhileRevalidate",
+                }),
+            ])
+                .then(([user, feeds]) => {
+                    this.set({ email: user.email, feeds: feeds });
+                    const { loading } = this.get();
+                    loading.resolve(true);
+                })
+                .catch(err => {
+                    const { loading } = this.get();
+                    loading.reject(err);
+                });
+        },
+    };
+</script>
