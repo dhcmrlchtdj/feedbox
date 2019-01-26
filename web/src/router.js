@@ -8,7 +8,7 @@ const None = {
         throw new Error("Option.getExn");
     },
 };
-const Some = (data) => ({
+const Some = data => ({
     isNone: false,
     isSome: true,
     map: f => Some(f(data)),
@@ -23,8 +23,7 @@ function split(uri) {
         const host = matched[2] || "";
         const pathname = matched[3] || "";
         return [protocol, host.toLowerCase(), ...pathname.split("/")];
-    }
-    else {
+    } else {
         return [uri];
     }
 }
@@ -47,23 +46,28 @@ function newRoute() {
 const _add = (segments, callback, route) => {
     if (segments.length === 0) {
         route.entry = Some(callback);
-    }
-    else {
+    } else {
         const seg = segments[0];
         if (seg === "*") {
             const tmp = newRoute();
             tmp.entry = Some(callback);
             route.subRoutes.any["*"] = tmp;
-        }
-        else if (seg[0] === ":") {
+        } else if (seg[0] === ":") {
             const param = seg.slice(1);
             const tmp = route.subRoutes.parameter[param];
-            const next = _add(segments.slice(1), callback, tmp ? cloneRoute(tmp) : newRoute());
+            const next = _add(
+                segments.slice(1),
+                callback,
+                tmp ? cloneRoute(tmp) : newRoute(),
+            );
             route.subRoutes.parameter[param] = next;
-        }
-        else {
+        } else {
             const tmp = route.subRoutes.static[seg];
-            const next = _add(segments.slice(1), callback, tmp ? cloneRoute(tmp) : newRoute());
+            const next = _add(
+                segments.slice(1),
+                callback,
+                tmp ? cloneRoute(tmp) : newRoute(),
+            );
             route.subRoutes.static[seg] = next;
         }
     }
@@ -71,31 +75,30 @@ const _add = (segments, callback, route) => {
 };
 function add(method, uri, callback) {
     const segments = [method.toUpperCase(), ...split(uri)];
-    return (route) => _add(segments, callback, cloneRoute(route));
+    return route => _add(segments, callback, cloneRoute(route));
 }
 const _route = (segments, route, params = {}) => {
     if (segments.length === 0) {
         return route.entry.map(cb => [cb, params]);
-    }
-    else {
+    } else {
         const seg = segments[0];
         const subSeg = segments.slice(1);
         const staticRoute = route.subRoutes.static[seg];
         if (staticRoute) {
             const matched = _route(subSeg, staticRoute, params);
-            if (matched.isSome)
-                return matched;
+            if (matched.isSome) return matched;
         }
         const paramRouters = Object.entries(route.subRoutes.parameter);
         for (const [param, paramRouter] of paramRouters) {
             const paramsParams = Object.assign({}, params, { [param]: seg });
             const matched = _route(subSeg, paramRouter, paramsParams);
-            if (matched.isSome)
-                return matched;
+            if (matched.isSome) return matched;
         }
         const anyRoute = route.subRoutes.any["*"];
         if (anyRoute) {
-            const anyParams = Object.assign({}, params, { "*": segments.join("/") });
+            const anyParams = Object.assign({}, params, {
+                "*": segments.join("/"),
+            });
             return anyRoute.entry.map(cb => [cb, anyParams]);
         }
         return None;
@@ -103,7 +106,7 @@ const _route = (segments, route, params = {}) => {
 };
 function route(method, uri) {
     const segments = [method.toUpperCase(), ...split(uri)];
-    return (route) => _route(segments, route);
+    return route => _route(segments, route);
 }
 
 class Router {
