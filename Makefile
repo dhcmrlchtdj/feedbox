@@ -6,7 +6,9 @@ show:
 
 .PHONY:
 push-heroku:
-	git subtree push --prefix=server heroku master
+	@# git subtree push --prefix=server heroku master
+	@# https://github.com/timanovsky/subdir-heroku-buildpack
+	git push heroku master
 
 .PHONY:
 dev: 
