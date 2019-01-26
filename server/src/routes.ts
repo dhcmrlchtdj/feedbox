@@ -14,12 +14,11 @@ const routes = [
     { path: "/api/v1/feeds/import", method: "post", options: Feed.importFeeds },
     { path: "/api/v1/feeds/export", method: "get", options: Feed.exportFeeds },
 
+    { path: "/api/v1/cron", method: "get", options: Cron.cron },
+
     { path: "/api/v1/user", method: "get", options: User.info },
     { path: "/api/logout", method: "get", options: User.logout },
-    { path: "/api/login", method: "get", options: User.login },
     { path: "/api/connect/github", method: "get", options: User.connectGithub },
-
-    { path: "/api/v1/cron", method: "get", options: Cron.cron },
 
     {
         path: "/favicon.ico",

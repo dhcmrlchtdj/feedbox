@@ -1,4 +1,5 @@
 import User from "../models/user";
+import getGithubEmail from "../utils/get-github-email";
 
 export const info = {
     async handler(request, _h) {
@@ -16,25 +17,28 @@ export const logout = {
     },
 };
 
-export const login = {
-    async handler(_request, h) {
-        return h.redirect(process.env.SITE);
-    },
-};
-
 export const connectGithub = {
     auth: "github",
     async handler(request, h) {
         if (request.auth.isAuthenticated) {
-            // get user info
-            const { id, email } = request.auth.credentials.profile;
-            const user = await User.takeOrCreateByGithub(id, email); // FIXME: empty email
+            // oauth
+            const credentials = request.auth.credentials;
+            const profile = credentials.profile;
+            if (!profile.email) {
+                profile.email = await getGithubEmail(credentials.token);
+            }
+
+            // get/create user
+            const user = await User.takeOrCreateByGithub(
+                profile.id,
+                profile.email,
+            );
 
             // set cookie
             request.cookieAuth.set({ id: user.id });
 
-            // redirect to user info
-            return h.redirect("/api/login");
+            // redirect to home
+            return h.redirect(process.env.SITE);
         } else {
             const errMsg = request.auth.error.message;
             return `Authentication failed due to: ${errMsg}`;
