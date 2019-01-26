@@ -114,7 +114,11 @@ const router = Router.add("get", `${process.env.SITE}/`, async (cache, req) => {
         strategies.cacheOnly(cache, `${API}/api/v1/feeds`),
     ])
         .then(([user, feeds]) => Promise.all([user.json(), feeds.json()]))
-        .then(([user, feeds]) => ({ email: user.email, feeds: feeds }))
+        .then(([user, feeds]) => ({
+            loaded: true,
+            email: user.email,
+            feeds: feeds,
+        }))
         .then(async state => {
             const tpl = await resp.clone().text();
             const app = App.render(state);

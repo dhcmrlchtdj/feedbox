@@ -1,5 +1,5 @@
 <div class="container grid-sm">
-    {#await loading}
+    {#await loaded}
     <Loading></Loading>
     {:then}
     <List {email} {feeds}></List>
@@ -20,7 +20,7 @@
         data() {
             const state = self.__STATE__ || {};
             return {
-                loading: state.loading || new Deferred(),
+                loaded: state.loaded || new Deferred(),
                 email: state.email || "",
                 feeds: state.feeds || [],
             };
@@ -36,12 +36,12 @@
             ])
                 .then(([user, feeds]) => {
                     this.set({ email: user.email, feeds: feeds });
-                    const { loading } = this.get();
-                    loading.resolve(true);
+                    const { loaded } = this.get();
+                    if (loaded.resolve) loaded.resolve(true);
                 })
                 .catch(err => {
-                    const { loading } = this.get();
-                    loading.reject(err);
+                    const { loaded } = this.get();
+                    if (loaded.reject) loaded.reject(err);
                 });
         },
     };
