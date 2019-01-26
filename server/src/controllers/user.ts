@@ -11,9 +11,11 @@ export const info = {
 
 export const logout = {
     auth: false,
-    async handler(request, _h) {
+    async handler(request, h) {
         request.cookieAuth.clear();
-        return "done | logout";
+
+        // redirect to home
+        return h.redirect(process.env.SITE);
     },
 };
 
