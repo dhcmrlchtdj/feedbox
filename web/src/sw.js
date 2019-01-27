@@ -1,6 +1,5 @@
-import Router from "./utils/router";
 import manifest from "../_build/manifest.json";
-import App from "./app.html";
+import route from "./sw/route";
 
 const assets = manifest.bundle;
 const builtins = [
@@ -37,128 +36,28 @@ self.addEventListener("activate", event => {
     event.waitUntil(done);
 });
 
-const strategies = {
-    async cacheOnly(cache, req) {
-        return cache.match(req);
-    },
-    async cacheFirst(cache, req) {
-        const cached = await cache.match(req);
-        return cached || fetch(req);
-    },
-    async networkOnly(cache, req) {
-        return fetch(req);
-    },
-    async networkFirst(cache, req) {
-        const cached = caches.match(event.request);
-        const fetched = fetch(req).then(resp => {
-            if (resp.ok) {
-                cache.put(req, resp.clone());
-            } else {
-                cache.delete(req);
-            }
-            return resp;
-        });
-        const resp = fetched.catch(err => {
-            console.error(err);
-            return cached;
-        });
-        return resp;
-    },
-    async staleWhileRevalidate(cache, req) {
-        const fetched = fetch(req).then(resp => {
-            if (resp.ok) {
-                cache.put(req, resp.clone());
-            } else {
-                cache.delete(req);
-            }
-            return resp;
-        });
-        const cached = await cache.match(req);
-        return cached || fetched;
-    },
-    async race(cache, req) {
-        const cached = caches.match(event.request);
-        const fetched = fetch(req).then(resp => {
-            if (resp.ok) {
-                cache.put(req, resp.clone());
-            } else {
-                cache.delete(req);
-            }
-            return resp;
-        });
-        const timeout = Number(req.headers.get("X-SW-RACE") || "500");
-        const timer = new Promise((resolve, reject) =>
-            setTimeout(reject, timeout),
-        );
-        const resp = Promise.race([fetched, timer]).catch(err => cached);
-        return resp;
-    },
-};
-
-const dispatch = async (action, cache, req, resp) => {
-    if (!resp.ok) return;
-    const [fn, ...args] = action.split(";");
-    switch (fn) {
-        case "update":
-            return cache.put(args[0], resp.clone());
-        default:
-            console.error(`unknown action: ${action}`);
-    }
-};
-
-const router = Router.add("get", `${process.env.SITE}/`, async (cache, req) => {
-    const resp = await strategies.cacheFirst(cache, req);
-    const API = process.env.API;
-    return Promise.all([
-        strategies.cacheOnly(cache, `${API}/api/v1/user`),
-        strategies.cacheOnly(cache, `${API}/api/v1/feeds`),
-    ])
-        .then(([user, feeds]) => Promise.all([user.json(), feeds.json()]))
-        .then(([user, feeds]) => ({
-            loaded: true,
-            email: user.email,
-            feeds: feeds,
-        }))
-        .then(async state => {
-            const tpl = await resp.clone().text();
-            const app = App.render(state);
-            const html = tpl.replace(
-                '<div id="app"></div>',
-                `<div id="app">${
-                    app.html
-                }</div><script>window.__STATE__=${JSON.stringify(
-                    state,
-                )}</script>`,
-            );
-            return new Response(html, {
-                headers: { "content-type": "text/html; charset=utf-8" },
-            });
-        })
-        .catch(err => {
-            console.log(err);
-            return resp;
-        });
-});
-const fallbackRouter = async (cache, req) => {
-    // X-SW-STRATEGY: cacheFirst
-    // X-SW-RACE: 500
-    // X-SW-ACTION: update;url
-
-    const strategy = req.headers.get("X-SW-STRATEGY") || "cacheFirst";
-    const resp = await strategies[strategy](cache, req);
-
-    const action = req.headers.get("X-SW-ACTION");
-    if (action) dispatch(action, cache, req, resp);
-
-    return resp;
-};
-
 self.addEventListener("fetch", event => {
     const done = caches.open(CACHE_VERSION).then(async cache => {
         const req = event.request;
-        const fnOpt = router.route(req.method, req.url);
-        const fn = fnOpt.isSome ? fnOpt.getExn()[0] : fallbackRouter;
-        return fn(cache, req);
+        const handler = route(req.method, req.url);
+        return handler(cache, req);
     });
     event.respondWith(done);
+});
+
+self.addEventListener("message", event => {
+    console.log("[SW] message |", event.data);
+
+    if (event.data === "logout") {
+        const done = caches
+            .open(CACHE_VERSION)
+            .then(cache =>
+                Promise.all([
+                    cache.delete(`${process.env.API}/api/v1/user`),
+                    cache.delete(`${process.env.API}/api/v1/feeds`),
+                ]),
+            )
+            .then(() => console.log("[SW] message | done"));
+        event.waitUntil(done);
+    }
 });

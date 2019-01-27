@@ -27,10 +27,10 @@
         },
         async oncreate() {
             Promise.all([
-                agent.get("/api/v1/user", {
+                agent.get(`${process.env.API}/api/v1/user`, {
                     "X-SW-STRATEGY": "staleWhileRevalidate",
                 }),
-                agent.get("/api/v1/feeds", {
+                agent.get(`${process.env.API}/api/v1/feeds`, {
                     "X-SW-STRATEGY": "staleWhileRevalidate",
                 }),
             ])
@@ -40,8 +40,9 @@
                     if (loaded.resolve) loaded.resolve(true);
                 })
                 .catch(err => {
+                    console.error(err.stack);
                     const { loaded } = this.get();
-                    if (loaded.reject) loaded.reject(err);
+                    if (loaded.reject) loaded.reject(err.message);
                 });
         },
     };

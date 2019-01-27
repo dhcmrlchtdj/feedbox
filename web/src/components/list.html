@@ -2,7 +2,7 @@
     <div class="column col-12">
         <h1 class="d-inline-block">feedbox</h1>
         <span>{email}</span>
-        <a href="{process.env.API}/api/logout">logout</a>
+        <a href="{process.env.API}/api/logout" on:click="logout()">logout</a>
     </div>
     <div class="column col-12"><div class="divider"></div></div>
 
@@ -134,6 +134,14 @@
                     },
                 );
                 this.set({ addLoading: false, url: "", feeds });
+            },
+            logout() {
+                if (
+                    navigator.serviceWorker &&
+                    navigator.serviceWorker.controller
+                ) {
+                    navigator.serviceWorker.controller.postMessage("logout");
+                }
             },
         },
     };
