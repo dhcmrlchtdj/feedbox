@@ -7,45 +7,45 @@ import {
     UpdateDateColumn,
     ManyToMany,
     JoinTable,
-} from "typeorm";
-import Feed from "./feed";
+} from 'typeorm'
+import Feed from './feed'
 
 @Entity()
 export default class User extends BaseEntity {
     @PrimaryGeneratedColumn()
-    id: number;
+    id: number
 
     @CreateDateColumn({ select: false })
-    createAt: Date;
+    createAt: Date
 
     @UpdateDateColumn({ select: false })
-    updateAt: Date;
+    updateAt: Date
 
     @Column({ unique: true, length: 256 })
-    email: string;
+    email: string
 
     @Column({ unique: true, nullable: true })
-    githubId: number;
+    githubId: number
 
     @ManyToMany(_type => Feed, feed => feed.users)
     @JoinTable()
-    feeds: Feed[];
+    feeds: Feed[]
 
     static async takeOne(query): Promise<User | undefined> {
-        query.take = 1;
-        const arr = await this.find(query);
+        query.take = 1
+        const arr = await this.find(query)
         if (arr.length) {
-            return arr[0];
+            return arr[0]
         } else {
-            return;
+            return
         }
     }
 
     static async takeById(userId: number): Promise<User | undefined> {
         const user = await User.takeOne({
             where: { id: userId },
-        });
-        return user;
+        })
+        return user
     }
 
     static async updateByKV(
@@ -54,33 +54,33 @@ export default class User extends BaseEntity {
         updateKey: string,
         updateValue: any,
     ): Promise<User | undefined> {
-        const user = await User.takeOne({ where: { [key]: value } });
+        const user = await User.takeOne({ where: { [key]: value } })
         if (user && updateValue) {
             if (user[updateKey] !== updateValue) {
-                user[updateKey] = updateValue;
-                await user.save();
+                user[updateKey] = updateValue
+                await user.save()
             }
         }
-        return user;
+        return user
     }
 
     static async takeOrCreateByGithub(
         githubId: number,
         email: string,
     ): Promise<User> {
-        let user: User | undefined;
+        let user: User | undefined
 
-        user = await User.updateByKV("githubId", githubId, "email", email);
-        if (user) return user;
+        user = await User.updateByKV('githubId', githubId, 'email', email)
+        if (user) return user
 
-        user = await User.updateByKV("email", email, "githubId", githubId);
-        if (user) return user;
+        user = await User.updateByKV('email', email, 'githubId', githubId)
+        if (user) return user
 
-        user = new User();
-        user.email = email;
-        user.githubId = githubId;
-        await user.save();
+        user = new User()
+        user.email = email
+        user.githubId = githubId
+        await user.save()
 
-        return user;
+        return user
     }
 }

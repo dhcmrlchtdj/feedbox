@@ -6,88 +6,88 @@ import {
     CreateDateColumn,
     UpdateDateColumn,
     ManyToMany,
-} from "typeorm";
-import User from "./user";
+} from 'typeorm'
+import User from './user'
 
 @Entity()
 export default class Feed extends BaseEntity {
     @PrimaryGeneratedColumn()
-    id: number;
+    id: number
 
     @CreateDateColumn({ select: false })
-    createAt: Date;
+    createAt: Date
 
     @UpdateDateColumn({ select: false })
-    updateAt: Date;
+    updateAt: Date
 
     @Column({ unique: true, length: 2048 })
-    url: string;
+    url: string
 
     @Column({ nullable: true })
-    lastUpdated: Date;
+    lastUpdated: Date
 
     @Column({ nullable: true })
-    lastCheck: Date;
+    lastCheck: Date
 
-    @Column({ type: "text", nullable: true, select: false })
-    content: string;
+    @Column({ type: 'text', nullable: true, select: false })
+    content: string
 
     @ManyToMany(_type => User, user => user.feeds)
-    users: User[];
+    users: User[]
 
     static async takeOne(query): Promise<Feed | undefined> {
-        query.take = 1;
-        const arr = await this.find(query);
+        query.take = 1
+        const arr = await this.find(query)
         if (arr.length) {
-            return arr[0];
+            return arr[0]
         } else {
-            return;
+            return
         }
     }
 
     static async takeAll(): Promise<Feed[]> {
-        const feeds = await Feed.createQueryBuilder("feed")
-            .addSelect("feed.content")
-            .innerJoinAndSelect("feed.users", "user")
-            .getMany();
-        return feeds;
+        const feeds = await Feed.createQueryBuilder('feed')
+            .addSelect('feed.content')
+            .innerJoinAndSelect('feed.users', 'user')
+            .getMany()
+        return feeds
     }
 
     static async takeOrCreate(url: string): Promise<Feed> {
-        let feed = await Feed.takeOne({ where: { url } });
+        let feed = await Feed.takeOne({ where: { url } })
         if (!feed) {
-            feed = new Feed();
-            feed.url = url;
-            await feed.save();
+            feed = new Feed()
+            feed.url = url
+            await feed.save()
         }
-        return feed;
+        return feed
     }
 
     static async takeByUser(userId: number): Promise<Feed[]> {
-        const feeds = await Feed.createQueryBuilder("feed")
-            .innerJoin("feed.users", "user", "user.id = :userId", { userId })
-            .orderBy("feed.lastUpdated", "DESC")
-            .getMany();
-        return feeds;
+        const feeds = await Feed.createQueryBuilder('feed')
+            .innerJoin('feed.users', 'user', 'user.id = :userId', { userId })
+            .orderBy('feed.lastUpdated', 'DESC')
+            .getMany()
+        return feeds
     }
 
     static async addUser(feedId: number, userId: number): Promise<void> {
         try {
-            await Feed.createQueryBuilder("feed")
-                .relation(Feed, "users")
+            await Feed.createQueryBuilder('feed')
+                .relation(Feed, 'users')
                 .of(feedId)
-                .add(userId);
+                .add(userId)
         } catch (err) {
-            const msg = err.message;
-            if (msg && /unique/i.test(msg)) return;
-            throw err;
+            const msg = err.message
+            if (msg && /unique/i.test(msg)) return
+            throw err
         }
     }
 
     static async removeUser(feedId: number, userId: number): Promise<void> {
-        await Feed.createQueryBuilder("feed")
-            .relation(Feed, "users")
+        await Feed.createQueryBuilder('feed')
+            .relation(Feed, 'users')
             .of(feedId)
-            .remove(userId);
+            .remove(userId)
     }
 }

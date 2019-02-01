@@ -1,15 +1,15 @@
-import * as bell from "bell";
+import * as bell from 'bell'
 
 export default async (server): Promise<void> => {
-    await server.register(bell);
+    await server.register(bell)
 
-    server.auth.strategy("github", "bell", {
-        provider: "github",
+    server.auth.strategy('github', 'bell', {
+        provider: 'github',
         password: process.env.GITHUB_AUTH_SECRET,
         clientId: process.env.GITHUB_CLIENT_ID,
         clientSecret: process.env.GITHUB_CLIENT_SECRET,
-        forceHttps: process.env.NODE_ENV === "production",
+        forceHttps: process.env.NODE_ENV === 'production',
         location: process.env.API,
-        isSecure: process.env.NODE_ENV === "production",
-    });
-};
+        isSecure: process.env.NODE_ENV === 'production',
+    })
+}

@@ -9,41 +9,41 @@
 </div>
 
 <script>
-    import * as agent from "./utils/agent.js";
-    import Deferred from "./utils/deferred.js";
-    import Loading from "./components/loading.html";
-    import Auth from "./components/auth.html";
-    import List from "./components/list.html";
+    import * as agent from './utils/agent.js'
+    import Deferred from './utils/deferred.js'
+    import Loading from './components/loading.html'
+    import Auth from './components/auth.html'
+    import List from './components/list.html'
 
     export default {
         components: { Loading, Auth, List },
         data() {
-            const state = self.__STATE__ || {};
+            const state = self.__STATE__ || {}
             return {
                 loaded: state.loaded || new Deferred(),
-                email: state.email || "",
+                email: state.email || '',
                 feeds: state.feeds || [],
-            };
+            }
         },
         async oncreate() {
             Promise.all([
                 agent.get(`${process.env.API}/api/v1/user`, {
-                    "X-SW-STRATEGY": "staleWhileRevalidate",
+                    'X-SW-STRATEGY': 'staleWhileRevalidate',
                 }),
                 agent.get(`${process.env.API}/api/v1/feeds`, {
-                    "X-SW-STRATEGY": "staleWhileRevalidate",
+                    'X-SW-STRATEGY': 'staleWhileRevalidate',
                 }),
             ])
                 .then(([user, feeds]) => {
-                    this.set({ email: user.email, feeds: feeds });
-                    const { loaded } = this.get();
-                    if (loaded.resolve) loaded.resolve(true);
+                    this.set({ email: user.email, feeds: feeds })
+                    const { loaded } = this.get()
+                    if (loaded.resolve) loaded.resolve(true)
                 })
                 .catch(err => {
-                    console.error(err.stack);
-                    const { loaded } = this.get();
-                    if (loaded.reject) loaded.reject(err.message);
-                });
+                    console.error(err.stack)
+                    const { loaded } = this.get()
+                    if (loaded.reject) loaded.reject(err.message)
+                })
         },
-    };
+    }
 </script>
