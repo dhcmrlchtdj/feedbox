@@ -8,6 +8,8 @@ const extractSite = (url: string): string => {
             return `feedburner/${Path.basename(u.pathname)}`
         case 'medium.com':
             return `medium/${Path.basename(u.pathname)}`
+        case 'rsshub.app':
+            return `rsshub/${Path.basename(u.pathname)}`
         default:
             return u.hostname
     }
