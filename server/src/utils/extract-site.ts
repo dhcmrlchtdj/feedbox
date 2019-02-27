@@ -9,7 +9,7 @@ const extractSite = (url: string): string => {
         case 'medium.com':
             return `medium/${Path.basename(u.pathname)}`
         case 'rsshub.app':
-            return `rsshub/${Path.basename(u.pathname)}`
+            return `rsshub${u.pathname}`
         default:
             return u.hostname
     }
