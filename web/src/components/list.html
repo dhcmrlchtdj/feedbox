@@ -2,6 +2,7 @@
     <div class="column col-12">
         <h1 class="d-inline-block">feedbox</h1>
         <span>{email}</span>
+        <a href="{process.env.API}/api/v1/feeds/export" target="_blank">OPML</a>
         <a href="{process.env.API}/api/logout" on:click="logout()">logout</a>
     </div>
     <div class="column col-12"><div class="divider"></div></div>
@@ -111,7 +112,7 @@
                 this.set({ feeds: this.get().feeds })
                 agent
                     .del(
-                        '/api/v1/feeds/remove',
+                        `${process.env.API}/api/v1/feeds/remove`,
                         { feedId: feed.id },
                         {
                             'X-SW-STRATEGY': 'networkOnly',
@@ -126,7 +127,7 @@
             async add(url) {
                 this.set({ addLoading: true })
                 const feeds = await agent.put(
-                    '/api/v1/feeds/add',
+                    `${process.env.API}/api/v1/feeds/add`,
                     { url },
                     {
                         'X-SW-STRATEGY': 'networkOnly',

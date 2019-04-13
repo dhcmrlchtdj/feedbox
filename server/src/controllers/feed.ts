@@ -1,5 +1,6 @@
 import * as Joi from 'joi'
 import Feed from '../models/feed'
+import extractSite from '../utils/extract-site'
 
 export const list = {
     async handler(request, _h) {
@@ -49,7 +50,27 @@ export const importFeeds = {
 }
 
 export const exportFeeds = {
-    async handler(_request, h) {
-        return h.response().code(501)
+    // spec
+    // http://dev.opml.org/spec2.html
+    async handler(request, h) {
+        const { userId } = request.auth.credentials
+        const feeds = await Feed.takeByUser(userId)
+        const outlines = feeds
+            .map(feed => {
+                const text = extractSite(feed.url)
+                const xmlUrl = feed.url
+                return `<outline type="rss" text="${text}" xmlUrl="${xmlUrl}"/>`
+            })
+            .join('\n')
+        const opml = [
+            '<?xml version="1.0" encoding="utf-8"?>',
+            '<opml version="1.0">',
+            '<head><title>feeds</title></head>',
+            '<body>',
+            outlines,
+            '</body>',
+            '</opml>',
+        ].join('\n')
+        return h.response(opml).type('text/x-opml')
     },
 }
