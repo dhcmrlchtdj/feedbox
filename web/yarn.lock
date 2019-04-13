@@ -23,10 +23,10 @@
   resolved "http://registry.npm.taobao.org/@types/estree/download/@types/estree-0.0.39.tgz#e177e699ee1b8c22d23174caaa7422644389509f"
   integrity sha1-4Xfmme4bjCLSMXTKqnQiZEOJUJ8=
 
-"@types/node@^11.13.0":
-  version "11.13.0"
-  resolved "http://registry.npm.taobao.org/@types/node/download/@types/node-11.13.0.tgz#b0df8d6ef9b5001b2be3a94d909ce3c29a80f9e1"
-  integrity sha1-sN+Nbvm1ABsr46lNkJzjwpqA+eE=
+"@types/node@^11.13.4":
+  version "11.13.4"
+  resolved "http://registry.npm.taobao.org/@types/node/download/@types/node-11.13.4.tgz#f83ec3c3e05b174b7241fadeb6688267fe5b22ca"
+  integrity sha1-+D7Dw+BbF0tyQfretmiCZ/5bIso=
 
 acorn@^6.1.1:
   version "6.1.1"
@@ -531,9 +531,9 @@ micromatch@^3.1.10:
     to-regex "^3.0.2"
 
 mime@>=2.0.3:
-  version "2.4.1"
-  resolved "http://registry.npm.taobao.org/mime/download/mime-2.4.1.tgz#19eb7357bebbda37df585b14038347721558c715"
-  integrity sha1-GetzV7672jffWFsUA4NHchVYxxU=
+  version "2.4.2"
+  resolved "http://registry.npm.taobao.org/mime/download/mime-2.4.2.tgz#ce5229a5e99ffc313abac806b482c10e7ba6ac78"
+  integrity sha1-zlIppemf/DE6usgGtILBDnumrHg=
 
 mixin-deep@^1.2.0:
   version "1.3.1"
@@ -603,10 +603,10 @@ posix-character-classes@^0.1.0:
   resolved "http://registry.npm.taobao.org/posix-character-classes/download/posix-character-classes-0.1.1.tgz#01eac0fe3b5af71a2a6c02feabb8c1fef7e00eab"
   integrity sha1-AerA/jta9xoqbAL+q7jB/vfgDqs=
 
-prettier@1.16.4:
-  version "1.16.4"
-  resolved "http://registry.npm.taobao.org/prettier/download/prettier-1.16.4.tgz#73e37e73e018ad2db9c76742e2647e21790c9717"
-  integrity sha1-c+N+c+AYrS25x2dC4mR+IXkMlxc=
+prettier@1.17.0:
+  version "1.17.0"
+  resolved "http://registry.npm.taobao.org/prettier/download/prettier-1.17.0.tgz#53b303676eed22cc14a9f0cec09b477b3026c008"
+  integrity sha1-U7MDZ27tIswUqfDOwJtHezAmwAg=
 
 process-nextick-args@~2.0.0:
   version "2.0.0"
@@ -666,13 +666,13 @@ rollup-plugin-json@4.0.0:
   dependencies:
     rollup-pluginutils "^2.5.0"
 
-rollup-plugin-replace@2.1.1:
-  version "2.1.1"
-  resolved "http://registry.npm.taobao.org/rollup-plugin-replace/download/rollup-plugin-replace-2.1.1.tgz#e49cb8d07d6f91a7bf28b90b66692f2c8c0b9bba"
-  integrity sha1-5Jy40H1vkae/KLkLZmkvLIwLm7o=
+rollup-plugin-replace@2.2.0:
+  version "2.2.0"
+  resolved "http://registry.npm.taobao.org/rollup-plugin-replace/download/rollup-plugin-replace-2.2.0.tgz#f41ae5372e11e7a217cde349c8b5d5fd115e70e3"
+  integrity sha1-9BrlNy4R56IXzeNJyLXV/RFecOM=
   dependencies:
     magic-string "^0.25.2"
-    rollup-pluginutils "^2.4.1"
+    rollup-pluginutils "^2.6.0"
 
 rollup-plugin-serve@1.0.1:
   version "1.0.1"
@@ -701,7 +701,7 @@ rollup-plugin-terser@4.0.4:
     serialize-javascript "^1.6.1"
     terser "^3.14.1"
 
-rollup-pluginutils@^2.3.3, rollup-pluginutils@^2.4.1, rollup-pluginutils@^2.5.0:
+rollup-pluginutils@^2.3.3, rollup-pluginutils@^2.5.0, rollup-pluginutils@^2.6.0:
   version "2.6.0"
   resolved "http://registry.npm.taobao.org/rollup-pluginutils/download/rollup-pluginutils-2.6.0.tgz#203706edd43dfafeaebc355d7351119402fc83ad"
   integrity sha1-IDcG7dQ9+v6uvDVdc1ERlAL8g60=
@@ -709,13 +709,13 @@ rollup-pluginutils@^2.3.3, rollup-pluginutils@^2.4.1, rollup-pluginutils@^2.5.0:
     estree-walker "^0.6.0"
     micromatch "^3.1.10"
 
-rollup@1.9.0:
-  version "1.9.0"
-  resolved "http://registry.npm.taobao.org/rollup/download/rollup-1.9.0.tgz#65f7db8d312a07d4e9702316025f91df56ce9f9c"
-  integrity sha1-ZffbjTEqB9TpcCMWAl+R31bOn5w=
+rollup@1.10.0:
+  version "1.10.0"
+  resolved "http://registry.npm.taobao.org/rollup/download/rollup-1.10.0.tgz#91d594aa4386c51ca0883ad4ef2050b469d3e8aa"
+  integrity sha1-kdWUqkOGxRygiDrU7yBQtGnT6Ko=
   dependencies:
     "@types/estree" "0.0.39"
-    "@types/node" "^11.13.0"
+    "@types/node" "^11.13.4"
     acorn "^6.1.1"
 
 safe-buffer@~5.1.0, safe-buffer@~5.1.1:
@@ -797,9 +797,9 @@ source-map-resolve@^0.5.0:
     urix "^0.1.0"
 
 source-map-support@~0.5.10:
-  version "0.5.11"
-  resolved "http://registry.npm.taobao.org/source-map-support/download/source-map-support-0.5.11.tgz#efac2ce0800355d026326a0ca23e162aeac9a4e2"
-  integrity sha1-76ws4IADVdAmMmoMoj4WKurJpOI=
+  version "0.5.12"
+  resolved "http://registry.npm.taobao.org/source-map-support/download/source-map-support-0.5.12.tgz#b4f3b10d51857a5af0138d3ce8003b201613d599"
+  integrity sha1-tPOxDVGFelrwE4086AA7IBYT1Zk=
   dependencies:
     buffer-from "^1.0.0"
     source-map "^0.6.0"
