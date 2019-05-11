@@ -1,2 +1,2 @@
-SITE="https://feedbox.example.com"
-API="https://feedbox.example.com"
+SITE="http://localhost:9000"
+API="http://localhost:8000"

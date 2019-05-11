@@ -1,37 +1,38 @@
-import * as fs from "fs";
-import * as path from "path";
+import * as fs from 'fs'
+import * as path from 'path'
 
-const { mkdir, writeFile, readFile } = fs.promises;
-const readStr = async p => (await readFile(p)).toString();
-const readJSON = async p => JSON.parse(await readStr(p));
+const { mkdir, writeFile, readFile } = fs.promises
+const readStr = async p => (await readFile(p)).toString()
+const readJSON = async p => JSON.parse(await readStr(p))
 
 export default opt => {
     return {
-        name: "template",
+        name: 'template',
         generateBundle: async () => {
-            await new Promise(r => setTimeout(r));
+            await new Promise(r => setTimeout(r))
 
-            const manifest = await readJSON(opt.manifest);
+            const manifest = await readJSON(opt.manifest)
             const replace = s => {
                 return Object.keys(manifest.entry).reduce((acc, key) => {
-                    const val = manifest.entry[key];
+                    const val = manifest.entry[key]
                     const r = acc.replace(
-                        new RegExp("\\$\\{" + key + "\\}", "g"),
+                        new RegExp('\\$\\{' + key + '\\}', 'g'),
                         val,
-                    );
-                    return r;
-                }, s);
-            };
+                    )
+                    return r
+                }, s)
+            }
 
-            const files = Object.keys(opt.files).map(async input => {
-                const file = await readStr(input);
-                const content = replace(file);
+            const jobs = Object.entries(opt.files).map(async pair => {
+                const [src, dst] = pair
 
-                const output = opt.files[input];
-                await mkdir(path.dirname(output), { recursive: true });
-                await writeFile(output, content);
-            });
-            await files;
+                const file = await readStr(src)
+                const content = replace(file)
+
+                await mkdir(path.dirname(dst), { recursive: true })
+                await writeFile(dst, content)
+            })
+            await jobs
         },
-    };
-};
+    }
+}

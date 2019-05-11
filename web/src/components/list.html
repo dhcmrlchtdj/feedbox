@@ -3,7 +3,7 @@
         <h1 class="d-inline-block">feedbox</h1>
         <span>{email}</span>
         <a href="{process.env.API}/api/v1/feeds/export" target="_blank">OPML</a>
-        <a href="{process.env.API}/api/logout" on:click="logout()">logout</a>
+        <a href="{process.env.API}/api/logout" on:click="{logout}">logout</a>
     </div>
     <div class="column col-12"><div class="divider"></div></div>
 
@@ -13,14 +13,14 @@
                 class="form-input"
                 type="text"
                 placeholder="feed url"
-                bind:value="url"
+                bind:value="{addUrl}"
             />
             <button
                 type="button"
                 class="btn btn-primary input-group-btn"
-                class:loading="addLoading"
-                class:disabled="addLoading"
-                on:click="add(url)"
+                class:loading="{addLoading}"
+                class:disabled="{addLoading}"
+                on:click="{add}"
             >
                 add
             </button>
@@ -46,9 +46,9 @@
                     <button
                         type="button"
                         class="btn btn-error"
-                        class:loading="feed.loading"
-                        class:disabled="feed.loading"
-                        on:click="del(feed)"
+                        class:loading="{feed.loading}"
+                        class:disabled="{feed.loading}"
+                        on:click="{() => del(feed)}"
                     >
                         delete
                     </button>
@@ -62,88 +62,54 @@
 
 <script>
     import * as agent from '../utils/agent.js'
-    export default {
-        data() {
-            return {
-                addLoading: false,
-                url: '',
-                email: '',
-                feeds: [],
-            }
-        },
-        helpers: {
-            format(dateStr, fmt = 'YYYY-MM-DD hh:mm:ss') {
-                if (!dateStr) return 'unknown'
+    import format from '../utils/date-format.js'
 
-                const pad = value => `0${value}`.slice(-2)
-                const date = new Date(dateStr)
-                const _year = date.getFullYear()
-                const _month = date.getMonth() + 1
-                const _date = date.getDate()
-                const _hour = date.getHours()
-                const _minute = date.getMinutes()
-                const _second = date.getSeconds()
-                const _ms = date.getMilliseconds()
-                const pairs = {
-                    YYYY: _year,
-                    M: _month,
-                    MM: pad(_month),
-                    D: _date,
-                    DD: pad(_date),
-                    h: _hour,
-                    hh: pad(_hour),
-                    m: _minute,
-                    mm: pad(_minute),
-                    s: _second,
-                    ss: pad(_second),
-                }
+    export let email = ''
+    export let feeds = []
 
-                return fmt.replace(
-                    /YYYY|MM?|DD?|hh?|mm?|ss?/g,
-                    matched => pairs[matched],
-                )
+    let addLoading = false
+    let addUrl = ''
+
+    const del = async feed => {
+        const c = window.confirm(`DELETE "${feed.url}"`)
+        if (!c) return
+
+        feed.loading = true
+        // this.set({ feeds: this.get().feeds })
+        agent
+            .del(
+                `${process.env.API}/api/v1/feeds/remove`,
+                { feedId: feed.id },
+                {
+                    'X-SW-STRATEGY': 'networkOnly',
+                    'X-SW-ACTION': `update;${process.env.API}/api/v1/feeds`,
+                },
+            )
+            .then(resp => {
+                feeds = resp
+            })
+            .catch(err => window.alert(err.message))
+    }
+
+    const add = async () => {
+        addLoading = true
+        const resp = await agent.put(
+            `${process.env.API}/api/v1/feeds/add`,
+            { url: addUrl },
+            {
+                'X-SW-STRATEGY': 'networkOnly',
+                'X-SW-ACTION': `update;${process.env.API}/api/v1/feeds`,
             },
-        },
-        methods: {
-            async del(feed) {
-                const c = window.confirm(`DELETE "${feed.url}"`)
-                if (!c) return
-                feed.loading = true
-                this.set({ feeds: this.get().feeds })
-                agent
-                    .del(
-                        `${process.env.API}/api/v1/feeds/remove`,
-                        { feedId: feed.id },
-                        {
-                            'X-SW-STRATEGY': 'networkOnly',
-                            'X-SW-ACTION': `update;${
-                                process.env.API
-                            }/api/v1/feeds`,
-                        },
-                    )
-                    .then(feeds => this.set({ feeds }))
-                    .catch(err => alert(err.message))
-            },
-            async add(url) {
-                this.set({ addLoading: true })
-                const feeds = await agent.put(
-                    `${process.env.API}/api/v1/feeds/add`,
-                    { url },
-                    {
-                        'X-SW-STRATEGY': 'networkOnly',
-                        'X-SW-ACTION': `update;${process.env.API}/api/v1/feeds`,
-                    },
-                )
-                this.set({ addLoading: false, url: '', feeds })
-            },
-            logout() {
-                if (
-                    navigator.serviceWorker &&
-                    navigator.serviceWorker.controller
-                ) {
-                    navigator.serviceWorker.controller.postMessage('logout')
-                }
-            },
-        },
+        )
+        feeds = resp
+        addUrl = ''
+        addLoading = false
+    }
+
+    const logout = () => {
+        const sw = navigator.serviceWorker
+        if (sw && sw.controller) {
+            sw.controller.postMessage('logout')
+        }
     }
 </script>

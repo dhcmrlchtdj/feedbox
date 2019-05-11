@@ -4,7 +4,7 @@ import route from './sw/route'
 const assets = manifest.bundle
 const builtins = [
     '/',
-    'https://cdn.jsdelivr.net/npm/spectre.css@0.5.7/dist/spectre.min.css',
+    'https://cdn.jsdelivr.net/npm/spectre.css@0.5.8/dist/spectre.min.css',
 ]
 
 const files = [].concat(assets, builtins)

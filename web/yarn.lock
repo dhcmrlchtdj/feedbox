@@ -23,10 +23,22 @@
   resolved "https://registry.npm.taobao.org/@types/estree/download/@types/estree-0.0.39.tgz#e177e699ee1b8c22d23174caaa7422644389509f"
   integrity sha1-4Xfmme4bjCLSMXTKqnQiZEOJUJ8=
 
+"@types/node@*":
+  version "12.0.0"
+  resolved "https://registry.npm.taobao.org/@types/node/download/@types/node-12.0.0.tgz#d11813b9c0ff8aaca29f04cbc12817f4c7d656e5"
+  integrity sha1-0RgTucD/iqyinwTLwSgX9MfWVuU=
+
 "@types/node@^11.13.9":
   version "11.13.10"
   resolved "https://registry.npm.taobao.org/@types/node/download/@types/node-11.13.10.tgz#4df59e5966b56f512bac98898bcbee5067411f0f"
   integrity sha1-TfWeWWa1b1ErrJiJi8vuUGdBHw8=
+
+"@types/resolve@0.0.8":
+  version "0.0.8"
+  resolved "https://registry.npm.taobao.org/@types/resolve/download/@types/resolve-0.0.8.tgz#f26074d238e02659e323ce1a13d041eee280e194"
+  integrity sha1-8mB00jjgJlnjI84aE9BB7uKA4ZQ=
+  dependencies:
+    "@types/node" "*"
 
 acorn@^6.1.1:
   version "6.1.1"
@@ -103,6 +115,11 @@ buffer-from@^1.0.0:
   version "1.1.1"
   resolved "https://registry.npm.taobao.org/buffer-from/download/buffer-from-1.1.1.tgz#32713bc028f75c02fdb710d7c7bcec1f2c6070ef"
   integrity sha1-MnE7wCj3XAL9txDXx7zsHyxgcO8=
+
+builtin-modules@^3.1.0:
+  version "3.1.0"
+  resolved "https://registry.npm.taobao.org/builtin-modules/download/builtin-modules-3.1.0.tgz#aad97c15131eb76b65b50ef208e7584cd76a7484"
+  integrity sha1-qtl8FRMet2tltQ7yCOdYTNdqdIQ=
 
 cache-base@^1.0.1:
   version "1.0.1"
@@ -412,6 +429,11 @@ is-extendable@^1.0.1:
   dependencies:
     is-plain-object "^2.0.4"
 
+is-module@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.npm.taobao.org/is-module/download/is-module-1.0.0.tgz#3258fb69f78c14d5b815d664336b4cffb6441591"
+  integrity sha1-Mlj7afeMFNW4FdZkM2tM/7ZEFZE=
+
 is-number@^3.0.0:
   version "3.0.0"
   resolved "https://registry.npm.taobao.org/is-number/download/is-number-3.0.0.tgz#24fd6201a4782cf50561c810276afc7d12d71195"
@@ -598,6 +620,11 @@ pascalcase@^0.1.1:
   resolved "https://registry.npm.taobao.org/pascalcase/download/pascalcase-0.1.1.tgz#b363e55e8006ca6fe21784d2db22bd15d7917f14"
   integrity sha1-s2PlXoAGym/iF4TS2yK9FdeRfxQ=
 
+path-parse@^1.0.6:
+  version "1.0.6"
+  resolved "https://registry.npm.taobao.org/path-parse/download/path-parse-1.0.6.tgz#d62dbb5679405d72c4737ec58600e9ddcf06d24c"
+  integrity sha1-1i27VnlAXXLEc37FhgDp3c8G0kw=
+
 posix-character-classes@^0.1.0:
   version "0.1.1"
   resolved "https://registry.npm.taobao.org/posix-character-classes/download/posix-character-classes-0.1.1.tgz#01eac0fe3b5af71a2a6c02feabb8c1fef7e00eab"
@@ -654,6 +681,13 @@ resolve-url@^0.2.1:
   resolved "https://registry.npm.taobao.org/resolve-url/download/resolve-url-0.2.1.tgz#2c637fe77c893afd2a663fe21aa9080068e2052a"
   integrity sha1-LGN/53yJOv0qZj/iGqkIAGjiBSo=
 
+resolve@^1.10.0:
+  version "1.10.1"
+  resolved "https://registry.npm.taobao.org/resolve/download/resolve-1.10.1.tgz#664842ac960795bbe758221cdccda61fb64b5f18"
+  integrity sha1-ZkhCrJYHlbvnWCIc3M2mH7ZLXxg=
+  dependencies:
+    path-parse "^1.0.6"
+
 ret@~0.1.10:
   version "0.1.15"
   resolved "https://registry.npm.taobao.org/ret/download/ret-0.1.15.tgz#b8a4825d5bdb1fc3f6f53c2bc33f81388681c7bc"
@@ -665,6 +699,16 @@ rollup-plugin-json@4.0.0:
   integrity sha1-oY2gpLML9coe523bFCKvu4SuK54=
   dependencies:
     rollup-pluginutils "^2.5.0"
+
+rollup-plugin-node-resolve@4.2.3:
+  version "4.2.3"
+  resolved "https://registry.npm.taobao.org/rollup-plugin-node-resolve/download/rollup-plugin-node-resolve-4.2.3.tgz#638a373a54287d19fcc088fdd1c6fd8a58e4d90a"
+  integrity sha1-Y4o3OlQofRn8wIj90cb9iljk2Qo=
+  dependencies:
+    "@types/resolve" "0.0.8"
+    builtin-modules "^3.1.0"
+    is-module "^1.0.0"
+    resolve "^1.10.0"
 
 rollup-plugin-replace@2.2.0:
   version "2.2.0"
