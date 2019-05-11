@@ -1,7 +1,21 @@
 import prepare from './prepare'
-import * as Hapi from 'hapi'
+import * as Hapi from '@hapi/hapi'
 import plugins from './plugins'
 import routes from './routes'
+
+const corsConf = {
+    headers: [
+        'Accept',
+        'Authorization',
+        'Content-Type',
+        'If-None-Match',
+        'Content-Type',
+        'X-SW-Strategy',
+        'X-SW-Race',
+        'X-SW-Action',
+    ],
+    credentials: true,
+}
 
 const main = async (): Promise<void> => {
     await prepare()
@@ -11,22 +25,7 @@ const main = async (): Promise<void> => {
         port: Number(process.env.PORT || 8000),
         routes: {
             payload: { allow: ['application/json'] },
-            cors:
-                process.env.API === process.env.SITE
-                    ? false
-                    : {
-                          headers: [
-                              'Accept',
-                              'Authorization',
-                              'Content-Type',
-                              'If-None-Match',
-                              'Content-Type',
-                              'X-SW-Strategy',
-                              'X-SW-Race',
-                              'X-SW-Action',
-                          ],
-                          credentials: true,
-                      },
+            cors: process.env.API === process.env.SITE ? false : corsConf,
         },
     })
 

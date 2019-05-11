@@ -18,30 +18,29 @@
         "yarn": "1.*"
     },
     "dependencies": {
-        "bell": "10.0.0",
-        "boom": "7.3.0",
+        "@hapi/basic": "5.1.0",
+        "@hapi/bell": "10.1.0",
+        "@hapi/boom": "7.4.2",
+        "@hapi/cookie": "10.1.0",
+        "@hapi/hapi": "18.3.1",
+        "@hapi/joi": "15.0.2",
         "dotenv-safe": "6.1.0",
         "feedparser": "2.2.9",
-        "hapi": "18.1.0",
-        "hapi-auth-basic": "5.0.0",
-        "hapi-auth-cookie": "10.0.0",
         "hapi-pino": "5.4.1",
-        "joi": "14.3.1",
         "mailgun-js": "0.22.0",
-        "node-fetch": "2.3.0",
-        "pg": "7.9.0",
+        "node-fetch": "2.5.0",
+        "pg": "7.11.0",
         "reflect-metadata": "0.1.13",
-        "sqlite3": "4.0.6",
-        "typeorm": "0.2.16"
+        "sqlite3": "4.0.7",
+        "typeorm": "0.2.17"
     },
     "devDependencies": {
         "@types/feedparser": "2.2.2",
-        "@types/joi": "14.3.2",
         "@types/mailgun-js": "0.16.3",
-        "@types/node": "11.13.4",
-        "@types/node-fetch": "2.3.2",
-        "nodemon": "1.18.11",
+        "@types/node": "12.0.0",
+        "@types/node-fetch": "2.3.3",
+        "nodemon": "1.19.0",
         "prettier": "1.17.0",
-        "typescript": "3.4.3"
+        "typescript": "3.4.5"
     }
 }

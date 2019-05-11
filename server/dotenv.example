@@ -1,8 +1,8 @@
 CRON_USERNAME="username"
 CRON_PASSWORD="crypto.randomBytes(2).toString('hex')"
 
-SITE="https://feedbox.example.com"
-API="https://feedbox.example.com"
+SITE="http://localhost:9000"
+API="http://localhost:8000"
 
 COOKIE_SECRET="crypto.randomBytes(2).toString('hex')"
 

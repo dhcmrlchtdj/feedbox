@@ -1,4 +1,4 @@
-import * as bell from 'bell'
+import * as bell from '@hapi/bell'
 
 export default async (server): Promise<void> => {
     await server.register(bell)

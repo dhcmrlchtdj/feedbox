@@ -1,4 +1,4 @@
-import * as Joi from 'joi'
+import * as Joi from '@hapi/joi'
 import Feed from '../models/feed'
 import extractSite from '../utils/extract-site'
 

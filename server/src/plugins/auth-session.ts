@@ -1,4 +1,4 @@
-import * as authCookie from 'hapi-auth-cookie'
+import * as authCookie from '@hapi/cookie'
 import User from '../models/user'
 
 const validate = async (_request, session) => {
