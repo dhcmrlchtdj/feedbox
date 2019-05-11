@@ -17,9 +17,9 @@
     import Deferred from './utils/deferred.js'
 
     const state = self.__STATE__ || {}
-    let loaded = state.loaded || new Deferred()
-    let email = state.email || ''
-    let feeds = state.feeds || []
+    export let loaded = state.loaded || new Deferred()
+    export let email = state.email || ''
+    export let feeds = state.feeds || []
 
     Promise.all([
         agent.get(`${process.env.API}/api/v1/user`, {
