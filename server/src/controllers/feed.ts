@@ -61,6 +61,7 @@ export const exportFeeds = {
                 const xmlUrl = feed.url
                 return `<outline type="rss" text="${text}" xmlUrl="${xmlUrl}"/>`
             })
+            .sort()
             .join('\n')
         const opml = [
             '<?xml version="1.0" encoding="utf-8"?>',
