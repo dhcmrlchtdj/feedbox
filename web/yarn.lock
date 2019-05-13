@@ -700,10 +700,10 @@ rollup-plugin-json@4.0.0:
   dependencies:
     rollup-pluginutils "^2.5.0"
 
-rollup-plugin-node-resolve@4.2.3:
-  version "4.2.3"
-  resolved "https://registry.npm.taobao.org/rollup-plugin-node-resolve/download/rollup-plugin-node-resolve-4.2.3.tgz#638a373a54287d19fcc088fdd1c6fd8a58e4d90a"
-  integrity sha1-Y4o3OlQofRn8wIj90cb9iljk2Qo=
+rollup-plugin-node-resolve@4.2.4:
+  version "4.2.4"
+  resolved "https://registry.npm.taobao.org/rollup-plugin-node-resolve/download/rollup-plugin-node-resolve-4.2.4.tgz#7d370f8d6fd3031006a0032c38262dd9be3c6250"
+  integrity sha1-fTcPjW/TAxAGoAMsOCYt2b48YlA=
   dependencies:
     "@types/resolve" "0.0.8"
     builtin-modules "^3.1.0"

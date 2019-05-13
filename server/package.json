@@ -26,12 +26,12 @@
         "@hapi/joi": "15.0.2",
         "dotenv-safe": "6.1.0",
         "feedparser": "2.2.9",
-        "hapi-pino": "5.4.1",
+        "hapi-pino": "6.0.0",
         "mailgun-js": "0.22.0",
         "node-fetch": "2.5.0",
         "pg": "7.11.0",
         "reflect-metadata": "0.1.13",
-        "sqlite3": "4.0.7",
+        "sqlite3": "4.0.8",
         "typeorm": "0.2.17"
     },
     "devDependencies": {
