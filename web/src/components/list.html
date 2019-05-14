@@ -75,7 +75,6 @@
         if (!c) return
 
         feed.loading = true
-        // this.set({ feeds: this.get().feeds })
         agent
             .del(
                 `${process.env.API}/api/v1/feeds/remove`,
@@ -93,17 +92,21 @@
 
     const add = async () => {
         addLoading = true
-        const resp = await agent.put(
-            `${process.env.API}/api/v1/feeds/add`,
-            { url: addUrl },
-            {
-                'X-SW-STRATEGY': 'networkOnly',
-                'X-SW-ACTION': `update;${process.env.API}/api/v1/feeds`,
-            },
-        )
-        feeds = resp
-        addUrl = ''
-        addLoading = false
+        agent
+            .put(
+                `${process.env.API}/api/v1/feeds/add`,
+                { url: addUrl },
+                {
+                    'X-SW-STRATEGY': 'networkOnly',
+                    'X-SW-ACTION': `update;${process.env.API}/api/v1/feeds`,
+                },
+            )
+            .then(resp => {
+                feeds = resp
+                addUrl = ''
+                addLoading = false
+            })
+            .catch(err => window.alert(err.message))
     }
 
     const logout = () => {
