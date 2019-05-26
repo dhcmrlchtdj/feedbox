@@ -17,7 +17,7 @@ const corsConf = {
     credentials: true,
 }
 
-const main = async (): Promise<void> => {
+const main = async () => {
     await prepare()
 
     const server = Hapi.server({

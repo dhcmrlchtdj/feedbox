@@ -33,13 +33,13 @@ export const remove = {
             feedId: Joi.number(),
         },
     },
-    async handler(request, h) {
+    async handler(request, _h) {
         const { feedId } = request.payload
         const { userId } = request.auth.credentials
         await Feed.removeUser(feedId, userId)
 
         const feeds = await Feed.takeByUser(userId)
-        return h.response(feeds)
+        return feeds
     },
 }
 
