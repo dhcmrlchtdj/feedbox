@@ -31,6 +31,7 @@
         "node-fetch": "2.6.0",
         "pg": "7.11.0",
         "reflect-metadata": "0.1.13",
+        "rollbar": "2.7.1",
         "sqlite3": "4.0.8",
         "typeorm": "0.2.17"
     },

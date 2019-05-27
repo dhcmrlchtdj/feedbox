@@ -1,5 +1,6 @@
 import { PassThrough } from 'stream'
 import * as FeedParser from 'feedparser'
+import rollbar from './rollbar'
 
 type FeedItem = FeedParser.Item
 export { FeedItem }
@@ -11,7 +12,7 @@ const parse = async (feedurl: string, content: string): Promise<FeedItem[]> => {
 
         feedparser.on('end', () => resolve(feed))
         feedparser.on('error', err => {
-            console.error(err)
+            rollbar.error(err)
             resolve([])
         })
         feedparser.on('readable', function(this: any) {

@@ -1,4 +1,5 @@
 import * as Mailgun from 'mailgun-js'
+import rollbar from './rollbar'
 
 const mg = new Mailgun({
     apiKey: process.env.MAILGUN_API_KEY as string,
@@ -24,7 +25,7 @@ const send = async (
     try {
         await used(data)
     } catch (err) {
-        console.error(err)
+        rollbar.error(err)
     }
 }
 

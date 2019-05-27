@@ -14,4 +14,6 @@ MAILGUN_API_KEY="key-example"
 MAILGUN_DOMAIN="feedbox.example.com"
 MAILGUN_FROM="feedbox <feedbox@example.com>"
 
+ROLLBAR_TOKEN="https://rollbar.com"
+
 DATABASE_URL="postgres://example"
