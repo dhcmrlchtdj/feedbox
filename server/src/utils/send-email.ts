@@ -10,11 +10,7 @@ const sendEmail = async data => mg.messages().send(data)
 const debugEmail = async data => console.log(data.to, data.subject)
 const used = process.env.NODE_ENV === 'production' ? sendEmail : debugEmail
 
-const send = async (
-    addr: string,
-    subject: string,
-    text: string,
-): Promise<void> => {
+const send = async (addr: string, subject: string, text: string) => {
     const data = {
         from: process.env.MAILGUN_FROM,
         to: [addr],

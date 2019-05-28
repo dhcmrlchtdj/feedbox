@@ -3,7 +3,7 @@ import { createConnection } from 'typeorm'
 import User from './user'
 import Feed from './feed'
 
-const initDB = async (): Promise<void> => {
+const initDB = async () => {
     const base = {
         entities: [User, Feed],
         // maxQueryExecutionTime: 100,

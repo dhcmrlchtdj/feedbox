@@ -1,6 +1,6 @@
 import * as bell from '@hapi/bell'
 
-export default async (server): Promise<void> => {
+export default async server => {
     await server.register(bell)
 
     server.auth.strategy('github', 'bell', {

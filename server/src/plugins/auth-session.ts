@@ -10,7 +10,7 @@ const validate = async (_request, session) => {
     }
 }
 
-export default async (server): Promise<void> => {
+export default async server => {
     await server.register(authCookie)
 
     server.auth.strategy('session', 'cookie', {

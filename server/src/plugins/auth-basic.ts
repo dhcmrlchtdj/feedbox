@@ -12,7 +12,7 @@ const validate = async (_request, username: string, password: string, h) => {
     }
 }
 
-export default async (server): Promise<void> => {
+export default async server => {
     await server.register(authBasic)
     server.auth.strategy('cron', 'basic', { validate })
 }

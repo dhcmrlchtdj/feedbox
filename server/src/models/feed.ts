@@ -71,7 +71,7 @@ export default class Feed extends BaseEntity {
         return feeds
     }
 
-    static async addUser(feedId: number, userId: number): Promise<void> {
+    static async addUser(feedId: number, userId: number) {
         try {
             await Feed.createQueryBuilder('feed')
                 .relation(Feed, 'users')
@@ -84,7 +84,7 @@ export default class Feed extends BaseEntity {
         }
     }
 
-    static async removeUser(feedId: number, userId: number): Promise<void> {
+    static async removeUser(feedId: number, userId: number) {
         await Feed.createQueryBuilder('feed')
             .relation(Feed, 'users')
             .of(feedId)

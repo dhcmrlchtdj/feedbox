@@ -4,7 +4,7 @@ import authBasic from './auth-basic'
 import authSession from './auth-session'
 import OAuth from './oauth'
 
-const register = async (server): Promise<void> => {
+const register = async server => {
     await server.register(logger)
     await server.register(rollbar)
 

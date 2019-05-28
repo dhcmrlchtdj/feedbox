@@ -15,6 +15,6 @@ if (process.env.NODE_ENV !== 'production') {
     })
 }
 
-export default async (): Promise<void> => {
+export default async () => {
     await initDB()
 }
