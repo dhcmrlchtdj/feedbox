@@ -7,7 +7,11 @@ const rollbarPlugin = {
             const resp = request.response
             if (resp.isBoom) {
                 const error = resp instanceof Error ? resp : `Error: ${resp}`
-                rollbar.error(error, request)
+                if (resp.output.statusCode >= 500) {
+                    rollbar.error(error, request)
+                } else {
+                    rollbar.info(error, request)
+                }
             }
             return h.continue
         }
