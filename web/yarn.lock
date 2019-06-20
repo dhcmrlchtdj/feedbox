@@ -23,10 +23,10 @@
   resolved "https://registry.npm.taobao.org/@types/estree/download/@types/estree-0.0.39.tgz#e177e699ee1b8c22d23174caaa7422644389509f"
   integrity sha1-4Xfmme4bjCLSMXTKqnQiZEOJUJ8=
 
-"@types/node@*", "@types/node@^12.0.3":
-  version "12.0.3"
-  resolved "https://registry.npm.taobao.org/@types/node/download/@types/node-12.0.3.tgz#5d8d24e0033fc6393efadc85cb59c1f638095c9a"
-  integrity sha1-XY0k4AM/xjk++tyFy1nB9jgJXJo=
+"@types/node@*", "@types/node@^12.0.8":
+  version "12.0.10"
+  resolved "https://registry.npm.taobao.org/@types/node/download/@types/node-12.0.10.tgz#51babf9c7deadd5343620055fc8aff7995c8b031"
+  integrity sha1-Ubq/nH3q3VNDYgBV/Ir/eZXIsDE=
 
 "@types/resolve@0.0.8":
   version "0.0.8"
@@ -121,9 +121,9 @@ has-flag@^3.0.0:
   integrity sha1-tdRU3CGZriJWmfNGfloH87lVuv0=
 
 inherits@~2.0.3:
-  version "2.0.3"
-  resolved "https://registry.npm.taobao.org/inherits/download/inherits-2.0.3.tgz#633c2c83e3da42a502f52466022480f4208261de"
-  integrity sha1-Yzwsg+PaQqUC9SRmAiSA9CCCYd4=
+  version "2.0.4"
+  resolved "https://registry.npm.taobao.org/inherits/download/inherits-2.0.4.tgz#0fa2c64f932917c3433a0ded55363aae37416b7c"
+  integrity sha1-D6LGT5MpF8NDOg3tVTY6rjdBa3w=
 
 is-module@^1.0.0:
   version "1.0.0"
@@ -163,9 +163,9 @@ merge-stream@^1.0.1:
     readable-stream "^2.0.1"
 
 mime@>=2.0.3:
-  version "2.4.3"
-  resolved "https://registry.npm.taobao.org/mime/download/mime-2.4.3.tgz#229687331e86f68924e6cb59e1cdd937f18275fe"
-  integrity sha1-IpaHMx6G9okk5stZ4c3ZN/GCdf4=
+  version "2.4.4"
+  resolved "https://registry.npm.taobao.org/mime/download/mime-2.4.4.tgz#bd7b91135fc6b01cde3e9bae33d659b63d8857e5"
+  integrity sha1-vXuRE1/GsBzePpuuM9ZZtj2IV+U=
 
 opener@1:
   version "1.5.1"
@@ -177,15 +177,15 @@ path-parse@^1.0.6:
   resolved "https://registry.npm.taobao.org/path-parse/download/path-parse-1.0.6.tgz#d62dbb5679405d72c4737ec58600e9ddcf06d24c"
   integrity sha1-1i27VnlAXXLEc37FhgDp3c8G0kw=
 
-prettier@1.17.1:
-  version "1.17.1"
-  resolved "https://registry.npm.taobao.org/prettier/download/prettier-1.17.1.tgz#ed64b4e93e370cb8a25b9ef7fef3e4fd1c0995db"
-  integrity sha1-7WS06T43DLiiW573/vPk/RwJlds=
+prettier@1.18.2:
+  version "1.18.2"
+  resolved "https://registry.npm.taobao.org/prettier/download/prettier-1.18.2.tgz#6823e7c5900017b4bd3acf46fe9ac4b4d7bda9ea"
+  integrity sha1-aCPnxZAAF7S9Os9G/prEtNe9qeo=
 
 process-nextick-args@~2.0.0:
-  version "2.0.0"
-  resolved "https://registry.npm.taobao.org/process-nextick-args/download/process-nextick-args-2.0.0.tgz#a37d732f4271b4ab1ad070d35508e8290788ffaa"
-  integrity sha1-o31zL0JxtKsa0HDTVQjoKQeI/6o=
+  version "2.0.1"
+  resolved "https://registry.npm.taobao.org/process-nextick-args/download/process-nextick-args-2.0.1.tgz?cache=0&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Fprocess-nextick-args%2Fdownload%2Fprocess-nextick-args-2.0.1.tgz#7820d9b16120cc55ca9ae7792680ae7dba6d7fe2"
+  integrity sha1-eCDZsWEgzFXKmud5JoCufbptf+I=
 
 readable-stream@^2.0.1:
   version "2.3.6"
@@ -205,10 +205,10 @@ require-relative@^0.8.7:
   resolved "https://registry.npm.taobao.org/require-relative/download/require-relative-0.8.7.tgz#7999539fc9e047a37928fa196f8e1563dabd36de"
   integrity sha1-eZlTn8ngR6N5KPoZb44VY9q9Nt4=
 
-resolve@^1.10.1:
-  version "1.11.0"
-  resolved "https://registry.npm.taobao.org/resolve/download/resolve-1.11.0.tgz#4014870ba296176b86343d50b60f3b50609ce232"
-  integrity sha1-QBSHC6KWF2uGND1Qtg87UGCc4jI=
+resolve@^1.11.1:
+  version "1.11.1"
+  resolved "https://registry.npm.taobao.org/resolve/download/resolve-1.11.1.tgz#ea10d8110376982fef578df8fc30b9ac30a07a3e"
+  integrity sha1-6hDYEQN2mC/vV434/DC5rDCgej4=
   dependencies:
     path-parse "^1.0.6"
 
@@ -219,16 +219,16 @@ rollup-plugin-json@4.0.0:
   dependencies:
     rollup-pluginutils "^2.5.0"
 
-rollup-plugin-node-resolve@5.0.0:
-  version "5.0.0"
-  resolved "https://registry.npm.taobao.org/rollup-plugin-node-resolve/download/rollup-plugin-node-resolve-5.0.0.tgz#754abf4841ed4bab2241551cba0a11d04c57f290"
-  integrity sha1-dUq/SEHtS6siQVUcugoR0ExX8pA=
+rollup-plugin-node-resolve@5.1.0:
+  version "5.1.0"
+  resolved "https://registry.npm.taobao.org/rollup-plugin-node-resolve/download/rollup-plugin-node-resolve-5.1.0.tgz#49608b6ecaf2b776ab83e317d39b282d65d21b76"
+  integrity sha1-SWCLbsryt3arg+MX05soLWXSG3Y=
   dependencies:
     "@types/resolve" "0.0.8"
     builtin-modules "^3.1.0"
     is-module "^1.0.0"
-    resolve "^1.10.1"
-    rollup-pluginutils "^2.7.0"
+    resolve "^1.11.1"
+    rollup-pluginutils "^2.8.1"
 
 rollup-plugin-replace@2.2.0:
   version "2.2.0"
@@ -246,10 +246,10 @@ rollup-plugin-serve@1.0.1:
     mime ">=2.0.3"
     opener "1"
 
-rollup-plugin-svelte@5.0.3:
-  version "5.0.3"
-  resolved "https://registry.npm.taobao.org/rollup-plugin-svelte/download/rollup-plugin-svelte-5.0.3.tgz#1e4cce33a94b0b4b4831abc7d76eabdf333ab63d"
-  integrity sha1-HkzOM6lLC0tIMavH126r3zM6tj0=
+rollup-plugin-svelte@5.1.0:
+  version "5.1.0"
+  resolved "https://registry.npm.taobao.org/rollup-plugin-svelte/download/rollup-plugin-svelte-5.1.0.tgz#6c2d3998db9141a934343a0e7298499994aadd25"
+  integrity sha1-bC05mNuRQak0NDoOcphJmZSq3SU=
   dependencies:
     require-relative "^0.8.7"
     rollup-pluginutils "^2.3.3"
@@ -265,20 +265,20 @@ rollup-plugin-terser@5.0.0:
     serialize-javascript "^1.7.0"
     terser "^4.0.0"
 
-rollup-pluginutils@^2.3.3, rollup-pluginutils@^2.5.0, rollup-pluginutils@^2.6.0, rollup-pluginutils@^2.7.0:
-  version "2.8.0"
-  resolved "https://registry.npm.taobao.org/rollup-pluginutils/download/rollup-pluginutils-2.8.0.tgz#d7ece1502958a35748a74080c7ac5e95681bcbe9"
-  integrity sha1-1+zhUClYo1dIp0CAx6xelWgby+k=
+rollup-pluginutils@^2.3.3, rollup-pluginutils@^2.5.0, rollup-pluginutils@^2.6.0, rollup-pluginutils@^2.8.1:
+  version "2.8.1"
+  resolved "https://registry.npm.taobao.org/rollup-pluginutils/download/rollup-pluginutils-2.8.1.tgz#8fa6dd0697344938ef26c2c09d2488ce9e33ce97"
+  integrity sha1-j6bdBpc0STjvJsLAnSSIzp4zzpc=
   dependencies:
     estree-walker "^0.6.1"
 
-rollup@1.12.5:
-  version "1.12.5"
-  resolved "https://registry.npm.taobao.org/rollup/download/rollup-1.12.5.tgz#11840535a2bc3591e95583c111d55fdf795e55c8"
-  integrity sha1-EYQFNaK8NZHpVYPBEdVf33leVcg=
+rollup@1.16.2:
+  version "1.16.2"
+  resolved "https://registry.npm.taobao.org/rollup/download/rollup-1.16.2.tgz#959aeae4b06c8e540749bac442d6d37aefb9217d"
+  integrity sha1-lZrq5LBsjlQHSbrEQtbTeu+5IX0=
   dependencies:
     "@types/estree" "0.0.39"
-    "@types/node" "^12.0.3"
+    "@types/node" "^12.0.8"
     acorn "^6.1.1"
 
 safe-buffer@~5.1.0, safe-buffer@~5.1.1:
@@ -330,10 +330,10 @@ supports-color@^6.1.0:
   dependencies:
     has-flag "^3.0.0"
 
-svelte@3.4.4:
-  version "3.4.4"
-  resolved "https://registry.npm.taobao.org/svelte/download/svelte-3.4.4.tgz#8dcb60796b2b5a47175371f0763a612bf33a0944"
-  integrity sha1-jctgeWsrWkcXU3HwdjphK/M6CUQ=
+svelte@3.5.4:
+  version "3.5.4"
+  resolved "https://registry.npm.taobao.org/svelte/download/svelte-3.5.4.tgz#000574e7f05ca84acea3d8dc9ec91b5491ca6b2c"
+  integrity sha1-AAV05/BcqErOo9jcnskbVJHKayw=
 
 terser@^4.0.0:
   version "4.0.0"
