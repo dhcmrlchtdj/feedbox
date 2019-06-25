@@ -60,14 +60,18 @@ const feed2feeds = async (feed: Feed): Promise<Tfeeds | null> => {
     }
 }
 
+const feed2link = (feed: FeedItem): string => {
+    return feed.origlink || feed.link || feed.guid
+}
+
 const feeds2entries = async (feeds: Tfeeds): Promise<Tentries | null> => {
-    const prevIds = new Set(feeds.prev.map(m => m.guid))
+    const prevLinks = new Set(feeds.prev.map(m => feed2link(m)))
     const entries = feeds.curr
-        .filter(m => !prevIds.has(m.guid))
+        .filter(m => !prevLinks.has(feed2link(m)))
         .map(m => {
             const title = m.title || 'unknown'
             const site = extractSite(feeds.feed.url)
-            const link = m.origlink || m.link || m.meta.link || feeds.feed.url
+            const link = feed2link(m)
             const article = m.description || m.summary || 'unknown'
             return {
                 title: `"${title}" from "${site}"`,
