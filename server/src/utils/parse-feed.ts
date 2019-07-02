@@ -12,7 +12,7 @@ const parse = async (feedurl: string, content: string): Promise<FeedItem[]> => {
 
         feedparser.on('end', () => resolve(feed))
         feedparser.on('error', err => {
-            rollbar.error(err, { feedurl })
+            rollbar.info(err, { feedurl })
             resolve([])
         })
         feedparser.on('readable', function(this: any) {
