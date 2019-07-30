@@ -29,19 +29,19 @@
         "hapi-pino": "6.0.1",
         "mailgun-js": "0.22.0",
         "node-fetch": "2.6.0",
-        "pg": "7.11.0",
+        "pg": "7.12.0",
         "reflect-metadata": "0.1.13",
-        "rollbar": "2.7.1",
+        "rollbar": "2.9.0",
         "sqlite3": "4.0.9",
         "typeorm": "0.2.18"
     },
     "devDependencies": {
-        "@types/feedparser": "2.2.2",
-        "@types/mailgun-js": "0.16.4",
-        "@types/node": "12.0.10",
-        "@types/node-fetch": "2.3.7",
+        "@types/feedparser": "2.2.3",
+        "@types/mailgun-js": "0.22.2",
+        "@types/node": "12.6.8",
+        "@types/node-fetch": "2.5.0",
         "nodemon": "1.19.1",
         "prettier": "1.18.2",
-        "typescript": "3.5.2"
+        "typescript": "3.5.3"
     }
 }

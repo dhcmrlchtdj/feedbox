@@ -5,7 +5,7 @@ command = "yarn run build"
 
 [build.environment]
 NODE_VERSION = "10"
-YARN_VERSION = "1.17.0"
+YARN_VERSION = "1.17.3"
 SITE = "https://feedbox.h11.io"
 API = "https://feedbox.h11.io"
 
