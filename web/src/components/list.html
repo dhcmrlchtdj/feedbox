@@ -104,9 +104,9 @@
             .then(resp => {
                 feeds = resp
                 addUrl = ''
-                addLoading = false
             })
             .catch(err => window.alert(err.message))
+            .then(() => (addLoading = false))
     }
 
     const logout = () => {
