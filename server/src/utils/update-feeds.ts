@@ -93,6 +93,7 @@ const updateFeeds = async () => {
         const e = await feeds2entries(feed, f)
 
         // update db
+        // FIXME: how to batch?
         await Promise.all(
             e.map(async x => {
                 const l = new Link()
