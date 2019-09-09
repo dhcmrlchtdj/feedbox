@@ -53,7 +53,7 @@ export default class Feed extends BaseEntity {
     static async takeAll(): Promise<Feed[]> {
         const feeds = await Feed.createQueryBuilder('feed')
             .innerJoinAndSelect('feed.users', 'user')
-            .innerJoinAndSelect('feed.links', 'link')
+            .leftJoinAndSelect('feed.links', 'link')
             .getMany()
         return feeds
     }

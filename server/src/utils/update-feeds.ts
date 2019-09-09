@@ -93,17 +93,19 @@ const updateFeeds = async () => {
         const e = await feeds2entries(feed, f)
 
         // update db
-        e.map(x => {
-            const l = new Link()
-            l.url = x.url
-            feed.links.push(l)
-        })
+        await Promise.all(
+            e.map(async x => {
+                const l = new Link()
+                l.url = x.url
+                await l.save()
+                feed.links.push(l)
+            }),
+        )
         await feed.save()
 
         // send emails
         const m = await entries2mails(feed, e)
-        const t = m.map(x => sendEmail(x.addr, x.subject, x.text))
-        await Promise.all(t)
+        await Promise.all(m.map(x => sendEmail(x.addr, x.subject, x.text)))
     })
 }
 
