@@ -1,32 +1,27 @@
 import Feed from '../models/feed'
+import Link from '../models/link'
 import fetch from 'node-fetch'
 import parseFeed, { FeedItem } from './parse-feed'
 import sendEmail from './send-email'
 import extractSite from './extract-site'
 
-type Tfeeds = {
-    feed: Feed
-    prev: FeedItem[]
-    curr: FeedItem[]
-    currText: string
+type TEntry = {
+    url: string
+    title: string
+    content: string
 }
-type Tentries = {
-    feed: Feed
-    entries: Array<{
-        title: string
-        content: string
-    }>
-}
-type Tmail = {
+
+type TMail = {
     addr: string
     subject: string
     text: string
 }
 
-const feed2feeds = async (feed: Feed): Promise<Tfeeds | null> => {
+const feed2feeds = async (feed: Feed): Promise<FeedItem[]> => {
     const url = feed.url
+
     console.debug(`${url} - fetching`)
-    const curr = await fetch(url, {
+    const resp = await fetch(url, {
         headers: { 'user-agent': 'feedbox.h11.io' },
     })
         .then(res => res.text())
@@ -36,55 +31,41 @@ const feed2feeds = async (feed: Feed): Promise<Tfeeds | null> => {
         })
 
     console.debug(`${url} - fetched`)
-    if (!curr) return null
-    if (curr === feed.content) {
-        console.debug(`${url} - no change`)
-        return null
-    }
-
-    const currFeed = await parseFeed(url, curr)
-    if (currFeed.length === 0) {
-        console.debug(`${url} - no content`)
-        return null
-    }
-
-    console.debug(`${url} - processing`)
-
-    let prevFeed: FeedItem[] = []
-    if (feed.content) prevFeed = await parseFeed(url, feed.content)
-    return {
-        feed,
-        prev: prevFeed,
-        curr: currFeed,
-        currText: curr,
-    }
+    if (!resp) return []
+    const feeds = await parseFeed(url, resp)
+    return feeds
 }
 
 const feed2link = (feed: FeedItem): string => {
     return feed.origlink || feed.link || feed.guid
 }
-
-const feeds2entries = async (feeds: Tfeeds): Promise<Tentries | null> => {
-    const prevLinks = new Set(feeds.prev.map(m => feed2link(m)))
-    const entries = feeds.curr
+const feeds2entries = async (
+    feed: Feed,
+    feeds: FeedItem[],
+): Promise<TEntry[]> => {
+    const prevLinks = new Set(feed.links.map(x => x.url))
+    const entries = feeds
         .filter(m => !prevLinks.has(feed2link(m)))
         .map(m => {
             const title = m.title || 'unknown'
-            const site = extractSite(feeds.feed.url)
+            const site = extractSite(feed.url)
             const link = feed2link(m)
             const article = m.description || m.summary || 'unknown'
             return {
+                url: link,
                 title: `"${title}" from "${site}"`,
                 content: `${link}<br><br><br>${article}`,
             }
         })
-    if (entries.length === 0) return null
-    return { feed: feeds.feed, entries }
+    return entries
 }
 
-const entries2mails = async (entries: Tentries): Promise<Tmail[]> => {
-    const users = entries.feed.users
-    const mails = entries.entries.map(entry => {
+const entries2mails = async (
+    feed: Feed,
+    entries: TEntry[],
+): Promise<TMail[]> => {
+    const users = feed.users
+    const mails = entries.map(entry => {
         const ms = users.map(user => ({
             addr: user.email,
             subject: entry.title,
@@ -92,38 +73,37 @@ const entries2mails = async (entries: Tentries): Promise<Tmail[]> => {
         }))
         return ms
     })
-    const flatten = ([] as Tmail[]).concat(...mails)
+    const flatten = ([] as TMail[]).concat(...mails)
     return flatten
 }
 
 const updateFeeds = async () => {
     const feeds = await Feed.takeAll()
     feeds.forEach(async feed => {
-        // fetch feed
+        // fetch feeds
         const f = await feed2feeds(feed)
 
-        // save state
+        // update db
         feed.lastCheck = new Date()
-        if (f) {
-            // invalid byte sequence for encoding "UTF8": 0x00
-            feed.content = f.currText.replace(/\0/g, '')
-            feed.lastUpdated = f.curr[0].date || new Date()
+        if (f.length !== 0) {
+            feed.lastUpdated = f[0].date || new Date()
         }
+
+        // extract articles
+        const e = await feeds2entries(feed, f)
+
+        // update db
+        e.map(x => {
+            const l = new Link()
+            l.url = x.url
+            feed.links.push(l)
+        })
         await feed.save()
 
-        // no content
-        if (!f) return
-        // first time
-        if (f.prev.length === 0) return
-
-        // extract entry
-        const e = await feeds2entries(f)
-        if (!e) return
-
-        // send email
-        const m = await entries2mails(e)
-        const s = m.map(m => sendEmail(m.addr, m.subject, m.text))
-        await Promise.all(s)
+        // send emails
+        const m = await entries2mails(feed, e)
+        const t = m.map(x => sendEmail(x.addr, x.subject, x.text))
+        await Promise.all(t)
     })
 }
 

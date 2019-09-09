@@ -2,10 +2,11 @@ import * as path from 'path'
 import { createConnection } from 'typeorm'
 import User from './user'
 import Feed from './feed'
+import Link from './link'
 
 const initDB = async () => {
     const base = {
-        entities: [User, Feed],
+        entities: [User, Feed, Link],
         // maxQueryExecutionTime: 100,
         // logging: true,
         logger: 'simple-console',

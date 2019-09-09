@@ -5,9 +5,11 @@ import {
     PrimaryGeneratedColumn,
     CreateDateColumn,
     UpdateDateColumn,
+    OneToMany,
     ManyToMany,
 } from 'typeorm'
 import User from './user'
+import Link from './link'
 
 @Entity()
 export default class Feed extends BaseEntity {
@@ -32,6 +34,9 @@ export default class Feed extends BaseEntity {
     @Column({ type: 'text', nullable: true, select: false })
     content: string
 
+    @OneToMany(_type => Link, link => link.feed)
+    links: Link[]
+
     @ManyToMany(_type => User, user => user.feeds)
     users: User[]
 
@@ -47,8 +52,8 @@ export default class Feed extends BaseEntity {
 
     static async takeAll(): Promise<Feed[]> {
         const feeds = await Feed.createQueryBuilder('feed')
-            .addSelect('feed.content')
             .innerJoinAndSelect('feed.users', 'user')
+            .innerJoinAndSelect('feed.links', 'link')
             .getMany()
         return feeds
     }
@@ -71,7 +76,7 @@ export default class Feed extends BaseEntity {
         return feeds
     }
 
-    static async addUser(feedId: number, userId: number) {
+    static async addUser(feedId: number, userId: number): Promise<void> {
         try {
             await Feed.createQueryBuilder('feed')
                 .relation(Feed, 'users')
@@ -84,7 +89,7 @@ export default class Feed extends BaseEntity {
         }
     }
 
-    static async removeUser(feedId: number, userId: number) {
+    static async removeUser(feedId: number, userId: number): Promise<void> {
         await Feed.createQueryBuilder('feed')
             .relation(Feed, 'users')
             .of(feedId)
