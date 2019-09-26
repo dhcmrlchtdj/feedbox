@@ -1,5 +1,5 @@
 import fetch from 'node-fetch'
-import * as Boom from '@hapi/boom'
+import Boom from '@hapi/boom'
 
 // https://developer.github.com/v3/users/emails/#list-email-addresses-for-a-user
 type GitHubEmail = {

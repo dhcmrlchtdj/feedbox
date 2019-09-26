@@ -7,8 +7,6 @@
         "target": "es2018",
         "lib": ["es2018"],
 
-        "skipLibCheck": true,
-
         "sourceMap": false,
         "importHelpers": false,
         "declaration": false,

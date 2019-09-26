@@ -1,5 +1,5 @@
 import * as authBasic from '@hapi/basic'
-import * as Boom from '@hapi/boom'
+import Boom from '@hapi/boom'
 
 const validate = async (_request, username: string, password: string, h) => {
     if (
