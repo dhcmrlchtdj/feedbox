@@ -4,11 +4,9 @@ import parseFeed from '../utils/parse-feed'
 
 export const feedPreview = {
     validate: {
-        query: {
-            url: Joi.string()
-                .uri()
-                .required(),
-        },
+        query: Joi.object({
+            url: Joi.string().uri(),
+        }),
     },
     async handler(request, _h) {
         const { url } = request.query

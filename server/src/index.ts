@@ -21,8 +21,8 @@ const main = async () => {
     await prepare()
 
     const server = Hapi.server({
-        host: '0.0.0.0',
         port: Number(process.env.PORT || 8000),
+        host: '0.0.0.0',
         routes: {
             payload: { allow: ['application/json'] },
             cors: process.env.API === process.env.SITE ? false : corsConf,

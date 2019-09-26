@@ -12,9 +12,9 @@ export const list = {
 
 export const add = {
     validate: {
-        payload: {
+        payload: Joi.object({
             url: Joi.string().uri(),
-        },
+        }),
     },
     async handler(request, _h) {
         const { url } = request.payload
@@ -29,9 +29,9 @@ export const add = {
 
 export const remove = {
     validate: {
-        payload: {
+        payload: Joi.object({
             feedId: Joi.number(),
-        },
+        }),
     },
     async handler(request, _h) {
         const { feedId } = request.payload
