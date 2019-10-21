@@ -86,7 +86,8 @@ const updateFeeds = async () => {
         // update db
         feed.lastCheck = new Date()
         if (f.length !== 0) {
-            feed.lastUpdated = f[0].date || new Date()
+            const first = f[0]
+            feed.lastUpdated = first.date || first.meta.date || new Date()
         }
 
         // extract articles
