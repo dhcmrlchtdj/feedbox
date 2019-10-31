@@ -11,7 +11,7 @@ push-heroku:
 	git push heroku master
 
 .PHONY:
-dev: 
+dev:
 	$(MAKE) -j dev-server dev-web
 
 .PHONY:

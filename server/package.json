@@ -26,22 +26,22 @@
         "@hapi/joi": "16.1.7",
         "dotenv-safe": "8.1.0",
         "feedparser": "2.2.9",
-        "hapi-pino": "6.1.0",
+        "hapi-pino": "6.3.0",
         "mailgun-js": "0.22.0",
         "node-fetch": "2.6.0",
         "pg": "7.12.1",
         "reflect-metadata": "0.1.13",
-        "rollbar": "2.13.0",
+        "rollbar": "2.14.0",
         "sqlite3": "4.1.0",
-        "typeorm": "0.2.19"
+        "typeorm": "0.2.20"
     },
     "devDependencies": {
         "@types/feedparser": "2.2.3",
         "@types/mailgun-js": "0.22.3",
-        "@types/node": "12.7.12",
-        "@types/node-fetch": "2.5.2",
-        "nodemon": "1.19.3",
+        "@types/node": "12.12.6",
+        "@types/node-fetch": "2.5.3",
+        "nodemon": "1.19.4",
         "prettier": "1.18.2",
-        "typescript": "3.6.4"
+        "typescript": "3.7.2"
     }
 }
