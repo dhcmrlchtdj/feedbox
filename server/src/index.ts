@@ -5,14 +5,14 @@ import routes from './routes'
 
 const corsConf = {
     headers: [
-        'Accept',
-        'Authorization',
-        'Content-Type',
-        'If-None-Match',
-        'Content-Type',
-        'X-SW-Strategy',
-        'X-SW-Race',
-        'X-SW-Action',
+        'accept',
+        'authorization',
+        'content-type',
+        'if-none-match',
+        'content-type',
+        'x-sw-strategy',
+        'x-sw-race',
+        'x-sw-actions',
     ],
     credentials: true,
 }

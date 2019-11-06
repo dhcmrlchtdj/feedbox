@@ -1,4 +1,4 @@
-import App from '../app.html'
+import App from '../components/app.html'
 import Router from '../utils/router'
 import strategies from './strategy'
 import dispatch from './action'
@@ -6,7 +6,7 @@ import dispatch from './action'
 export const router = Router.add(
     'get',
     `${process.env.SITE}/`,
-    async (cache, req) => {
+    async (cache, req, worker) => {
         const resp = await strategies.cacheFirst(cache, req)
         return Promise.all([
             strategies.cacheOnly(cache, `${process.env.API}/api/v1/user`),
@@ -46,16 +46,16 @@ export const router = Router.add(
     },
 )
 
-export const defaultHandler = async (cache, req) => {
+export const defaultHandler = async (cache, req, worker) => {
     // X-SW-STRATEGY: cacheFirst
     // X-SW-RACE: 500
-    // X-SW-ACTION: update;url
+    // X-SW-ACTION: act1 | act2;arg1;arg2 | update;url
 
     const strategy = req.headers.get('X-SW-STRATEGY') || 'cacheFirst'
     const resp = await strategies[strategy](cache, req)
 
-    const action = req.headers.get('X-SW-ACTION')
-    if (action) dispatch(action, cache, req, resp)
+    const actions = req.headers.get('X-SW-ACTIONS')
+    if (actions) dispatch(actions, cache, req, resp, worker)
 
     return resp
 }

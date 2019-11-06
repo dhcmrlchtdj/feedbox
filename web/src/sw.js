@@ -11,6 +11,8 @@ const files = [].concat(assets, builtins)
 const CACHE_VERSION = files.join(':')
 console.log('[SW] current version', CACHE_VERSION)
 
+self.sync = false
+
 self.addEventListener('install', event => {
     console.log('[SW] install | start', CACHE_VERSION)
     const done = caches
@@ -40,7 +42,7 @@ self.addEventListener('fetch', event => {
     const done = caches.open(CACHE_VERSION).then(async cache => {
         const req = event.request
         const handler = route(req.method, req.url)
-        return handler(cache, req)
+        return handler(cache, req, self)
     })
     event.respondWith(done)
 })
@@ -58,6 +60,11 @@ self.addEventListener('message', event => {
                 ]),
             )
             .then(() => console.log('[SW] message | done'))
+        event.waitUntil(done)
+    } else if (event.data === 'querySync') {
+        const done = self.clients.matchAll().then(cs => {
+            cs.forEach(c => c.postMessage({ kind: 'sync', sync: self.sync }))
+        })
         event.waitUntil(done)
     }
 })

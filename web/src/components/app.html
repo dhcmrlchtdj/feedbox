@@ -9,12 +9,12 @@
 </div>
 
 <script>
-    import Loading from './components/loading.html'
-    import Auth from './components/auth.html'
-    import List from './components/list.html'
+    import Loading from './loading.html'
+    import Auth from './auth.html'
+    import List from './list.html'
 
-    import * as agent from './utils/agent.js'
-    import Deferred from './utils/deferred.js'
+    import * as agent from '../utils/agent.js'
+    import Deferred from '../utils/deferred.js'
 
     const state = self.__STATE__ || {}
     export let loaded = state.loaded || new Deferred()
@@ -24,9 +24,11 @@
     Promise.all([
         agent.get(`${process.env.API}/api/v1/user`, {
             'X-SW-STRATEGY': 'staleWhileRevalidate',
+            'X-SW-ACTIONS': 'sync;true',
         }),
         agent.get(`${process.env.API}/api/v1/feeds`, {
             'X-SW-STRATEGY': 'staleWhileRevalidate',
+            'X-SW-ACTIONS': 'sync;true',
         }),
     ])
         .then(([user, resp]) => {

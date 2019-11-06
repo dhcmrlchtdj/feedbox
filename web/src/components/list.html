@@ -4,6 +4,9 @@
         <span>{email}</span>
         <a href="{process.env.API}/api/v1/feeds/export" target="_blank">OPML</a>
         <a href="{process.env.API}/api/logout" on:click="{logout}">logout</a>
+        {#if !sync}
+        <span class="d-inline-block loading" style="width:16px"></span>
+        {/if}
     </div>
     <div class="column col-12"><div class="divider"></div></div>
 
@@ -64,6 +67,20 @@
     import * as agent from '../utils/agent.js'
     import format from '../utils/date-format.js'
 
+    const sw = navigator.serviceWorker
+
+    let sync = true
+    if (sw && sw.controller) {
+        sw.controller.postMessage('querySync')
+        sw.addEventListener('message', event => {
+            const data = event.data
+            console.log('[PAGE] message |', data)
+            if (data.kind === 'sync') {
+                sync = data.sync
+            }
+        })
+    }
+
     export let email = ''
     export let feeds = []
 
@@ -81,7 +98,7 @@
                 { feedId: feed.id },
                 {
                     'X-SW-STRATEGY': 'networkOnly',
-                    'X-SW-ACTION': `update;${process.env.API}/api/v1/feeds`,
+                    'X-SW-ACTIONS': `update;${process.env.API}/api/v1/feeds`,
                 },
             )
             .then(resp => {
@@ -98,7 +115,7 @@
                 { url: addUrl },
                 {
                     'X-SW-STRATEGY': 'networkOnly',
-                    'X-SW-ACTION': `update;${process.env.API}/api/v1/feeds`,
+                    'X-SW-ACTIONS': `update;${process.env.API}/api/v1/feeds`,
                 },
             )
             .then(resp => {
@@ -110,7 +127,6 @@
     }
 
     const logout = () => {
-        const sw = navigator.serviceWorker
         if (sw && sw.controller) {
             sw.controller.postMessage('logout')
         }

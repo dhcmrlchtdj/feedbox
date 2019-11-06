@@ -2,9 +2,8 @@
     "private": true,
     "name": "feedbox",
     "version": "0.0.0",
-    "main": "./_build/index.js",
     "repository": "git@github.com:dhcmrlchtdj/feedbox.git",
-    "author": "niris <nirisix@gmail.com>",
+    "author": "h11 <nirisix@gmail.com>",
     "license": "MIT",
     "scripts": {
         "heroku-postbuild": "yarn build",

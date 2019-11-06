@@ -22,7 +22,7 @@ const envs = Object.entries(process.env).reduce((acc, curr) => {
 
 export default [
     {
-        input: './src/index.js',
+        input: './src/app.js',
         output: {
             dir: './_build',
             entryFileNames: '[name].[hash].js',
@@ -42,7 +42,7 @@ export default [
             manifest('./_build/manifest.json'),
             template({
                 manifest: './_build/manifest.json',
-                files: { './src/index.html': './_build/index.html' },
+                files: { './src/template.html': './_build/index.html' },
             }),
             prod && terser(),
             process.env.DEV_SERVER &&
