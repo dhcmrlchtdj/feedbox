@@ -1,7 +1,7 @@
 <div class="container grid-sm">
     {#await loaded}
     <Loading></Loading>
-    {:then}
+    {:then _}
     <List {email} {feeds}></List>
     {:catch err}
     <Auth {err}></Auth>
