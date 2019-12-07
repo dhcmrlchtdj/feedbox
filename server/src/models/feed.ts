@@ -34,10 +34,16 @@ export default class Feed extends BaseEntity {
     @Column({ type: 'text', nullable: true, select: false })
     content: string
 
-    @OneToMany(_type => Link, link => link.feed)
+    @OneToMany(
+        _type => Link,
+        link => link.feed,
+    )
     links: Link[]
 
-    @ManyToMany(_type => User, user => user.feeds)
+    @ManyToMany(
+        _type => User,
+        user => user.feeds,
+    )
     users: User[]
 
     static async takeOne(query): Promise<Feed | undefined> {

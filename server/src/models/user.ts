@@ -27,7 +27,10 @@ export default class User extends BaseEntity {
     @Column({ unique: true, nullable: true })
     githubId: number
 
-    @ManyToMany(_type => Feed, feed => feed.users)
+    @ManyToMany(
+        _type => Feed,
+        feed => feed.users,
+    )
     @JoinTable()
     feeds: Feed[]
 

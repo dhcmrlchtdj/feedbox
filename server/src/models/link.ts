@@ -23,6 +23,9 @@ export default class Link extends BaseEntity {
     @Column({ length: 2048 })
     url: string
 
-    @ManyToOne(_type => Feed, feed => feed.links)
+    @ManyToOne(
+        _type => Feed,
+        feed => feed.links,
+    )
     feed: Feed
 }

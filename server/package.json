@@ -13,34 +13,34 @@
         "fmt": "prettier --write 'src/**/*.ts'"
     },
     "engines": {
-        "node": "12.*",
+        "node": "13.*",
         "yarn": "1.*"
     },
     "dependencies": {
+        "dotenv-safe": "8.2.0",
+        "feedparser": "2.2.9",
+        "hapi-pino": "6.3.0",
+        "mailgun-js": "0.22.0",
+        "node-fetch": "2.6.0",
+        "pg": "7.14.0",
+        "reflect-metadata": "0.1.13",
+        "rollbar": "2.14.4",
+        "sqlite3": "4.1.1",
+        "typeorm": "0.2.21"
+    },
+    "devDependencies": {
         "@hapi/basic": "5.1.1",
         "@hapi/bell": "11.1.0",
         "@hapi/boom": "8.0.1",
         "@hapi/cookie": "10.1.2",
         "@hapi/hapi": "18.4.0",
-        "@hapi/joi": "16.1.7",
-        "dotenv-safe": "8.1.0",
-        "feedparser": "2.2.9",
-        "hapi-pino": "6.3.0",
-        "mailgun-js": "0.22.0",
-        "node-fetch": "2.6.0",
-        "pg": "7.12.1",
-        "reflect-metadata": "0.1.13",
-        "rollbar": "2.14.0",
-        "sqlite3": "4.1.0",
-        "typeorm": "0.2.20"
-    },
-    "devDependencies": {
+        "@hapi/joi": "16.1.8",
         "@types/feedparser": "2.2.3",
         "@types/mailgun-js": "0.22.3",
-        "@types/node": "12.12.6",
-        "@types/node-fetch": "2.5.3",
-        "nodemon": "1.19.4",
-        "prettier": "1.18.2",
-        "typescript": "3.7.2"
+        "@types/node": "12.12.14",
+        "@types/node-fetch": "2.5.4",
+        "nodemon": "2.0.1",
+        "prettier": "1.19.1",
+        "typescript": "3.7.3"
     }
 }

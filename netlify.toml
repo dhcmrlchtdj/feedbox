@@ -4,8 +4,8 @@ publish = "web/_build/"
 command = "yarn run build"
 
 [build.environment]
-NODE_VERSION = "12"
-YARN_VERSION = "1.19.1"
+NODE_VERSION = "13"
+YARN_VERSION = "1.19.2"
 SITE = "https://feedbox.h11.io"
 API = "https://feedbox.h11.io"
 
