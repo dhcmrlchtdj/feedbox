@@ -17,6 +17,12 @@
         "yarn": "1.*"
     },
     "dependencies": {
+        "@hapi/basic": "5.1.1",
+        "@hapi/bell": "11.1.0",
+        "@hapi/boom": "8.0.1",
+        "@hapi/cookie": "10.1.2",
+        "@hapi/hapi": "18.4.0",
+        "@hapi/joi": "16.1.8",
         "dotenv-safe": "8.2.0",
         "feedparser": "2.2.9",
         "hapi-pino": "6.3.0",
@@ -29,12 +35,6 @@
         "typeorm": "0.2.21"
     },
     "devDependencies": {
-        "@hapi/basic": "5.1.1",
-        "@hapi/bell": "11.1.0",
-        "@hapi/boom": "8.0.1",
-        "@hapi/cookie": "10.1.2",
-        "@hapi/hapi": "18.4.0",
-        "@hapi/joi": "16.1.8",
         "@types/feedparser": "2.2.3",
         "@types/mailgun-js": "0.22.3",
         "@types/node": "12.12.14",

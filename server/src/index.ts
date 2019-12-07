@@ -1,5 +1,5 @@
 import prepare from './prepare'
-import * as Hapi from '@hapi/hapi'
+import { Server } from '@hapi/hapi'
 import plugins from './plugins'
 import routes from './routes'
 
@@ -20,7 +20,7 @@ const corsConf = {
 const main = async () => {
     await prepare()
 
-    const server = Hapi.server({
+    const server = new Server({
         port: Number(process.env.PORT || 8000),
         host: '0.0.0.0',
         routes: {
