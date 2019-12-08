@@ -4,8 +4,8 @@
         "outDir": "./_build/",
 
         "module": "commonjs",
-        "target": "es2018",
-        "lib": ["es2018"],
+        "target": "es2019",
+        "lib": ["esnext"],
 
         "sourceMap": false,
         "importHelpers": false,
