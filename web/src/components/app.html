@@ -1,7 +1,7 @@
 <div class="container grid-sm">
     {#await loaded}
     <Loading></Loading>
-    {:then _}
+    {:then}
     <List {email} {feeds}></List>
     {:catch err}
     <Auth {err}></Auth>
@@ -24,11 +24,9 @@
     Promise.all([
         agent.get(`${process.env.API}/api/v1/user`, {
             'X-SW-STRATEGY': 'staleWhileRevalidate',
-            'X-SW-ACTIONS': 'sync;true',
         }),
         agent.get(`${process.env.API}/api/v1/feeds`, {
             'X-SW-STRATEGY': 'staleWhileRevalidate',
-            'X-SW-ACTIONS': 'sync;true',
         }),
     ])
         .then(([user, resp]) => {

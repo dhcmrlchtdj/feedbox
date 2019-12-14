@@ -7,5 +7,4 @@ new App({
 
 if (navigator.serviceWorker) {
     navigator.serviceWorker.register('/sw.js')
-    // .then(reg => reg.update());
 }
