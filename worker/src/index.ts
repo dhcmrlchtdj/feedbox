@@ -4,15 +4,11 @@ addEventListener('fetch', (event: FetchEvent) => {
     event.respondWith(handle(event.request))
 })
 
-const webHost = 'dhcmrlchtdj.github.io'
 const apiHost = 'fbox.herokuapp.com'
 
 async function handle(request: Request): Promise<Response> {
     const url = new URL(request.url)
-    const pathname = url.pathname
-    const host = pathname.startsWith('/api') ? apiHost : webHost
-    url.host = host
-    if (!pathname.startsWith('/api')) url.pathname = '/feedbox' + url.pathname
+    url.host = apiHost
     const init: RequestInit = {
         method: request.method,
         headers: request.headers,
@@ -20,6 +16,6 @@ async function handle(request: Request): Promise<Response> {
         redirect: 'manual',
     }
     const req = new Request(url.toString(), init)
-    req.headers.set('host', host)
+    req.headers.set('host', apiHost)
     return fetch(req)
 }
