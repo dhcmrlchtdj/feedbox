@@ -15,10 +15,9 @@ jobs:
               with:
                   node-version: '13.x'
             - uses: actions/cache@v1
-              working-directory: ./web
               with:
-                  path: ./node_modules
-                  key: ${{ runner.os }}-node-${{ hashFiles('yarn.lock') }}
+                  path: ./web/node_modules
+                  key: ${{ runner.os }}-node-${{ hashFiles('web/yarn.lock') }}
             - run: yarn install
               working-directory: ./web
             - run: make build
