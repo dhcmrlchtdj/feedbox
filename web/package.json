@@ -6,10 +6,7 @@
     "author": "h11 <nirisix@gmail.com>",
     "license": "MIT",
     "scripts": {
-        "prebuild": "rm -rf ./_build",
-        "build": "NODE_ENV=${NODE_ENV:-production} rollup -c",
-        "dev": "DEV_SERVER=true rollup -c -w",
-        "fmt": "prettier --write './src/**' './util/**'"
+        "build": "make build"
     },
     "engines": {
         "node": "13.*",

@@ -1,0 +1,29 @@
+name: feedbox
+
+on:
+    push:
+        branches:
+            - master
+        paths:
+            - 'web/**'
+
+jobs:
+    build-deploy:
+        if: "!contains(github.event.head_commit.message, '[skip]')"
+        runs-on: ubuntu-18.04
+        steps:
+            - uses: actions/checkout@v1
+            - uses: actions/setup-node@v1
+              with:
+                  node-version: '13.x'
+            - run: yarn install
+            - run: yarn run build
+              working-directory: ./web
+              env:
+                  SITE: "https://feedbox.h11.io"
+                  API: "https://fbox.herokuapp.com"
+            - uses: peaceiris/actions-gh-pages@v2
+              env:
+                  ACTIONS_DEPLOY_KEY: ${{ secrets.ACTIONS_DEPLOY_KEY }}
+                  PUBLISH_BRANCH: gh-pages
+                  PUBLISH_DIR: ./web/_build

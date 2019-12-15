@@ -20,4 +20,4 @@ dev-server:
 
 .PHONY:
 dev-web:
-	cd ./web && yarn dev
+	cd ./web && $(MAKE) dev
