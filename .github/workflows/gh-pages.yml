@@ -16,8 +16,14 @@ jobs:
             - uses: actions/setup-node@v1
               with:
                   node-version: '13.x'
+            - uses: actions/cache@v1
+              working-directory: ./web
+              with:
+                  path: ./node_modules
+                  key: ${{ runner.os }}-node-${{ hashFiles('yarn.lock') }}
             - run: yarn install
-            - run: yarn run build
+              working-directory: ./web
+            - run: make build
               working-directory: ./web
               env:
                   SITE: "https://feedbox.h11.io"
