@@ -3,6 +3,7 @@ PATH := ./node_modules/.bin:$(PATH)
 
 build: clean
 	NODE_ENV=${NODE_ENV:-production} rollup -c
+	echo "feedbox.h11.io" > ./_build/CNAME
 
 clean:
 	rm -rf ./_build
