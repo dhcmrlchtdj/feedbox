@@ -8,10 +8,6 @@ on:
             - '.github/workflows/server.yml'
             - 'server/**'
 
-env:
-    SITE: "https://feedbox.h11.io"
-    API: "https://fbox.herokuapp.com"
-
 jobs:
     build-deploy:
         runs-on: ubuntu-18.04

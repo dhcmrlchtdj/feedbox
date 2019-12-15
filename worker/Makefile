@@ -1,11 +1,8 @@
 SHELL := /bin/bash
 PATH := ./node_modules/.bin:$(PATH)
 
-build:
+build: clean
 	tsc
-
-test:
-	echo "TODO"
 
 clean:
 	rm -rf ./_build
@@ -13,7 +10,7 @@ clean:
 fmt:
 	prettier --write './src/**/*' './*.js' './*.json'
 
-doc:
-	echo "TODO"
+dev:
+	tsc -w
 
-.PHONY: build test clean fmt doc
+.PHONY: build clean fmt dev

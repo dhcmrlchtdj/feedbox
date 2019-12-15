@@ -1,16 +1,16 @@
-name: feedbox-web
+name: feedbox-worker
 
 on:
     push:
         branches:
             - master
         paths:
-            - '.github/workflows/web.yml'
-            - 'web/**'
+            - '.github/workflows/worker.yml'
+            - 'worker/**'
 
 env:
-    SITE: "https://feedbox.h11.io"
-    API: "https://feedbox.h11.io"
+    SITE: "https://dhcmrlchtdj.github.io"
+    API: "https://fbox.herokuapp.com"
 
 jobs:
     build-deploy:
@@ -30,11 +30,13 @@ jobs:
                   restore-keys: |
                       ${{ runner.os }}-yarn-
             - run: yarn install
-              working-directory: ./web
+              working-directory: ./worker
             - run: make build
-              working-directory: ./web
-            - uses: peaceiris/actions-gh-pages@v2
+              working-directory: ./worker
+            - uses: cloudflare/serverless-action@v1.1
               env:
-                  ACTIONS_DEPLOY_KEY: ${{ secrets.ACTIONS_DEPLOY_KEY }}
-                  PUBLISH_BRANCH: gh-pages
-                  PUBLISH_DIR: ./web/_build
+                  CLOUDFLARE_SCRIPT_NAME: "worker/_build/index"
+                  CLOUDFLARE_AUTH_EMAIL: "nirisix@gmail.com"
+                  CLOUDFLARE_AUTH_KEY: ${{ secrets.CLOUDFLARE_AUTH_KEY }}
+                  CLOUDFLARE_ZONE_ID: ${{ secrets.CLOUDFLARE_ZONE_ID }}
+                  CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
