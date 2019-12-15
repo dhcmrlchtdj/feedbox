@@ -7,17 +7,20 @@ on:
 
 jobs:
     build-deploy:
-        if: "!contains(github.event.head_commit.message, '[skip]')"
         runs-on: ubuntu-18.04
         steps:
             - uses: actions/checkout@v1
             - uses: actions/setup-node@v1
               with:
-                  node-version: '13.x'
+                  node-version: "13.x"
+            - run: echo "::set-output name=dir::$(yarn cache dir)"
+              id: yarn-cache
             - uses: actions/cache@v1
               with:
-                  path: ./web/node_modules
-                  key: ${{ runner.os }}-node-${{ hashFiles('web/yarn.lock') }}
+                  path: ${{ steps.yarn-cache.outputs.dir }}
+                  key: ${{ runner.os }}-yarn-${{ hashFiles('web/yarn.lock') }}
+                  restore-keys: |
+                      ${{ runner.os }}-yarn-
             - run: yarn install
               working-directory: ./web
             - run: make build
