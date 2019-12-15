@@ -1,7 +1,7 @@
 SHELL := /bin/bash
 PATH := ./node_modules/.bin:$(PATH)
 
-build:
+build: clean
 	NODE_ENV=${NODE_ENV:-production} rollup -c
 	echo "feedbox.h11.io" > ./_build/CNAME
 

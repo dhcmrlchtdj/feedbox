@@ -1,0 +1,22 @@
+name: feedbox-server
+
+on:
+    push:
+        branches:
+            - master
+        paths:
+            - 'server/**'
+
+env:
+    SITE: "https://feedbox.h11.io"
+    API: "https://fbox.herokuapp.com"
+
+jobs:
+    build-deploy:
+        runs-on: ubuntu-18.04
+        steps:
+            - uses: actions/checkout@v1
+            - run: git subtree push --prefix=server https://heroku:$HEROKU_API_TOKEN@git.heroku.com/$HEROKU_APP_NAME.git master
+              env:
+                  HEROKU_APP_NAME: "fbox"
+                  HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}

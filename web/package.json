@@ -5,9 +5,6 @@
     "repository": "git@github.com:dhcmrlchtdj/feedbox.git",
     "author": "h11 <nirisix@gmail.com>",
     "license": "MIT",
-    "scripts": {
-        "build": "make build"
-    },
     "engines": {
         "node": "13.*",
         "yarn": "1.*"

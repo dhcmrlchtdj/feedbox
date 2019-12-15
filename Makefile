@@ -1,23 +1,12 @@
 SHELL := /bin/bash
 
-.PHONY: show
-show:
-	@make -nprR | sed -ne '/^$$/{ n; /^[^#.]/{ s/:.*//; p; }; }' | sort -u
-
-.PHONY:
-push-heroku:
-	@# git subtree push --prefix=server heroku master
-	@# https://github.com/timanovsky/subdir-heroku-buildpack
-	git push heroku master
-
-.PHONY:
 dev:
 	$(MAKE) -j dev-server dev-web
 
-.PHONY:
-dev-server:
-	cd ./server && yarn dev
-
-.PHONY:
 dev-web:
 	cd ./web && $(MAKE) dev
+
+dev-server:
+	cd ./server && $(MAKE) dev
+
+.PHONY: dev dev-web dev-server

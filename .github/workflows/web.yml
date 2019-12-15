@@ -1,9 +1,15 @@
-name: feedbox
+name: feedbox-web
 
 on:
     push:
         branches:
             - master
+        paths:
+            - 'web/**'
+
+env:
+    SITE: "https://feedbox.h11.io"
+    API: "https://fbox.herokuapp.com"
 
 jobs:
     build-deploy:
@@ -13,7 +19,8 @@ jobs:
             - uses: actions/setup-node@v1
               with:
                   node-version: "13.x"
-            - id: yarn-cache
+            - name: yarn-cache
+              id: yarn-cache
               run: echo "::set-output name=dir::$(yarn cache dir)"
             - uses: actions/cache@v1
               with:
@@ -25,9 +32,6 @@ jobs:
               working-directory: ./web
             - run: make build
               working-directory: ./web
-              env:
-                  SITE: "https://feedbox.h11.io"
-                  API: "https://fbox.herokuapp.com"
             - uses: peaceiris/actions-gh-pages@v2
               env:
                   ACTIONS_DEPLOY_KEY: ${{ secrets.ACTIONS_DEPLOY_KEY }}

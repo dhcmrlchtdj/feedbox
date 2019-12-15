@@ -6,11 +6,8 @@
     "author": "h11 <nirisix@gmail.com>",
     "license": "MIT",
     "scripts": {
-        "heroku-postbuild": "yarn build",
         "start": "node ./_build/index.js",
-        "build": "rm -rf ./_build && tsc",
-        "dev": "nodemon -w ./_build _build/index.js & tsc -w & wait",
-        "fmt": "prettier --write 'src/**/*.ts'"
+        "build": "make build"
     },
     "engines": {
         "node": "13.*",
