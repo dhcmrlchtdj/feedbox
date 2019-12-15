@@ -17,7 +17,8 @@ jobs:
         runs-on: ubuntu-18.04
         steps:
             - uses: actions/checkout@v1
-            - run: git subtree push -f --prefix=server https://heroku:$HEROKU_AUTH_TOKEN@git.heroku.com/$HEROKU_APP_NAME.git master
+            - name: push to heroku
+              run: git subtree push --prefix=server https://heroku:$HEROKU_AUTH_TOKEN@git.heroku.com/$HEROKU_APP_NAME.git master
               env:
                   HEROKU_APP_NAME: "fbox"
                   HEROKU_AUTH_TOKEN: ${{ secrets.HEROKU_AUTH_TOKEN }}
