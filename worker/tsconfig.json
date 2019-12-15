@@ -1,0 +1,38 @@
+{
+    "include": ["src/**/*"],
+    "compilerOptions": {
+        "outDir": "./_build/",
+
+        "target": "ES2020",
+        "module": "ES6",
+        "lib": ["ESNext", "WebWorker"],
+
+        "sourceMap": false,
+        "declaration": false,
+        "importHelpers": false,
+        "moduleResolution": "node",
+        "incremental": true,
+        "removeComments": true,
+        "noEmitOnError": true,
+        "downlevelIteration": true,
+
+        "noFallthroughCasesInSwitch": true,
+        "noImplicitReturns": true,
+        "noUnusedLocals": true,
+        "noUnusedParameters": true,
+
+        "strict": true,
+        "noImplicitAny": true,
+        "noImplicitThis": true,
+        "alwaysStrict": true,
+        "strictBindCallApply": true,
+        "strictNullChecks": true,
+        "strictFunctionTypes": true,
+        "strictPropertyInitialization": true,
+
+        "experimentalDecorators": false,
+        "emitDecoratorMetadata": false,
+
+        "pretty": true
+    }
+}

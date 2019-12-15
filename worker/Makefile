@@ -1,8 +1,11 @@
 SHELL := /bin/bash
 PATH := ./node_modules/.bin:$(PATH)
 
-build: clean
-	NODE_ENV=${NODE_ENV:-production} rollup -c
+build:
+	tsc
+
+test:
+	echo "TODO"
 
 clean:
 	rm -rf ./_build
@@ -10,7 +13,7 @@ clean:
 fmt:
 	prettier --write './src/**/*' './*.js' './*.json'
 
-dev:
-	DEV_SERVER=true rollup -c -w
+doc:
+	echo "TODO"
 
-.PHONY: build clean fmt
+.PHONY: build test clean fmt doc
