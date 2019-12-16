@@ -4,7 +4,7 @@ addEventListener('fetch', (event: FetchEvent) => {
     event.respondWith(handle(event.request))
 })
 
-const apiHost = 'fbox.herokuapp.com'
+const apiHost = process.env.API!
 
 async function handle(request: Request): Promise<Response> {
     const url = new URL(request.url)
