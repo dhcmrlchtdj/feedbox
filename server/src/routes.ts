@@ -20,7 +20,8 @@ const routes = [
     { path: '/api/connect/github', method: 'get', options: User.connectGithub },
 
     { path: '/api/v1/cron', method: 'get', options: Cron.cron },
-    {
+
+    process.env.NODE_ENV !== 'production' && {
         path: '/api/v1/helper/feed-preview',
         method: 'get',
         options: Helper.feedPreview,
@@ -34,6 +35,6 @@ const routes = [
             return h.response(icon).type('image/png')
         },
     },
-]
+].filter(Boolean)
 
 export default routes

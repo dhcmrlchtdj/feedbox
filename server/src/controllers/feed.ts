@@ -13,7 +13,7 @@ export const list = {
 export const add = {
     validate: {
         payload: Joi.object({
-            url: Joi.string().uri(),
+            url: Joi.string().uri().required(),
         }),
     },
     async handler(request, _h) {
@@ -30,7 +30,7 @@ export const add = {
 export const remove = {
     validate: {
         payload: Joi.object({
-            feedId: Joi.number(),
+            feedId: Joi.number().required(),
         }),
     },
     async handler(request, _h) {

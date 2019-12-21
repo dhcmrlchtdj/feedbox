@@ -1,6 +1,6 @@
 import Feed from '../models/feed'
 import Link from '../models/link'
-import fetch from 'node-fetch'
+import fetchFeed from './fetch-feed'
 import parseFeed, { FeedItem } from './parse-feed'
 import sendEmail from './send-email'
 import extractSite from './extract-site'
@@ -21,16 +21,9 @@ const feed2feeds = async (feed: Feed): Promise<FeedItem[]> => {
     const url = feed.url
 
     console.debug(`${url} - fetching`)
-    const resp = await fetch(url, {
-        headers: { 'user-agent': 'feedbox.h11.io' },
-    })
-        .then(res => res.text())
-        .catch(err => {
-            console.error(err)
-            return null
-        })
-
+    const resp = await fetchFeed(url)
     console.debug(`${url} - fetched`)
+
     if (!resp) return []
     const feeds = await parseFeed(url, resp)
     return feeds

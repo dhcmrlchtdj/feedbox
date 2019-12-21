@@ -1,21 +1,19 @@
 import * as Joi from '@hapi/joi'
-import fetch from 'node-fetch'
 import parseFeed from '../utils/parse-feed'
+import fetchFeed from '../utils/fetch-feed'
 
 export const feedPreview = {
     validate: {
         query: Joi.object({
-            url: Joi.string().uri(),
+            url: Joi.string()
+                .uri()
+                .required(),
         }),
     },
     async handler(request, _h) {
         const { url } = request.query
-
-        const curr = await fetch(url, {
-            headers: { 'user-agent': 'feedbox.h11.io' },
-        }).then(res => res.text())
-        const feed = await parseFeed(url, curr)
-
+        const content = await fetchFeed(url)
+        const feed = await parseFeed(url, content)
         return feed
     },
 }
