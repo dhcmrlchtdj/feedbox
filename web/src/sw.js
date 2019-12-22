@@ -47,7 +47,6 @@ self.addEventListener('fetch', event => {
 
 self.addEventListener('message', event => {
     console.log('[SW] message |', event.data)
-
     if (event.data === 'logout') {
         const done = caches
             .open(CACHE_VERSION)

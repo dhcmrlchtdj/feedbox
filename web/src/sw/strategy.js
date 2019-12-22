@@ -48,9 +48,7 @@ const strategies = {
             return resp
         })
         const timeout = Number(req.headers.get('X-SW-RACE') || '500')
-        const timer = new Promise((resolve, reject) =>
-            setTimeout(reject, timeout),
-        )
+        const timer = new Promise((_, reject) => setTimeout(reject, timeout))
         const resp = Promise.race([fetched, timer]).catch(err => cached)
         return resp
     },
