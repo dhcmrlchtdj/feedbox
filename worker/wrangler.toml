@@ -10,4 +10,4 @@ name = "feedbox-dev"
 [env.production]
 workers_dev = false
 name = "feedbox"
-route = "feedbox.com/api/*"
+route = "feedbox.h11.io/api/*"
