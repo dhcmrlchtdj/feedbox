@@ -52,8 +52,8 @@ self.addEventListener('message', event => {
             .open(CACHE_VERSION)
             .then(cache =>
                 Promise.all([
-                    cache.delete(`${process.env.API}/api/v1/user`),
-                    cache.delete(`${process.env.API}/api/v1/feeds`),
+                    cache.delete(`${process.env.SERVER}/api/v1/user`),
+                    cache.delete(`${process.env.SERVER}/api/v1/feeds`),
                 ]),
             )
             .then(() => console.log('[SW] message | done'))

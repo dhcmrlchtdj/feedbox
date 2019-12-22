@@ -15,7 +15,7 @@ export const logout = {
         request.cookieAuth.clear()
 
         // redirect to home
-        return h.redirect(process.env.SITE)
+        return h.redirect(process.env.WEB)
     },
 }
 
@@ -40,7 +40,7 @@ export const connectGithub = {
             request.cookieAuth.set({ id: user.id })
 
             // redirect to home
-            return h.redirect(process.env.SITE)
+            return h.redirect(process.env.WEB)
         } else {
             const errMsg = request.auth.error.message
             return `Authentication failed due to: ${errMsg}`

@@ -22,10 +22,10 @@
     export let feeds = state.feeds || []
 
     Promise.all([
-        agent.get(`${process.env.API}/api/v1/user`, {
+        agent.get(`${process.env.SERVER}/api/v1/user`, {
             'X-SW-STRATEGY': 'staleWhileRevalidate',
         }),
-        agent.get(`${process.env.API}/api/v1/feeds`, {
+        agent.get(`${process.env.SERVER}/api/v1/feeds`, {
             'X-SW-STRATEGY': 'staleWhileRevalidate',
         }),
     ])

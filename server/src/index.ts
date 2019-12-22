@@ -25,7 +25,7 @@ const main = async () => {
         host: '0.0.0.0',
         routes: {
             payload: { allow: ['application/json'] },
-            cors: process.env.API === process.env.SITE ? false : corsConf,
+            cors: process.env.SERVER === process.env.WEB ? false : corsConf,
         },
     })
 

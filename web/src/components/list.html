@@ -2,8 +2,10 @@
     <div class="column col-12">
         <h1 class="d-inline-block">feedbox</h1>
         <span>{email}</span>
-        <a href="{process.env.API}/api/v1/feeds/export" target="_blank">OPML</a>
-        <a href="{process.env.API}/api/logout" on:click="{logout}">logout</a>
+        <a href="{process.env.SERVER}/api/v1/feeds/export" target="_blank">
+            OPML
+        </a>
+        <a href="{process.env.SERVER}/api/logout" on:click="{logout}">logout</a>
     </div>
     <div class="column col-12"><div class="divider"></div></div>
 
@@ -77,11 +79,11 @@
         feed.loading = true
         agent
             .del(
-                `${process.env.API}/api/v1/feeds/remove`,
+                `${process.env.SERVER}/api/v1/feeds/remove`,
                 { feedId: feed.id },
                 {
                     'X-SW-STRATEGY': 'networkOnly',
-                    'X-SW-ACTIONS': `update;${process.env.API}/api/v1/feeds`,
+                    'X-SW-ACTIONS': `update;${process.env.SERVER}/api/v1/feeds`,
                 },
             )
             .then(resp => {
@@ -94,11 +96,11 @@
         addLoading = true
         agent
             .put(
-                `${process.env.API}/api/v1/feeds/add`,
+                `${process.env.SERVER}/api/v1/feeds/add`,
                 { url: addUrl },
                 {
                     'X-SW-STRATEGY': 'networkOnly',
-                    'X-SW-ACTIONS': `update;${process.env.API}/api/v1/feeds`,
+                    'X-SW-ACTIONS': `update;${process.env.SERVER}/api/v1/feeds`,
                 },
             )
             .then(resp => {

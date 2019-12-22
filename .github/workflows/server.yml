@@ -12,7 +12,7 @@ jobs:
     build-deploy:
         runs-on: ubuntu-18.04
         steps:
-            - uses: actions/checkout@v1
+            - uses: actions/checkout@v2.0.0
             - name: push to heroku
               run: git subtree push --prefix=server https://heroku:$HEROKU_AUTH_TOKEN@git.heroku.com/$HEROKU_APP_NAME.git master
               env:

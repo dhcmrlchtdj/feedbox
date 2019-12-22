@@ -13,7 +13,9 @@ export const list = {
 export const add = {
     validate: {
         payload: Joi.object({
-            url: Joi.string().uri().required(),
+            url: Joi.string()
+                .uri()
+                .required(),
         }),
     },
     async handler(request, _h) {

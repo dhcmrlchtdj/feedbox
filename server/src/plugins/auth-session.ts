@@ -20,7 +20,8 @@ export default async server => {
             ttl: 7 * 24 * 60 * 60 * 1000,
             path: '/api',
             clearInvalid: true,
-            isSameSite: process.env.API === process.env.SITE ? 'Strict' : false,
+            isSameSite:
+                process.env.SERVER === process.env.WEB ? 'Strict' : false,
             isSecure: process.env.NODE_ENV === 'production',
             isHttpOnly: true,
         },

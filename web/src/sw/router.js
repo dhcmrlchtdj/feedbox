@@ -5,12 +5,12 @@ import dispatch from './action'
 
 export const router = Router.add(
     'get',
-    `${process.env.SITE}/`,
+    `${process.env.WEB}/`,
     async (cache, req, worker) => {
         const resp = await strategies.cacheFirst(cache, req)
         return Promise.all([
-            strategies.cacheOnly(cache, `${process.env.API}/api/v1/user`),
-            strategies.cacheOnly(cache, `${process.env.API}/api/v1/feeds`),
+            strategies.cacheOnly(cache, `${process.env.SERVER}/api/v1/user`),
+            strategies.cacheOnly(cache, `${process.env.SERVER}/api/v1/feeds`),
         ])
             .then(async ([user, feeds]) => {
                 if (user && feeds) {

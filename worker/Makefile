@@ -1,4 +1,4 @@
-SHELL := /bin/bash
+SHELL := bash
 PATH := ./node_modules/.bin:$(PATH)
 
 build: clean

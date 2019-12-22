@@ -9,7 +9,7 @@ export default async server => {
         clientId: process.env.GITHUB_CLIENT_ID,
         clientSecret: process.env.GITHUB_CLIENT_SECRET,
         forceHttps: process.env.NODE_ENV === 'production',
-        location: process.env.API,
+        location: process.env.SERVER,
         isSecure: process.env.NODE_ENV === 'production',
     })
 }

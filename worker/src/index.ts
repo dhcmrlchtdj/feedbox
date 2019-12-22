@@ -4,9 +4,8 @@ addEventListener('fetch', (event: FetchEvent) => {
     event.respondWith(handle(event.request))
 })
 
-const apiHost = process.env.API!
-
 async function handle(request: Request): Promise<Response> {
+    const apiHost = process.env.SERVER!
     const url = new URL(request.url)
     url.host = apiHost
     const init: RequestInit = {

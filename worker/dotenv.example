@@ -1,1 +1,2 @@
-API="fbox.herokuapp.com"
+NODE_ENV="development"
+SERVER="localhost:8000"

@@ -4,12 +4,12 @@
     "version": "0.0.0",
     "repository": "git@github.com:dhcmrlchtdj/feedbox.git",
     "author": "h11 <nirisix@gmail.com>",
-    "license": "MIT",
+    "license": "UNLICENSED",
+    "main": "./_build/index.js",
     "engines": {
         "node": "13.*",
         "yarn": "1.*"
     },
-    "dependencies": {},
     "devDependencies": {
         "@cloudflare/workers-types": "1.0.6",
         "@types/node": "12.12.21",
