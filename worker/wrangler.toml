@@ -1,13 +1,12 @@
 zone_id = "6cffee8a847ad1565b9cb2572cce3a04"
 account_id = "d36f6909d7981a482a32e5690c07bf87"
 
+name = "feedbox"
 type = "javascript"
 
 # env.development
 workers_dev = true
-name = "feedbox-dev"
 
 [env.production]
-workers_dev = false
-name = "feedbox"
 route = "feedbox.h11.io/api/*"
+workers_dev = false
