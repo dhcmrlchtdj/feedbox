@@ -15,10 +15,7 @@ export default opt => {
             const replace = s => {
                 return Object.keys(manifest.entry).reduce((acc, key) => {
                     const val = manifest.entry[key]
-                    const r = acc.replace(
-                        new RegExp(`__${key}__`, 'g'),
-                        val,
-                    )
+                    const r = acc.replace(new RegExp(`__${key}__`, 'g'), val)
                     return r
                 }, s)
             }

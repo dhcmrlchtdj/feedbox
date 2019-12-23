@@ -1,17 +1,20 @@
 SHELL := bash
 PATH := ./node_modules/.bin:$(PATH)
 
-build: clean
+build:
 	rollup -c
 	echo "feedbox.h11.io" > ./_build/CNAME
+
+release: clean
+	$(MAKE) build
 
 clean:
 	rm -rf ./_build
 
 fmt:
-	prettier --write './src/**/*' './*.js' './*.json'
+	prettier --write './{src,util}/**/*.{ts,js,json}' './*.json'
 
 dev:
 	DEV_SERVER=true rollup -c -w
 
-.PHONY: build clean fmt
+.PHONY: build release clean fmt dev

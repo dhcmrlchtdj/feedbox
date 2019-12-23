@@ -27,7 +27,7 @@ jobs:
                       ${{ runner.os }}-yarn-web-
             - run: yarn install
               working-directory: ./web
-            - run: make build
+            - run: make release
               working-directory: ./web
               env:
                   NODE_ENV: "production"
