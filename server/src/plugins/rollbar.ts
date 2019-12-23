@@ -10,7 +10,7 @@ const rollbarPlugin = {
                 if (resp.output.statusCode >= 500) {
                     rollbar.error(error, request)
                 } else {
-                    rollbar.info(error, request)
+                    console.error(error, request)
                 }
             }
             return h.continue
