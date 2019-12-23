@@ -1,10 +1,10 @@
 import { Server } from '@hapi/hapi'
 import plugins from './plugins'
 import routes from './routes'
-import init from './init'
+import prepare from './prepare'
 
-export default async () => {
-    await init()
+const common = async () => {
+    await prepare()
 
     const corsConf = {
         headers: [
@@ -19,7 +19,6 @@ export default async () => {
         ],
         credentials: true,
     }
-
     const server = new Server({
         port: Number(process.env.PORT || 8000),
         host: '0.0.0.0',
@@ -28,12 +27,20 @@ export default async () => {
             cors: process.env.SERVER === process.env.WEB ? false : corsConf,
         },
     })
-
     await plugins(server)
-
     server.route(routes)
 
-    await server.start()
+    return server
+}
 
+export const init = async () => {
+    const server = await common()
+    server.initialize()
+    return server
+}
+
+export const start = async () => {
+    const server = await common()
+    server.start()
     return server
 }

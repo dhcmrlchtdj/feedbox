@@ -6,8 +6,8 @@ import initDB from './models'
 export default async () => {
     if (process.env.NODE_ENV !== 'production') {
         dotenv.config({
-            path: path.resolve(__dirname, '../dotenv'),
-            example: path.resolve(__dirname, '../dotenv.example'),
+            path: path.resolve(__dirname, '../../dotenv'),
+            example: path.resolve(__dirname, '../../dotenv.example'),
         })
     }
 

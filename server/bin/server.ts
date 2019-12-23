@@ -1,3 +1,3 @@
-import server from '../lib/server'
+import { start } from '../lib/server'
 
-server()
+start()

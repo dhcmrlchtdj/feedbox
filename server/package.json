@@ -13,6 +13,11 @@
         "node": "13.*",
         "yarn": "1.*"
     },
+    "jest": {
+        "testEnvironment": "node",
+        "collectCoverage": true,
+        "testRegex": "_build/test/.*.js$"
+    },
     "dependencies": {
         "@hapi/bell": "11.1.0",
         "@hapi/boom": "8.0.1",
@@ -33,13 +38,13 @@
         "typeorm": "0.2.21"
     },
     "devDependencies": {
-        "@hapi/code": "7.0.0",
-        "@hapi/lab": "21.0.0",
         "@types/chardet": "0.8.0",
         "@types/feedparser": "2.2.3",
+        "@types/jest": "24.0.24",
         "@types/mailgun-js": "0.22.3",
         "@types/node": "12.12.21",
         "@types/node-fetch": "2.5.4",
+        "jest": "24.9.0",
         "nodemon": "2.0.2",
         "prettier": "1.19.1",
         "typescript": "3.7.4"

@@ -16,4 +16,7 @@ fmt:
 dev:
 	nodemon -w ./_build _build/bin/server.js & tsc -w & wait
 
-.PHONY: build clean fmt dev release
+test: build
+	jest
+
+.PHONY: build clean fmt dev release test

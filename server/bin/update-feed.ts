@@ -1,8 +1,8 @@
-import init from '../lib/init'
+import prepare from '../lib/prepare'
 import updateFeeds from '../lib/utils/update-feeds'
 
 const main = async () => {
-    await init()
+    await prepare()
     await updateFeeds()
 }
 
