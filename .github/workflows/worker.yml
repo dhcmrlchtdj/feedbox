@@ -27,7 +27,7 @@ jobs:
             #           ${{ runner.os }}-yarn-worker-
             - run: yarn install
               working-directory: ./worker
-            - run: make build
+            - run: make release
               working-directory: ./worker
               env:
                   NODE_ENV: "production"

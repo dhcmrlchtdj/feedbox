@@ -5,13 +5,14 @@
     "repository": "git@github.com:dhcmrlchtdj/feedbox.git",
     "author": "h11 <nirisix@gmail.com>",
     "license": "UNLICENSED",
-    "main": "./_build/index.js",
+    "main": "./_build/bundle/index.js",
     "engines": {
         "node": "13.*",
         "yarn": "1.*"
     },
     "devDependencies": {
         "@cloudflare/workers-types": "1.0.6",
+        "@dollarshaveclub/cloudworker": "0.1.2",
         "@types/node": "12.12.21",
         "dotenv-safe": "8.2.0",
         "prettier": "1.19.1",

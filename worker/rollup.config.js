@@ -1,8 +1,6 @@
 import * as path from 'path'
 import * as dotenv from 'dotenv-safe'
 import replace from 'rollup-plugin-replace'
-import ts from 'rollup-plugin-typescript'
-import typescript from 'typescript'
 
 dotenv.config({
     path: path.resolve(__dirname, './dotenv'),
@@ -15,12 +13,12 @@ const envs = Object.entries(process.env).reduce((acc, curr) => {
 
 export default [
     {
-        input: './src/index.ts',
+        input: './_build/lib/index.js',
         output: {
-            dir: './_build',
+            dir: './_build/bundle/',
             entryFileNames: '[name].js',
             format: 'esm',
         },
-        plugins: [replace(envs), ts({ typescript })],
+        plugins: [replace(envs)],
     },
 ]
