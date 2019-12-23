@@ -14,7 +14,7 @@ jobs:
         steps:
             - uses: actions/checkout@v2.0.0
             - name: push to heroku
-              run: git subtree push --prefix=server https://heroku:$HEROKU_AUTH_TOKEN@git.heroku.com/$HEROKU_APP_NAME.git master
+              run: git push https://heroku:$HEROKU_AUTH_TOKEN@git.heroku.com/$HEROKU_APP_NAME.git `git subtree split --prefix=server master`:master --force
               env:
                   HEROKU_APP_NAME: "fbox"
                   HEROKU_AUTH_TOKEN: ${{ secrets.HEROKU_AUTH_TOKEN }}
