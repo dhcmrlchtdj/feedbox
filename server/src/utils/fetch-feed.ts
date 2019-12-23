@@ -1,7 +1,7 @@
 import * as chardet from 'chardet'
 import * as iconv from 'iconv-lite'
 import fetch from 'node-fetch'
-import rollbar from './rollbar'
+// import rollbar from './rollbar'
 
 export default async (feedurl: string): Promise<string> => {
     const content = await fetch(feedurl, {
@@ -17,7 +17,8 @@ export default async (feedurl: string): Promise<string> => {
             }
         })
         .catch(err => {
-            rollbar.info(err, { feedurl })
+            console.error(err, feedurl)
+            // rollbar.info(err, { feedurl })
             return ''
         })
     return content
