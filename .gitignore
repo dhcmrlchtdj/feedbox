@@ -1,4 +1,3 @@
 node_modules/
 _build/
 dotenv
-server/src/databases/

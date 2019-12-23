@@ -1,11 +1,11 @@
 {
-    "include": ["src/**/*"],
+    "include": ["bin", "lib", "test"],
     "compilerOptions": {
         "outDir": "./_build/",
 
-        "module": "commonjs",
-        "target": "es2019",
-        "lib": ["esnext"],
+        "module": "CommonJS",
+        "target": "ES2020",
+        "lib": ["ESNext"],
 
         "sourceMap": false,
         "importHelpers": false,

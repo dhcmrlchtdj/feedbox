@@ -6,8 +6,8 @@
     "author": "h11 <nirisix@gmail.com>",
     "license": "UNLICENSED",
     "scripts": {
-        "start": "node ./_build/index.js",
-        "build": "make build"
+        "start": "node ./_build/app/server.js",
+        "build": "make release"
     },
     "engines": {
         "node": "13.*",
@@ -34,6 +34,8 @@
         "typeorm": "0.2.21"
     },
     "devDependencies": {
+        "@hapi/code": "7.0.0",
+        "@hapi/lab": "21.0.0",
         "@types/chardet": "0.8.0",
         "@types/feedparser": "2.2.3",
         "@types/mailgun-js": "0.22.3",

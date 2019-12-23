@@ -1,24 +1,24 @@
-import prepare from './prepare'
 import { Server } from '@hapi/hapi'
 import plugins from './plugins'
 import routes from './routes'
+import init from './init'
 
-const corsConf = {
-    headers: [
-        'accept',
-        'authorization',
-        'content-type',
-        'if-none-match',
-        'content-type',
-        'x-sw-strategy',
-        'x-sw-race',
-        'x-sw-actions',
-    ],
-    credentials: true,
-}
+export default async () => {
+    await init()
 
-const main = async () => {
-    await prepare()
+    const corsConf = {
+        headers: [
+            'accept',
+            'authorization',
+            'content-type',
+            'if-none-match',
+            'content-type',
+            'x-sw-strategy',
+            'x-sw-race',
+            'x-sw-actions',
+        ],
+        credentials: true,
+    }
 
     const server = new Server({
         port: Number(process.env.PORT || 8000),
@@ -34,6 +34,6 @@ const main = async () => {
     server.route(routes)
 
     await server.start()
-}
 
-main()
+    return server
+}
