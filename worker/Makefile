@@ -6,7 +6,7 @@ build:
 	rollup -c
 
 test: build
-	node ./_build/test/index.js
+	jest
 
 release: clean
 	$(MAKE) build
