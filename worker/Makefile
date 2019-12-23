@@ -15,7 +15,7 @@ clean:
 	rm -rf ./_build
 
 fmt:
-	prettier --write './src/**/*' './*.js' './*.json'
+	prettier --write './{bin,lib,test}/**/*.{ts,js,json}' './*.json'
 
 dev:
 	tsc -w

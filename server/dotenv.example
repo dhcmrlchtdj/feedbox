@@ -1,8 +1,5 @@
 NODE_ENV="development"
 
-CRON_USERNAME="username"
-CRON_PASSWORD="crypto.randomBytes(2).toString('hex')"
-
 WEB="http://localhost:9000"
 SERVER="http://localhost:8000"
 

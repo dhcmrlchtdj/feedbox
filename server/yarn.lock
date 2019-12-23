@@ -45,14 +45,6 @@
   dependencies:
     "@hapi/hoek" "8.x.x"
 
-"@hapi/basic@5.1.1":
-  version "5.1.1"
-  resolved "https://mirrors.huaweicloud.com/repository/npm/@hapi/basic/-/basic-5.1.1.tgz#5d359ffe173ea6571eb983e2b9cf221ff85ab089"
-  integrity sha512-fHyVvf2xurgGBJJaLpRMtDF4AaPSs679nGk8/FjBw3p8/Kj5fuPv5kD1+fJ4ZSdPt1rHHGvKIDK0aVysbbUDMg==
-  dependencies:
-    "@hapi/boom" "7.x.x"
-    "@hapi/hoek" "8.x.x"
-
 "@hapi/bell@11.1.0":
   version "11.1.0"
   resolved "https://mirrors.huaweicloud.com/repository/npm/@hapi/bell/-/bell-11.1.0.tgz#5a6d6c0b38a13ccb5a505a36b4868a619c8f48b2"

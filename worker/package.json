@@ -16,7 +16,7 @@
         "@types/node": "12.12.21",
         "dotenv-safe": "8.2.0",
         "prettier": "1.19.1",
-        "rollup": "1.27.13",
+        "rollup": "1.27.14",
         "rollup-plugin-replace": "2.2.0",
         "rollup-plugin-typescript": "1.0.1",
         "tslib": "1.10.0",

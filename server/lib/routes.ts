@@ -1,6 +1,5 @@
 import * as Feed from './controllers/feed'
 import * as User from './controllers/user'
-import * as Cron from './controllers/cron'
 import * as Helper from './controllers/helper'
 
 const icon = Buffer.from(
@@ -18,8 +17,6 @@ const routes = [
     { path: '/api/v1/user', method: 'get', options: User.info },
     { path: '/api/logout', method: 'get', options: User.logout },
     { path: '/api/connect/github', method: 'get', options: User.connectGithub },
-
-    { path: '/api/v1/cron', method: 'get', options: Cron.cron },
 
     process.env.NODE_ENV !== 'production' && {
         path: '/api/v1/helper/feed-preview',
