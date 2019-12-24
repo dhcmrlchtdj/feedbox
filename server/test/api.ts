@@ -22,13 +22,7 @@ describe('user API', () => {
                 credentials: { userId },
             },
         })
-        expect(resp.result).toMatchInlineSnapshot(`
-            User {
-              "email": "user@example.com",
-              "githubId": 1,
-              "id": 1,
-            }
-        `)
+        expect(resp.result).toMatchSnapshot()
     })
 
     test('/api/logout', async () => {
@@ -39,15 +33,9 @@ describe('user API', () => {
                 Cookie: 'token=***',
             },
         })
-        expect(resp.headers['set-cookie']).toMatchInlineSnapshot(`
-            Array [
-              "token=; Max-Age=0; Expires=Thu, 01 Jan 1970 00:00:00 GMT; HttpOnly; Path=/api",
-            ]
-        `)
-        expect(resp.headers['location']).toMatchInlineSnapshot(
-            `"http://localhost:9000"`,
-        )
-        expect(resp.statusCode).toMatchInlineSnapshot(`302`)
+        expect(resp.headers['set-cookie']).toMatchSnapshot()
+        expect(resp.headers['location']).toMatchSnapshot()
+        expect(resp.statusCode).toMatchSnapshot()
     })
 })
 
@@ -64,16 +52,7 @@ describe('feed API', () => {
                 credentials: { userId },
             },
         })
-        expect(resp.result).toMatchInlineSnapshot(`
-            Array [
-              Feed {
-                "id": 1,
-                "lastCheck": null,
-                "lastUpdated": null,
-                "url": "https://example.com/rss",
-              },
-            ]
-        `)
+        expect(resp.result).toMatchSnapshot()
     })
 
     test('/api/v1/feeds', async () => {
@@ -85,16 +64,7 @@ describe('feed API', () => {
                 credentials: { userId },
             },
         })
-        expect(resp.result).toMatchInlineSnapshot(`
-            Array [
-              Feed {
-                "id": 1,
-                "lastCheck": null,
-                "lastUpdated": null,
-                "url": "https://example.com/rss",
-              },
-            ]
-        `)
+        expect(resp.result).toMatchSnapshot()
     })
 
     test('/api/v1/feeds/export', async () => {
@@ -106,15 +76,7 @@ describe('feed API', () => {
                 credentials: { userId },
             },
         })
-        expect(resp.result).toMatchInlineSnapshot(`
-            "<?xml version=\\"1.0\\" encoding=\\"utf-8\\"?>
-            <opml version=\\"1.0\\">
-            <head><title>feeds</title></head>
-            <body>
-            <outline type=\\"rss\\" text=\\"example.com\\" xmlUrl=\\"https://example.com/rss\\"/>
-            </body>
-            </opml>"
-        `)
+        expect(resp.result).toMatchSnapshot()
     })
 
     test('/api/v1/feeds/remove', async () => {
@@ -129,6 +91,6 @@ describe('feed API', () => {
                 credentials: { userId },
             },
         })
-        expect(resp.result).toMatchInlineSnapshot(`Array []`)
+        expect(resp.result).toMatchSnapshot()
     })
 })

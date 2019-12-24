@@ -16,6 +16,7 @@
     "jest": {
         "testEnvironment": "node",
         "collectCoverage": true,
+        "snapshotResolver": "./test/jest.snapshot-resolver.js",
         "testRegex": "_build/test/.*.js$"
     },
     "dependencies": {
