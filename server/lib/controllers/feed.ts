@@ -1,4 +1,5 @@
 import * as Joi from '@hapi/joi'
+import * as Boom from '@hapi/boom'
 import Feed from '../models/feed'
 import extractSite from '../utils/extract-site'
 
@@ -46,8 +47,8 @@ export const remove = {
 }
 
 export const importFeeds = {
-    async handler(_request, h) {
-        return h.response().code(501)
+    async handler(_request, _h) {
+        return Boom.notImplemented('method not implemented')
     },
 }
 

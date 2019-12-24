@@ -15,10 +15,7 @@ const initDB = async () => {
     const sqlite = Object.assign(
         {
             type: 'sqlite',
-            database: path.resolve(
-                __dirname,
-                '../../src/databases/feedbox.sqlite',
-            ),
+            database: path.resolve(__dirname, './feedbox.sqlite'),
         },
         base,
     )

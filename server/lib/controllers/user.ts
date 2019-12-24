@@ -1,3 +1,4 @@
+import * as Boom from '@hapi/boom'
 import User from '../models/user'
 import getGithubEmail from '../utils/get-github-email'
 
@@ -5,7 +6,11 @@ export const info = {
     async handler(request, _h) {
         const { userId } = request.auth.credentials
         const user = await User.takeById(userId)
-        return user
+        if (user) {
+            return user
+        } else {
+            return Boom.badRequest('invalid user')
+        }
     },
 }
 
@@ -13,8 +18,6 @@ export const logout = {
     auth: false,
     async handler(request, h) {
         request.cookieAuth.clear()
-
-        // redirect to home
         return h.redirect(process.env.WEB)
     },
 }

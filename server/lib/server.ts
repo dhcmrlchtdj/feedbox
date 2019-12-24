@@ -1,4 +1,4 @@
-import { Server } from '@hapi/hapi'
+import * as Hapi from '@hapi/hapi'
 import plugins from './plugins'
 import routes from './routes'
 import prepare from './prepare'
@@ -19,7 +19,7 @@ const common = async () => {
         ],
         credentials: true,
     }
-    const server = new Server({
+    const server = Hapi.server({
         port: Number(process.env.PORT || 8000),
         host: '0.0.0.0',
         routes: {
