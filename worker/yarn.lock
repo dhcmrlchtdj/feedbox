@@ -176,6 +176,12 @@
     busboy "^0.3.0"
     formdata-node "^1.5.1"
 
+"@feedbox/rollup-plugin@file:../rollup-plugin":
+  version "0.0.0"
+  dependencies:
+    "@rollup/plugin-replace" "2.3.0"
+    dotenv-safe "8.2.0"
+
 "@jest/console@^24.7.1", "@jest/console@^24.9.0":
   version "24.9.0"
   resolved "https://mirrors.huaweicloud.com/repository/npm/@jest/console/-/console-24.9.0.tgz#79b1bc06fb74a8cfb01cbdedf945584b1b9707f0"
@@ -341,6 +347,14 @@
   resolved "https://mirrors.huaweicloud.com/repository/npm/@octetstream/promisify/-/promisify-2.0.2.tgz#29ac3bd7aefba646db670227f895d812c1a19615"
   integrity sha512-7XHoRB61hxsz8lBQrjC1tq/3OEIgpvGWg6DKAdwi7WRzruwkmsdwmOoUXbU4Dtd4RSOMDwed0SkP3y8UlMt1Bg==
 
+"@rollup/plugin-replace@2.3.0":
+  version "2.3.0"
+  resolved "https://mirrors.huaweicloud.com/repository/npm/@rollup/plugin-replace/-/plugin-replace-2.3.0.tgz#86d88746383e40dd81cffb5216449cc51a734eb9"
+  integrity sha512-rzWAMqXAHC1w3eKpK6LxRqiF4f3qVFaa1sGii6Bp3rluKcwHNOpPt+hWRCmAH6SDEPtbPiLFf0pfNQyHs6Btlg==
+  dependencies:
+    magic-string "^0.25.2"
+    rollup-pluginutils "^2.6.0"
+
 "@types/babel__core@^7.1.0":
   version "7.1.3"
   resolved "https://mirrors.huaweicloud.com/repository/npm/@types/babel__core/-/babel__core-7.1.3.tgz#e441ea7df63cd080dfcd02ab199e6d16a735fc30"
@@ -375,9 +389,9 @@
     "@babel/types" "^7.3.0"
 
 "@types/estree@*":
-  version "0.0.40"
-  resolved "https://mirrors.huaweicloud.com/repository/npm/@types/estree/-/estree-0.0.40.tgz#0e6cb9b9bbd098031fa19e4b4e8131bc70e5de13"
-  integrity sha512-p3KZgMto/JyxosKGmnLDJ/dG5wf+qTRMUjHJcspC2oQKa4jP7mz+tv0ND56lLBu3ojHlhzY33Ol+khLyNmilkA==
+  version "0.0.41"
+  resolved "https://mirrors.huaweicloud.com/repository/npm/@types/estree/-/estree-0.0.41.tgz#fd90754150b57432b72bf560530500597ff04421"
+  integrity sha512-rIAmXyJlqw4KEBO7+u9gxZZSQHaCNnIzYrnNmYVpgfJhxTqO0brCX0SYpqUTkVI5mwwUwzmtspLBGBKroMeynA==
 
 "@types/istanbul-lib-coverage@*", "@types/istanbul-lib-coverage@^2.0.0":
   version "2.0.1"
@@ -406,10 +420,10 @@
   dependencies:
     jest-diff "^24.3.0"
 
-"@types/node@*", "@types/node@12.12.21":
-  version "12.12.21"
-  resolved "https://mirrors.huaweicloud.com/repository/npm/@types/node/-/node-12.12.21.tgz#aa44a6363291c7037111c47e4661ad210aded23f"
-  integrity sha512-8sRGhbpU+ck1n0PGAUgVrWrWdjSW2aqNeyC15W88GRsMpSwzv6RJGlLhE7s2RhVSOdyDmxbqlWSeThq4/7xqlA==
+"@types/node@*", "@types/node@13.1.0":
+  version "13.1.0"
+  resolved "https://mirrors.huaweicloud.com/repository/npm/@types/node/-/node-13.1.0.tgz#225cbaac5fdb2b9ac651b02c070d8aa3c37cc812"
+  integrity sha512-zwrxviZS08kRX40nqBrmERElF2vpw4IUTd5khkhBTfFH8AOaeoLVx48EC4+ZzS2/Iga7NevncqnsUSYjM4OWYA==
 
 "@types/stack-utils@^1.0.1":
   version "1.0.1"
@@ -422,9 +436,9 @@
   integrity sha512-gCubfBUZ6KxzoibJ+SCUc/57Ms1jz5NjHe4+dI2krNmU5zCPAphyLJYyTOg06ueIyfj+SaCUqmzun7ImlxDcKg==
 
 "@types/yargs@^13.0.0":
-  version "13.0.3"
-  resolved "https://mirrors.huaweicloud.com/repository/npm/@types/yargs/-/yargs-13.0.3.tgz#76482af3981d4412d65371a318f992d33464a380"
-  integrity sha512-K8/LfZq2duW33XW/tFwEAfnZlqIfVsoyRB3kfXdPXYhl0nfM8mmh7GS0jg7WrX2Dgq/0Ha/pR1PaR+BvmWwjiQ==
+  version "13.0.4"
+  resolved "https://mirrors.huaweicloud.com/repository/npm/@types/yargs/-/yargs-13.0.4.tgz#53d231cebe1a540e7e13727fc1f0d13ad4a9ba3b"
+  integrity sha512-Ke1WmBbIkVM8bpvsNEcGgQM70XcEh/nbpxQhW7FhrsbCsXSY9BmLB1+LHtD7r9zrsOcFlLiF+a/UeJsdfw3C5A==
   dependencies:
     "@types/yargs-parser" "*"
 
@@ -3088,23 +3102,7 @@ rimraf@^2.5.4, rimraf@^2.6.1, rimraf@^2.6.3:
   dependencies:
     glob "^7.1.3"
 
-rollup-plugin-replace@2.2.0:
-  version "2.2.0"
-  resolved "https://mirrors.huaweicloud.com/repository/npm/rollup-plugin-replace/-/rollup-plugin-replace-2.2.0.tgz#f41ae5372e11e7a217cde349c8b5d5fd115e70e3"
-  integrity sha512-/5bxtUPkDHyBJAKketb4NfaeZjL5yLZdeUihSfbF2PQMz+rSTEb8ARKoOl3UBT4m7/X+QOXJo3sLTcq+yMMYTA==
-  dependencies:
-    magic-string "^0.25.2"
-    rollup-pluginutils "^2.6.0"
-
-rollup-plugin-typescript@1.0.1:
-  version "1.0.1"
-  resolved "https://mirrors.huaweicloud.com/repository/npm/rollup-plugin-typescript/-/rollup-plugin-typescript-1.0.1.tgz#86565033b714c3d1f3aba510aad3dc519f7091e9"
-  integrity sha512-rwJDNn9jv/NsKZuyBb/h0jsclP4CJ58qbvZt2Q9zDIGILF2LtdtvCqMOL+Gq9IVq5MTrTlHZNrn8h7VjQgd8tw==
-  dependencies:
-    resolve "^1.10.0"
-    rollup-pluginutils "^2.5.0"
-
-rollup-pluginutils@^2.5.0, rollup-pluginutils@^2.6.0:
+rollup-pluginutils@^2.6.0:
   version "2.8.2"
   resolved "https://mirrors.huaweicloud.com/repository/npm/rollup-pluginutils/-/rollup-pluginutils-2.8.2.tgz#72f2af0748b592364dbd3389e600e5a9444a351e"
   integrity sha512-EEp9NhnUkwY8aif6bxgovPHMoMoNr2FulJziTndpt5H9RdwC47GSGuII9XxpSdzVGM0GWrNPHV6ie1LTNJPaLQ==
@@ -3567,7 +3565,7 @@ tr46@^1.0.1:
   dependencies:
     punycode "^2.1.0"
 
-tslib@1.10.0, tslib@^1.7.1, tslib@^1.9.3:
+tslib@^1.7.1, tslib@^1.9.3:
   version "1.10.0"
   resolved "https://mirrors.huaweicloud.com/repository/npm/tslib/-/tslib-1.10.0.tgz#c3c19f95973fb0a62973fb09d90d961ee43e5c8a"
   integrity sha512-qOebF53frne81cf0S9B41ByenJ3/IuH8yJKngAX35CmiZySA0khhkovshKK+jGCaMnVomla7gVlIcc3EvKPbTQ==

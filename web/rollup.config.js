@@ -1,24 +1,12 @@
 import * as path from 'path'
-import * as dotenv from 'dotenv-safe'
-import replace from 'rollup-plugin-replace'
-import resolve from 'rollup-plugin-node-resolve'
+import resolve from '@rollup/plugin-node-resolve'
+import json from '@rollup/plugin-json'
 import svelte from 'rollup-plugin-svelte'
 import { terser } from 'rollup-plugin-terser'
-import json from 'rollup-plugin-json'
 import serve from 'rollup-plugin-serve'
-import manifest from './util/rollup-plugin-manifest'
-import template from './util/rollup-plugin-template'
+import { manifest, template, dotenv } from '@feedbox/rollup-plugin'
 
 const prod = process.env.NODE_ENV === 'production'
-
-dotenv.config({
-    path: path.resolve(__dirname, './dotenv'),
-    example: path.resolve(__dirname, './dotenv.example'),
-})
-const envs = Object.entries(process.env).reduce((acc, curr) => {
-    acc[`process.env.` + curr[0]] = JSON.stringify(curr[1])
-    return acc
-}, {})
 
 export default [
     {
@@ -32,7 +20,10 @@ export default [
         },
         plugins: [
             resolve(),
-            replace(envs),
+            dotenv({
+                path: path.resolve(__dirname, './dotenv'),
+                example: path.resolve(__dirname, './dotenv.example'),
+            }),
             svelte({
                 hydratable: true,
                 generate: 'dom',
@@ -60,7 +51,10 @@ export default [
         },
         plugins: [
             resolve(),
-            replace(envs),
+            dotenv({
+                path: path.resolve(__dirname, './dotenv'),
+                example: path.resolve(__dirname, './dotenv.example'),
+            }),
             json(),
             svelte({
                 generate: 'ssr',

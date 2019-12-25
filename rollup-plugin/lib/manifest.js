@@ -1,9 +1,9 @@
-import * as fs from 'fs'
-import * as path from 'path'
+const fs = require('fs')
+const path = require('path')
 
 const { mkdir, writeFile } = fs.promises
 
-export default opt => {
+exports.manifest = opt => {
     return {
         name: 'manifest',
         generateBundle: async (options, bundle, isWrite) => {

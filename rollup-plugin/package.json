@@ -1,0 +1,11 @@
+{
+    "private": true,
+    "name": "@feedbox/rollup-plugin",
+    "version": "0.0.0",
+    "license": "UNLICENSED",
+    "main": "lib/index.js",
+    "dependencies": {
+        "@rollup/plugin-replace": "2.3.0",
+        "dotenv-safe": "8.2.0"
+    }
+}

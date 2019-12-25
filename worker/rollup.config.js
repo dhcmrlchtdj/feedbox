@@ -1,15 +1,5 @@
 import * as path from 'path'
-import * as dotenv from 'dotenv-safe'
-import replace from 'rollup-plugin-replace'
-
-dotenv.config({
-    path: path.resolve(__dirname, './dotenv'),
-    example: path.resolve(__dirname, './dotenv.example'),
-})
-const envs = Object.entries(process.env).reduce((acc, curr) => {
-    acc[`process.env.` + curr[0]] = JSON.stringify(curr[1])
-    return acc
-}, {})
+import { dotenv } from '@feedbox/rollup-plugin'
 
 export default [
     {
@@ -19,6 +9,11 @@ export default [
             entryFileNames: '[name].js',
             format: 'esm',
         },
-        plugins: [replace(envs)],
+        plugins: [
+            dotenv({
+                path: path.resolve(__dirname, './dotenv'),
+                example: path.resolve(__dirname, './dotenv.example'),
+            }),
+        ],
     },
 ]

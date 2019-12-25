@@ -1,11 +1,11 @@
-import * as fs from 'fs'
-import * as path from 'path'
+const fs = require('fs')
+const path = require('path')
 
 const { mkdir, writeFile, readFile } = fs.promises
 const readStr = async p => (await readFile(p)).toString()
 const readJSON = async p => JSON.parse(await readStr(p))
 
-export default opt => {
+exports.template = opt => {
     return {
         name: 'template',
         generateBundle: async () => {
