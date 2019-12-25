@@ -76,7 +76,8 @@ describe('feed API', () => {
 <opml version="1.0">
 <head><title>feeds</title></head>
 <body>
-<outline type="rss" text="example" xmlUrl="https://example.com/rss"/>
+<outline type="rss" text="example" xmlUrl="https://example.com/rss2"/>
+<outline type="rss" text="example" xmlUrl="https://example.com/rss3"/>
 </body>
 </opml>`
         form.append('opml', opml, {

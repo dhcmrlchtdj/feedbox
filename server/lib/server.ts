@@ -23,7 +23,7 @@ const common = async () => {
         port: Number(process.env.PORT || 8000),
         host: '0.0.0.0',
         routes: {
-            payload: { allow: ['application/json'] },
+            payload: { allow: 'application/json' },
             cors: process.env.SERVER === process.env.WEB ? false : corsConf,
         },
     })

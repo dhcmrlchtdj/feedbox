@@ -27,6 +27,7 @@
         "@hapi/joi": "16.1.8",
         "chardet": "0.8.0",
         "dotenv-safe": "8.2.0",
+        "fast-xml-parser": "3.15.1",
         "feedparser": "2.2.9",
         "hapi-pino": "6.3.0",
         "iconv-lite": "0.5.0",

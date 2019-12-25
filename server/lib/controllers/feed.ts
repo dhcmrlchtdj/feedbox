@@ -1,5 +1,5 @@
+import { parse } from 'fast-xml-parser'
 import * as Joi from '@hapi/joi'
-import * as Boom from '@hapi/boom'
 import Feed from '../models/feed'
 import extractSite from '../utils/extract-site'
 
@@ -47,8 +47,31 @@ export const remove = {
 }
 
 export const importFeeds = {
-    async handler(_request, _h) {
-        return Boom.notImplemented('method not implemented')
+    payload: {
+        allow: 'multipart/form-data',
+        multipart: { output: 'annotated' },
+    },
+    validate: {
+        payload: Joi.object({
+            opml: Joi.required(),
+        }),
+    },
+    async handler(request, _h) {
+        const { userId } = request.auth.credentials
+
+        const str = request.payload.opml.payload
+        const xml = parse(str, { ignoreAttributes: false })
+        const outline = xml?.opml?.body?.outline
+        const links = new Set<string>()
+        if (Array.isArray(outline)) {
+            outline.forEach(o => links.add(o['@_xmlUrl']))
+        } else if (outline != null) {
+            links.add(outline['@_xmlUrl'])
+        }
+        // TODO bulk insert
+
+        const feeds = await Feed.takeByUser(userId)
+        return feeds
     },
 }
 
