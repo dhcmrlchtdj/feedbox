@@ -2,8 +2,8 @@ import * as Mailgun from 'mailgun-js'
 import rollbar from './rollbar'
 
 const mg = new Mailgun({
-    apiKey: process.env.MAILGUN_API_KEY as string,
-    domain: process.env.MAILGUN_DOMAIN as string,
+    apiKey: process.env.MAILGUN_API_KEY!,
+    domain: process.env.MAILGUN_DOMAIN!,
 })
 
 const sendEmail = async data => mg.messages().send(data)

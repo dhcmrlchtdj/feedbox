@@ -66,8 +66,7 @@ const entries2mails = async (
         }))
         return ms
     })
-    const flatten = ([] as TMail[]).concat(...mails)
-    return flatten
+    return mails.flat()
 }
 
 const updateFeeds = async () => {
