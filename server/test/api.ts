@@ -1,12 +1,15 @@
+import * as FormData from 'form-data'
 import { init } from '../lib/server'
 import User from '../lib/models/user'
 
 let server: any
-let userId: number
+const auth = {
+    strategy: 'session',
+    credentials: { userId: 1 },
+}
 beforeAll(async () => {
     server = await init()
-    const user = await User.takeOrCreateByGithub(1, 'user@example.com')
-    userId = user.id
+    await User.takeOrCreateByGithub(1, 'user@example.com')
 })
 afterAll(async () => {
     await server.stop()
@@ -17,10 +20,7 @@ describe('user API', () => {
         const resp = await server.inject({
             method: 'get',
             url: '/api/v1/user',
-            auth: {
-                strategy: 'session',
-                credentials: { userId },
-            },
+            auth,
         })
         expect(resp.result).toMatchSnapshot()
     })
@@ -47,10 +47,7 @@ describe('feed API', () => {
             payload: {
                 url: 'https://example.com/rss',
             },
-            auth: {
-                strategy: 'session',
-                credentials: { userId },
-            },
+            auth,
         })
         expect(resp.result).toMatchSnapshot()
     })
@@ -59,10 +56,7 @@ describe('feed API', () => {
         const resp = await server.inject({
             method: 'get',
             url: '/api/v1/feeds',
-            auth: {
-                strategy: 'session',
-                credentials: { userId },
-            },
+            auth,
         })
         expect(resp.result).toMatchSnapshot()
     })
@@ -71,10 +65,30 @@ describe('feed API', () => {
         const resp = await server.inject({
             method: 'get',
             url: '/api/v1/feeds/export',
-            auth: {
-                strategy: 'session',
-                credentials: { userId },
-            },
+            auth,
+        })
+        expect(resp.result).toMatchSnapshot()
+    })
+
+    test('/api/v1/feeds/import', async () => {
+        const form = new FormData()
+        const opml = `<?xml version="1.0" encoding="utf-8"?>
+<opml version="1.0">
+<head><title>feeds</title></head>
+<body>
+<outline type="rss" text="example" xmlUrl="https://example.com/rss"/>
+</body>
+</opml>`
+        form.append('opml', opml, {
+            filename: 'feed.opml',
+            contentType: 'text/x-opml',
+        })
+        const resp = await server.inject({
+            method: 'post',
+            url: '/api/v1/feeds/import',
+            auth,
+            payload: form.getBuffer(),
+            headers: form.getHeaders(),
         })
         expect(resp.result).toMatchSnapshot()
     })
@@ -86,10 +100,7 @@ describe('feed API', () => {
             payload: {
                 feedId: 1,
             },
-            auth: {
-                strategy: 'session',
-                credentials: { userId },
-            },
+            auth,
         })
         expect(resp.result).toMatchSnapshot()
     })

@@ -32,6 +32,8 @@ exports[`feed API /api/v1/feeds/export 1`] = `
 </opml>"
 `;
 
+exports[`feed API /api/v1/feeds/import 1`] = ``;
+
 exports[`feed API /api/v1/feeds/remove 1`] = `Array []`;
 
 exports[`user API /api/logout 1`] = `
