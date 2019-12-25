@@ -4,10 +4,9 @@ account_id = "d36f6909d7981a482a32e5690c07bf87"
 type = "javascript"
 
 # env.development
-workers_dev = true
 name = "feedbox-dev"
+workers_dev = true
 
 [env.production]
-workers_dev = false
 name = "feedbox"
 route = "feedbox.h11.io/api/*"

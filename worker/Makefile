@@ -17,7 +17,7 @@ clean:
 fmt:
 	prettier --write './{bin,lib,test}/**/*.{ts,js,json}' './*.json'
 
-dev:
-	tsc -w
+deploy:
+	wrangler publish --env production
 
-.PHONY: build clean fmt dev release test
+.PHONY: build clean fmt dev release deploy
