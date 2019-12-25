@@ -6,7 +6,7 @@ exports.dotenv = dotenvConfig => {
 
     const envs = {}
     Object.entries(process.env).forEach(([key, value]) => {
-        envs[`process.env.$key`] = JSON.stringify(value)
+        envs[`process.env.${key}`] = JSON.stringify(value)
     })
 
     return replace(envs)

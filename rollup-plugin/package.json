@@ -1,7 +1,7 @@
 {
     "private": true,
     "name": "@feedbox/rollup-plugin",
-    "version": "0.0.0",
+    "version": "0.0.2",
     "license": "UNLICENSED",
     "main": "lib/index.js",
     "dependencies": {

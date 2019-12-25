@@ -19,7 +19,7 @@
     js-tokens "^4.0.0"
 
 "@feedbox/rollup-plugin@file:../rollup-plugin":
-  version "0.0.0"
+  version "0.0.2"
   dependencies:
     "@rollup/plugin-replace" "2.3.0"
     dotenv-safe "8.2.0"
