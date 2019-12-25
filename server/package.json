@@ -36,14 +36,14 @@
         "reflect-metadata": "0.1.13",
         "rollbar": "2.14.4",
         "sqlite3": "4.1.1",
-        "typeorm": "0.2.21"
+        "typeorm": "0.2.22"
     },
     "devDependencies": {
         "@types/chardet": "0.8.0",
         "@types/feedparser": "2.2.3",
         "@types/jest": "24.0.24",
         "@types/mailgun-js": "0.22.3",
-        "@types/node": "12.12.21",
+        "@types/node": "13.1.0",
         "@types/node-fetch": "2.5.4",
         "jest": "24.9.0",
         "nodemon": "2.0.2",
