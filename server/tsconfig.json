@@ -20,16 +20,13 @@
         "noUnusedParameters": true,
 
         "strict": true,
-        "noImplicitAny": false,
-        "strictPropertyInitialization": false,
+        "noImplicitAny": true,
+        "strictPropertyInitialization": true,
         "strictBindCallApply": true,
         "alwaysStrict": true,
         "noImplicitThis": true,
         "strictFunctionTypes": true,
         "strictNullChecks": true,
-
-        "experimentalDecorators": true,
-        "emitDecoratorMetadata": true,
 
         "pretty": true
     }

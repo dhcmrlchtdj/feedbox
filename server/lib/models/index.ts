@@ -1,33 +1,28 @@
 import * as path from 'path'
-import { createConnection } from 'typeorm'
-import User from './user'
-import Feed from './feed'
-import Link from './link'
+import * as knex from 'knex'
 
-const initDB = async () => {
-    const base = {
-        entities: [User, Feed, Link],
-        // maxQueryExecutionTime: 100,
-        // logging: true,
-        logger: 'simple-console',
-        synchronize: true,
-    }
-    const sqlite = Object.assign(
-        {
-            type: 'sqlite',
-            database: path.resolve(__dirname, './feedbox.sqlite'),
-        },
-        base,
-    )
-    const postgres = Object.assign(
-        {
-            type: 'postgres',
-            url: process.env.DATABASE_URL,
-        },
-        base,
-    )
-    const config = process.env.NODE_ENV === 'production' ? postgres : sqlite
-    await createConnection(config as any)
+const prod = process.env.NODE_ENV === 'production'
+
+const common = {
+    debug: !prod,
+    asyncStackTraces: !prod,
 }
 
-export default initDB
+const sqlite3 = {
+    client: 'sqlite3',
+    connection: {
+        filename: path.resolve(__dirname, './feedbox.sqlite'),
+    },
+}
+
+const pg = {
+    client: 'pg',
+    connection: process.env.DATABASE_URL,
+    pool: { min: 0, max: 10 },
+}
+
+export default () => {
+    const cfg = Object.assign({}, common, prod ? pg : sqlite3)
+    const conn = knex(cfg)
+    return conn
+}

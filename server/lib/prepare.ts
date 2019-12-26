@@ -1,4 +1,3 @@
-import 'reflect-metadata'
 import * as path from 'path'
 import * as dotenv from 'dotenv-safe'
 import initDB from './models'
