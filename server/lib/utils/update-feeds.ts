@@ -1,5 +1,4 @@
-import Feed from '../models/feed'
-import Link from '../models/link'
+import Model from '../models'
 import fetchFeed from './fetch-feed'
 import parseFeed, { FeedItem } from './parse-feed'
 import sendEmail from './send-email'
@@ -70,36 +69,36 @@ const entries2mails = async (
 }
 
 const updateFeeds = async () => {
-    const feeds = await Feed.takeAll()
+    const feeds = await Model.getFeedForUpdate()
     feeds.forEach(async feed => {
         // fetch feeds
-        const f = await feed2feeds(feed)
+        // const f = await feed2feeds(feed)
 
         // update db
-        feed.lastCheck = new Date()
-        if (f.length !== 0) {
-            const first = f[0]
-            feed.lastUpdated = first.date || first.meta.date || new Date()
-        }
+        // feed.lastCheck = new Date()
+        // if (f.length !== 0) {
+        //     const first = f[0]
+        //     feed.lastUpdated = first.date || first.meta.date || new Date()
+        // }
 
         // extract articles
-        const e = await feeds2entries(feed, f)
-
-        // update db
-        // FIXME: how to batch?
-        await Promise.all(
-            e.map(async x => {
-                const l = new Link()
-                l.url = x.url
-                await l.save()
-                feed.links.push(l)
-            }),
-        )
-        await feed.save()
-
-        // send emails
-        const m = await entries2mails(feed, e)
-        await Promise.all(m.map(x => sendEmail(x.addr, x.subject, x.text)))
+        // const e = await feeds2entries(feed, f)
+        // 
+        // // update db
+        // // FIXME: how to batch?
+        // await Promise.all(
+        //     e.map(async x => {
+        //         const l = new Link()
+        //         l.url = x.url
+        //         await l.save()
+        //         feed.links.push(l)
+        //     }),
+        // )
+        // await feed.save()
+        // 
+        // // send emails
+        // const m = await entries2mails(feed, e)
+        // await Promise.all(m.map(x => sendEmail(x.addr, x.subject, x.text)))
     })
 }
 

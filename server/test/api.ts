@@ -1,6 +1,6 @@
 import * as FormData from 'form-data'
 import { init } from '../lib/server'
-import User from '../lib/models/user'
+import Model from '../lib/models'
 
 let server: any
 const auth = {
@@ -9,7 +9,7 @@ const auth = {
 }
 beforeAll(async () => {
     server = await init()
-    await User.takeOrCreateByGithub(1, 'user@example.com')
+    await Model.createUserByGithub(1, 'user@example.com')
 })
 afterAll(async () => {
     await server.stop()

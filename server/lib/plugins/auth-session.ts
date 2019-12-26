@@ -1,8 +1,8 @@
 import * as authCookie from '@hapi/cookie'
-import User from '../models/user'
+import Model from '../models'
 
 const validate = async (_request, session) => {
-    const user = await User.takeById(session.id)
+    const user = await Model.getUserById(session.id)
     if (user) {
         return { valid: true, credentials: { userId: user.id } }
     } else {

@@ -1,5 +1,5 @@
 import * as Joi from '@hapi/joi'
-import Feed from '../models/feed'
+import Model from '../models'
 import * as Boom from '@hapi/boom'
 import extractSite from '../utils/extract-site'
 import extractLinks from '../utils/extract-link-from-opml'
@@ -7,7 +7,7 @@ import extractLinks from '../utils/extract-link-from-opml'
 export const list = {
     async handler(request, _h) {
         const { userId } = request.auth.credentials
-        return Feed.takeByUser(userId)
+        return Model.getFeedByUser(userId)
     },
 }
 
@@ -20,11 +20,10 @@ export const add = {
         }),
     },
     async handler(request, _h) {
-        const { url } = request.payload
-        const feed = await Feed.takeOrCreate(url)
         const { userId } = request.auth.credentials
-        await Feed.addUser(feed.id, userId)
-        return Feed.takeByUser(userId)
+        const feedId = await Model.getFeedIdByUrl(request.payload.url)
+        await Model.subscribe(userId, feedId)
+        return Model.getFeedByUser(userId)
     },
 }
 
@@ -35,10 +34,10 @@ export const remove = {
         }),
     },
     async handler(request, _h) {
-        const { feedId } = request.payload
         const { userId } = request.auth.credentials
-        await Feed.removeUser(feedId, userId)
-        return Feed.takeByUser(userId)
+        const { feedId } = request.payload
+        await Model.unsubscribe(userId, feedId)
+        return Model.getFeedByUser(userId)
     },
 }
 
@@ -73,7 +72,7 @@ export const exportFeeds = {
     // http://dev.opml.org/spec2.html
     async handler(request, h) {
         const { userId } = request.auth.credentials
-        const feeds = await Feed.takeByUser(userId)
+        const feeds = await Model.getFeedByUser(userId)
         const outlines = feeds
             .map(feed => {
                 const text = extractSite(feed.url)

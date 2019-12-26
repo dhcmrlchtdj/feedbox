@@ -1,11 +1,11 @@
 import * as Boom from '@hapi/boom'
-import User from '../models/user'
+import Model from '../models'
 import getGithubEmail from '../utils/get-github-email'
 
 export const info = {
     async handler(request, _h) {
         const { userId } = request.auth.credentials
-        const user = await User.takeById(userId)
+        const user = await Model.getUserById(userId)
         if (user) {
             return user
         } else {
@@ -28,19 +28,16 @@ export const connectGithub = {
         if (request.auth.isAuthenticated) {
             // oauth
             const credentials = request.auth.credentials
-            const profile = credentials.profile
-            if (!profile.email) {
-                profile.email = await getGithubEmail(credentials.token)
-            }
 
             // get/create user
-            const user = await User.takeOrCreateByGithub(
-                profile.id,
-                profile.email,
-            )
+            const github = credentials.profile
+            if (!github.email) {
+                github.email = await getGithubEmail(credentials.token)
+            }
+            const id = await Model.getUserIdByGithub(github.id, github.email)
 
             // set cookie
-            request.cookieAuth.set({ id: user.id })
+            request.cookieAuth.set({ id })
 
             // redirect to home
             return h.redirect(process.env.WEB)
