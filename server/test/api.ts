@@ -9,7 +9,7 @@ const auth = {
 }
 beforeAll(async () => {
     server = await init()
-    await Model.createUserByGithub(1, 'user@example.com')
+    await Model.getUserIdByGithub(1, 'user@example.com')
 })
 afterAll(async () => {
     await server.stop()

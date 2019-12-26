@@ -73,8 +73,9 @@ const db = {
     },
 
     async getFeedForUpdate(): Promise<Map<Feed, User[]>> {
+        // TODO
         const r = await conn()
-            .select()
+            .select('feed_id', 'user_id')
             .from<RUserFeed>('r_user_feed')
         const feeds = [] as Feed[]
         const feedMap = feeds.reduce((map, feed) => {
@@ -108,6 +109,18 @@ const db = {
             .from('RUserFeed')
             .where({ user_id, feed_id })
             .del()
+    },
+
+    async subscribeUrls(user_id: number, urls: string[]) {
+        await conn()
+            .insert(urls.map(url => ({ url })))
+            .into<Feed>('Feed')
+        await conn().raw(
+            `insert into RUserFeed(user_id, feed_id)
+            (select "?", Feed.id from Feed where Feed.url in ?)
+            on conflict do nothing`,
+            [user_id, urls],
+        )
     },
 }
 

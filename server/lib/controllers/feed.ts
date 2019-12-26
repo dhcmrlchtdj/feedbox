@@ -1,6 +1,5 @@
 import * as Joi from '@hapi/joi'
 import Model from '../models'
-import * as Boom from '@hapi/boom'
 import extractSite from '../utils/extract-site'
 import extractLinks from '../utils/extract-link-from-opml'
 
@@ -56,14 +55,11 @@ export const importFeeds = {
         }),
     },
     async handler(request, _h) {
-        // const { userId } = request.auth.credentials
-
+        const { userId } = request.auth.credentials
         const str = request.payload.opml.payload
         const links = extractLinks(str)
-        console.log(links)
-
-        return Boom.notImplemented('method not implemented')
-        // return Feed.takeByUser(userId)
+        await Model.subscribeUrls(userId, links)
+        return Model.getFeedByUser(userId)
     },
 }
 
