@@ -2,10 +2,10 @@
 
 exports[`feed API /api/v1/feeds 1`] = `
 Array [
-  Feed {
+  Object {
     "id": 1,
-    "lastCheck": null,
-    "lastUpdated": null,
+    "latest_checked": null,
+    "latest_updated": null,
     "url": "https://example.com/rss",
   },
 ]
@@ -13,10 +13,10 @@ Array [
 
 exports[`feed API /api/v1/feeds/add 1`] = `
 Array [
-  Feed {
+  Object {
     "id": 1,
-    "lastCheck": null,
-    "lastUpdated": null,
+    "latest_checked": null,
+    "latest_updated": null,
     "url": "https://example.com/rss",
   },
 ]
@@ -47,7 +47,7 @@ exports[`user API /api/logout 2`] = `"http://localhost:9000"`;
 exports[`user API /api/logout 3`] = `302`;
 
 exports[`user API /api/v1/user 1`] = `
-User {
+Object {
   "email": "user@example.com",
   "githubId": 1,
   "id": 1,

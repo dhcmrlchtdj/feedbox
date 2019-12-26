@@ -13,20 +13,20 @@ const sqlite3 = {
     connection: {
         filename: path.resolve(__dirname, './feedbox.sqlite'),
     },
+    useNullAsDefault: true,
 }
 
 const pg = {
     client: 'pg',
     connection: process.env.DATABASE_URL,
-    pool: { min: 0, max: 10 },
 }
 
 export const cfg = Object.assign({}, common, prod ? pg : sqlite3)
 
-let conn: Knex | null = null
+let conn: Knex
 
 export default (): Knex => {
-    if (conn === null) {
+    if (!conn) {
         conn = Knex(cfg)
     }
     return conn

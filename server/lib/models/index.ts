@@ -9,6 +9,8 @@ export interface User {
 export interface Feed {
     id: number
     url: string
+    last_check: Date
+    last_updated: Date
 }
 
 export interface Link {
@@ -26,9 +28,8 @@ const db = {
     async getUserById(id: number): Promise<User | null> {
         const r = await conn()
             .select('id', 'github_id as githubId', 'email')
-            .from<User>('User')
+            .from('User')
             .where({ id })
-            .limit(1)
         if (r.length > 0) {
             return r[0]
         } else {
@@ -38,15 +39,14 @@ const db = {
 
     async getUserIdByGithub(github_id: number, email: string): Promise<number> {
         await conn().raw(
-            'INSERT INTO User(github_id,email) VALUES(?,?) ON CONFLICT DO UPDATE SET github_id=?,email=?',
-            [github_id, email, github_id, email],
+            'INSERT INTO User(github_id,email) VALUES(?,?) ON CONFLICT(github_id) DO UPDATE SET email=?',
+            [github_id, email, email],
         )
         const r = await conn()
-            .select()
-            .from<User>('User')
             .select('id')
+            .from('User')
             .where({ email })
-        return r[0]
+        return r[0].id
     },
 
     async getFeedIdByUrl(url: string): Promise<number> {
@@ -55,16 +55,20 @@ const db = {
             [url],
         )
         const r = await conn()
-            .select()
-            .from<Feed>('Feed')
             .select('id')
+            .from('Feed')
             .where({ url })
-        return r[0]
+        return r[0].id
     },
 
     async getFeedByUser(userId: number): Promise<Feed[]> {
         const r = await conn()
-            .select('Feed.id as id', 'Feed.url as url')
+            .select(
+                'Feed.id as id',
+                'Feed.url as url',
+                'Feed.latest_checked as latest_checked',
+                'Feed.latest_updated as latest_updated',
+            )
             .from('RUserFeed')
             .innerJoin('User', 'User.id', 'RUserFeed.user_id')
             .innerJoin('Feed', 'Feed.id', 'RUserFeed.feed_id')
@@ -99,9 +103,10 @@ const db = {
     },
 
     async subscribe(user_id: number, feed_id: number) {
-        await conn()
-            .insert({ user_id, feed_id })
-            .into<RUserFeed>('RUserFeed')
+        await conn().raw(
+            `INSERT INTO RUserFeed(user_id, feed_id) VALUES(?,?) ON CONFLICT DO NOTHING`,
+            [user_id, feed_id],
+        )
     },
 
     async unsubscribe(user_id: number, feed_id: number) {
@@ -114,11 +119,9 @@ const db = {
     async subscribeUrls(user_id: number, urls: string[]) {
         await conn()
             .insert(urls.map(url => ({ url })))
-            .into<Feed>('Feed')
+            .into('Feed')
         await conn().raw(
-            `insert into RUserFeed(user_id, feed_id)
-            (select "?", Feed.id from Feed where Feed.url in ?)
-            on conflict do nothing`,
+            `INSERT INTO RUserFeed(user_id, feed_id) (SELECT "?", Feed.id FROM Feed WHERE Feed.url in ?) ON CONFLICT DO NOTHING`,
             [user_id, urls],
         )
     },

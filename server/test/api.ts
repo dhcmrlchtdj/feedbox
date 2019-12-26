@@ -72,14 +72,16 @@ describe('feed API', () => {
 
     test('/api/v1/feeds/import', async () => {
         const form = new FormData()
-        const opml = `<?xml version="1.0" encoding="utf-8"?>
-<opml version="1.0">
-<head><title>feeds</title></head>
-<body>
-<outline type="rss" text="example" xmlUrl="https://example.com/rss2"/>
-<outline type="rss" text="example" xmlUrl="https://example.com/rss3"/>
-</body>
-</opml>`
+        const opml = `
+            <?xml version="1.0" encoding="utf-8"?>
+            <opml version="1.0">
+            <head><title>feeds</title></head>
+            <body>
+            <outline type="rss" text="example" xmlUrl="https://example.com/rss2"/>
+            <outline type="rss" text="example" xmlUrl="https://example.com/rss3"/>
+            </body>
+            </opml>
+        `
         form.append('opml', opml, {
             filename: 'feed.opml',
             contentType: 'text/x-opml',
