@@ -110,4 +110,9 @@ describe('feed API', () => {
         })
         expect(resp.result).toMatchSnapshot()
     })
+
+    test('xx', async () => {
+        const x = await Model.prepareForUpdate()
+        expect(x).toMatchSnapshot()
+    })
 })

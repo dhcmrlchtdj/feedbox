@@ -1,15 +1,14 @@
 import conn from './conn'
 
-interface User {
+export interface User {
     id: number
     github_id: number
     email: string
 }
 
-interface Feed {
+export interface Feed {
     id: number
     url: string
-    latest_checked: Date
     latest_updated: Date
 }
 
@@ -19,12 +18,12 @@ export interface Link {
     feed_id: number
 }
 
-interface RUserFeed {
+export interface RUserFeed {
     user_id: number
     feed_id: number
 }
 
-const db = {
+export default {
     async init() {
         const k = await conn()
         await k.schema
@@ -51,10 +50,6 @@ const db = {
                     .string('url', 255)
                     .notNullable()
                     .unique()
-                table
-                    .dateTime('latest_checked')
-                    .nullable()
-                    .defaultTo(null)
                 table
                     .dateTime('latest_updated')
                     .nullable()
@@ -121,7 +116,6 @@ const db = {
             .select(
                 'Feed.id as id',
                 'Feed.url as url',
-                'Feed.latest_checked as latest_checked',
                 'Feed.latest_updated as latest_updated',
             )
             .from('RUserFeed')
@@ -131,30 +125,56 @@ const db = {
         return r
     },
 
-    async getFeedForUpdate(): Promise<Map<Feed, User[]>> {
-        // TODO
-        const r = await conn()
-            .select('feed_id', 'user_id')
-            .from<RUserFeed>('r_user_feed')
-        const feeds = [] as Feed[]
-        const feedMap = feeds.reduce((map, feed) => {
-            map[feed.id] = feed
-            return map
-        }, new Map<number, Feed>())
-        const users = [] as User[]
-        const userMap = users.reduce((map, user) => {
-            map[user.id] = user
-            return map
-        }, new Map<number, User>())
-        const o = r.reduce((map, { feedId, userId }) => {
-            const feed = feedMap.get(feedId)!!
-            const user = userMap.get(userId)!!
-            const arr = map.get(feed) ?? []
-            arr.push(user)
-            map.set(feed, arr)
-            return map
-        }, new Map<Feed, User[]>())
-        return o
+    async prepareForUpdate() {
+        const feeds = await conn()
+            .select(
+                'Feed.id as fid',
+                'Feed.url as url',
+                'Feed.latest_updated as latest_updated',
+                'User.email as email',
+            )
+            .from('RUserFeed')
+            .innerJoin('Feed', 'Feed.id', 'RUserFeed.feed_id')
+            .innerJoin('User', 'User.id', 'RUserFeed.user_id')
+        const map = new Map()
+        feeds.forEach(({ fid, url, latest_updated, email }) => {
+            const v = map.get(fid) ?? {
+                fid,
+                url,
+                latest_updated,
+                emails: [],
+                links: new Set(),
+            }
+            v.emails.push(email)
+            map.set(fid, v)
+        })
+        const links = await conn()
+            .select('feed_id', 'url')
+            .from('Link')
+            .whereIn('feed_id', Array.from(map.keys()))
+        links.forEach(({ feed_id, url }) => {
+            const v = map.get(feed_id)
+            v.links.add(url)
+        })
+        return map
+    },
+
+    async addLinks(links: Array<{ feed_id: number; url: string }>) {
+        await conn()
+            .insert(links)
+            .into('Link')
+    },
+
+    async updateFeedLatestUpdated(feeds: Array<{ id: number; updated: Date }>) {
+        const knex = conn()
+        await knex.transaction(tnx => {
+            feeds.forEach(({ id, updated }) => {
+                knex('Feed')
+                    .where({ id })
+                    .update('latest_updated', updated)
+                    .transacting(tnx)
+            })
+        })
     },
 
     async subscribe(user_id: number, feed_id: number) {
@@ -189,5 +209,3 @@ const db = {
         )
     },
 }
-
-export default db

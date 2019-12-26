@@ -8,7 +8,7 @@ const schema = Joi.string()
 export default (str: string): string[] => {
     let xml
     try {
-        xml = parse(str, { ignoreAttributes: false }, true)
+        xml = parse(str.trim(), { ignoreAttributes: false }, true)
     } catch (err) {
         return []
     }

@@ -22,10 +22,6 @@ export const up = (knex: Knex) => {
                 .notNullable()
                 .unique()
             table
-                .dateTime('latest_checked')
-                .nullable()
-                .defaultTo(null)
-            table
                 .dateTime('latest_updated')
                 .nullable()
                 .defaultTo(null)
