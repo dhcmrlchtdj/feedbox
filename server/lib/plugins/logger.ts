@@ -5,7 +5,8 @@ export default {
     options: {
         logPayload: true,
         logRouteTags: true,
-        level: 'trace',
+        // logRequestStart: true,
+        // level: 'trace',
         prettyPrint: process.env.NODE_ENV !== 'production',
     },
 }

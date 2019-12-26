@@ -65,6 +65,7 @@ export default class Feed extends BaseEntity {
     }
 
     static async takeOrCreate(url: string): Promise<Feed> {
+        // FIXME: upsert?
         let feed = await Feed.takeOne({ where: { url } })
         if (!feed) {
             feed = new Feed()
@@ -83,6 +84,7 @@ export default class Feed extends BaseEntity {
     }
 
     static async addUser(feedId: number, userId: number): Promise<void> {
+        // FIXME: xxx
         try {
             await Feed.createQueryBuilder('feed')
                 .relation(Feed, 'users')

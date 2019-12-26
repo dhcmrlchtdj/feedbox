@@ -1,13 +1,13 @@
-import { parse } from 'fast-xml-parser'
 import * as Joi from '@hapi/joi'
 import Feed from '../models/feed'
+import * as Boom from '@hapi/boom'
 import extractSite from '../utils/extract-site'
+import extractLinks from '../utils/extract-link-from-opml'
 
 export const list = {
     async handler(request, _h) {
         const { userId } = request.auth.credentials
-        const feeds = await Feed.takeByUser(userId)
-        return feeds
+        return Feed.takeByUser(userId)
     },
 }
 
@@ -24,9 +24,7 @@ export const add = {
         const feed = await Feed.takeOrCreate(url)
         const { userId } = request.auth.credentials
         await Feed.addUser(feed.id, userId)
-
-        const feeds = await Feed.takeByUser(userId)
-        return feeds
+        return Feed.takeByUser(userId)
     },
 }
 
@@ -40,9 +38,7 @@ export const remove = {
         const { feedId } = request.payload
         const { userId } = request.auth.credentials
         await Feed.removeUser(feedId, userId)
-
-        const feeds = await Feed.takeByUser(userId)
-        return feeds
+        return Feed.takeByUser(userId)
     },
 }
 
@@ -53,25 +49,22 @@ export const importFeeds = {
     },
     validate: {
         payload: Joi.object({
-            opml: Joi.required(),
+            opml: Joi.object({
+                filename: Joi.string(),
+                headers: Joi.object(),
+                payload: Joi.string(),
+            }).required(),
         }),
     },
     async handler(request, _h) {
-        const { userId } = request.auth.credentials
+        // const { userId } = request.auth.credentials
 
         const str = request.payload.opml.payload
-        const xml = parse(str, { ignoreAttributes: false })
-        const outline = xml?.opml?.body?.outline
-        const links = new Set<string>()
-        if (Array.isArray(outline)) {
-            outline.forEach(o => links.add(o['@_xmlUrl']))
-        } else if (outline != null) {
-            links.add(outline['@_xmlUrl'])
-        }
-        // TODO bulk insert
+        const links = extractLinks(str)
+        console.log(links)
 
-        const feeds = await Feed.takeByUser(userId)
-        return feeds
+        return Boom.notImplemented('method not implemented')
+        // return Feed.takeByUser(userId)
     },
 }
 
