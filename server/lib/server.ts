@@ -2,6 +2,7 @@ import * as Hapi from '@hapi/hapi'
 import plugins from './plugins'
 import routes from './routes'
 import prepare from './prepare'
+import dbConn from './models/conn'
 
 const common = async () => {
     await prepare()
@@ -29,6 +30,10 @@ const common = async () => {
     })
     await plugins(server)
     server.route(routes)
+
+    server.events.on('stop', async () => {
+        await dbConn().destroy()
+    })
 
     return server
 }

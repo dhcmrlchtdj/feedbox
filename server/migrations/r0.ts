@@ -21,8 +21,14 @@ export const up = (knex: Knex) => {
                 .string('url', 255)
                 .notNullable()
                 .unique()
-            table.dateTime('latest_checked').nullable()
-            table.dateTime('latest_updated').nullable()
+            table
+                .dateTime('latest_checked')
+                .nullable()
+                .defaultTo(null)
+            table
+                .dateTime('latest_updated')
+                .nullable()
+                .defaultTo(null)
         })
         .createTable('Link', table => {
             table.increments('id')
