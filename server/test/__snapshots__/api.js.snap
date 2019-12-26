@@ -32,9 +32,45 @@ exports[`feed API /api/v1/feeds/export 1`] = `
 </opml>"
 `;
 
-exports[`feed API /api/v1/feeds/import 1`] = `TODO`;
+exports[`feed API /api/v1/feeds/import 1`] = `
+Array [
+  Object {
+    "id": 1,
+    "latest_checked": null,
+    "latest_updated": null,
+    "url": "https://example.com/rss",
+  },
+  Object {
+    "id": 2,
+    "latest_checked": null,
+    "latest_updated": null,
+    "url": "https://example.com/rss2",
+  },
+  Object {
+    "id": 3,
+    "latest_checked": null,
+    "latest_updated": null,
+    "url": "https://example.com/rss3",
+  },
+]
+`;
 
-exports[`feed API /api/v1/feeds/remove 1`] = `Array []`;
+exports[`feed API /api/v1/feeds/remove 1`] = `
+Array [
+  Object {
+    "id": 2,
+    "latest_checked": null,
+    "latest_updated": null,
+    "url": "https://example.com/rss2",
+  },
+  Object {
+    "id": 3,
+    "latest_checked": null,
+    "latest_updated": null,
+    "url": "https://example.com/rss3",
+  },
+]
+`;
 
 exports[`user API /api/logout 1`] = `
 Array [

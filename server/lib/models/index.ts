@@ -1,16 +1,16 @@
 import conn from './conn'
 
-export interface User {
+interface User {
     id: number
     github_id: number
     email: string
 }
 
-export interface Feed {
+interface Feed {
     id: number
     url: string
-    last_check: Date
-    last_updated: Date
+    latest_checked: Date
+    latest_updated: Date
 }
 
 export interface Link {
@@ -92,7 +92,8 @@ const db = {
 
     async getUserIdByGithub(github_id: number, email: string): Promise<number> {
         await conn().raw(
-            'INSERT INTO User(github_id,email) VALUES(?,?) ON CONFLICT(github_id) DO UPDATE SET email=?',
+            `INSERT INTO User(github_id,email) VALUES(?,?)
+            ON CONFLICT(github_id) DO UPDATE SET email=?`,
             [github_id, email, email],
         )
         const r = await conn()
@@ -104,7 +105,8 @@ const db = {
 
     async getFeedIdByUrl(url: string): Promise<number> {
         await conn().raw(
-            'INSERT INTO Feed(url) VALUES(?) ON CONFLICT DO NOTHING',
+            `INSERT INTO Feed(url) VALUES(?)
+            ON CONFLICT DO NOTHING`,
             [url],
         )
         const r = await conn()
@@ -157,7 +159,8 @@ const db = {
 
     async subscribe(user_id: number, feed_id: number) {
         await conn().raw(
-            `INSERT INTO RUserFeed(user_id, feed_id) VALUES(?,?) ON CONFLICT DO NOTHING`,
+            `INSERT INTO RUserFeed(user_id, feed_id) VALUES(?,?)
+            ON CONFLICT DO NOTHING`,
             [user_id, feed_id],
         )
     },
@@ -170,12 +173,19 @@ const db = {
     },
 
     async subscribeUrls(user_id: number, urls: string[]) {
-        await conn()
-            .insert(urls.map(url => ({ url })))
-            .into('Feed')
+        const qvalue = urls.map(_ => '(?)').join(',')
         await conn().raw(
-            `INSERT INTO RUserFeed(user_id, feed_id) (SELECT "?", Feed.id FROM Feed WHERE Feed.url in ?) ON CONFLICT DO NOTHING`,
-            [user_id, urls],
+            `INSERT INTO Feed(url) VALUES ${qvalue}
+            ON CONFLICT DO NOTHING`,
+            urls,
+        )
+
+        const qrange = urls.map(_ => '?').join(',')
+        await conn().raw(
+            `INSERT INTO RUserFeed(user_id, feed_id)
+            SELECT ?, Feed.id FROM Feed WHERE Feed.url in (${qrange})
+            ON CONFLICT DO NOTHING`,
+            [user_id, ...urls],
         )
     },
 }

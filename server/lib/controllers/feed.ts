@@ -56,7 +56,7 @@ export const importFeeds = {
     },
     async handler(request, _h) {
         const { userId } = request.auth.credentials
-        const str = request.payload.opml.payload
+        const str = request.payload.opml.payload.trim()
         const links = extractLinks(str)
         await Model.subscribeUrls(userId, links)
         return Model.getFeedByUser(userId)

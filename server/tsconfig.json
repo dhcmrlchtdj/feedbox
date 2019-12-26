@@ -1,5 +1,5 @@
 {
-    "include": ["bin", "lib", "test", "migrations"],
+    "include": ["bin", "lib", "test"],
     "compilerOptions": {
         "outDir": "./_build/",
 
