@@ -3,6 +3,7 @@ import fetchFeed from './fetch-feed'
 import parseFeed, { FeedItem } from './parse-feed'
 import sendEmail from './send-email'
 import extractSite from './extract-site'
+import rollbar from './rollbar'
 
 type TEntry = {
     url: string
@@ -73,9 +74,14 @@ const fdoc2xxx = async (fdoc: FeedDoc) => {
     // update feed.updated time
     if (feeds.length > 0) {
         const first = feeds[0]
-        const date = first.date || first.meta.date || null
-        if (date) {
-            await Model.updateFeedUpdated(fdoc.id, date)
+        const dateSrc = first.date || first.meta.date || null
+        if (dateSrc) {
+            try {
+                const date = new Date(dateSrc)
+                await Model.updateFeedUpdated(fdoc.id, date)
+            } catch (err) {
+                rollbar.info(err, { feedurl: fdoc.url })
+            }
         }
     }
 

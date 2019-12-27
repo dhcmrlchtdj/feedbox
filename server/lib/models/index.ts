@@ -113,6 +113,7 @@ export default {
                 'feedbox_r_user_feed.feed_id',
             )
             .where('feedbox_user.id', userId)
+            .orderBy('feedbox_feed.updated', 'desc')
         return r
     },
 

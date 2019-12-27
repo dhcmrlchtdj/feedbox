@@ -22,7 +22,7 @@ const sqlite3 = {
 
 const pg = {
     client: 'pg',
-    connection: `${process.env.DATABASE_URL}?ssl=true`
+    connection: `${process.env.DATABASE_URL}?ssl=true`,
 }
 
 export const cfg = Object.assign({}, common, prod ? pg : sqlite3)
