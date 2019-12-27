@@ -1,106 +1,107 @@
-// import Model from '../models'
-// import fetchFeed from './fetch-feed'
-// import parseFeed, { FeedItem } from './parse-feed'
-// import sendEmail from './send-email'
-// import extractSite from './extract-site'
-//
-// type TEntry = {
-//     url: string
-//     title: string
-//     content: string
-// }
-//
-// type TMail = {
-//     addr: string
-//     subject: string
-//     text: string
-// }
-//
-// const feed2feeds = async (feed: Feed): Promise<FeedItem[]> => {
-//     const url = feed.url
-//
-//     console.debug(`${url} - fetching`)
-//     const resp = await fetchFeed(url)
-//     console.debug(`${url} - fetched`)
-//
-//     if (!resp) return []
-//     const feeds = await parseFeed(url, resp)
-//     return feeds
-// }
-//
-// const feed2link = (feed: FeedItem): string => {
-//     return feed.origlink || feed.link || feed.guid
-// }
-// const feeds2entries = async (
-//     feed: Feed,
-//     feeds: FeedItem[],
-// ): Promise<TEntry[]> => {
-//     const prevLinks = new Set(feed.links.map(x => x.url))
-//     const entries = feeds
-//         .filter(m => !prevLinks.has(feed2link(m)))
-//         .map(m => {
-//             const title = m.title || 'unknown'
-//             const site = extractSite(feed.url)
-//             const link = feed2link(m)
-//             const article = m.description || m.summary || 'unknown'
-//             return {
-//                 url: link,
-//                 title: `"${title}" from "${site}"`,
-//                 content: `${link}<br><br><br>${article}`,
-//             }
-//         })
-//     return entries
-// }
-//
-// const entries2mails = async (
-//     feed: Feed,
-//     entries: TEntry[],
-// ): Promise<TMail[]> => {
-//     const users = feed.users
-//     const mails = entries.map(entry => {
-//         const ms = users.map(user => ({
-//             addr: user.email,
-//             subject: entry.title,
-//             text: entry.content,
-//         }))
-//         return ms
-//     })
-//     return mails.flat()
-// }
-//
-// const updateFeeds = async () => {
-//     const feeds = await Model.getFeedForUpdate()
-//     feeds.forEach(async feed => {
-//         // fetch feeds
-//         // const f = await feed2feeds(feed)
-//
-//         // update db
-//         // feed.lastCheck = new Date()
-//         // if (f.length !== 0) {
-//         //     const first = f[0]
-//         //     feed.lastUpdated = first.date || first.meta.date || new Date()
-//         // }
-//
-//         // extract articles
-//         // const e = await feeds2entries(feed, f)
-//         //
-//         // // update db
-//         // // FIXME: how to batch?
-//         // await Promise.all(
-//         //     e.map(async x => {
-//         //         const l = new Link()
-//         //         l.url = x.url
-//         //         await l.save()
-//         //         feed.links.push(l)
-//         //     }),
-//         // )
-//         // await feed.save()
-//         //
-//         // // send emails
-//         // const m = await entries2mails(feed, e)
-//         // await Promise.all(m.map(x => sendEmail(x.addr, x.subject, x.text)))
-//     })
-// }
-//
-// export default updateFeeds
-export default '' as any
+import Model, { FeedDoc } from '../models'
+import fetchFeed from './fetch-feed'
+import parseFeed, { FeedItem } from './parse-feed'
+import sendEmail from './send-email'
+import extractSite from './extract-site'
+
+type TEntry = {
+    url: string
+    title: string
+    content: string
+}
+
+type TMail = {
+    addr: string
+    subject: string
+    text: string
+}
+
+const fdoc2feeds = async (fdoc: FeedDoc): Promise<FeedItem[]> => {
+    const url = fdoc.url
+
+    console.debug(`${url} - fetching`)
+    const resp = await fetchFeed(url)
+    console.debug(`${url} - fetched`)
+
+    if (!resp) return []
+    const feeds = await parseFeed(url, resp)
+    return feeds
+}
+
+const feed2link = (feed: FeedItem): string => {
+    return feed.origlink || feed.link || feed.guid
+}
+
+const feeds2entries = async (
+    fdoc: FeedDoc,
+    feeds: FeedItem[],
+): Promise<TEntry[]> => {
+    const entries = feeds
+        .filter(m => !fdoc.links.has(feed2link(m)))
+        .map(m => {
+            const title = m.title || 'unknown'
+            const site = extractSite(fdoc.url)
+            const link = feed2link(m)
+            const article = m.description || m.summary || 'unknown'
+            return {
+                url: link,
+                title: `"${title}" from "${site}"`,
+                content: `${link}<br><br><br>${article}`,
+            }
+        })
+    return entries
+}
+
+const entries2mails = async (
+    fdoc: FeedDoc,
+    entries: TEntry[],
+): Promise<TMail[]> => {
+    const mails = entries.flatMap(entry => {
+        return fdoc.emails.map(addr => ({
+            addr,
+            subject: entry.title,
+            text: entry.content,
+        }))
+    })
+    return mails
+}
+
+const fdoc2xxx = async (fdoc: FeedDoc) => {
+    // fetch feeds && latest updated time
+    const feeds = await fdoc2feeds(fdoc)
+    const updated = { id: fdoc.id, updated: null as Date | null }
+    if (feeds.length > 0) {
+        const first = feeds[0]
+        const date = first.date || first.meta.date || null
+        updated.updated = date
+    }
+
+    // extract articles && new links
+    const entries = await feeds2entries(fdoc, feeds)
+    const newLinks = entries.map(x => ({ feed_id: fdoc.id, url: x.url }))
+
+    // mails
+    const mails = await entries2mails(fdoc, entries)
+
+    return {
+        updated,
+        newLinks,
+        mails,
+    }
+}
+
+const updateFeeds = async () => {
+    const feeds = await Model.prepareFeedForUpdate()
+    const data = await Promise.all(feeds.map(async fdoc => fdoc2xxx(fdoc)))
+    // update link data
+    const links = data.flatMap(x => x.newLinks)
+    await Model.addLinks(links)
+    // update feed.updated time
+    const updated = data.map(x => x.updated)
+    await Model.updateFeedUpdated(updated)
+    // send emails
+    const mails = data.flatMap(x => x.mails)
+    await Promise.all(mails.map(x => sendEmail(x.addr, x.subject, x.text)))
+}
+
+export default updateFeeds

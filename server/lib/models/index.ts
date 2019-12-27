@@ -9,7 +9,7 @@ export interface User {
 export interface Feed {
     id: number
     url: string
-    latest_updated: Date
+    updated: Date
 }
 
 export interface Link {
@@ -21,6 +21,14 @@ export interface Link {
 export interface RUserFeed {
     user_id: number
     feed_id: number
+}
+
+export interface FeedDoc {
+    id: number
+    url: string
+    updated: Date
+    emails: string[]
+    links: Set<string>
 }
 
 const prod = process.env.NODE_ENV === 'production'
@@ -53,7 +61,7 @@ export default {
                     .notNullable()
                     .unique()
                 table
-                    .dateTime('latest_updated')
+                    .dateTime('updated')
                     .nullable()
                     .defaultTo(null)
             })
@@ -138,7 +146,7 @@ export default {
             .select(
                 'Feed.id as id',
                 'Feed.url as url',
-                'Feed.latest_updated as latest_updated',
+                'Feed.updated as updated',
             )
             .from('RUserFeed')
             .innerJoin('User', 'User.id', 'RUserFeed.user_id')
@@ -147,53 +155,53 @@ export default {
         return r
     },
 
-    async prepareForUpdate() {
+    async prepareFeedForUpdate(): Promise<FeedDoc[]> {
         const feeds = await conn()
             .select(
-                'Feed.id as fid',
+                'Feed.id as id',
                 'Feed.url as url',
-                'Feed.latest_updated as latest_updated',
+                'Feed.updated as updated',
                 'User.email as email',
             )
             .from('RUserFeed')
             .innerJoin('Feed', 'Feed.id', 'RUserFeed.feed_id')
             .innerJoin('User', 'User.id', 'RUserFeed.user_id')
-        const map = new Map()
-        feeds.forEach(({ fid, url, latest_updated, email }) => {
-            const v = map.get(fid) ?? {
-                fid,
+        const map = new Map<number, FeedDoc>()
+        feeds.forEach(({ id, url, updated, email }) => {
+            const v = map.get(id) ?? {
+                id,
                 url,
-                latest_updated,
-                emails: [],
+                updated,
+                emails: [] as string[],
                 links: new Set(),
             }
             v.emails.push(email)
-            map.set(fid, v)
+            map.set(id, v)
         })
         const links = await conn()
             .select('feed_id', 'url')
             .from('Link')
             .whereIn('feed_id', Array.from(map.keys()))
         links.forEach(({ feed_id, url }) => {
-            const v = map.get(feed_id)
+            const v = map.get(feed_id)!
             v.links.add(url)
         })
-        return map
+        return Array.from(map.values())
     },
 
-    async addLinks(links: Array<{ feed_id: number; url: string }>) {
+    async addLinks(links: { feed_id: number; url: string }[]) {
         await conn()
             .insert(links)
             .into('Link')
     },
 
-    async updateFeedLatestUpdated(feeds: Array<{ id: number; updated: Date }>) {
+    async updateFeedUpdated(feeds: { id: number; updated: Date | null }[]) {
         const knex = conn()
         await knex.transaction(tnx => {
             feeds.forEach(({ id, updated }) => {
                 knex('Feed')
                     .where({ id })
-                    .update('latest_updated', updated)
+                    .update({ updated })
                     .transacting(tnx)
             })
         })

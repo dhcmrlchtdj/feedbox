@@ -4,7 +4,7 @@ exports[`feed API /api/v1/feeds 1`] = `
 Array [
   Object {
     "id": 1,
-    "latest_updated": null,
+    "updated": null,
     "url": "https://example.com/rss",
   },
 ]
@@ -14,7 +14,7 @@ exports[`feed API /api/v1/feeds/add 1`] = `
 Array [
   Object {
     "id": 1,
-    "latest_updated": null,
+    "updated": null,
     "url": "https://example.com/rss",
   },
 ]
@@ -34,17 +34,17 @@ exports[`feed API /api/v1/feeds/import 1`] = `
 Array [
   Object {
     "id": 1,
-    "latest_updated": null,
+    "updated": null,
     "url": "https://example.com/rss",
   },
   Object {
     "id": 2,
-    "latest_updated": null,
+    "updated": null,
     "url": "https://example.com/rss2",
   },
   Object {
     "id": 3,
-    "latest_updated": null,
+    "updated": null,
     "url": "https://example.com/rss3",
   },
 ]
@@ -54,38 +54,38 @@ exports[`feed API /api/v1/feeds/remove 1`] = `
 Array [
   Object {
     "id": 2,
-    "latest_updated": null,
+    "updated": null,
     "url": "https://example.com/rss2",
   },
   Object {
     "id": 3,
-    "latest_updated": null,
+    "updated": null,
     "url": "https://example.com/rss3",
   },
 ]
 `;
 
 exports[`feed API xx 1`] = `
-Map {
-  2 => Object {
+Array [
+  Object {
     "emails": Array [
       "user@example.com",
     ],
-    "fid": 2,
-    "latest_updated": null,
+    "id": 2,
     "links": Set {},
+    "updated": null,
     "url": "https://example.com/rss2",
   },
-  3 => Object {
+  Object {
     "emails": Array [
       "user@example.com",
     ],
-    "fid": 3,
-    "latest_updated": null,
+    "id": 3,
     "links": Set {},
+    "updated": null,
     "url": "https://example.com/rss3",
   },
-}
+]
 `;
 
 exports[`user API /api/logout 1`] = `

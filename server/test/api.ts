@@ -112,7 +112,7 @@ describe('feed API', () => {
     })
 
     test('xx', async () => {
-        const x = await Model.prepareForUpdate()
+        const x = await Model.prepareFeedForUpdate()
         expect(x).toMatchSnapshot()
     })
 })
