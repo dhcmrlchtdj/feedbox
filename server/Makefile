@@ -4,8 +4,8 @@ PATH := ./node_modules/.bin:$(PATH)
 build:
 	tsc
 
-release: clean
-	$(MAKE) build
+release:
+	$(MAKE) -j1 clean build migrate_latest
 
 clean:
 	rm -rf ./_build
@@ -16,12 +16,13 @@ fmt:
 dev:
 	nodemon -w ./_build _build/bin/server.js & tsc -w & wait
 
-test: clean build migrate-latest
+test: release
 	jest
-test-update: clean build migrate-latest
+
+test_update: release
 	jest -u
 
-migrate-latest: build
+migrate_latest:
 	knex --knexfile=./_build/lib/models/knexfile.js migrate:latest
 
-.PHONY: build clean fmt dev release test test-update  migrate-latest
+.PHONY: build clean fmt dev release test test_update migrate_latest

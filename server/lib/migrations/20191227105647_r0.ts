@@ -10,7 +10,7 @@ export const up = (knex: Knex) => {
                 .notNullable()
                 .unique()
             table
-                .string('email', 255)
+                .string('email', 2048)
                 .notNullable()
                 .unique()
         })
@@ -18,7 +18,7 @@ export const up = (knex: Knex) => {
             table.increments('id')
             table.dateTime('created_at').defaultTo(knex.fn.now())
             table
-                .string('url', 255)
+                .string('url', 2048)
                 .notNullable()
                 .unique()
             table
