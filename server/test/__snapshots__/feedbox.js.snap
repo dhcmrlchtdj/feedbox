@@ -91,14 +91,14 @@ Array [
 exports[`model updateFeedUpdated 1`] = `
 Array [
   Object {
-    "id": 2,
-    "updated": null,
-    "url": "https://example.com/rss2",
-  },
-  Object {
     "id": 3,
     "updated": 1580601600000,
     "url": "https://example.com/rss3",
+  },
+  Object {
+    "id": 2,
+    "updated": null,
+    "url": "https://example.com/rss2",
   },
 ]
 `;

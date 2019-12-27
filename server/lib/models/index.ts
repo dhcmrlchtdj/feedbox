@@ -31,8 +31,6 @@ export interface FeedDoc {
     links: Set<string>
 }
 
-const prod = process.env.NODE_ENV === 'production'
-
 export default {
     async init() {},
 
@@ -49,49 +47,29 @@ export default {
     },
 
     async getUserIdByGithub(github_id: number, email: string): Promise<number> {
-        if (prod) {
-            const r = await conn().raw(
-                `INSERT INTO feedbox_user(github_id,email) VALUES(?,?)
-                ON CONFLICT(github_id) DO UPDATE SET email=?
-                RETURNING id`,
-                [github_id, email, email],
-            )
-            return r[0].id
-        } else {
-            await conn().raw(
-                `INSERT INTO feedbox_user(github_id,email) VALUES(?,?)
+        await conn().raw(
+            `INSERT INTO feedbox_user(github_id,email) VALUES(?,?)
                 ON CONFLICT(github_id) DO UPDATE SET email=?`,
-                [github_id, email, email],
-            )
-            const r = await conn()
-                .select('id')
-                .from('feedbox_user')
-                .where({ email })
-            return r[0].id
-        }
+            [github_id, email, email],
+        )
+        const r = await conn()
+            .select('id')
+            .from('feedbox_user')
+            .where({ email })
+        return r[0].id
     },
 
     async getFeedIdByUrl(url: string): Promise<number> {
-        if (prod) {
-            const r = await conn().raw(
-                `INSERT INTO feedbox_feed(url) VALUES(?)
-                ON CONFLICT DO NOTHING
-                RETURNING id`,
-                [url],
-            )
-            return r[0].id
-        } else {
-            await conn().raw(
-                `INSERT INTO feedbox_feed(url) VALUES(?)
+        await conn().raw(
+            `INSERT INTO feedbox_feed(url) VALUES(?)
                 ON CONFLICT DO NOTHING`,
-                [url],
-            )
-            const r = await conn()
-                .select('id')
-                .from('feedbox_feed')
-                .where({ url })
-            return r[0].id
-        }
+            [url],
+        )
+        const r = await conn()
+            .select('id')
+            .from('feedbox_feed')
+            .where({ url })
+        return r[0].id
     },
 
     async getFeedByUser(userId: number): Promise<Feed[]> {
