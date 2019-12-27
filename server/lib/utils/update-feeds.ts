@@ -71,26 +71,28 @@ const fdoc2xxx = async (fdoc: FeedDoc) => {
     // fetch feeds && latest updated time
     const feeds = await fdoc2feeds(fdoc)
 
+    // extract new articles
+    const entries = await feeds2entries(fdoc, feeds)
+    const newLinks = entries.map(x => ({ feed_id: fdoc.id, url: x.url }))
+
+    // mails
+    const mails = await entries2mails(fdoc, entries)
+
     // update feed.updated time
     if (feeds.length > 0) {
         const first = feeds[0]
         const dateSrc = first.date || first.meta.date || null
-        if (dateSrc) {
+        if (dateSrc !== null) {
             try {
                 const date = new Date(dateSrc)
                 await Model.updateFeedUpdated(fdoc.id, date)
             } catch (err) {
                 rollbar.info(err, { feedurl: fdoc.url })
             }
+        } else if (newLinks.length > 0) {
+            await Model.updateFeedUpdated(fdoc.id, new Date())
         }
     }
-
-    // extract articles && new links
-    const entries = await feeds2entries(fdoc, feeds)
-    const newLinks = entries.map(x => ({ feed_id: fdoc.id, url: x.url }))
-
-    // mails
-    const mails = await entries2mails(fdoc, entries)
 
     return {
         newLinks,
