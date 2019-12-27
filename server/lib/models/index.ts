@@ -196,15 +196,15 @@ export default {
     },
 
     async updateFeedUpdated(feeds: { id: number; updated: Date | null }[]) {
-        const knex = conn()
-        await knex.transaction(tnx => {
-            feeds.forEach(({ id, updated }) => {
-                knex('Feed')
-                    .where({ id })
-                    .update({ updated })
-                    .transacting(tnx)
-            })
+        const tnx = await conn().transaction()
+        const tasks = feeds.map(async ({ id, updated }) => {
+            await tnx('Feed')
+                .where({ id })
+                .update({ updated })
         })
+        await Promise.all(tasks)
+            .then(tnx.commit)
+            .catch(tnx.rollback)
     },
 
     async subscribe(user_id: number, feed_id: number) {

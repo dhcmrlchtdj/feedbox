@@ -65,7 +65,7 @@ Array [
 ]
 `;
 
-exports[`feed API xx 1`] = `
+exports[`model prepareFeedForUpdate 1`] = `
 Array [
   Object {
     "emails": Array [
@@ -83,6 +83,21 @@ Array [
     "id": 3,
     "links": Set {},
     "updated": null,
+    "url": "https://example.com/rss3",
+  },
+]
+`;
+
+exports[`model updateFeedUpdated 1`] = `
+Array [
+  Object {
+    "id": 2,
+    "updated": 1577412598197,
+    "url": "https://example.com/rss2",
+  },
+  Object {
+    "id": 3,
+    "updated": 1577412598197,
     "url": "https://example.com/rss3",
   },
 ]

@@ -33,7 +33,7 @@ describe('user API', () => {
             method: 'get',
             url: '/api/logout',
             headers: {
-                Cookie: 'token=***',
+                Cookie: 'token=token',
             },
         })
         expect(resp.headers['set-cookie']).toMatchSnapshot()
@@ -110,9 +110,19 @@ describe('feed API', () => {
         })
         expect(resp.result).toMatchSnapshot()
     })
+})
 
-    test('xx', async () => {
-        const x = await Model.prepareFeedForUpdate()
-        expect(x).toMatchSnapshot()
+describe('model', () => {
+    test('prepareFeedForUpdate', async () => {
+        const feed = await Model.prepareFeedForUpdate()
+        expect(feed).toMatchSnapshot()
+    })
+    test('updateFeedUpdated', async () => {
+        await Model.updateFeedUpdated([
+            { id: 2, updated: new Date() },
+            { id: 3, updated: new Date() },
+        ])
+        const curr = await Model.getFeedByUser(1)
+        expect(curr).toMatchSnapshot()
     })
 })

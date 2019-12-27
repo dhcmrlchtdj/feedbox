@@ -17,6 +17,7 @@ dev:
 	nodemon -w ./_build _build/bin/server.js & tsc -w & wait
 
 test: build
+	@# yarn jest -u # update test
 	jest
 
 .PHONY: build clean fmt dev release test
