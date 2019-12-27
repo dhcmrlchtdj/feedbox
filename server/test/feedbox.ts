@@ -5,7 +5,7 @@ import Model from '../lib/models'
 let server: any
 const auth = {
     strategy: 'session',
-    credentials: { userId: 1 },
+    credentials: { userId: 0 },
 }
 beforeAll(async () => {
     server = await init()
@@ -118,7 +118,7 @@ describe('model', () => {
         expect(feed).toMatchSnapshot()
     })
     test('updateFeedUpdated', async () => {
-        await Model.updateFeedUpdated(2, new Date(1580601600000))
+        await Model.updateFeedUpdated(3, new Date(1580601600000))
         const curr = await Model.getFeedByUser(1)
         expect(curr).toMatchSnapshot()
     })
