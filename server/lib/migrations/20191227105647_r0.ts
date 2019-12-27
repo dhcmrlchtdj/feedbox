@@ -29,7 +29,7 @@ export const up = (knex: Knex) => {
         .createTable('feedbox_link', table => {
             table.increments('id')
             table.dateTime('created_at').defaultTo(knex.fn.now())
-            table.integer('url', 255).notNullable()
+            table.string('url', 2048).notNullable()
             table.integer('feed_id').unsigned()
             table.foreign('feed_id').references('feedbox_feed.id')
         })
