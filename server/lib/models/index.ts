@@ -23,6 +23,8 @@ export interface RUserFeed {
     feed_id: number
 }
 
+const prod = process.env.NODE_ENV === 'production'
+
 export default {
     async init() {
         const k = await conn()
@@ -86,29 +88,49 @@ export default {
     },
 
     async getUserIdByGithub(github_id: number, email: string): Promise<number> {
-        await conn().raw(
-            `INSERT INTO User(github_id,email) VALUES(?,?)
-            ON CONFLICT(github_id) DO UPDATE SET email=?`,
-            [github_id, email, email],
-        )
-        const r = await conn()
-            .select('id')
-            .from('User')
-            .where({ email })
-        return r[0].id
+        if (prod) {
+            const r = await conn().raw(
+                `INSERT INTO User(github_id,email) VALUES(?,?)
+                ON CONFLICT(github_id) DO UPDATE SET email=?
+                RETURNING id`,
+                [github_id, email, email],
+            )
+            return r[0].id
+        } else {
+            await conn().raw(
+                `INSERT INTO User(github_id,email) VALUES(?,?)
+                ON CONFLICT(github_id) DO UPDATE SET email=?`,
+                [github_id, email, email],
+            )
+            const r = await conn()
+                .select('id')
+                .from('User')
+                .where({ email })
+            return r[0].id
+        }
     },
 
     async getFeedIdByUrl(url: string): Promise<number> {
-        await conn().raw(
-            `INSERT INTO Feed(url) VALUES(?)
-            ON CONFLICT DO NOTHING`,
-            [url],
-        )
-        const r = await conn()
-            .select('id')
-            .from('Feed')
-            .where({ url })
-        return r[0].id
+        if (prod) {
+            const r = await conn().raw(
+                `INSERT INTO Feed(url) VALUES(?)
+                ON CONFLICT DO NOTHING
+                RETURNING id`,
+                [url],
+            )
+            return r[0].id
+        } else {
+            await conn().raw(
+                `INSERT INTO Feed(url) VALUES(?)
+                ON CONFLICT DO NOTHING`,
+                [url],
+            )
+            const r = await conn()
+                .select('id')
+                .from('Feed')
+                .where({ url })
+            return r[0].id
+        }
     },
 
     async getFeedByUser(userId: number): Promise<Feed[]> {
@@ -199,7 +221,6 @@ export default {
             ON CONFLICT DO NOTHING`,
             urls,
         )
-
         const qrange = urls.map(_ => '?').join(',')
         await conn().raw(
             `INSERT INTO RUserFeed(user_id, feed_id)
