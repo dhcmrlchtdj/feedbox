@@ -39,7 +39,7 @@ export default {
     async getUserById(id: number): Promise<User | null> {
         const r = await conn()
             .select('id', 'github_id as githubId', 'email')
-            .from('User')
+            .from('feedbox_user')
             .where({ id })
         if (r.length > 0) {
             return r[0]
@@ -51,7 +51,7 @@ export default {
     async getUserIdByGithub(github_id: number, email: string): Promise<number> {
         if (prod) {
             const r = await conn().raw(
-                `INSERT INTO User(github_id,email) VALUES(?,?)
+                `INSERT INTO feedbox_user(github_id,email) VALUES(?,?)
                 ON CONFLICT(github_id) DO UPDATE SET email=?
                 RETURNING id`,
                 [github_id, email, email],
@@ -59,13 +59,13 @@ export default {
             return r[0].id
         } else {
             await conn().raw(
-                `INSERT INTO User(github_id,email) VALUES(?,?)
+                `INSERT INTO feedbox_user(github_id,email) VALUES(?,?)
                 ON CONFLICT(github_id) DO UPDATE SET email=?`,
                 [github_id, email, email],
             )
             const r = await conn()
                 .select('id')
-                .from('User')
+                .from('feedbox_user')
                 .where({ email })
             return r[0].id
         }
@@ -74,7 +74,7 @@ export default {
     async getFeedIdByUrl(url: string): Promise<number> {
         if (prod) {
             const r = await conn().raw(
-                `INSERT INTO Feed(url) VALUES(?)
+                `INSERT INTO feedbox_feed(url) VALUES(?)
                 ON CONFLICT DO NOTHING
                 RETURNING id`,
                 [url],
@@ -82,13 +82,13 @@ export default {
             return r[0].id
         } else {
             await conn().raw(
-                `INSERT INTO Feed(url) VALUES(?)
+                `INSERT INTO feedbox_feed(url) VALUES(?)
                 ON CONFLICT DO NOTHING`,
                 [url],
             )
             const r = await conn()
                 .select('id')
-                .from('Feed')
+                .from('feedbox_feed')
                 .where({ url })
             return r[0].id
         }
@@ -97,28 +97,44 @@ export default {
     async getFeedByUser(userId: number): Promise<Feed[]> {
         const r = await conn()
             .select(
-                'Feed.id as id',
-                'Feed.url as url',
-                'Feed.updated as updated',
+                'feedbox_feed.id as id',
+                'feedbox_feed.url as url',
+                'feedbox_feed.updated as updated',
             )
-            .from('RUserFeed')
-            .innerJoin('User', 'User.id', 'RUserFeed.user_id')
-            .innerJoin('Feed', 'Feed.id', 'RUserFeed.feed_id')
-            .where('User.id', userId)
+            .from('feedbox_r_user_feed')
+            .innerJoin(
+                'feedbox_user',
+                'feedbox_user.id',
+                'feedbox_r_user_feed.user_id',
+            )
+            .innerJoin(
+                'feedbox_feed',
+                'feedbox_feed.id',
+                'feedbox_r_user_feed.feed_id',
+            )
+            .where('feedbox_user.id', userId)
         return r
     },
 
     async prepareFeedForUpdate(): Promise<FeedDoc[]> {
         const feeds = await conn()
             .select(
-                'Feed.id as id',
-                'Feed.url as url',
-                'Feed.updated as updated',
-                'User.email as email',
+                'feedbox_feed.id as id',
+                'feedbox_feed.url as url',
+                'feedbox_feed.updated as updated',
+                'feedbox_user.email as email',
             )
-            .from('RUserFeed')
-            .innerJoin('Feed', 'Feed.id', 'RUserFeed.feed_id')
-            .innerJoin('User', 'User.id', 'RUserFeed.user_id')
+            .from('feedbox_r_user_feed')
+            .innerJoin(
+                'feedbox_feed',
+                'feedbox_feed.id',
+                'feedbox_r_user_feed.feed_id',
+            )
+            .innerJoin(
+                'feedbox_user',
+                'feedbox_user.id',
+                'feedbox_r_user_feed.user_id',
+            )
         const map = new Map<number, FeedDoc>()
         feeds.forEach(({ id, url, updated, email }) => {
             const v = map.get(id) ?? {
@@ -133,7 +149,7 @@ export default {
         })
         const links = await conn()
             .select('feed_id', 'url')
-            .from('Link')
+            .from('feedbox_link')
             .whereIn('feed_id', Array.from(map.keys()))
         links.forEach(({ feed_id, url }) => {
             const v = map.get(feed_id)!
@@ -145,18 +161,18 @@ export default {
     async addLinks(links: { feed_id: number; url: string }[]) {
         await conn()
             .insert(links)
-            .into('Link')
+            .into('feedbox_link')
     },
 
     async updateFeedUpdated(id: number, updated: Date) {
-        await conn()('Feed')
+        await conn()('feedbox_feed')
             .where({ id })
             .update({ updated })
     },
 
     async subscribe(user_id: number, feed_id: number) {
         await conn().raw(
-            `INSERT INTO RUserFeed(user_id, feed_id) VALUES(?,?)
+            `INSERT INTO feedbox_r_user_feed(user_id, feed_id) VALUES(?,?)
             ON CONFLICT DO NOTHING`,
             [user_id, feed_id],
         )
@@ -164,7 +180,7 @@ export default {
 
     async unsubscribe(user_id: number, feed_id: number) {
         await conn()
-            .from('RUserFeed')
+            .from('feedbox_r_user_feed')
             .where({ user_id, feed_id })
             .del()
     },
@@ -172,14 +188,14 @@ export default {
     async subscribeUrls(user_id: number, urls: string[]) {
         const qvalue = urls.map(_ => '(?)').join(',')
         await conn().raw(
-            `INSERT INTO Feed(url) VALUES ${qvalue}
+            `INSERT INTO feedbox_feed(url) VALUES ${qvalue}
             ON CONFLICT DO NOTHING`,
             urls,
         )
         const qrange = urls.map(_ => '?').join(',')
         await conn().raw(
-            `INSERT INTO RUserFeed(user_id, feed_id)
-            SELECT ?, Feed.id FROM Feed WHERE Feed.url in (${qrange})
+            `INSERT INTO feedbox_r_user_feed(user_id, feed_id)
+            SELECT ?, feedbox_feed.id FROM feedbox_feed WHERE feedbox_feed.url in (${qrange})
             ON CONFLICT DO NOTHING`,
             [user_id, ...urls],
         )
