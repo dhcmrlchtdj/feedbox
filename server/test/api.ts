@@ -118,10 +118,7 @@ describe('model', () => {
         expect(feed).toMatchSnapshot()
     })
     test('updateFeedUpdated', async () => {
-        await Model.updateFeedUpdated([
-            { id: 2, updated: new Date() },
-            { id: 3, updated: new Date() },
-        ])
+        await Model.updateFeedUpdated(2, new Date(1580601600000))
         const curr = await Model.getFeedByUser(1)
         expect(curr).toMatchSnapshot()
     })

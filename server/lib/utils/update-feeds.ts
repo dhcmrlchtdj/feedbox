@@ -69,11 +69,14 @@ const entries2mails = async (
 const fdoc2xxx = async (fdoc: FeedDoc) => {
     // fetch feeds && latest updated time
     const feeds = await fdoc2feeds(fdoc)
-    const updated = { id: fdoc.id, updated: null as Date | null }
+
+    // update feed.updated time
     if (feeds.length > 0) {
         const first = feeds[0]
         const date = first.date || first.meta.date || null
-        updated.updated = date
+        if (date) {
+            await Model.updateFeedUpdated(fdoc.id, date)
+        }
     }
 
     // extract articles && new links
@@ -84,7 +87,6 @@ const fdoc2xxx = async (fdoc: FeedDoc) => {
     const mails = await entries2mails(fdoc, entries)
 
     return {
-        updated,
         newLinks,
         mails,
     }
@@ -96,9 +98,6 @@ const updateFeeds = async () => {
     // update link data
     const links = data.flatMap(x => x.newLinks)
     await Model.addLinks(links)
-    // update feed.updated time
-    const updated = data.map(x => x.updated)
-    await Model.updateFeedUpdated(updated)
     // send emails
     const mails = data.flatMap(x => x.mails)
     await Promise.all(mails.map(x => sendEmail(x.addr, x.subject, x.text)))

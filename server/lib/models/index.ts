@@ -9,7 +9,7 @@ export interface User {
 export interface Feed {
     id: number
     url: string
-    updated: Date
+    updated: number | null
 }
 
 export interface Link {
@@ -26,7 +26,7 @@ export interface RUserFeed {
 export interface FeedDoc {
     id: number
     url: string
-    updated: Date
+    updated: number | null
     emails: string[]
     links: Set<string>
 }
@@ -195,16 +195,10 @@ export default {
             .into('Link')
     },
 
-    async updateFeedUpdated(feeds: { id: number; updated: Date | null }[]) {
-        const tnx = await conn().transaction()
-        const tasks = feeds.map(async ({ id, updated }) => {
-            await tnx('Feed')
-                .where({ id })
-                .update({ updated })
-        })
-        await Promise.all(tasks)
-            .then(tnx.commit)
-            .catch(tnx.rollback)
+    async updateFeedUpdated(id: number, updated: Date) {
+        await conn()('Feed')
+            .where({ id })
+            .update({ updated })
     },
 
     async subscribe(user_id: number, feed_id: number) {
