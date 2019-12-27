@@ -27,12 +27,7 @@ jobs:
                       ${{ runner.os }}-yarn-worker-
             - run: yarn install
               working-directory: ./worker
-            - run: make release
-              working-directory: ./worker
-              env:
-                  NODE_ENV: "production"
-                  SERVER: "fbox.herokuapp.com"
-            - run: make deploy
+            - run: yarn wrangler publish
               working-directory: ./worker
               env:
                   CF_API_TOKEN: ${{ secrets.CF_API_TOKEN }}

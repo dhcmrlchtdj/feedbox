@@ -5,27 +5,12 @@
     "repository": "git@github.com:dhcmrlchtdj/feedbox.git",
     "author": "h11 <nirisix@gmail.com>",
     "license": "UNLICENSED",
-    "main": "./_build/bundle/index.js",
+    "main": "index.js",
     "engines": {
         "node": "13.*",
         "yarn": "1.*"
     },
-    "jest": {
-        "testEnvironment": "node",
-        "collectCoverage": true,
-        "testRegex": "_build/test/.*.js$"
-    },
     "devDependencies": {
-        "@cloudflare/workers-types": "1.0.6",
-        "@cloudflare/wrangler": "1.6.0",
-        "@dollarshaveclub/cloudworker": "0.1.2",
-        "@feedbox/rollup-plugin": "file:../rollup-plugin",
-        "@types/jest": "24.0.24",
-        "@types/node": "13.1.0",
-        "dotenv-safe": "8.2.0",
-        "jest": "24.9.0",
-        "prettier": "1.19.1",
-        "rollup": "1.27.14",
-        "typescript": "3.7.4"
+        "@cloudflare/wrangler": "1.6.0"
     }
 }
