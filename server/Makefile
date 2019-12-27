@@ -20,4 +20,7 @@ test: build
 	@# yarn jest -u # update test
 	jest
 
-.PHONY: build clean fmt dev release test
+migrate-latest: build
+	knex --knexfile=./_build/lib/models/knexfile.js migrate:latest
+
+.PHONY: build clean fmt dev release test migrate-latest

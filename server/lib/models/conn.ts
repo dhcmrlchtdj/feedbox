@@ -6,6 +6,10 @@ const prod = process.env.NODE_ENV === 'production'
 const common = {
     debug: !prod,
     asyncStackTraces: !prod,
+    migrations: {
+        directory: path.resolve(__dirname, '../migrations'),
+        tableName: 'knex_migrations',
+    },
 }
 
 const sqlite3 = {

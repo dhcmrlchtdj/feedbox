@@ -22,7 +22,7 @@ export const up = (knex: Knex) => {
                 .notNullable()
                 .unique()
             table
-                .dateTime('latest_updated')
+                .dateTime('updated')
                 .nullable()
                 .defaultTo(null)
         })
