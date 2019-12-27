@@ -138,6 +138,7 @@ export default {
     },
 
     async addLinks(links: { feed_id: number; url: string }[]) {
+        if (links.length === 0) return
         await conn()
             .insert(links)
             .into('feedbox_link')
@@ -165,6 +166,7 @@ export default {
     },
 
     async subscribeUrls(user_id: number, urls: string[]) {
+        if (urls.length === 0) return
         const qvalue = urls.map(_ => '(?)').join(',')
         await conn().raw(
             `INSERT INTO feedbox_feed(url) VALUES ${qvalue}

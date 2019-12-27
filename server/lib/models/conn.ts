@@ -1,5 +1,6 @@
 import * as path from 'path'
 import * as Knex from 'knex'
+import lazy from '../utils/lazy'
 
 const prod = process.env.NODE_ENV === 'production'
 
@@ -27,11 +28,6 @@ const pg = {
 
 export const cfg = Object.assign({}, common, prod ? pg : sqlite3)
 
-let conn: Knex
+const conn = lazy(() => Knex(cfg))
 
-export default (): Knex => {
-    if (!conn) {
-        conn = Knex(cfg)
-    }
-    return conn
-}
+export default conn
