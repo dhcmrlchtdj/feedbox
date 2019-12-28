@@ -1,7 +1,7 @@
-const dotenv = require('dotenv-safe')
-const replace = require('@rollup/plugin-replace')
+import * as dotenv from 'dotenv-safe'
+import replace from '@rollup/plugin-replace'
 
-exports.dotenv = dotenvConfig => {
+export default dotenvConfig => {
     dotenv.config(dotenvConfig)
 
     const envs = {}

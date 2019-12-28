@@ -12,7 +12,7 @@ clean:
 	rm -rf ./_build
 
 fmt:
-	prettier --write './{src,util}/**/*.{ts,js,json}' './*.json'
+	prettier --write './{src,rollup-plugin}/**/*.{ts,js,json}' './*.json'
 
 dev:
 	DEV_SERVER=true rollup -c -w
