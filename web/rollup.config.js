@@ -40,7 +40,7 @@ export default [
             prod && terser(),
             process.env.DEV_SERVER &&
                 serve({ port: 9000, contentBase: './_build' }),
-        ].filter(Boolean),
+        ],
     },
     {
         input: './src/sw.js',
@@ -64,6 +64,6 @@ export default [
                 dev: !prod,
             }),
             prod && terser(),
-        ].filter(Boolean),
+        ],
     },
 ]
