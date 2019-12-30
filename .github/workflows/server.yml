@@ -42,11 +42,10 @@ jobs:
                   MAILGUN_FROM: "feedbox <feedbox@example.com>"
                   ROLLBAR_TOKEN: "https://rollbar.com"
                   DATABASE_URL: "postgres://example"
-            - uses: codecov/codecov-action@v1.0.5
+            - uses: coverallsapp/github-action@v1.0.1
               with:
-                  token: ${{ secrets.CODECOV_TOKEN }}
-                  file: ./server/coverage/lcov.info
-                  fail_ci_if_error: true
+                  github-token: ${{ secrets.COVERALLS_GITHUB_TOKEN }}
+                  path-to-lcov: ./server/coverage/lcov.info
     deploy:
         runs-on: ubuntu-18.04
         steps:
