@@ -1,11 +1,11 @@
 import prepare from '../lib/prepare'
 import updateFeeds from '../lib/utils/update-feeds'
-import dbConn from '../lib/models/conn'
+import Model from '../lib/models'
 
 const main = async () => {
     await prepare()
     await updateFeeds()
-    await dbConn().destroy()
+    await Model.destroy()
 }
 
 main()

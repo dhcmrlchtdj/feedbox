@@ -1,6 +1,4 @@
 import * as path from 'path'
-import * as Knex from 'knex'
-import lazy from '../utils/lazy'
 
 const prod = process.env.NODE_ENV === 'production'
 
@@ -26,8 +24,6 @@ const pg = {
     connection: `${process.env.DATABASE_URL}?ssl=true`,
 }
 
-export const cfg = Object.assign({}, common, prod ? pg : sqlite3)
-
-const conn = lazy(() => Knex(cfg))
-
-export default conn
+export const production = Object.assign({}, common, pg)
+export const development = Object.assign({}, common, sqlite3)
+export default prod ? production : development

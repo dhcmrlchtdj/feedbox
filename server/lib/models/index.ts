@@ -1,38 +1,14 @@
-import conn from './conn'
+import * as Knex from 'knex'
+import cfg from './cfg'
+import lazy from '../utils/lazy'
 
-export interface User {
-    id: number
-    github_id: number
-    email: string
-}
-
-export interface Feed {
-    id: number
-    url: string
-    updated: number | null
-}
-
-export interface Link {
-    id: number
-    url: string
-    feed_id: number
-}
-
-export interface RUserFeed {
-    user_id: number
-    feed_id: number
-}
-
-export interface FeedDoc {
-    id: number
-    url: string
-    updated: number | null
-    emails: string[]
-    links: Set<string>
-}
+const conn = lazy(() => Knex(cfg))
 
 export default {
     async init() {},
+    async destroy() {
+        await conn().destroy()
+    },
 
     async getUserById(id: number): Promise<User | null> {
         const r = await conn()
@@ -181,4 +157,35 @@ export default {
             [user_id, ...urls],
         )
     },
+}
+
+export interface User {
+    id: number
+    github_id: number
+    email: string
+}
+
+export interface Feed {
+    id: number
+    url: string
+    updated: number | null
+}
+
+export interface Link {
+    id: number
+    url: string
+    feed_id: number
+}
+
+export interface RUserFeed {
+    user_id: number
+    feed_id: number
+}
+
+export interface FeedDoc {
+    id: number
+    url: string
+    updated: number | null
+    emails: string[]
+    links: Set<string>
 }

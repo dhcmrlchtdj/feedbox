@@ -23,6 +23,6 @@ test_update: release
 	jest -u
 
 migrate_latest:
-	knex --knexfile=./_build/lib/models/knexfile.js migrate:latest
+	knex --knexfile=./_build/lib/models/cfg.js migrate:latest
 
 .PHONY: build clean fmt dev release test test_update migrate_latest
