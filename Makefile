@@ -1,4 +1,4 @@
-SHELL := /bin/bash
+SHELL := bash
 
 dev:
 	$(MAKE) -j dev-server dev-web
