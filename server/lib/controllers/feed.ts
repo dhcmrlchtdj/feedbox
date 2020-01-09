@@ -1,4 +1,5 @@
 import * as Joi from '@hapi/joi'
+import * as Boom from '@hapi/boom'
 import Model from '../models'
 import extractSite from '../utils/extract-site'
 import extractLinks from '../utils/extract-link-from-opml'
@@ -21,8 +22,12 @@ export const add = {
     async handler(request, _h) {
         const { userId } = request.auth.credentials
         const feedId = await Model.getFeedIdByUrl(request.payload.url)
-        await Model.subscribe(userId, feedId)
-        return Model.getFeedByUser(userId)
+        if (feedId === null) {
+            throw Boom.serverUnavailable('unavailable | cannot add feed')
+        } else {
+            await Model.subscribe(userId, feedId)
+            return Model.getFeedByUser(userId)
+        }
     },
 }
 

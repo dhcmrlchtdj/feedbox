@@ -22,30 +22,47 @@ export default {
         }
     },
 
-    async getUserIdByGithub(github_id: number, email: string): Promise<number> {
-        await conn().raw(
-            `INSERT INTO feedbox_user(github_id,email) VALUES(?,?)
+    async getUserIdByGithub(
+        github_id: number,
+        email: string,
+    ): Promise<number | null> {
+        const tnx = await conn().transaction()
+        try {
+            await tnx.raw(
+                `INSERT INTO feedbox_user(github_id,email) VALUES(?,?)
                 ON CONFLICT(github_id) DO UPDATE SET email=?`,
-            [github_id, email, email],
-        )
-        const r = await conn()
-            .select('id')
-            .from('feedbox_user')
-            .where({ email })
-        return r[0].id
+                [github_id, email, email],
+            )
+            const r = await tnx
+                .select('id')
+                .from('feedbox_user')
+                .where({ email })
+            await tnx.commit()
+            return r[0].id
+        } catch (err) {
+            await tnx.rollback(err)
+            return null
+        }
     },
 
-    async getFeedIdByUrl(url: string): Promise<number> {
-        await conn().raw(
-            `INSERT INTO feedbox_feed(url) VALUES(?)
+    async getFeedIdByUrl(url: string): Promise<number | null> {
+        const tnx = await conn().transaction()
+        try {
+            await tnx.raw(
+                `INSERT INTO feedbox_feed(url) VALUES(?)
                 ON CONFLICT DO NOTHING`,
-            [url],
-        )
-        const r = await conn()
-            .select('id')
-            .from('feedbox_feed')
-            .where({ url })
-        return r[0].id
+                [url],
+            )
+            const r = await tnx
+                .select('id')
+                .from('feedbox_feed')
+                .where({ url })
+            await tnx.commit()
+            return r[0].id
+        } catch (err) {
+            await tnx.rollback(err)
+            return null
+        }
     },
 
     async getFeedByUser(userId: number): Promise<Feed[]> {
@@ -144,18 +161,24 @@ export default {
     async subscribeUrls(user_id: number, urls: string[]) {
         if (urls.length === 0) return
         const qvalue = urls.map(_ => '(?)').join(',')
-        await conn().raw(
-            `INSERT INTO feedbox_feed(url) VALUES ${qvalue}
-            ON CONFLICT DO NOTHING`,
-            urls,
-        )
         const qrange = urls.map(_ => '?').join(',')
-        await conn().raw(
-            `INSERT INTO feedbox_r_user_feed(user_id, feed_id)
-            SELECT ?, feedbox_feed.id FROM feedbox_feed WHERE feedbox_feed.url in (${qrange})
-            ON CONFLICT DO NOTHING`,
-            [user_id, ...urls],
-        )
+        const tnx = await conn().transaction()
+        try {
+            await tnx.raw(
+                `INSERT INTO feedbox_feed(url) VALUES ${qvalue}
+                ON CONFLICT DO NOTHING`,
+                urls,
+            )
+            await tnx.raw(
+                `INSERT INTO feedbox_r_user_feed(user_id, feed_id)
+                SELECT ?, feedbox_feed.id FROM feedbox_feed WHERE feedbox_feed.url in (${qrange})
+                ON CONFLICT DO NOTHING`,
+                [user_id, ...urls],
+            )
+            await tnx.commit()
+        } catch (err) {
+            await tnx.rollback(err)
+        }
     },
 }
 

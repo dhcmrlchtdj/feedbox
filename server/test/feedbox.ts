@@ -10,7 +10,11 @@ const auth = {
 beforeAll(async () => {
     server = await init()
     const id = await Model.getUserIdByGithub(1, 'user@example.com')
-    auth.credentials.userId = id
+    if (id === null) {
+        throw Error('user id')
+    } else {
+        auth.credentials.userId = id
+    }
 })
 afterAll(async () => {
     if (server) {
