@@ -20,35 +20,35 @@
         "testRegex": "_build/test/.*.js$"
     },
     "dependencies": {
-        "@hapi/bell": "11.1.0",
-        "@hapi/boom": "8.0.1",
-        "@hapi/cookie": "10.1.2",
-        "@hapi/hapi": "18.4.0",
-        "@hapi/joi": "16.1.8",
+        "@hapi/bell": "12.0.0",
+        "@hapi/boom": "9.0.0",
+        "@hapi/cookie": "11.0.0",
+        "@hapi/hapi": "19.0.5",
+        "@hapi/joi": "17.1.0",
         "chardet": "0.8.0",
         "dotenv-safe": "8.2.0",
-        "fast-xml-parser": "3.15.1",
+        "fast-xml-parser": "3.16.0",
         "feedparser": "2.2.9",
         "hapi-pino": "6.3.0",
-        "iconv-lite": "0.5.0",
-        "knex": "0.20.4",
+        "iconv-lite": "0.5.1",
+        "knex": "0.20.8",
         "mailgun-js": "0.22.0",
         "node-fetch": "2.6.0",
-        "pg": "7.16.0",
+        "pg": "7.17.1",
         "rollbar": "2.14.4",
         "sqlite3": "4.1.1"
     },
     "devDependencies": {
         "@types/chardet": "0.8.0",
         "@types/feedparser": "2.2.3",
-        "@types/jest": "24.0.25",
+        "@types/jest": "24.9.1",
         "@types/mailgun-js": "0.22.3",
-        "@types/node": "13.1.1",
+        "@types/node": "13.5.0",
         "@types/node-fetch": "2.5.4",
         "form-data": "3.0.0",
-        "jest": "24.9.0",
+        "jest": "25.1.0",
         "nodemon": "2.0.2",
         "prettier": "1.19.1",
-        "typescript": "3.7.4"
+        "typescript": "3.7.5"
     }
 }
