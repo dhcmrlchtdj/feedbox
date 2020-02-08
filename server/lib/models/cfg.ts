@@ -22,6 +22,7 @@ const sqlite3 = {
 const pg = {
     client: 'pg',
     connection: `${process.env.DATABASE_URL}?ssl=true`,
+    pool: { min: 2, max: 20 },
 }
 
 export const production = Object.assign({}, common, pg)
