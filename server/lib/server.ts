@@ -1,3 +1,4 @@
+import * as Path from 'path'
 import * as Hapi from '@hapi/hapi'
 import plugins from './plugins'
 import routes from './routes'
@@ -26,6 +27,9 @@ const common = async () => {
         routes: {
             payload: { allow: 'application/json' },
             cors: process.env.SERVER === process.env.WEB ? false : corsConf,
+            files: {
+                relativeTo: Path.join(__dirname, 'static'),
+            },
         },
     })
     await plugins(server)

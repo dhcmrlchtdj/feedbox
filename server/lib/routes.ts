@@ -32,6 +32,15 @@ const routes = [
             return h.response(icon).type('image/png')
         },
     },
+
+    {
+        path: '/{param?}',
+        method: 'get',
+        options: {
+            auth: false,
+            handler: { directory: { path: '.' } },
+        },
+    },
 ].filter(Boolean)
 
 export default routes
