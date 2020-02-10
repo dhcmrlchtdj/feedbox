@@ -1,4 +1,4 @@
-import * as chardet from 'chardet'
+import * as chardet from 'jschardet'
 import * as iconv from 'iconv-lite'
 import fetch from 'node-fetch'
 // import rollbar from './rollbar'
@@ -9,7 +9,7 @@ export default async (feedurl: string): Promise<string> => {
     })
         .then(res => res.buffer())
         .then(buf => {
-            const encoding = chardet.detect(buf) ?? 'UTF-8'
+            const encoding = chardet.detect(buf).encoding
             if (encoding === 'utf8') {
                 return buf.toString()
             } else {

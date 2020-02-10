@@ -26,12 +26,12 @@
         "@hapi/hapi": "19.1.0",
         "@hapi/inert": "6.0.1",
         "@hapi/joi": "17.1.0",
-        "chardet": "0.8.0",
         "dotenv-safe": "8.2.0",
         "fast-xml-parser": "3.16.0",
         "feedparser": "2.2.9",
         "hapi-pino": "6.4.0",
         "iconv-lite": "0.5.1",
+        "jschardet": "2.1.1",
         "knex": "0.20.9",
         "mailgun-js": "0.22.0",
         "node-fetch": "2.6.0",
@@ -40,7 +40,6 @@
         "sqlite3": "4.1.1"
     },
     "devDependencies": {
-        "@types/chardet": "0.8.0",
         "@types/feedparser": "2.2.3",
         "@types/jest": "25.1.2",
         "@types/mailgun-js": "0.22.3",

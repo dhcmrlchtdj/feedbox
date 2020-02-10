@@ -679,13 +679,6 @@
   dependencies:
     "@babel/types" "^7.3.0"
 
-"@types/chardet@0.8.0":
-  version "0.8.0"
-  resolved "https://registry.yarnpkg.com/@types/chardet/-/chardet-0.8.0.tgz#40932a9d751bb1ff22e7403312faaf81755ad432"
-  integrity sha512-0PFX0r+bt2W6np4tZzF2Gh28pPLTM7lgjLMs0DJnV/Y4rPI3kLJCwtwRTb4aGl1iHmuF8TEmizzfJOw/7XQRfw==
-  dependencies:
-    "@types/node" "*"
-
 "@types/color-name@^1.1.1":
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/@types/color-name/-/color-name-1.1.1.tgz#1c1261bbeaa10a8055bbc5d8ab84b7b2afc846a0"
@@ -1253,11 +1246,6 @@ chalk@^3.0.0:
   dependencies:
     ansi-styles "^4.1.0"
     supports-color "^7.1.0"
-
-chardet@0.8.0:
-  version "0.8.0"
-  resolved "https://registry.yarnpkg.com/chardet/-/chardet-0.8.0.tgz#215e9e457296aa88fb0c38b010fd7a7e20482ed3"
-  integrity sha512-fRAe54sDSPvCz9I3puKUoUpLBEIUjlwBoNyNcD2eAiP5Ybw2iXnrT7w15hfkNywosXFNllWwvOKsxl7UUCKQaQ==
 
 chokidar@^3.2.2:
   version "3.3.1"
@@ -3182,6 +3170,11 @@ jsbn@~0.1.0:
   version "0.1.1"
   resolved "https://registry.yarnpkg.com/jsbn/-/jsbn-0.1.1.tgz#a5e654c2e5a2deb5f201d96cefbca80c0ef2f513"
   integrity sha1-peZUwuWi3rXyAdls77yoDA7y9RM=
+
+jschardet@2.1.1:
+  version "2.1.1"
+  resolved "https://registry.yarnpkg.com/jschardet/-/jschardet-2.1.1.tgz#af6f8fd0b3b0f5d46a8fd9614a4fce490575c184"
+  integrity sha512-pA5qG9Zwm8CBpGlK/lo2GE9jPxwqRgMV7Lzc/1iaPccw6v4Rhj8Zg2BTyrdmHmxlJojnbLupLeRnaPLsq03x6Q==
 
 jsdom@^15.1.1:
   version "15.2.1"
