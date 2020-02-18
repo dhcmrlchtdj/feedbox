@@ -1,8 +1,8 @@
 import * as authCookie from '@hapi/cookie'
-import Model from '../models'
+import { model } from '../models'
 
 const validate = async (_request, session) => {
-    const user = await Model.getUserById(session.id)
+    const user = await model.getUserById(session.id)
     if (user) {
         return { valid: true, credentials: { userId: user.id } }
     } else {
@@ -10,7 +10,7 @@ const validate = async (_request, session) => {
     }
 }
 
-export default async server => {
+export const authSession = async server => {
     await server.register(authCookie)
 
     server.auth.strategy('session', 'cookie', {

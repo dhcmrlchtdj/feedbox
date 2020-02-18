@@ -9,7 +9,7 @@ type GitHubEmail = {
     visibility: null | 'public'
 }
 
-const getGithubEmail = async (token: string): Promise<string> => {
+export const getGithubEmail = async (token: string): Promise<string> => {
     const emails: GitHubEmail[] = await fetch(
         'https://api.github.com/user/emails',
         { headers: { authorization: `token ${token}` } },
@@ -24,5 +24,3 @@ const getGithubEmail = async (token: string): Promise<string> => {
     const msg = "user doesn't have any verified email."
     throw Boom.unauthorized(msg)
 }
-
-export default getGithubEmail

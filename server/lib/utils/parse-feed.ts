@@ -1,11 +1,14 @@
 import { PassThrough } from 'stream'
 import * as FeedParser from 'feedparser'
-import rollbar from './rollbar'
+import { rollbar } from './rollbar'
 
 type FeedItem = FeedParser.Item
 export { FeedItem }
 
-const parse = async (feedurl: string, content: string): Promise<FeedItem[]> => {
+export const parseFeed = async (
+    feedurl: string,
+    content: string,
+): Promise<FeedItem[]> => {
     return new Promise<FeedItem[]>(resolve => {
         const feedparser = new FeedParser({ feedurl })
         const feed: FeedItem[] = []
@@ -28,5 +31,3 @@ const parse = async (feedurl: string, content: string): Promise<FeedItem[]> => {
         pass.end(content)
     })
 }
-
-export default parse

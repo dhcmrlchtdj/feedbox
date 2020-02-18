@@ -1,10 +1,10 @@
 import * as Knex from 'knex'
-import cfg from './cfg'
-import lazy from '../utils/lazy'
+import { config } from './config'
+import { lazy } from '../utils/lazy'
 
-const conn = lazy(() => Knex(cfg))
+const conn = lazy(() => Knex(config))
 
-export default {
+export const model = {
     async init() {},
     async destroy() {
         await conn().destroy()

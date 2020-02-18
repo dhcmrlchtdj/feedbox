@@ -27,4 +27,4 @@ const pg = {
 
 export const production = Object.assign({}, common, pg)
 export const development = Object.assign({}, common, sqlite3)
-export default prod ? production : development
+export const config = prod ? production : development

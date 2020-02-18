@@ -1,6 +1,6 @@
 import * as Joi from '@hapi/joi'
-import parseFeed from '../utils/parse-feed'
-import fetchFeed from '../utils/fetch-feed'
+import { parseFeed } from '../utils/parse-feed'
+import { fetchFeed } from '../utils/fetch-feed'
 
 export const feedPreview = {
     validate: {

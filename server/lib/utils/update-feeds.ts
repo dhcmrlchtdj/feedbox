@@ -1,9 +1,9 @@
-import Model, { FeedDoc } from '../models'
-import fetchFeed from './fetch-feed'
-import parseFeed, { FeedItem } from './parse-feed'
-import sendEmail from './send-email'
-import extractSite from './extract-site'
-import rollbar from './rollbar'
+import { model, FeedDoc } from '../models'
+import { fetchFeed } from './fetch-feed'
+import { parseFeed, FeedItem } from './parse-feed'
+import { sendEmail } from './send-email'
+import { extractSite } from './extract-site'
+import { rollbar } from './rollbar'
 
 type TEntry = {
     url: string
@@ -85,12 +85,12 @@ const fdoc2xxx = async (fdoc: FeedDoc) => {
         if (dateSrc !== null) {
             try {
                 const date = new Date(dateSrc)
-                await Model.updateFeedUpdated(fdoc.id, date)
+                await model.updateFeedUpdated(fdoc.id, date)
             } catch (err) {
                 rollbar.info(err, { feedurl: fdoc.url })
             }
         } else if (newLinks.length > 0) {
-            await Model.updateFeedUpdated(fdoc.id, new Date())
+            await model.updateFeedUpdated(fdoc.id, new Date())
         }
     }
 
@@ -100,15 +100,13 @@ const fdoc2xxx = async (fdoc: FeedDoc) => {
     }
 }
 
-const updateFeeds = async () => {
-    const feeds = await Model.prepareFeedForUpdate()
+export const updateFeeds = async () => {
+    const feeds = await model.prepareFeedForUpdate()
     const data = await Promise.all(feeds.map(async fdoc => fdoc2xxx(fdoc)))
     // update link data
     const links = data.flatMap(x => x.newLinks)
-    await Model.addLinks(links)
+    await model.addLinks(links)
     // send emails
     const mails = data.flatMap(x => x.mails)
     await Promise.all(mails.map(x => sendEmail(x.addr, x.subject, x.text)))
 }
-
-export default updateFeeds

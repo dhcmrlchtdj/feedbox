@@ -1,11 +1,11 @@
 import * as Boom from '@hapi/boom'
-import Model from '../models'
-import getGithubEmail from '../utils/get-github-email'
+import { model } from '../models'
+import { getGithubEmail } from '../utils/get-github-email'
 
 export const info = {
     async handler(request, _h) {
         const { userId } = request.auth.credentials
-        const user = await Model.getUserById(userId)
+        const user = await model.getUserById(userId)
         if (user) {
             return user
         } else {
@@ -34,7 +34,7 @@ export const connectGithub = {
             if (!github.email) {
                 github.email = await getGithubEmail(credentials.token)
             }
-            const id = await Model.getUserIdByGithub(github.id, github.email)
+            const id = await model.getUserIdByGithub(github.id, github.email)
 
             // set cookie
             request.cookieAuth.set({ id })

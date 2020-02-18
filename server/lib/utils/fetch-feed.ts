@@ -3,7 +3,7 @@ import * as iconv from 'iconv-lite'
 import fetch from 'node-fetch'
 // import rollbar from './rollbar'
 
-export default async (feedurl: string): Promise<string> => {
+export const fetchFeed = async (feedurl: string): Promise<string> => {
     const content = await fetch(feedurl, {
         headers: { 'user-agent': 'feedbox.h11.io' },
     })
