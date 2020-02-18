@@ -1,7 +1,7 @@
 import App from '../components/app.html'
-import Router from '../utils/router'
-import strategies from './strategy'
-import dispatch from './action'
+import { router as Router } from '../utils/router'
+import { strategies } from './strategy'
+import { dispatch } from './action'
 
 export const router = Router.add(
     'get',

@@ -1,4 +1,4 @@
-const dispatch = async (actions, cache, req, resp, worker) => {
+export const dispatch = async (actions, cache, req, resp, worker) => {
     if (!resp.ok) return
     actions.split('|').forEach(action => {
         const [fn, ...args] = action.split(';')
@@ -10,5 +10,3 @@ const dispatch = async (actions, cache, req, resp, worker) => {
         }
     })
 }
-
-export default dispatch

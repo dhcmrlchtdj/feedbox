@@ -1,4 +1,4 @@
-const strategies = {
+export const strategies = {
     async cacheOnly(cache, req) {
         return cache.match(req)
     },
@@ -53,5 +53,3 @@ const strategies = {
         return resp
     },
 }
-
-export default strategies

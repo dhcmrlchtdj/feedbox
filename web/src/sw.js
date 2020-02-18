@@ -1,5 +1,5 @@
 import manifest from '../_build/manifest.json'
-import route from './sw/route'
+import { route } from './sw/route'
 
 const assets = manifest.bundle
 const builtins = [

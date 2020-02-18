@@ -5,7 +5,7 @@ const { mkdir, writeFile, readFile } = fs.promises
 const readStr = async p => (await readFile(p)).toString()
 const readJSON = async p => JSON.parse(await readStr(p))
 
-export default opt => {
+export const template = opt => {
     return {
         name: 'template',
         generateBundle: async () => {

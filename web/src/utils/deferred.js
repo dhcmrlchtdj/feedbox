@@ -1,4 +1,4 @@
-export default class Deferred {
+export class Deferred {
     constructor() {
         const p = new Promise((resolve, reject) => {
             this.resolve = resolve

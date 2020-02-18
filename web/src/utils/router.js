@@ -121,7 +121,6 @@ class Router {
         return route(method, uri)(this._route)
     }
 }
-var mod = new Router(newRoute())
+var router = new Router(newRoute())
 
-export default mod
-export { newRoute, add, route }
+export { router, newRoute, add, route }

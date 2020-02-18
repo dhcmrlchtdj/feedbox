@@ -4,9 +4,9 @@ import json from '@rollup/plugin-json'
 import svelte from 'rollup-plugin-svelte'
 import { terser } from 'rollup-plugin-terser'
 import serve from 'rollup-plugin-serve'
-import dotenv from './rollup-plugin/dotenv'
-import manifest from './rollup-plugin/manifest'
-import template from './rollup-plugin/template'
+import {dotenv} from './rollup-plugin/dotenv'
+import {manifest} from './rollup-plugin/manifest'
+import {template} from './rollup-plugin/template'
 
 const prod = process.env.NODE_ENV === 'production'
 

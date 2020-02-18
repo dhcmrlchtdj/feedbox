@@ -1,4 +1,4 @@
-export default (dateStr, fmt = 'YYYY-MM-DD hh:mm:ss') => {
+export const format = (dateStr, fmt = 'YYYY-MM-DD hh:mm:ss') => {
     if (!dateStr) return 'unknown'
 
     const pad = value => `0${value}`.slice(-2)
