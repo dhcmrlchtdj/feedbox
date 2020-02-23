@@ -45,5 +45,5 @@ export const sendEmails = async (
     }[],
 ) => {
     const tasks = mails.map(x => sendEmail(x.addr, x.subject, x.text))
-    await Promise.all(tasks)
+    await Promise.allSettled(tasks)
 }

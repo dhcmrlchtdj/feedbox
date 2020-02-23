@@ -17,6 +17,11 @@ type TMail = {
     text: string
 }
 
+type XXX = {
+    newLinks: { feed_id: number; url: string }[]
+    mails: TMail[]
+}
+
 const fdoc2feeds = async (fdoc: FeedDoc): Promise<FeedItem[]> => {
     const url = fdoc.url
 
@@ -67,7 +72,7 @@ const entries2mails = async (
     return mails
 }
 
-const fdoc2xxx = async (fdoc: FeedDoc) => {
+const fdoc2xxx = async (fdoc: FeedDoc): Promise<XXX> => {
     // fetch feeds && latest updated time
     const feeds = await fdoc2feeds(fdoc)
 
@@ -102,10 +107,25 @@ const fdoc2xxx = async (fdoc: FeedDoc) => {
 
 export const updateFeeds = async () => {
     const feeds = await model.prepareFeedForUpdate()
-    const data = await Promise.all(feeds.map(async fdoc => fdoc2xxx(fdoc)))
+    console.debug('feeds', feeds.length)
+
+    const xxx = await Promise.allSettled(feeds.map(fdoc2xxx))
+    const data = xxx
+        .map(p => {
+            if (p.status === 'rejected') {
+                console.error(p.reason)
+                return null
+            } else {
+                return p.value
+            }
+        })
+        .filter(Boolean) as XXX[]
+    console.debug('data', data.length)
+
     // update link data
     const links = data.flatMap(x => x.newLinks)
     await model.addLinks(links)
+
     // send emails
     const mails = data.flatMap(x => x.mails)
     await sendEmails(mails)
