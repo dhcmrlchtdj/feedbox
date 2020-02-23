@@ -1,7 +1,7 @@
 import { model, FeedDoc } from '../models'
 import { fetchFeed } from './fetch-feed'
 import { parseFeed, FeedItem } from './parse-feed'
-import { sendEmail } from './send-email'
+import { sendEmails } from './send-email'
 import { extractSite } from './extract-site'
 import { rollbar } from './rollbar'
 
@@ -108,5 +108,5 @@ export const updateFeeds = async () => {
     await model.addLinks(links)
     // send emails
     const mails = data.flatMap(x => x.mails)
-    await Promise.all(mails.map(x => sendEmail(x.addr, x.subject, x.text)))
+    await sendEmails(mails)
 }
