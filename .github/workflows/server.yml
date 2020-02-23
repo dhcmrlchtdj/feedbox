@@ -42,6 +42,11 @@ jobs:
                   MAILGUN_FROM: "feedbox <feedbox@example.com>"
                   ROLLBAR_TOKEN: "https://rollbar.com"
                   DATABASE_URL: "postgres://example"
+            - uses: codecov/codecov-action@v1.0.5
+              with:
+                  token: ${{ secrets.CODECOV_TOKEN }}
+                  file: ./server/coverage/coverage-final.json
+                  yml: ./server/codecov.yml
     deploy:
         runs-on: ubuntu-18.04
         steps:
