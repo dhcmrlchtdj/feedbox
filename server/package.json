@@ -16,6 +16,7 @@
     "jest": {
         "testEnvironment": "node",
         "collectCoverage": true,
+        "coverageProvider": "v8",
         "snapshotResolver": "./test/jest.snapshot-resolver.js",
         "testRegex": "_build/test/.*.js$"
     },
