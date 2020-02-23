@@ -7,10 +7,9 @@
         "target": "ES2019",
         "lib": ["ESNext"],
 
-        "sourceMap": false,
+        "sourceMap": true,
         "importHelpers": false,
         "declaration": false,
-        "removeComments": true,
         "noEmitOnError": false,
         "moduleResolution": "node",
 
