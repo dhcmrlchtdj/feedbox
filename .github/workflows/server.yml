@@ -46,6 +46,7 @@ jobs:
               with:
                   token: ${{ secrets.CODECOV_TOKEN }}
                   file: ./server/coverage/coverage-final.json
+                  yml: ./server/codecov.yml
     deploy:
         runs-on: ubuntu-18.04
         steps:
