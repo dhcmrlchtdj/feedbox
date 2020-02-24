@@ -51,5 +51,3 @@ export const down = (knex: Knex) => {
         .dropTable('feedbox_feed')
         .dropTable('feedbox_user')
 }
-
-export const config = { transaction: false }
