@@ -216,20 +216,20 @@ export class Channel<T> {
             await this.send(x)
         }
     }
-    async onReceive(n: number, cb: (x: T) => void) {
-        const worker = async () => {
-            while (true) {
-                const x = await this.receive()
-                if (x.isSome) {
-                    await cb(x.getExn())
-                } else {
-                    return
-                }
+    private async createWorker(cb: (x: T) => Promise<void>) {
+        while (true) {
+            const x = await this.receive()
+            if (x.isSome) {
+                await cb(x.getExn())
+            } else {
+                return
             }
         }
+    }
+    async onReceive(n: number, cb: (x: T) => Promise<void>) {
         const pool: Promise<void>[] = []
         for (let i = 0; i < n; i++) {
-            pool.push(worker())
+            pool.push(this.createWorker(cb))
         }
         await Promise.all(pool)
     }
