@@ -168,7 +168,8 @@ export class Channel<T> {
     private queue: T[]
     private lock: Mutex
     private cond: Condition
-    constructor(capacity: number) {
+    constructor(capacity: number = 1) {
+        if (capacity <= 0) throw new Error('capacity must greater than 0')
         this.capacity = capacity
         this.queue = []
         this.lock = new Mutex()
@@ -207,10 +208,15 @@ export class Channel<T> {
             await this.send(x)
         }
     }
-    async onReceive(cb: (x: T) => void) {
+    private async onReceive(cb: (x: T) => void) {
         while (true) {
             const x = await this.receive()
             await cb(x)
+        }
+    }
+    static setWorker<T>(ch: Channel<T>, n: number, worker: (x: T) => void) {
+        for (let i = 0; i < n; i++) {
+            ch.onReceive(worker)
         }
     }
 }

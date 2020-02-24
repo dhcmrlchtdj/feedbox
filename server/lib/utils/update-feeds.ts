@@ -19,14 +19,14 @@ type TEmail = {
     text: string
 }
 
-const chFeedDoc = new Channel<FeedDoc>(20)
-const chFeedItem = new Channel<[FeedDoc, FeedItem]>(20)
-const chArticle = new Channel<[FeedDoc, TArticle]>(20)
-const chEmail = new Channel<[TEmail, number]>(20)
+const chFeedDoc = new Channel<FeedDoc>()
+const chFeedItem = new Channel<[FeedDoc, FeedItem]>()
+const chArticle = new Channel<[FeedDoc, TArticle]>()
+const chEmail = new Channel<[TEmail, number]>()
 
 // feed doc => DB feed updated_at
 // feed doc => feed item
-chFeedDoc.onReceive(async doc => {
+Channel.setWorker(chFeedDoc, 10, async doc => {
     const url = doc.url
     const resp = await fetchFeed(url)
     if (!resp) return
@@ -58,7 +58,7 @@ chFeedDoc.onReceive(async doc => {
 
 // feed item => article
 // feed item => save link to DB
-chFeedItem.onReceive(async ([doc, item]) => {
+Channel.setWorker(chFeedItem, 10, async ([doc, item]) => {
     const link = item.origlink || item.link || item.guid
     if (doc.links.has(link)) return
 
@@ -76,7 +76,7 @@ chFeedItem.onReceive(async ([doc, item]) => {
 })
 
 // article => email
-chArticle.onReceive(async ([doc, article]) => {
+Channel.setWorker(chArticle, 10, async ([doc, article]) => {
     const emails = doc.emails.map(addr => ({
         addr,
         subject: article.title,
@@ -88,7 +88,7 @@ chArticle.onReceive(async ([doc, article]) => {
 })
 
 // email => send it
-chEmail.onReceive(async ([email, retry]) => {
+Channel.setWorker(chEmail, 4, async ([email, retry]) => {
     if (retry < 3) {
         const success = await sendEmail(email.addr, email.subject, email.text)
         if (success) return
