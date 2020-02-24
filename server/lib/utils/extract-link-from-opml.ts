@@ -5,7 +5,7 @@ const schema = Joi.string()
     .uri({ scheme: ['http', 'https'] })
     .required()
 
-export default (str: string): string[] => {
+export const extractLinks = (str: string): string[] => {
     let xml
     try {
         xml = parse(str.trim(), { ignoreAttributes: false }, true)

@@ -1,13 +1,13 @@
 import * as Joi from '@hapi/joi'
 import * as Boom from '@hapi/boom'
-import Model from '../models'
-import extractSite from '../utils/extract-site'
-import extractLinks from '../utils/extract-link-from-opml'
+import { model } from '../models'
+import { extractSite } from '../utils/extract-site'
+import { extractLinks } from '../utils/extract-link-from-opml'
 
 export const list = {
     async handler(request, _h) {
         const { userId } = request.auth.credentials
-        return Model.getFeedByUser(userId)
+        return model.getFeedByUser(userId)
     },
 }
 
@@ -21,12 +21,12 @@ export const add = {
     },
     async handler(request, _h) {
         const { userId } = request.auth.credentials
-        const feedId = await Model.getFeedIdByUrl(request.payload.url)
+        const feedId = await model.getFeedIdByUrl(request.payload.url)
         if (feedId === null) {
             throw Boom.serverUnavailable('unavailable | cannot add feed')
         } else {
-            await Model.subscribe(userId, feedId)
-            return Model.getFeedByUser(userId)
+            await model.subscribe(userId, feedId)
+            return model.getFeedByUser(userId)
         }
     },
 }
@@ -40,8 +40,8 @@ export const remove = {
     async handler(request, _h) {
         const { userId } = request.auth.credentials
         const { feedId } = request.payload
-        await Model.unsubscribe(userId, feedId)
-        return Model.getFeedByUser(userId)
+        await model.unsubscribe(userId, feedId)
+        return model.getFeedByUser(userId)
     },
 }
 
@@ -63,8 +63,8 @@ export const importFeeds = {
         const { userId } = request.auth.credentials
         const str = request.payload.opml.payload
         const links = extractLinks(str)
-        await Model.subscribeUrls(userId, links)
-        return Model.getFeedByUser(userId)
+        await model.subscribeUrls(userId, links)
+        return model.getFeedByUser(userId)
     },
 }
 
@@ -73,7 +73,7 @@ export const exportFeeds = {
     // http://dev.opml.org/spec2.html
     async handler(request, h) {
         const { userId } = request.auth.credentials
-        const feeds = await Model.getFeedByUser(userId)
+        const feeds = await model.getFeedByUser(userId)
         const outlines = feeds
             .map(feed => {
                 const text = extractSite(feed.url)

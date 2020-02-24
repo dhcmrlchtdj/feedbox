@@ -1,4 +1,4 @@
-import rollbar from '../utils/rollbar'
+import { rollbar as r } from '../utils/rollbar'
 
 const rollbarPlugin = {
     name: 'rollbar',
@@ -8,7 +8,7 @@ const rollbarPlugin = {
             if (resp.isBoom) {
                 const error = resp instanceof Error ? resp : `Error: ${resp}`
                 if (resp.output.statusCode >= 500) {
-                    rollbar.error(error, request)
+                    r.error(error, request)
                 }
             }
             return h.continue
@@ -19,7 +19,7 @@ const rollbarPlugin = {
     },
 }
 
-export default {
+export const rollbar = {
     plugin: rollbarPlugin,
     options: {},
 }

@@ -1,6 +1,6 @@
 import * as FormData from 'form-data'
 import { init } from '../lib/server'
-import Model from '../lib/models'
+import { model } from '../lib/models'
 
 let server: any
 const auth = {
@@ -9,7 +9,7 @@ const auth = {
 }
 beforeAll(async () => {
     server = await init()
-    const id = await Model.getUserIdByGithub(1, 'user@example.com')
+    const id = await model.getUserIdByGithub(1, 'user@example.com')
     if (id === null) {
         throw Error('user id')
     } else {
@@ -118,12 +118,12 @@ describe('feed API', () => {
 
 describe('model', () => {
     test('prepareFeedForUpdate', async () => {
-        const feed = await Model.prepareFeedForUpdate()
+        const feed = await model.prepareFeedForUpdate()
         expect(feed).toMatchSnapshot()
     })
     test('updateFeedUpdated', async () => {
-        await Model.updateFeedUpdated(3, new Date(1580601600000))
-        const curr = await Model.getFeedByUser(1)
+        await model.updateFeedUpdated(3, new Date(1580601600000))
+        const curr = await model.getFeedByUser(1)
         expect(curr).toMatchSnapshot()
     })
 })

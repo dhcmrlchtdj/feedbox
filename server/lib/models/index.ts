@@ -1,8 +1,8 @@
 import * as Knex from 'knex'
-import cfg from './cfg'
+import { config } from './config'
 import { lazy } from '../utils/lazy'
 
-const conn = lazy(() => Knex(cfg))
+const conn = lazy(() => Knex(config))
 
 export const model = {
     async init() {},
@@ -180,7 +180,6 @@ export const model = {
         }
     },
 }
-export default model
 
 export interface User {
     id: number

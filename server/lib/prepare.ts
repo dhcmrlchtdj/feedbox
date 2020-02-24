@@ -1,13 +1,13 @@
 import * as path from 'path'
 import * as dotenv from 'dotenv-safe'
-import Model from './models'
+import { model } from './models'
 
-export default async () => {
+export const prepare = async () => {
     dotenv.config({
         path: path.resolve(__dirname, '../../dotenv'),
         example: path.resolve(__dirname, '../../dotenv.example'),
     })
-    await Model.init()
+    await model.init()
 }
 
 process.on('unhandledRejection', err => {

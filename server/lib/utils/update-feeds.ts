@@ -1,8 +1,8 @@
 import { model, FeedDoc } from '../models'
-import fetchFeed from './fetch-feed'
-import parseFeed, { FeedItem } from './parse-feed'
+import { fetchFeed } from './fetch-feed'
+import { parseFeed, FeedItem } from './parse-feed'
 import { sendEmail } from './send-email'
-import extractSite from './extract-site'
+import { extractSite } from './extract-site'
 import { Channel } from './sync'
 
 // import rollbar from './rollbar'

@@ -1,6 +1,6 @@
 import * as pino from 'hapi-pino'
 
-export default {
+export const logger = {
     plugin: pino,
     options: {
         logPayload: true,

@@ -1,5 +1,5 @@
 import * as Mailgun from 'mailgun-js'
-import rollbar from './rollbar'
+import { rollbar } from './rollbar'
 import { lazy } from './lazy'
 
 const mg = lazy(

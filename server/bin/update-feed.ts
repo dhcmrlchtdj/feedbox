@@ -1,4 +1,4 @@
-import prepare from '../lib/prepare'
+import { prepare } from '../lib/prepare'
 import { updateFeeds } from '../lib/utils/update-feeds'
 import { model } from '../lib/models'
 

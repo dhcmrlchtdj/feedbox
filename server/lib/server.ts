@@ -1,9 +1,9 @@
 import * as Path from 'path'
 import * as Hapi from '@hapi/hapi'
-import plugins from './plugins'
-import routes from './routes'
-import prepare from './prepare'
-import Model from './models'
+import { addPlugins } from './plugins'
+import { routes } from './routes'
+import { prepare } from './prepare'
+import { model } from './models'
 
 const common = async () => {
     await prepare()
@@ -32,11 +32,11 @@ const common = async () => {
             },
         },
     })
-    await plugins(server)
+    await addPlugins(server)
     server.route(routes)
 
     server.events.on('stop', async () => {
-        await Model.destroy()
+        await model.destroy()
     })
 
     return server

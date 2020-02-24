@@ -7,7 +7,7 @@ const icon = Buffer.from(
     'base64',
 )
 
-const routes = [
+export const routes = [
     { path: '/api/v1/feeds', method: 'get', options: Feed.list },
     { path: '/api/v1/feeds/add', method: 'put', options: Feed.add },
     { path: '/api/v1/feeds/remove', method: 'delete', options: Feed.remove },
@@ -42,5 +42,3 @@ const routes = [
         },
     },
 ].filter(Boolean)
-
-export default routes
