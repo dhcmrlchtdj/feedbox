@@ -1,6 +1,6 @@
 import * as Mailgun from 'mailgun-js'
 import rollbar from './rollbar'
-import lazy from './lazy'
+import { lazy } from './lazy'
 
 const mg = lazy(
     () =>
@@ -10,26 +10,30 @@ const mg = lazy(
         }),
 )
 
-const sendEmail = async data =>
-    mg()
-        .messages()
-        .send(data)
-const debugEmail = async data => console.log(data.to, data.subject)
-const used = process.env.NODE_ENV === 'production' ? sendEmail : debugEmail
-
-const send = async (addr: string, subject: string, text: string) => {
-    const data = {
-        from: process.env.MAILGUN_FROM,
-        to: [addr],
-        subject,
-        text,
-        html: text,
-    }
-    try {
-        await used(data)
-    } catch (err) {
-        rollbar.error(err)
+export const sendEmail = async (
+    addr: string,
+    subject: string,
+    text: string,
+): Promise<boolean> => {
+    if (process.env.NODE_ENV === 'production') {
+        const data = {
+            from: process.env.MAILGUN_FROM,
+            to: [addr],
+            subject,
+            text,
+            html: text,
+        }
+        try {
+            await mg()
+                .messages()
+                .send(data)
+            return true
+        } catch (err) {
+            rollbar.error(err)
+            return false
+        }
+    } else {
+        console.log(addr, subject)
+        return true
     }
 }
-
-export default send

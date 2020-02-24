@@ -1,10 +1,10 @@
 import * as Knex from 'knex'
 import cfg from './cfg'
-import lazy from '../utils/lazy'
+import { lazy } from '../utils/lazy'
 
 const conn = lazy(() => Knex(cfg))
 
-export default {
+export const model = {
     async init() {},
     async destroy() {
         await conn().destroy()
@@ -130,10 +130,9 @@ export default {
         return Array.from(map.values())
     },
 
-    async addLinks(links: { feed_id: number; url: string }[]) {
-        if (links.length === 0) return
+    async addLink(feed_id: number, url: string) {
         await conn()
-            .insert(links)
+            .insert({ feed_id, url })
             .into('feedbox_link')
     },
 
@@ -181,6 +180,7 @@ export default {
         }
     },
 }
+export default model
 
 export interface User {
     id: number
