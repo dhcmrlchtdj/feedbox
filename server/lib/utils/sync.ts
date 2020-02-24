@@ -1,3 +1,7 @@
+import { Option, Some, None } from './option'
+
+//
+
 export class Deferred<T = void> {
     promise: Promise<T>
     // @ts-ignore
@@ -14,7 +18,7 @@ export class Deferred<T = void> {
 
 //
 
-class Mutex {
+export class Mutex {
     private locked: boolean
     private waiters: Deferred[]
     constructor() {
@@ -53,7 +57,7 @@ class Mutex {
 
 //
 
-class Condition {
+export class Condition {
     private waiters: Deferred[]
     constructor() {
         this.waiters = []
@@ -168,14 +172,23 @@ export class Channel<T> {
     private queue: T[]
     private lock: Mutex
     private cond: Condition
+    private closed: boolean
     constructor(capacity: number = 1) {
         if (capacity <= 0) throw new Error('capacity must greater than 0')
         this.capacity = capacity
         this.queue = []
         this.lock = new Mutex()
         this.cond = new Condition()
+        this.closed = false
+    }
+    close() {
+        this.closed = true
+    }
+    isClosed(): boolean {
+        return this.closed
     }
     async send(x: T): Promise<void> {
+        if (this.closed) throw new Error('send data to closed channel')
         await this.lock.withLock(async () => {
             while (this.queue.length === this.capacity) {
                 await this.cond.wait(this.lock)
@@ -184,23 +197,18 @@ export class Channel<T> {
             await this.cond.broadcast()
         })
     }
-    async receive(): Promise<T> {
+    async receive(): Promise<Option<T>> {
         return this.lock.withLock(async () => {
             while (this.queue.length === 0) {
-                await this.cond.wait(this.lock)
+                if (this.closed) {
+                    return None
+                } else {
+                    await this.cond.wait(this.lock)
+                }
             }
             const x = this.queue.shift()!
             await this.cond.broadcast()
-            return x
-        })
-    }
-    async peek(): Promise<T | undefined> {
-        return this.lock.withLock(async () => {
-            if (this.queue.length === 0) {
-                return undefined
-            } else {
-                return this.queue[0]
-            }
+            return Some(x)
         })
     }
     async sendAll(xs: T[]): Promise<void> {
@@ -208,16 +216,22 @@ export class Channel<T> {
             await this.send(x)
         }
     }
-    private async onReceive(cb: (x: T) => void) {
-        while (true) {
-            const x = await this.receive()
-            await cb(x)
+    async onReceive(n: number, cb: (x: T) => void) {
+        const worker = async () => {
+            while (true) {
+                const x = await this.receive()
+                if (x.isSome) {
+                    await cb(x.getExn())
+                } else {
+                    return
+                }
+            }
         }
-    }
-    static setWorker<T>(ch: Channel<T>, n: number, worker: (x: T) => void) {
+        const pool: Promise<void>[] = []
         for (let i = 0; i < n; i++) {
-            ch.onReceive(worker)
+            pool.push(worker())
         }
+        await Promise.all(pool)
     }
 }
 

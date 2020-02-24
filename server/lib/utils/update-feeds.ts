@@ -5,8 +5,6 @@ import { sendEmail } from './send-email'
 import { extractSite } from './extract-site'
 import { Channel } from './sync'
 
-// import rollbar from './rollbar'
-
 type TArticle = {
     url: string
     title: string
@@ -19,14 +17,14 @@ type TEmail = {
     text: string
 }
 
-const chFeedDoc = new Channel<FeedDoc>()
-const chFeedItem = new Channel<[FeedDoc, FeedItem]>()
-const chArticle = new Channel<[FeedDoc, TArticle]>()
-const chEmail = new Channel<[TEmail, number]>()
+const chFeedDoc = new Channel<FeedDoc>(Infinity)
+const chFeedItem = new Channel<[FeedDoc, FeedItem]>(Infinity)
+const chArticle = new Channel<[FeedDoc, TArticle]>(Infinity)
+const chEmail = new Channel<[TEmail, number]>(Infinity)
 
 // feed doc => DB feed updated_at
 // feed doc => feed item
-Channel.setWorker(chFeedDoc, 10, async doc => {
+chFeedDoc.onReceive(10, async doc => {
     const url = doc.url
     const resp = await fetchFeed(url)
     if (!resp) return
@@ -58,7 +56,7 @@ Channel.setWorker(chFeedDoc, 10, async doc => {
 
 // feed item => article
 // feed item => save link to DB
-Channel.setWorker(chFeedItem, 10, async ([doc, item]) => {
+chFeedItem.onReceive(20, async ([doc, item]) => {
     const link = item.origlink || item.link || item.guid
     if (doc.links.has(link)) return
 
@@ -76,19 +74,20 @@ Channel.setWorker(chFeedItem, 10, async ([doc, item]) => {
 })
 
 // article => email
-Channel.setWorker(chArticle, 10, async ([doc, article]) => {
-    const emails = doc.emails.map(addr => ({
-        addr,
-        subject: article.title,
-        text: article.content,
-    }))
-    for (const x of emails) {
-        await chEmail.send([x, 0])
-    }
+chArticle.onReceive(20, async ([doc, article]) => {
+    const emails: [TEmail, number][] = doc.emails.map(addr => [
+        {
+            addr,
+            subject: article.title,
+            text: article.content,
+        },
+        0,
+    ])
+    chEmail.sendAll(emails)
 })
 
 // email => send it
-Channel.setWorker(chEmail, 4, async ([email, retry]) => {
+chEmail.onReceive(10, async ([email, retry]) => {
     if (retry < 3) {
         const success = await sendEmail(email.addr, email.subject, email.text)
         if (success) return
