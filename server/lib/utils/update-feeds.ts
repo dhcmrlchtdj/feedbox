@@ -24,8 +24,7 @@ export const updateFeeds = async () => {
     const chEmail = new Channel<[TEmail, number]>(Infinity)
 
     const feeds = await model.prepareFeedForUpdate()
-    await chFeedDoc.sendAll(feeds)
-    chFeedDoc.close()
+    chFeedDoc.sendAll(feeds).then(() => chFeedDoc.close())
 
     // feed doc => DB feed updated_at
     // feed doc => feed item
@@ -105,8 +104,12 @@ export const updateFeeds = async () => {
                 email.subject,
                 email.text,
             )
-            if (success) return
-            chEmail.send([email, retry + 1])
+            if (success) {
+                return
+            } else {
+                // retry
+                chEmail.send([email, retry + 1])
+            }
         } else {
             return
         }
