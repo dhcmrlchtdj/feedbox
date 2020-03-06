@@ -37,7 +37,7 @@
         "mailgun-js": "0.22.0",
         "node-fetch": "2.6.0",
         "pg": "7.18.2",
-        "rollbar": "2.14.4",
+        "rollbar": "2.15.0",
         "sqlite3": "4.1.1"
     },
     "devDependencies": {
