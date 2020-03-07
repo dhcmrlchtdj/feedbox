@@ -72,6 +72,11 @@
     let addLoading = false
     let addUrl = ''
 
+    const alertThenReload = () => {
+        window.alert(err.message)
+        location.reload()
+    }
+
     const del = async feed => {
         const c = window.confirm(`DELETE "${feed.url}"`)
         if (!c) return
@@ -89,7 +94,7 @@
             .then(resp => {
                 feeds = resp
             })
-            .catch(err => window.alert(err.message))
+            .catch(err => alertThenReload(err.message))
     }
 
     const add = async () => {
@@ -107,7 +112,7 @@
                 feeds = resp
                 addUrl = ''
             })
-            .catch(err => window.alert(err.message))
+            .catch(err => alertThenReload(err.message))
             .then(() => (addLoading = false))
     }
 

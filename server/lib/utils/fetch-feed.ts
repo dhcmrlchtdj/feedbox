@@ -1,25 +1,31 @@
 import * as chardet from 'jschardet'
 import * as iconv from 'iconv-lite'
 import fetch from 'node-fetch'
-// import rollbar from './rollbar'
+import { rollbar } from './rollbar'
+import { Option, Some, None } from './option'
 
-export const fetchFeed = async (feedurl: string): Promise<string> => {
+export const fetchFeed = async (feedurl: string): Promise<Option<string>> => {
     const content = await fetch(feedurl, {
         headers: { 'user-agent': 'feedbox.h11.io' },
     })
-        .then(res => res.buffer())
+        .then(res => {
+            if (res.ok) {
+                return res.buffer()
+            } else {
+                throw new Error(`${res.status} | ${res.headers.raw()}`)
+            }
+        })
         .then(buf => {
             const encoding = chardet.detect(buf).encoding
             if (encoding === 'utf8') {
-                return buf.toString()
+                return Some(buf.toString())
             } else {
-                return iconv.decode(buf, encoding)
+                return Some(iconv.decode(buf, encoding))
             }
         })
         .catch(err => {
-            console.error(err, feedurl)
-            // rollbar.info(err, { feedurl })
-            return ''
+            rollbar.info(err, { feedurl })
+            return None
         })
     return content
 }

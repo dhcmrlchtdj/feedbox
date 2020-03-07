@@ -32,8 +32,8 @@ export const updateFeeds = async () => {
         .onReceive(10, async doc => {
             const url = doc.url
             const resp = await fetchFeed(url)
-            if (!resp) return
-            const items = await parseFeed(url, resp)
+            if (resp.isNone) return
+            const items = await parseFeed(url, resp.getExn())
 
             // updated_at
             if (items.length > 0) {

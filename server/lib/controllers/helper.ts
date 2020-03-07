@@ -13,7 +13,11 @@ export const feedPreview = {
     async handler(request, _h) {
         const { url } = request.query
         const content = await fetchFeed(url)
-        const feed = await parseFeed(url, content)
-        return feed
+        if (content.isSome) {
+            const feed = await parseFeed(url, content.getExn())
+            return feed
+        } else {
+            return 'fetch error'
+        }
     },
 }
