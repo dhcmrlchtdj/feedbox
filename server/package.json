@@ -33,23 +33,23 @@
         "hapi-pino": "6.5.0",
         "iconv-lite": "0.5.1",
         "jschardet": "2.1.1",
-        "knex": "0.20.10",
+        "knex": "0.20.11",
         "mailgun-js": "0.22.0",
         "node-fetch": "2.6.0",
         "pg": "7.18.2",
-        "rollbar": "2.14.4",
+        "rollbar": "2.15.0",
         "sqlite3": "4.1.1"
     },
     "devDependencies": {
         "@types/feedparser": "2.2.3",
-        "@types/jest": "25.1.3",
+        "@types/jest": "25.1.4",
         "@types/mailgun-js": "0.22.4",
-        "@types/node": "13.7.4",
+        "@types/node": "13.9.0",
         "@types/node-fetch": "2.5.5",
         "form-data": "3.0.0",
         "jest": "25.1.0",
         "nodemon": "2.0.2",
         "prettier": "1.19.1",
-        "typescript": "3.8.2"
+        "typescript": "3.8.3"
     }
 }
