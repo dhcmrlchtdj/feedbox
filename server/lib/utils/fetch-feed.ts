@@ -12,7 +12,7 @@ export const fetchFeed = async (feedurl: string): Promise<Option<string>> => {
             if (res.ok) {
                 return res.buffer()
             } else {
-                throw new Error(`${res.status} | ${res.headers.raw()}`)
+                throw new Error(`${res.status}`)
             }
         })
         .then(buf => {
