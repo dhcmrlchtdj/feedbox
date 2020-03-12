@@ -8,7 +8,7 @@ const fetchFeed = async (feedurl: string): Promise<Option<string>> => {
     const resp = await fetch(feedurl, {
         headers: { 'user-agent': 'feedbox.h11.io' },
     })
-    if (resp.ok) throw new Error(resp.status.toString())
+    if (!resp.ok) throw new Error(resp.status.toString())
     const buf = await resp.buffer()
     const encoding = chardet.detect(buf).encoding
     if (encoding === 'utf8') {
