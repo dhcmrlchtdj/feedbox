@@ -1,4 +1,4 @@
-interface Option<T> {
+export interface Option<T> {
     isNone: boolean
     isSome: boolean
     getExn(): T
@@ -6,7 +6,7 @@ interface Option<T> {
     bind<K>(f: (x: T) => Option<K>): Option<K>
 }
 
-const None: Option<any> = {
+export const None: Option<any> = {
     isNone: true,
     isSome: false,
     getExn: () => {
@@ -16,12 +16,10 @@ const None: Option<any> = {
     bind: _ => None,
 }
 
-const Some = <T>(x: T): Option<T> => ({
+export const Some = <T>(x: T): Option<T> => ({
     isNone: false,
     isSome: true,
     getExn: () => x,
     map: f => Some(f(x)),
     bind: f => f(x),
 })
-
-export { Option, Some, None }
