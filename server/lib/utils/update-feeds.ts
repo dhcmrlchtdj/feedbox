@@ -1,5 +1,5 @@
 import { model, FeedDoc } from '../models'
-import { fetchFeed } from './fetch-feed'
+import { fetchFeedWithRetry } from './fetch-feed'
 import { parseFeed, FeedItem } from './parse-feed'
 import { sendEmail } from './send-email'
 import { extractSite } from './extract-site'
@@ -31,7 +31,7 @@ export const updateFeeds = async () => {
     chFeedDoc
         .onReceive(10, async doc => {
             const url = doc.url
-            const resp = await fetchFeed(url)
+            const resp = await fetchFeedWithRetry(url, 2)
             if (resp.isNone) return
             const items = await parseFeed(url, resp.getExn())
 

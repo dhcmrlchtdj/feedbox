@@ -1,6 +1,6 @@
 import * as Joi from '@hapi/joi'
 import { parseFeed } from '../utils/parse-feed'
-import { fetchFeed } from '../utils/fetch-feed'
+import { fetchFeedWithRetry } from '../utils/fetch-feed'
 
 export const feedPreview = {
     validate: {
@@ -12,7 +12,7 @@ export const feedPreview = {
     },
     async handler(request, _h) {
         const { url } = request.query
-        const content = await fetchFeed(url)
+        const content = await fetchFeedWithRetry(url, 2)
         if (content.isSome) {
             const feed = await parseFeed(url, content.getExn())
             return feed
