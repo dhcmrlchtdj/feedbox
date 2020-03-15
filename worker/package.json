@@ -9,8 +9,5 @@
     "engines": {
         "node": "13.*",
         "yarn": "1.*"
-    },
-    "devDependencies": {
-        "@cloudflare/wrangler": "1.8.1"
     }
 }

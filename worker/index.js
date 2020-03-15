@@ -12,7 +12,7 @@ async function handle(request) {
         body: request.body,
         redirect: 'manual',
     }
-    const req = new Request(url.toString(), init)
+    const req = new Request(url, init)
     req.headers.set('host', apiHost)
     return fetch(req)
 }
