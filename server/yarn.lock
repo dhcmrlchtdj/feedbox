@@ -251,10 +251,10 @@
   dependencies:
     "@hapi/boom" "9.x.x"
 
-"@hapi/cookie@11.0.0":
-  version "11.0.0"
-  resolved "https://registry.yarnpkg.com/@hapi/cookie/-/cookie-11.0.0.tgz#d0ebe6ead4c3fbbff7a2611e24cbeb69b782b7c9"
-  integrity sha512-spnxkmtN6xv0dCgGNqaukfXtUsycDtD5kap33hfCSTJlATYIJOcp66tOfKa3vcWhFDGSDxL/DHC3t+vbUH3eqg==
+"@hapi/cookie@11.0.1":
+  version "11.0.1"
+  resolved "https://registry.yarnpkg.com/@hapi/cookie/-/cookie-11.0.1.tgz#ad5eb9dafde0317ab104aa62190d73b0ba5a3be0"
+  integrity sha512-rUW+emK6TgVr0lQF7SOdc2VzPOMPxyci3lRfDsicHUZTAbPDo5hbadAFoavt/YOS2y04FSNPvT4iG6EkyRfrKw==
   dependencies:
     "@hapi/boom" "9.x.x"
     "@hapi/bounce" "2.x.x"
