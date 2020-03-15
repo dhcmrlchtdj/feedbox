@@ -24,11 +24,10 @@ jobs:
                   path: ${{ steps.yarn-cache.outputs.dir }}
                   key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
                   restore-keys: ${{ runner.os }}-yarn-
-            - name: build
+            - run: yarn install
               working-directory: ./web
-              run: |
-                  yarn install
-                  make release
+            - run: make release
+              working-directory: ./web
               env:
                   NODE_ENV: "production"
                   WEB: "https://feedbox.h11.io"
