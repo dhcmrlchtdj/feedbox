@@ -1,0 +1,9 @@
+{
+    "private": true,
+    "name": "feedbox",
+    "version": "0.0.0",
+    "repository": "git@github.com:dhcmrlchtdj/feedbox.git",
+    "author": "h11 <nirisix@gmail.com>",
+    "license": "UNLICENSED",
+    "main": "index.js"
+}

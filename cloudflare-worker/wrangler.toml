@@ -1,0 +1,7 @@
+zone_id = "6cffee8a847ad1565b9cb2572cce3a04"
+account_id = "d36f6909d7981a482a32e5690c07bf87"
+
+type = "javascript"
+
+name = "feedbox"
+route = "feedbox.h11.io/*"

@@ -39,8 +39,15 @@ jobs:
               with:
                   token: ${{ secrets.CODECOV_TOKEN }}
                   file: ./server/coverage/coverage-final.json
-            - name: push to heroku
+            - name: deploy heroku
               run: git push --force https://heroku:$HEROKU_AUTH_TOKEN@git.heroku.com/$HEROKU_APP_NAME.git || echo
               env:
                   HEROKU_APP_NAME: "fbox"
                   HEROKU_AUTH_TOKEN: ${{ secrets.HEROKU_AUTH_TOKEN }}
+            - name: deploy cloudflare worker
+              working-directory: ./cloudflare-worker
+              run: |
+                yarn add @cloudflare/wrangler
+                yarn wrangler publish
+              env:
+                  CF_API_TOKEN: ${{ secrets.CF_API_TOKEN }}
