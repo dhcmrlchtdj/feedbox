@@ -44,7 +44,7 @@
         "@types/feedparser": "2.2.3",
         "@types/jest": "25.1.4",
         "@types/mailgun-js": "0.22.4",
-        "@types/node": "13.9.1",
+        "@types/node": "13.9.2",
         "@types/node-fetch": "2.5.5",
         "form-data": "3.0.0",
         "jest": "25.1.0",
