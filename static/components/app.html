@@ -1,0 +1,37 @@
+<div class="container grid-sm">
+    {#await loaded.promise}
+    <Loading></Loading>
+    {:then}
+    <List {email} {feeds}></List>
+    {:catch err}
+    <Auth {err}></Auth>
+    {/await}
+</div>
+
+<script>
+    import Loading from './loading.html'
+    import Auth from './auth.html'
+    import List from './list.html'
+
+    import * as agent from '../utils/agent.js'
+    import { Deferred } from '../utils/deferred.js'
+
+    const state = self.__STATE__ || {}
+    export let loaded = state.loaded || new Deferred()
+    export let email = state.email || ''
+    export let feeds = state.feeds || []
+
+    Promise.all([
+        agent.get(`/api/v1/user`, { 'X-SW-STRATEGY': 'staleWhileRevalidate' }),
+        agent.get(`/api/v1/feeds`, { 'X-SW-STRATEGY': 'staleWhileRevalidate' }),
+    ])
+        .then(([user, resp]) => {
+            email = user.email
+            feeds = resp
+            if (loaded.resolve) loaded.resolve(true)
+        })
+        .catch(err => {
+            console.error(err.stack)
+            if (loaded.reject) loaded.reject(err.message)
+        })
+</script>
