@@ -3,8 +3,8 @@ import { route } from './sw/route'
 
 const files = [
     ...manifest.bundle,
+    'favicon.png',
     '/',
-    '/favicon.png',
     'https://cdn.jsdelivr.net/npm/spectre.css@0.5.8/dist/spectre.min.css',
 ]
 const CACHE_VERSION = files.join(':')

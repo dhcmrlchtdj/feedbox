@@ -54,11 +54,6 @@ export const defaultHandler = async (cache, req, worker) => {
     const s = req.headers.get('X-SW-STRATEGY') || 'cacheFirst'
     const resp = await strategy[s](cache, req)
 
-    // js sourcemap
-    if (req.url.endsWith('.map')) {
-        return cache.put(req, resp.clone())
-    }
-
     const actions = req.headers.get('X-SW-ACTIONS')
     if (actions) dispatch(actions, cache, req, resp, worker)
 
