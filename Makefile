@@ -1,17 +1,29 @@
 SHELL := bash
+PATH := ./node_modules/.bin:$(PATH)
+
+build:
+	tsc
+	rollup -c
+
+release: clean
+	$(MAKE) build migrate_latest
+
+migrate_latest: build
+	knex --knexfile=./_build/server/models/config.js migrate:latest
 
 dev:
-	$(MAKE) -j dev-server dev-web
+	nodemon -w ./_build _build/bin/server.js & tsc -w & rollup -c -w & wait
 
-dev-web:
-	cd ./web && $(MAKE) dev
+test: release
+	jest
 
-dev-server:
-	cd ./server && $(MAKE) dev
+test_update: release
+	jest -u
 
-merge-web-to-server:
-	cd ./server && $(MAKE) release
-	cd ./web && $(MAKE) release
-	mv ./web/_build ./server/_build/lib/static
+fmt:
+	prettier --write '**/*.{ts,js,json,html}'
 
-.PHONY: dev dev-web dev-server
+clean:
+	rm -rf ./_build
+
+.PHONY: build release migrate_latest dev test test_update fmt clean

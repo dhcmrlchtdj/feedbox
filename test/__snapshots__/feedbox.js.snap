@@ -1,0 +1,122 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`feed API /api/v1/feeds 1`] = `
+Array [
+  Object {
+    "id": 1,
+    "updated": null,
+    "url": "https://example.com/rss",
+  },
+]
+`;
+
+exports[`feed API /api/v1/feeds/add 1`] = `
+Array [
+  Object {
+    "id": 1,
+    "updated": null,
+    "url": "https://example.com/rss",
+  },
+]
+`;
+
+exports[`feed API /api/v1/feeds/export 1`] = `
+"<?xml version=\\"1.0\\" encoding=\\"utf-8\\"?>
+<opml version=\\"1.0\\">
+<head><title>feeds</title></head>
+<body>
+<outline type=\\"rss\\" text=\\"example.com\\" xmlUrl=\\"https://example.com/rss\\"/>
+</body>
+</opml>"
+`;
+
+exports[`feed API /api/v1/feeds/import 1`] = `
+Array [
+  Object {
+    "id": 1,
+    "updated": null,
+    "url": "https://example.com/rss",
+  },
+  Object {
+    "id": 2,
+    "updated": null,
+    "url": "https://example.com/rss2",
+  },
+  Object {
+    "id": 3,
+    "updated": null,
+    "url": "https://example.com/rss3",
+  },
+]
+`;
+
+exports[`feed API /api/v1/feeds/remove 1`] = `
+Array [
+  Object {
+    "id": 2,
+    "updated": null,
+    "url": "https://example.com/rss2",
+  },
+  Object {
+    "id": 3,
+    "updated": null,
+    "url": "https://example.com/rss3",
+  },
+]
+`;
+
+exports[`model prepareFeedForUpdate 1`] = `
+Array [
+  Object {
+    "emails": Array [
+      "user@example.com",
+    ],
+    "id": 2,
+    "links": Set {},
+    "updated": null,
+    "url": "https://example.com/rss2",
+  },
+  Object {
+    "emails": Array [
+      "user@example.com",
+    ],
+    "id": 3,
+    "links": Set {},
+    "updated": null,
+    "url": "https://example.com/rss3",
+  },
+]
+`;
+
+exports[`model updateFeedUpdated 1`] = `
+Array [
+  Object {
+    "id": 3,
+    "updated": 1580601600000,
+    "url": "https://example.com/rss3",
+  },
+  Object {
+    "id": 2,
+    "updated": null,
+    "url": "https://example.com/rss2",
+  },
+]
+`;
+
+exports[`user API /api/logout 1`] = `
+Array [
+  "token=; Max-Age=0; Expires=Thu, 01 Jan 1970 00:00:00 GMT; HttpOnly; SameSite=Strict; Path=/api",
+]
+`;
+
+exports[`user API /api/logout 2`] = `"http://localhost:8000"`;
+
+exports[`user API /api/logout 3`] = `302`;
+
+exports[`user API /api/v1/user 1`] = `
+Object {
+  "email": "user@example.com",
+  "githubId": 1,
+  "id": 1,
+}
+`;
