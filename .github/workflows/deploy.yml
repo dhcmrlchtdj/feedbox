@@ -38,7 +38,7 @@ jobs:
             - uses: codecov/codecov-action@v1.0.5
               with:
                   token: ${{ secrets.CODECOV_TOKEN }}
-                  file: ./server/coverage/coverage-final.json
+                  file: ./coverage/coverage-final.json
             - name: deploy heroku
               run: git push --force https://heroku:$HEROKU_AUTH_TOKEN@git.heroku.com/$HEROKU_APP_NAME.git || echo
               env:
