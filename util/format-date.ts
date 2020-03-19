@@ -1,7 +1,7 @@
 const pad = (value: number) => `0${value}`.slice(-2)
 
 export const format = (
-    date: Date | number,
+    date: Date | number | string,
     fmt: string = 'YYYY-MM-DD hh:mm:ss',
 ) => {
     const d = new Date(date)
