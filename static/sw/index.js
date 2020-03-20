@@ -1,5 +1,5 @@
-import { bundle } from '../_build/static/manifest.json'
-import { route } from './sw/route'
+import { bundle } from '../../_build/static/manifest.json'
+import { initRouter } from './router'
 
 const files = [
     ...bundle,
@@ -9,6 +9,8 @@ const files = [
 ]
 const CACHE_VERSION = files.join(':')
 console.log('[SW] current version', CACHE_VERSION)
+
+const router = initRouter(CACHE_VERSION)
 
 self.addEventListener('install', event => {
     console.log('[SW] install | start', CACHE_VERSION)
@@ -36,12 +38,7 @@ self.addEventListener('activate', event => {
 })
 
 self.addEventListener('fetch', event => {
-    const done = caches.open(CACHE_VERSION).then(async cache => {
-        const req = event.request
-        const handler = route(req.method, req.url)
-        return handler(cache, req, self)
-    })
-    event.respondWith(done)
+    event.respondWith(router.route(event))
 })
 
 self.addEventListener('message', event => {

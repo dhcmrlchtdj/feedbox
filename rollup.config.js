@@ -42,11 +42,10 @@ export default [
         ],
     },
     {
-        input: './static/sw.js',
+        input: './static/sw/index.js',
         output: {
             dir: './_build/static',
-            entryFileNames: '[name].js',
-            chunkFileNames: '[name].[hash].js',
+            entryFileNames: 'sw.js',
             format: 'esm',
             sourcemap: true,
         },

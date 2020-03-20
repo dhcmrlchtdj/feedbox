@@ -1,13 +1,29 @@
 import App from '../components/app.html'
-import Router from '../utils/router'
+import { Router } from '../utils/router'
 import { strategy } from './strategy'
 import { dispatch } from './action'
 
-export const router = Router.add(
-    'get',
-    `${process.env.SERVER}/`,
-    async (cache, req, worker) => {
+export const initRouter = cacheVersion => {
+    const router = new Router()
+
+    router.fallback(async event => {
+        const cache = await caches.open(cacheVersion)
+        const req = event.request
+
+        const s = req.headers.get('X-SW-STRATEGY') || 'cacheFirst'
+        const resp = await strategy[s](cache, req)
+
+        const actions = req.headers.get('X-SW-ACTIONS')
+        if (actions) dispatch(actions, cache, req, resp)
+
+        return resp
+    })
+
+    router.get('/', async event => {
+        const cache = await caches.open(cacheVersion)
+        const req = event.request
         const resp = await strategy.cacheFirst(cache, req)
+
         return Promise.all([
             strategy.cacheOnly(cache, `/api/v1/user`),
             strategy.cacheOnly(cache, `/api/v1/feeds`),
@@ -35,27 +51,13 @@ export const router = Router.add(
                         state,
                     )}</script>`,
                 )
-                return new Response(html, {
-                    headers: { 'content-type': 'text/html; charset=utf-8' },
-                })
+                return new Response(html, { headers: resp.headers })
             })
             .catch(err => {
                 console.error(err.stack)
                 return resp
             })
-    },
-)
+    })
 
-export const defaultHandler = async (cache, req, worker) => {
-    // X-SW-STRATEGY: cacheFirst
-    // X-SW-RACE: 500
-    // X-SW-ACTION: act1 | act2;arg1;arg2 | update;url
-
-    const s = req.headers.get('X-SW-STRATEGY') || 'cacheFirst'
-    const resp = await strategy[s](cache, req)
-
-    const actions = req.headers.get('X-SW-ACTIONS')
-    if (actions) dispatch(actions, cache, req, resp, worker)
-
-    return resp
+    return router
 }

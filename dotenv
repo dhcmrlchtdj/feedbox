@@ -1,9 +1,9 @@
 NODE_ENV="development"
 SERVER="http://localhost:8000"
 
-COOKIE_SECRET="crypto.randomBytes(2).toString('hex')"
+COOKIE_SECRET="crypto.randomBytes(32).toString('hex')"
 
-GITHUB_AUTH_SECRET="crypto.randomBytes(2).toString('hex')"
+GITHUB_AUTH_SECRET="crypto.randomBytes(32).toString('hex')"
 GITHUB_CLIENT_ID="70f278a95aa587dc6fd6"
 GITHUB_CLIENT_SECRET="d302f69ea8020c101c3c08032a7f411840c5979f"
 
