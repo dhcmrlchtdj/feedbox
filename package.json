@@ -33,7 +33,7 @@
         "hapi-pino": "6.5.0",
         "iconv-lite": "0.5.1",
         "jschardet": "2.1.1",
-        "knex": "0.20.11",
+        "knex": "0.20.12",
         "mailgun-js": "0.22.0",
         "node-fetch": "2.6.0",
         "pg": "7.18.2",
