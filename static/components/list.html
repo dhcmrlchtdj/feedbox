@@ -83,14 +83,7 @@
 
         feed.loading = true
         agent
-            .del(
-                `/api/v1/feeds/remove`,
-                { feedId: feed.id },
-                {
-                    'X-SW-STRATEGY': 'networkOnly',
-                    'X-SW-ACTIONS': `update;/api/v1/feeds`,
-                },
-            )
+            .del(`/api/v1/feeds/remove`, { feedId: feed.id })
             .then(resp => {
                 feeds = resp
             })
@@ -100,14 +93,7 @@
     const add = async () => {
         addLoading = true
         agent
-            .put(
-                `/api/v1/feeds/add`,
-                { url: addUrl },
-                {
-                    'X-SW-STRATEGY': 'networkOnly',
-                    'X-SW-ACTIONS': `update;/api/v1/feeds`,
-                },
-            )
+            .put(`/api/v1/feeds/add`, { url: addUrl })
             .then(resp => {
                 feeds = resp
                 addUrl = ''
