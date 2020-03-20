@@ -29,7 +29,7 @@ export const routes = [
         method: 'get',
         options: { auth: false },
         async handler(_request, h) {
-            return h.response(icon).type('image/png')
+            return h.response(icon).type('image/png').etag("favicon-v1")
         },
     },
 
