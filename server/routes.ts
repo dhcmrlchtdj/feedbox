@@ -25,7 +25,7 @@ export const routes = [
     },
 
     {
-        path: '/favicon.png',
+        path: '/favicon.ico',
         method: 'get',
         options: { auth: false },
         async handler(_request, h) {

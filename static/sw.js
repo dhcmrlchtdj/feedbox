@@ -1,9 +1,9 @@
-import manifest from '../_build/static/manifest.json'
+import { bundle } from '../_build/static/manifest.json'
 import { route } from './sw/route'
 
 const files = [
-    ...manifest.bundle,
-    'favicon.png',
+    ...bundle,
+    'favicon.ico',
     '/',
     'https://cdn.jsdelivr.net/npm/spectre.css@0.5.8/dist/spectre.min.css',
 ]
