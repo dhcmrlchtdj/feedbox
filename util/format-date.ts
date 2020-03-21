@@ -25,5 +25,8 @@ export const format = (
         ss: pad(_second),
     }
 
-    return fmt.replace(/YYYY|MM?|DD?|hh?|mm?|ss?/g, matched => pairs[matched])
+    return fmt.replace(
+        /YYYY|MM?|DD?|hh?|mm?|ss?/g,
+        matched => pairs[matched as keyof typeof pairs] as string,
+    )
 }

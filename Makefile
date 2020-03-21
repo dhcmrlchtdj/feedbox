@@ -2,7 +2,7 @@ SHELL := bash
 PATH := ./node_modules/.bin:$(PATH)
 
 build:
-	tsc
+	tsc -m commonjs
 	rollup -c
 
 release: clean
@@ -12,7 +12,10 @@ migrate_latest: build
 	knex --knexfile=./_build/server/models/config.js migrate:latest
 
 dev:
-	nodemon -w ./_build _build/bin/server.js & tsc -w & rollup -c -w & wait
+	nodemon -w ./_build _build/bin/server.js & \
+		tsc -m commonjs -w & \
+		rollup -c -w & \
+		wait
 
 test: release
 	jest

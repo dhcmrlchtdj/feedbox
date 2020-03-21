@@ -17,8 +17,8 @@
         "testEnvironment": "node",
         "collectCoverage": true,
         "coverageProvider": "v8",
-        "snapshotResolver": "./test/jest.snapshot-resolver.js",
-        "testRegex": "_build/test/.*.js$"
+        "snapshotResolver": "./_build/test/jest.snapshot-resolver.js",
+        "testRegex": "_build/test/case/.*.js$"
     },
     "dependencies": {
         "@hapi/bell": "12.0.0",

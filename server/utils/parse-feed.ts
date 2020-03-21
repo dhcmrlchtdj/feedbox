@@ -14,7 +14,7 @@ export const parseFeed = async (
         const feed: FeedItem[] = []
 
         feedparser.on('end', () => resolve(feed))
-        feedparser.on('error', err => {
+        feedparser.on('error', (err: Error) => {
             rollbar.info(err, { feedurl })
             resolve([])
         })

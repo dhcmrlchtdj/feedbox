@@ -1,6 +1,6 @@
 import FormData from 'form-data'
-import { init } from '../server/server'
-import { model } from '../server/models'
+import { init } from '../../server/server'
+import { model } from '../../server/models'
 
 let server: any
 const auth = {
