@@ -1,9 +1,10 @@
-import * as authCookie from '@hapi/cookie'
+import * as cookieAuth from '@hapi/cookie'
 import { model } from '../models'
 
-const ttl = 30 * 24 * 60 * 60 * 1000
+// 7 days
+const ttl = 7 * 24 * 60 * 60 * 1000
 
-const validate = async (_request, session) => {
+const validate = async (_request, session: { id: number; ts: number }) => {
     if (session.ts + ttl > Date.now()) {
         const user = await model.getUserById(session.id)
         if (user) {
@@ -13,8 +14,8 @@ const validate = async (_request, session) => {
     return { valid: false }
 }
 
-export const authSession = async server => {
-    await server.register(authCookie)
+export const initSession = async server => {
+    await server.register(cookieAuth)
 
     server.auth.strategy('session', 'cookie', {
         cookie: {
@@ -28,5 +29,6 @@ export const authSession = async server => {
             isHttpOnly: true,
         },
         validateFunc: validate,
+        requestDecoratorName: 'session',
     })
 }

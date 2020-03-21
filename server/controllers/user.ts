@@ -17,7 +17,7 @@ export const info = {
 export const logout = {
     auth: false,
     async handler(request, h) {
-        request.cookieAuth.clear()
+        request.session.clear()
         return h.redirect(process.env.SERVER)
     },
 }
@@ -37,7 +37,7 @@ export const connectGithub = {
             const id = await model.getUserIdByGithub(github.id, github.email)
 
             // set cookie
-            request.cookieAuth.set({ id, ts: Date.now() })
+            request.session.set({ id, ts: Date.now() })
 
             // redirect to home
             return h.redirect(process.env.SERVER)
