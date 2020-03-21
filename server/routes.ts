@@ -27,12 +27,14 @@ export const routes = [
     {
         path: '/favicon.ico',
         method: 'get',
-        options: { auth: false },
-        async handler(_request, h) {
-            return h
-                .response(icon)
-                .type('image/png')
-                .etag('favicon-v1')
+        options: {
+            auth: false,
+            async handler(_request, h) {
+                return h
+                    .response(icon)
+                    .type('image/png')
+                    .etag('favicon-v1')
+            },
         },
     },
 

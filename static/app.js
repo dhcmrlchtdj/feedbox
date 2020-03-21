@@ -7,4 +7,5 @@ new App({
 
 if (navigator.serviceWorker) {
     navigator.serviceWorker.register('/sw.js')
+    // navigator.serviceWorker.getRegistrations().then(workers => workers.map(worker => worker.unregister()))
 }
