@@ -1,5 +1,8 @@
-async function handle(request) {
-    const apiHost = 'fbox.herokuapp.com'
+const apiHost = 'fbox.herokuapp.com'
+
+const handle = async event => {
+    const request = event.request
+
     const url = new URL(request.url)
     url.host = apiHost
     const init = {
@@ -10,9 +13,10 @@ async function handle(request) {
     }
     const req = new Request(url, init)
     req.headers.set('host', apiHost)
+
     return fetch(req)
 }
 
-addEventListener('fetch', async event => {
-    event.respondWith(handle(event.request))
+addEventListener('fetch', event => {
+    event.respondWith(handle(event))
 })
