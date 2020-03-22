@@ -1,4 +1,3 @@
-/// <reference lib="webworker" />
 /*
 Usage:
 
@@ -31,12 +30,14 @@ router.route(event)
 */
 
 export type Params = Map<string, string>
+
 type Route<T> = {
     handler: T | null
     static: Map<string, Route<T>>
     parameter: Map<string, Route<T>>
     any: T | null
 }
+
 class BaseRouter<T> {
     private _routes: Route<T>
     constructor() {
@@ -88,16 +89,16 @@ class BaseRouter<T> {
 
             const staticRoutes = routes.static.get(seg)
             if (staticRoutes !== undefined) {
-                const handler = this._route(subSeg, params, staticRoutes)
-                if (handler !== null) return handler
+                const matched = this._route(subSeg, params, staticRoutes)
+                if (matched !== null) return matched
             }
 
             if (seg !== '') {
                 for (const [param, paramRouter] of routes.parameter) {
-                    const handler = this._route(subSeg, params, paramRouter)
-                    if (handler !== null) {
+                    const matched = this._route(subSeg, params, paramRouter)
+                    if (matched !== null) {
                         params.set(param, seg)
-                        return handler
+                        return matched
                     }
                 }
             }
@@ -120,29 +121,32 @@ export class Router extends BaseRouter<Handler> {
     private async defaultHandler(_event: FetchEvent, _params: Params) {
         return new Response('Not Found', { status: 404 })
     }
-    fallback(handler: Handler): Router {
+    fallback(handler: Handler): this {
         this.defaultHandler = handler
         return this
     }
 
-    add(method: string, pathname: string, handler: Handler): Router {
+    add(method: string, pathname: string, handler: Handler): this {
         const segments = [method.toUpperCase(), ...pathname.split('/')]
         super._add(segments, handler)
         return this
     }
-    head(pathname: string, handler: Handler): Router {
+    all(pathname: string, handler: Handler): this {
+        return this.add(':METHOD', pathname, handler)
+    }
+    head(pathname: string, handler: Handler): this {
         return this.add('HEAD', pathname, handler)
     }
-    get(pathname: string, handler: Handler): Router {
+    get(pathname: string, handler: Handler): this {
         return this.add('GET', pathname, handler)
     }
-    post(pathname: string, handler: Handler): Router {
+    post(pathname: string, handler: Handler): this {
         return this.add('POST', pathname, handler)
     }
-    put(pathname: string, handler: Handler): Router {
+    put(pathname: string, handler: Handler): this {
         return this.add('PUT', pathname, handler)
     }
-    delete(pathname: string, handler: Handler): Router {
+    delete(pathname: string, handler: Handler): this {
         return this.add('DELETE', pathname, handler)
     }
 

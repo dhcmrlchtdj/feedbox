@@ -1,6 +1,8 @@
+// @ts-ignore
 import App from './components/app.html'
 
 new App({
+    // @ts-ignore
     target: document.querySelector('#app'),
     hydrate: true,
 })

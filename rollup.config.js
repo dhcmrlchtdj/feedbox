@@ -1,6 +1,7 @@
 import * as path from 'path'
 import json from '@rollup/plugin-json'
 import resolve from '@rollup/plugin-node-resolve'
+import typescript from '@rollup/plugin-typescript'
 import svelte from 'rollup-plugin-svelte'
 import { terser } from 'rollup-plugin-terser'
 import { dotenv } from './rollup-plugin/dotenv'
@@ -11,16 +12,16 @@ const prod = process.env.NODE_ENV === 'production'
 
 export default [
     {
-        input: './static/app.js',
+        input: './static/app.ts',
         output: {
             dir: './_build/static',
             entryFileNames: '[name].[hash].js',
-            chunkFileNames: '[name].[hash].js',
             format: 'esm',
             sourcemap: true,
         },
         plugins: [
             resolve(),
+            typescript(),
             dotenv({
                 path: path.resolve(__dirname, './dotenv'),
                 example: path.resolve(__dirname, './dotenv.example'),
@@ -42,7 +43,7 @@ export default [
         ],
     },
     {
-        input: './static/sw/index.js',
+        input: './static/sw/index.ts',
         output: {
             dir: './_build/static',
             entryFileNames: 'sw.js',
@@ -51,6 +52,7 @@ export default [
         },
         plugins: [
             resolve(),
+            typescript(),
             dotenv({
                 path: path.resolve(__dirname, './dotenv'),
                 example: path.resolve(__dirname, './dotenv.example'),

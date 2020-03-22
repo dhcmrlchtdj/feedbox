@@ -1,8 +1,8 @@
-export async function cacheOnly(cache, req) {
+export async function cacheOnly(cache: Cache, req: Request | string) {
     return cache.match(req)
 }
 
-export async function cacheFirst(cache, req) {
+export async function cacheFirst(cache: Cache, req: Request | string) {
     const cached = await cache.match(req)
     if (cached) return cached
     const fetched = fetch(req).then((resp) => {
@@ -16,11 +16,11 @@ export async function cacheFirst(cache, req) {
     return fetched
 }
 
-export async function networkOnly(cache, req) {
+export async function networkOnly(_cache: Cache, req: Request | string) {
     return fetch(req)
 }
 
-export async function networkFirst(cache, req) {
+export async function networkFirst(cache: Cache, req: Request | string) {
     const cached = cache.match(req)
     const fetched = fetch(req).then((resp) => {
         if (resp.ok) {
@@ -30,11 +30,14 @@ export async function networkFirst(cache, req) {
         }
         return resp
     })
-    const resp = fetched.catch((err) => cached)
+    const resp = fetched.catch(async (_err) => cached)
     return resp
 }
 
-export async function staleWhileRevalidate(cache, req) {
+export async function staleWhileRevalidate(
+    cache: Cache,
+    req: Request | string,
+) {
     const fetched = fetch(req).then((resp) => {
         if (resp.ok) {
             cache.put(req, resp.clone())

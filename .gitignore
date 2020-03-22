@@ -1,4 +1,6 @@
 node_modules/
-coverage/
-_build/
-cloudflare-worker/index.js
+/coverage/
+/_build/
+*.js
+!/rollup.config.js
+!/rollup-plugin/*.js

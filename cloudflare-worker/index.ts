@@ -1,5 +1,3 @@
-/// <reference lib="webworker" />
-
 import {} from '@cloudflare/workers-types'
 
 const apiHost = 'fbox.herokuapp.com'

@@ -1,6 +1,8 @@
 import { router } from './router'
 import { version } from './version'
 
+declare const self: ServiceWorkerGlobalScope
+
 console.log('[SW] current version', version)
 
 self.addEventListener('install', (event) => {

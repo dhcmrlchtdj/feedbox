@@ -1,15 +1,17 @@
+// @ts-ignore
 import App from '../components/app.html'
-import { Router } from '../utils/router'
+import { Router } from '../../util/router'
 import * as strategy from './strategy'
 import { version } from './version'
 
-const oneStrategy = (name) => async (event) => {
+const oneStrategy = (name: string) => async (event: FetchEvent) => {
     const cache = await caches.open(version)
+    // @ts-ignore
     const resp = await strategy[name](cache, event.request)
     return resp
 }
 
-const getThenUpdate = async (event) => {
+const getThenUpdate = async (event: FetchEvent) => {
     const cache = await caches.open(version)
     const resp = await strategy.networkOnly(cache, event.request)
     if (resp.ok) cache.put('/api/v1/feeds', resp.clone())
