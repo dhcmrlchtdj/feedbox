@@ -60,6 +60,7 @@ export const initRouter = (cacheVersion) => {
         .delete('/api/v1/feeds/remove', getThenUpdate)
         .get('/api/v1/user', oneStrategy('staleWhileRevalidate'))
         .get('/api/v1/feeds', oneStrategy('staleWhileRevalidate'))
+        .get('/api/v1/feeds/export', oneStrategy('networkOnly'))
         .fallback(oneStrategy('cacheFirst'))
     return router
 }

@@ -1,6 +1,7 @@
 export async function cacheOnly(cache, req) {
     return cache.match(req)
 }
+
 export async function cacheFirst(cache, req) {
     const cached = await cache.match(req)
     if (cached) return cached

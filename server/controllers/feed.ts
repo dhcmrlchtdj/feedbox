@@ -89,6 +89,6 @@ export const exportFeeds = {
             '</body>',
             '</opml>',
         ].join('\n')
-        return h.response(opml).type('text/x-opml')
+        return h.response(opml).type('application/xml')
     },
 }
