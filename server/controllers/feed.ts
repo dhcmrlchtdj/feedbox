@@ -14,9 +14,7 @@ export const list = {
 export const add = {
     validate: {
         payload: Joi.object({
-            url: Joi.string()
-                .uri()
-                .required(),
+            url: Joi.string().uri().required(),
         }),
     },
     async handler(request, _h) {
@@ -75,7 +73,7 @@ export const exportFeeds = {
         const { userId } = request.auth.credentials
         const feeds = await model.getFeedByUser(userId)
         const outlines = feeds
-            .map(feed => {
+            .map((feed) => {
                 const text = extractSite(feed.url)
                 const xmlUrl = feed.url
                 return `<outline type="rss" text="${text}" xmlUrl="${xmlUrl}"/>`

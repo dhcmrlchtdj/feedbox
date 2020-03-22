@@ -1,4 +1,4 @@
-const pad = value => `0${value}`.slice(-2)
+const pad = (value) => `0${value}`.slice(-2)
 export const format = (date, fmt = 'YYYY-MM-DD hh:mm:ss') => {
     const d = new Date(date)
     const _year = d.getFullYear()
@@ -20,5 +20,5 @@ export const format = (date, fmt = 'YYYY-MM-DD hh:mm:ss') => {
         s: _second,
         ss: pad(_second),
     }
-    return fmt.replace(/YYYY|MM?|DD?|hh?|mm?|ss?/g, matched => pairs[matched])
+    return fmt.replace(/YYYY|MM?|DD?|hh?|mm?|ss?/g, (matched) => pairs[matched])
 }

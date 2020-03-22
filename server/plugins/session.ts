@@ -14,7 +14,7 @@ const validate = async (_request, session: { id: number; ts: number }) => {
     return { valid: false }
 }
 
-export const initSession = async server => {
+export const initSession = async (server) => {
     await server.register(cookieAuth)
 
     server.auth.strategy('session', 'cookie', {

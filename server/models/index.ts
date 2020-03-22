@@ -53,10 +53,7 @@ export const model = {
                 ON CONFLICT DO NOTHING`,
                 [url],
             )
-            const r = await tnx
-                .select('id')
-                .from('feedbox_feed')
-                .where({ url })
+            const r = await tnx.select('id').from('feedbox_feed').where({ url })
             await tnx.commit()
             return r[0].id
         } catch (err) {
@@ -131,15 +128,11 @@ export const model = {
     },
 
     async addLink(feed_id: number, url: string) {
-        await conn()
-            .insert({ feed_id, url })
-            .into('feedbox_link')
+        await conn().insert({ feed_id, url }).into('feedbox_link')
     },
 
     async updateFeedUpdated(id: number, updated: Date) {
-        await conn()('feedbox_feed')
-            .where({ id })
-            .update({ updated })
+        await conn()('feedbox_feed').where({ id }).update({ updated })
     },
 
     async subscribe(user_id: number, feed_id: number) {
@@ -159,8 +152,8 @@ export const model = {
 
     async subscribeUrls(user_id: number, urls: string[]) {
         if (urls.length === 0) return
-        const qvalue = urls.map(_ => '(?)').join(',')
-        const qrange = urls.map(_ => '?').join(',')
+        const qvalue = urls.map((_) => '(?)').join(',')
+        const qrange = urls.map((_) => '?').join(',')
         const tnx = await conn().transaction()
         try {
             await tnx.raw(

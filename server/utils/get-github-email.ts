@@ -13,12 +13,12 @@ export const getGithubEmail = async (token: string): Promise<string> => {
     const emails: GitHubEmail[] = await fetch(
         'https://api.github.com/user/emails',
         { headers: { authorization: `token ${token}` } },
-    ).then(res => res.json())
+    ).then((res) => res.json())
 
-    const verifiedPrimary = emails.find(e => e.primary && e.verified)
+    const verifiedPrimary = emails.find((e) => e.primary && e.verified)
     if (verifiedPrimary) return verifiedPrimary.email
 
-    const verified = emails.find(e => e.verified)
+    const verified = emails.find((e) => e.verified)
     if (verified) return verified.email
 
     const msg = "user doesn't have any verified email."

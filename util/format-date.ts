@@ -27,6 +27,6 @@ export const format = (
 
     return fmt.replace(
         /YYYY|MM?|DD?|hh?|mm?|ss?/g,
-        matched => pairs[matched as keyof typeof pairs] as string,
+        (matched) => pairs[matched as keyof typeof pairs] as string,
     )
 }

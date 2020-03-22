@@ -4,7 +4,7 @@ import { initSession } from './session'
 import { initOAuth } from './oauth'
 import * as inert from '@hapi/inert'
 
-export const addPlugins = async server => {
+export const addPlugins = async (server) => {
     await server.register(inert)
     await server.register(logger)
     await server.register(errorReporter)

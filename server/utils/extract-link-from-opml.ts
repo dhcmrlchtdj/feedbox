@@ -16,12 +16,12 @@ export const extractLinks = (str: string): string[] => {
     const outline = xml?.opml?.body?.outline
     const linkSet = new Set<string | undefined>()
     if (Array.isArray(outline)) {
-        outline.forEach(o => linkSet.add(o['@_xmlUrl']))
+        outline.forEach((o) => linkSet.add(o['@_xmlUrl']))
     } else if (outline !== undefined) {
         linkSet.add(outline['@_xmlUrl'])
     }
 
-    const links = Array.from(linkSet).filter(link => {
+    const links = Array.from(linkSet).filter((link) => {
         const { error } = schema.validate(link)
         return error === undefined
     }) as string[]

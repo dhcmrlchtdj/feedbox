@@ -1,6 +1,6 @@
 import * as bell from '@hapi/bell'
 
-export const initOAuth = async server => {
+export const initOAuth = async (server) => {
     await server.register(bell)
 
     server.auth.strategy('github', 'bell', {

@@ -3,7 +3,7 @@ import * as path from 'path'
 
 const { mkdir, writeFile } = fs.promises
 
-export const manifest = opt => {
+export const manifest = (opt) => {
     return {
         name: 'manifest',
         generateBundle: async (options, bundle, isWrite) => {

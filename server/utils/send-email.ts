@@ -24,9 +24,7 @@ export const sendEmail = async (
             html: text,
         }
         try {
-            await mg()
-                .messages()
-                .send(data)
+            await mg().messages().send(data)
             return true
         } catch (err) {
             rollbar.error(err)

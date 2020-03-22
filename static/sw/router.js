@@ -2,14 +2,14 @@ import App from '../components/app.html'
 import { Router } from '../utils/router'
 import * as strategy from './strategy'
 
-export const initRouter = cacheVersion => {
-    const oneStrategy = name => async event => {
+export const initRouter = (cacheVersion) => {
+    const oneStrategy = (name) => async (event) => {
         const cache = await caches.open(cacheVersion)
         const resp = await strategy[name](cache, event.request)
         return resp
     }
 
-    const getThenUpdate = async event => {
+    const getThenUpdate = async (event) => {
         const cache = await caches.open(cacheVersion)
         const resp = await strategy.networkOnly(cache, event.request)
         if (resp.ok) cache.put('/api/v1/feeds', resp.clone())
@@ -18,7 +18,7 @@ export const initRouter = cacheVersion => {
 
     const router = new Router()
     router
-        .get('/', async event => {
+        .get('/', async (event) => {
             const cache = await caches.open(cacheVersion)
             const resp = await strategy.cacheFirst(cache, event.request)
 
@@ -51,7 +51,7 @@ export const initRouter = cacheVersion => {
                     )
                     return new Response(html, resp)
                 })
-                .catch(err => {
+                .catch((err) => {
                     console.error(err.stack)
                     return resp
                 })

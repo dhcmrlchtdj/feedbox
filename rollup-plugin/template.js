@@ -2,17 +2,17 @@ import * as fs from 'fs'
 import * as path from 'path'
 
 const { mkdir, writeFile, readFile } = fs.promises
-const readStr = async p => (await readFile(p)).toString()
-const readJSON = async p => JSON.parse(await readStr(p))
+const readStr = async (p) => (await readFile(p)).toString()
+const readJSON = async (p) => JSON.parse(await readStr(p))
 
-export const template = opt => {
+export const template = (opt) => {
     return {
         name: 'template',
         generateBundle: async () => {
-            await new Promise(r => setTimeout(r))
+            await new Promise((r) => setTimeout(r))
 
             const manifest = await readJSON(opt.manifest)
-            const replace = s => {
+            const replace = (s) => {
                 return Object.keys(manifest.entry).reduce((acc, key) => {
                     const val = manifest.entry[key]
                     const r = acc.replace(new RegExp(`__${key}__`, 'g'), val)
@@ -20,7 +20,7 @@ export const template = opt => {
                 }, s)
             }
 
-            const jobs = Object.entries(opt.files).map(async pair => {
+            const jobs = Object.entries(opt.files).map(async (pair) => {
                 const [src, dst] = pair
 
                 const file = await readStr(src)

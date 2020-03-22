@@ -9,7 +9,7 @@ export const parseFeed = async (
     feedurl: string,
     content: string,
 ): Promise<FeedItem[]> => {
-    return new Promise<FeedItem[]>(resolve => {
+    return new Promise<FeedItem[]>((resolve) => {
         const feedparser = new FeedParser({ feedurl })
         const feed: FeedItem[] = []
 
@@ -18,7 +18,7 @@ export const parseFeed = async (
             rollbar.info(err, { feedurl })
             resolve([])
         })
-        feedparser.on('readable', function(this: any) {
+        feedparser.on('readable', function (this: any) {
             let item = this.read()
             while (item) {
                 feed.push(item)

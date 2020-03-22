@@ -24,7 +24,7 @@ test_update: release
 	jest -u
 
 fmt:
-	prettier --write '**/*.{ts,js,json,html}'
+	prettier --write .
 
 clean:
 	rm -rf ./_build

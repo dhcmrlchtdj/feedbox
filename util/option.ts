@@ -12,14 +12,14 @@ export const None: Option<any> = {
     getExn: () => {
         throw new Error('Option.getExn')
     },
-    map: _ => None,
-    bind: _ => None,
+    map: (_) => None,
+    bind: (_) => None,
 }
 
 export const Some = <T>(x: T): Option<T> => ({
     isNone: false,
     isSome: true,
     getExn: () => x,
-    map: f => Some(f(x)),
-    bind: f => f(x),
+    map: (f) => Some(f(x)),
+    bind: (f) => f(x),
 })

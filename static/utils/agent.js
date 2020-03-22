@@ -1,4 +1,4 @@
-const auth = async r => {
+const auth = async (r) => {
     const body = await r.json()
     if (r.status === 401) {
         throw new Error(`${JSON.stringify(body)}`)

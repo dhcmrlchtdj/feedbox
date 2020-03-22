@@ -29,7 +29,7 @@ export const updateFeeds = async () => {
     // feed doc => DB feed updated_at
     // feed doc => feed item
     chFeedDoc
-        .onReceive(10, async doc => {
+        .onReceive(10, async (doc) => {
             const url = doc.url
             const resp = await fetchFeed(url)
             if (resp.isNone) return
@@ -84,7 +84,7 @@ export const updateFeeds = async () => {
     // article => email
     chArticle
         .onReceive(20, async ([doc, article]) => {
-            const emails: [TEmail, number][] = doc.emails.map(addr => [
+            const emails: [TEmail, number][] = doc.emails.map((addr) => [
                 {
                     addr,
                     subject: article.title,

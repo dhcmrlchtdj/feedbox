@@ -5,9 +5,7 @@ import { fetchFeed } from '../utils/fetch-feed'
 export const feedPreview = {
     validate: {
         query: Joi.object({
-            url: Joi.string()
-                .uri()
-                .required(),
+            url: Joi.string().uri().required(),
         }),
     },
     async handler(request, _h) {

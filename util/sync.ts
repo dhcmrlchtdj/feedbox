@@ -61,7 +61,7 @@ export class Condition {
         }
     }
     async broadcast(): Promise<void> {
-        this.waiters.forEach(waiter => waiter.resolve())
+        this.waiters.forEach((waiter) => waiter.resolve())
         this.waiters = []
     }
 }

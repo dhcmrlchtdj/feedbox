@@ -1,6 +1,6 @@
 <div class="columns">
     <div class="column col-12">
-        <h1 class="d-inline-block" style="margin-bottom:0">feedbox</h1>
+        <h1 class="d-inline-block" style="margin-bottom: 0;">feedbox</h1>
         <span>{email}</span>
         <a href="/api/v1/feeds/export" target="_blank">
             OPML
@@ -77,28 +77,28 @@
         location.reload()
     }
 
-    const del = async feed => {
+    const del = async (feed) => {
         const c = window.confirm(`DELETE "${feed.url}"`)
         if (!c) return
 
         feed.loading = true
         agent
             .del(`/api/v1/feeds/remove`, { feedId: feed.id })
-            .then(resp => {
+            .then((resp) => {
                 feeds = resp
             })
-            .catch(err => alertThenReload(err.message))
+            .catch((err) => alertThenReload(err.message))
     }
 
     const add = async () => {
         addLoading = true
         agent
             .put(`/api/v1/feeds/add`, { url: addUrl })
-            .then(resp => {
+            .then((resp) => {
                 feeds = resp
                 addUrl = ''
             })
-            .catch(err => alertThenReload(err.message))
+            .catch((err) => alertThenReload(err.message))
             .then(() => (addLoading = false))
     }
 

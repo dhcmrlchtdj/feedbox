@@ -29,7 +29,7 @@
                 feeds = resp
                 if (loaded.resolve) loaded.resolve(true)
             })
-            .catch(err => {
+            .catch((err) => {
                 console.error(err.stack)
                 if (loaded.reject) loaded.reject(err.message)
             })
