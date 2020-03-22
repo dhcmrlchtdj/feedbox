@@ -1,7 +1,6 @@
 {
     "compilerOptions": {
-        "outDir": "./_build/",
-
+        "module": "ES2015",
         "target": "ES2019",
         "lib": ["ES2019"],
 

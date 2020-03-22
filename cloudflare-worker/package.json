@@ -5,5 +5,8 @@
     "repository": "git@github.com:dhcmrlchtdj/feedbox.git",
     "author": "h11 <nirisix@gmail.com>",
     "license": "UNLICENSED",
-    "main": "index.js"
+    "main": "index.js",
+    "scripts": {
+        "build": "cd .. && yarn rollup --format=es --input=cloudflare-worker/index.ts --file=cloudflare-worker/index.js --plugin=typescript --no-esModule"
+    }
 }

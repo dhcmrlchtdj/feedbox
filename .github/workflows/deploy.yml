@@ -47,6 +47,7 @@ jobs:
             - name: deploy cloudflare worker
               working-directory: ./cloudflare-worker
               run: |
+                yarn build
                 yarn add @cloudflare/wrangler
                 yarn wrangler publish
               env:

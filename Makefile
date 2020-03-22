@@ -2,7 +2,7 @@ SHELL := bash
 PATH := ./node_modules/.bin:$(PATH)
 
 build:
-	tsc -m commonjs
+	tsc --module commonjs --outDir _build
 	rollup -c
 
 release: clean
@@ -13,7 +13,7 @@ migrate_latest: build
 
 dev:
 	nodemon -w ./_build _build/bin/server.js & \
-		tsc -m commonjs -w & \
+		tsc --module commonjs --outDir _build -w & \
 		rollup -c -w & \
 		wait
 

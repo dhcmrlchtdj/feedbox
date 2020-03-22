@@ -1,3 +1,4 @@
+/// <reference lib="webworker" />
 /*
 Usage:
 
@@ -29,66 +30,104 @@ router.route(event)
 ```
 */
 
-/// <reference lib="webworker" />
-
-type Params = Map<string, string>
-type Handler = (event: FetchEvent, params: Params) => Promise<Response>
-type Route = {
-    handler: Handler | null
-    static: Map<string, Route>
-    parameter: Map<string, Route>
-    any: Route | undefined
+export type Params = Map<string, string>
+type Route<T> = {
+    handler: T | null
+    static: Map<string, Route<T>>
+    parameter: Map<string, Route<T>>
+    any: T | null
 }
-
-const newRoute = (): Route => {
-    return {
-        handler: null,
-        static: new Map(),
-        parameter: new Map(),
-        any: undefined,
-    }
-}
-
-const handleNotFound: Handler = async () =>
-    new Response('Not Found', { status: 404 })
-
-export class Router {
-    private routes: Route
-    private defaultHandler: Handler
+class BaseRouter<T> {
+    private _routes: Route<T>
     constructor() {
-        this.routes = newRoute()
-        this.defaultHandler = handleNotFound
+        this._routes = this._newRoute()
     }
-
-    fallback(handler: Handler): Router {
-        this.defaultHandler = handler
-        return this
+    private _newRoute(): Route<T> {
+        return {
+            handler: null,
+            static: new Map(),
+            parameter: new Map(),
+            any: null,
+        }
     }
-
-    private _add(routes: Route, segments: string[], handler: Handler) {
+    protected _add(
+        segments: string[],
+        handler: T,
+        routes: Route<T> = this._routes,
+    ) {
         if (segments.length === 0) {
             routes.handler = handler
         } else {
             const seg = segments[0]
             if (seg === '*') {
-                const r = newRoute()
-                r.handler = handler
-                routes.any = r
+                routes.any = handler
             } else if (seg[0] === ':') {
                 const param = seg.slice(1)
-                const r = routes.parameter.get(param) ?? newRoute()
-                this._add(r, segments.slice(1), handler)
+                const r = routes.parameter.get(param) ?? this._newRoute()
+                this._add(segments.slice(1), handler, r)
                 routes.parameter.set(param, r)
             } else {
-                const r = routes.static.get(seg) ?? newRoute()
-                this._add(r, segments.slice(1), handler)
+                const r = routes.static.get(seg) ?? this._newRoute()
+                this._add(segments.slice(1), handler, r)
                 routes.static.set(seg, r)
             }
         }
     }
+    protected _route(
+        segments: string[],
+        params: Params = new Map(),
+        routes: Route<T> = this._routes,
+    ): [T, Params] | null {
+        if (segments.length === 0) {
+            if (routes.handler !== null) {
+                return [routes.handler, params]
+            }
+        } else {
+            const seg = segments[0]
+            const subSeg = segments.slice(1)
+
+            const staticRoutes = routes.static.get(seg)
+            if (staticRoutes !== undefined) {
+                const handler = this._route(subSeg, params, staticRoutes)
+                if (handler !== null) return handler
+            }
+
+            if (seg !== '') {
+                for (const [param, paramRouter] of routes.parameter) {
+                    const handler = this._route(subSeg, params, paramRouter)
+                    if (handler !== null) {
+                        params.set(param, seg)
+                        return handler
+                    }
+                }
+            }
+
+            if (routes.any !== null) {
+                params.set('*', segments.join('/'))
+                return [routes.any, params]
+            }
+        }
+        return null
+    }
+}
+
+export type Handler = (event: FetchEvent, params: Params) => Promise<Response>
+export class Router extends BaseRouter<Handler> {
+    constructor() {
+        super()
+    }
+
+    private async defaultHandler(_event: FetchEvent, _params: Params) {
+        return new Response('Not Found', { status: 404 })
+    }
+    fallback(handler: Handler): Router {
+        this.defaultHandler = handler
+        return this
+    }
+
     add(method: string, pathname: string, handler: Handler): Router {
         const segments = [method.toUpperCase(), ...pathname.split('/')]
-        this._add(this.routes, segments, handler)
+        super._add(segments, handler)
         return this
     }
     head(pathname: string, handler: Handler): Router {
@@ -107,41 +146,6 @@ export class Router {
         return this.add('DELETE', pathname, handler)
     }
 
-    private _route(
-        routes: Route,
-        segments: string[],
-        params: Params,
-    ): Handler | null {
-        if (segments.length === 0) {
-            return routes.handler
-        } else {
-            const seg = segments[0]
-            const subSeg = segments.slice(1)
-
-            const staticRoutes = routes.static.get(seg)
-            if (staticRoutes) {
-                const handler = this._route(staticRoutes, subSeg, params)
-                if (handler !== null) return handler
-            }
-
-            if (seg !== '') {
-                const paramRouters = routes.parameter.entries()
-                for (const [param, paramRouter] of paramRouters) {
-                    const handler = this._route(paramRouter, subSeg, params)
-                    if (handler !== null) {
-                        params.set(param, seg)
-                        return handler
-                    }
-                }
-            }
-
-            if (routes.any !== undefined) {
-                params.set('*', segments.join('/'))
-                return routes.any.handler
-            }
-            return null
-        }
-    }
     route(event: FetchEvent): Promise<Response> {
         const request = event.request
         const url = new URL(request.url)
@@ -149,9 +153,10 @@ export class Router {
             request.method.toUpperCase(),
             ...url.pathname.split('/'),
         ]
-        const params = new Map()
-        const handler =
-            this._route(this.routes, segments, params) ?? this.defaultHandler
+        const [handler, params] = super._route(segments) ?? [
+            this.defaultHandler,
+            new Map(),
+        ]
         const resp = handler(event, params)
         return resp
     }
