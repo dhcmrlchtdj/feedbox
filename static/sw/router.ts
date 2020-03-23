@@ -1,12 +1,18 @@
 // @ts-ignore
 import App from '../components/app.html'
-import { Router } from '../../util/router'
+import { WorkerRouter } from '../../util/router'
 import * as strategy from './strategy'
 import { version } from './version'
 
-const oneStrategy = (name: string) => async (event: FetchEvent) => {
+const justStrategy = (
+    name:
+        | 'cacheOnly'
+        | 'cacheFirst'
+        | 'networkOnly'
+        | 'networkFirst'
+        | 'staleWhileRevalidate',
+) => async (event: FetchEvent) => {
     const cache = await caches.open(version)
-    // @ts-ignore
     const resp = await strategy[name](cache, event.request)
     return resp
 }
@@ -18,7 +24,7 @@ const getThenUpdate = async (event: FetchEvent) => {
     return resp
 }
 
-export const router = new Router()
+export const router = new WorkerRouter()
     .get('/', async (event) => {
         const cache = await caches.open(version)
         const resp = await strategy.cacheFirst(cache, event.request)
@@ -59,7 +65,7 @@ export const router = new Router()
     })
     .put('/api/v1/feeds/add', getThenUpdate)
     .delete('/api/v1/feeds/remove', getThenUpdate)
-    .get('/api/v1/user', oneStrategy('staleWhileRevalidate'))
-    .get('/api/v1/feeds', oneStrategy('staleWhileRevalidate'))
-    .get('/api/v1/feeds/export', oneStrategy('networkOnly'))
-    .fallback(oneStrategy('cacheFirst'))
+    .get('/api/v1/user', justStrategy('staleWhileRevalidate'))
+    .get('/api/v1/feeds', justStrategy('staleWhileRevalidate'))
+    .get('/api/v1/feeds/export', justStrategy('networkOnly'))
+    .fallback(justStrategy('cacheFirst'))

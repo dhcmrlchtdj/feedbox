@@ -1,101 +1,67 @@
-/*
-Usage:
-
-```javascript
-import { Router } from 'path/to/router'
-
-// build router
-const router = new Router()
-
-router.fallback(async (event) => {
-    fetch(event.request)
-})
-
-router.get('/static', async (event, params) => {
-    fetch(event.request)
-})
-router.post('/param/:id/:title', async (event, params) => {
-    assert(params.has('id'))
-    assert(params.has('title'))
-    return fetch(event.request)
-})
-router.head('/any/*', async (event, params) => {
-    assert(params.has('*'))
-    return fetch(event.request)
-})
-
-// route the fetch event
-router.route(event)
-```
-*/
-
 export type Params = Map<string, string>
 
 type Route<T> = {
     handler: T | null
     static: Map<string, Route<T>>
     parameter: Map<string, Route<T>>
-    any: T | null
+    wildcard: T | null
 }
 
 class BaseRouter<T> {
-    private _routes: Route<T>
+    private _route: Route<T>
     constructor() {
-        this._routes = this._newRoute()
+        this._route = this._newRoute()
     }
     private _newRoute(): Route<T> {
         return {
             handler: null,
             static: new Map(),
             parameter: new Map(),
-            any: null,
+            wildcard: null,
         }
     }
-    protected _add(
-        segments: string[],
-        handler: T,
-        routes: Route<T> = this._routes,
-    ) {
+    add(segments: string[], handler: T, route: Route<T> = this._route): this {
         if (segments.length === 0) {
-            routes.handler = handler
+            route.handler = handler
         } else {
             const seg = segments[0]
             if (seg === '*') {
-                routes.any = handler
+                route.wildcard = handler
             } else if (seg[0] === ':') {
                 const param = seg.slice(1)
-                const r = routes.parameter.get(param) ?? this._newRoute()
-                this._add(segments.slice(1), handler, r)
-                routes.parameter.set(param, r)
+                const r = route.parameter.get(param) ?? this._newRoute()
+                this.add(segments.slice(1), handler, r)
+                route.parameter.set(param, r)
             } else {
-                const r = routes.static.get(seg) ?? this._newRoute()
-                this._add(segments.slice(1), handler, r)
-                routes.static.set(seg, r)
+                const r = route.static.get(seg) ?? this._newRoute()
+                this.add(segments.slice(1), handler, r)
+                route.static.set(seg, r)
             }
         }
+        return this
     }
-    protected _route(
+    lookup(
         segments: string[],
         params: Params = new Map(),
-        routes: Route<T> = this._routes,
+        route: Route<T> = this._route,
     ): [T, Params] | null {
         if (segments.length === 0) {
-            if (routes.handler !== null) {
-                return [routes.handler, params]
+            if (route.handler !== null) {
+                return [route.handler, params]
             }
         } else {
             const seg = segments[0]
             const subSeg = segments.slice(1)
 
-            const staticRoutes = routes.static.get(seg)
-            if (staticRoutes !== undefined) {
-                const matched = this._route(subSeg, params, staticRoutes)
+            const staticRoute = route.static.get(seg)
+            if (staticRoute !== undefined) {
+                const matched = this.lookup(subSeg, params, staticRoute)
                 if (matched !== null) return matched
             }
 
             if (seg !== '') {
-                for (const [param, paramRouter] of routes.parameter) {
-                    const matched = this._route(subSeg, params, paramRouter)
+                for (const [param, paramRoute] of route.parameter) {
+                    const matched = this.lookup(subSeg, params, paramRoute)
                     if (matched !== null) {
                         params.set(param, seg)
                         return matched
@@ -103,9 +69,9 @@ class BaseRouter<T> {
                 }
             }
 
-            if (routes.any !== null) {
+            if (route.wildcard !== null) {
                 params.set('*', segments.join('/'))
-                return [routes.any, params]
+                return [route.wildcard, params]
             }
         }
         return null
@@ -113,9 +79,10 @@ class BaseRouter<T> {
 }
 
 export type Handler = (event: FetchEvent, params: Params) => Promise<Response>
-export class Router extends BaseRouter<Handler> {
+export class WorkerRouter {
+    private _router: BaseRouter<Handler>
     constructor() {
-        super()
+        this._router = new BaseRouter<Handler>()
     }
 
     private async defaultHandler(_event: FetchEvent, _params: Params) {
@@ -128,7 +95,7 @@ export class Router extends BaseRouter<Handler> {
 
     add(method: string, pathname: string, handler: Handler): this {
         const segments = [method.toUpperCase(), ...pathname.split('/')]
-        super._add(segments, handler)
+        this._router.add(segments, handler)
         return this
     }
     all(pathname: string, handler: Handler): this {
@@ -157,7 +124,7 @@ export class Router extends BaseRouter<Handler> {
             request.method.toUpperCase(),
             ...url.pathname.split('/'),
         ]
-        const [handler, params] = super._route(segments) ?? [
+        const [handler, params] = this._router.lookup(segments) ?? [
             this.defaultHandler,
             new Map(),
         ]
