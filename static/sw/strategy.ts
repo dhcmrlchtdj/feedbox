@@ -1,5 +1,10 @@
 export async function cacheOnly(cache: Cache, req: Request | string) {
-    return cache.match(req)
+    const m = await cache.match(req)
+    if (m) return m
+    return new Response('Cache Not Found', {
+        status: 404,
+        statusText: 'Not Found',
+    })
 }
 
 export async function cacheFirst(cache: Cache, req: Request | string) {
@@ -30,7 +35,11 @@ export async function networkFirst(cache: Cache, req: Request | string) {
         }
         return resp
     })
-    const resp = fetched.catch(async (_err) => cached)
+    const resp = fetched.catch(async (err) => {
+        const m = await cached
+        if (m) return m
+        throw err
+    })
     return resp
 }
 

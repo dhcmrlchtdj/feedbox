@@ -1,125 +1,105 @@
-/*
-Usage:
-
-```javascript
-import { Router } from 'path/to/router'
-
-// build router
-const router = new Router()
-
-router.fallback(async (event) => {
-    fetch(event.request)
-})
-
-router.get('/static', async (event, params) => {
-    fetch(event.request)
-})
-router.post('/param/:id/:title', async (event, params) => {
-    assert(params.has('id'))
-    assert(params.has('title'))
-    return fetch(event.request)
-})
-router.head('/any/*', async (event, params) => {
-    assert(params.has('*'))
-    return fetch(event.request)
-})
-
-// route the fetch event
-router.route(event)
-```
-*/
-
-export type Params = Map<string, string>
-
 type Route<T> = {
     handler: T | null
     static: Map<string, Route<T>>
     parameter: Map<string, Route<T>>
-    any: T | null
+    wildcard: T | null
 }
 
 class BaseRouter<T> {
-    private _routes: Route<T>
+    private _route: Route<T>
     constructor() {
-        this._routes = this._newRoute()
+        this._route = this._newRoute()
     }
     private _newRoute(): Route<T> {
         return {
             handler: null,
             static: new Map(),
             parameter: new Map(),
-            any: null,
+            wildcard: null,
         }
     }
-    protected _add(
-        segments: string[],
-        handler: T,
-        routes: Route<T> = this._routes,
-    ) {
+    private _add(segments: string[], handler: T, route: Route<T>): this {
         if (segments.length === 0) {
-            routes.handler = handler
+            route.handler = handler
         } else {
             const seg = segments[0]
             if (seg === '*') {
-                routes.any = handler
+                route.wildcard = handler
             } else if (seg[0] === ':') {
                 const param = seg.slice(1)
-                const r = routes.parameter.get(param) ?? this._newRoute()
+                const r = route.parameter.get(param) ?? this._newRoute()
                 this._add(segments.slice(1), handler, r)
-                routes.parameter.set(param, r)
+                route.parameter.set(param, r)
             } else {
-                const r = routes.static.get(seg) ?? this._newRoute()
+                const r = route.static.get(seg) ?? this._newRoute()
                 this._add(segments.slice(1), handler, r)
-                routes.static.set(seg, r)
+                route.static.set(seg, r)
             }
         }
+        return this
     }
-    protected _route(
+    add(segments: string[], handler: T): this {
+        return this._add(segments, handler, this._route)
+    }
+    private _lookup(
         segments: string[],
-        params: Params = new Map(),
-        routes: Route<T> = this._routes,
-    ): [T, Params] | null {
+        params: Map<string, string>,
+        route: Route<T>,
+    ): { handler: T | null; params: Map<string, string> } {
         if (segments.length === 0) {
-            if (routes.handler !== null) {
-                return [routes.handler, params]
+            if (route.handler !== null) {
+                return { handler: route.handler, params }
             }
         } else {
             const seg = segments[0]
             const subSeg = segments.slice(1)
 
-            const staticRoutes = routes.static.get(seg)
-            if (staticRoutes !== undefined) {
-                const matched = this._route(subSeg, params, staticRoutes)
-                if (matched !== null) return matched
+            const staticRoute = route.static.get(seg)
+            if (staticRoute !== undefined) {
+                const matched = this._lookup(subSeg, params, staticRoute)
+                if (matched.handler !== null) return matched
             }
 
             if (seg !== '') {
-                for (const [param, paramRouter] of routes.parameter) {
-                    const matched = this._route(subSeg, params, paramRouter)
-                    if (matched !== null) {
-                        params.set(param, seg)
+                for (const [param, paramRoute] of route.parameter) {
+                    const matched = this._lookup(subSeg, params, paramRoute)
+                    if (matched.handler !== null) {
+                        matched.params.set(param, seg)
                         return matched
                     }
                 }
             }
 
-            if (routes.any !== null) {
+            if (route.wildcard !== null) {
                 params.set('*', segments.join('/'))
-                return [routes.any, params]
+                return { handler: route.wildcard, params }
             }
         }
-        return null
+        return { handler: null, params }
+    }
+    lookup(segments: string[]) {
+        return this._lookup(segments, new Map(), this._route)
     }
 }
 
-export type Handler = (event: FetchEvent, params: Params) => Promise<Response>
-export class Router extends BaseRouter<Handler> {
+export type Handler = (
+    event: FetchEvent,
+    params: Map<string, string>,
+) => Promise<Response>
+export class WorkerRouter {
+    private _router: BaseRouter<Handler>
     constructor() {
-        super()
+        this._router = new BaseRouter<Handler>()
     }
 
-    private async defaultHandler(_event: FetchEvent, _params: Params) {
-        return new Response('Not Found', { status: 404 })
+    private async defaultHandler(
+        _event: FetchEvent,
+        _params: Map<string, string>,
+    ) {
+        return new Response('Handler Not Found', {
+            status: 404,
+            statusText: 'Not Found',
+        })
     }
     fallback(handler: Handler): this {
         this.defaultHandler = handler
@@ -128,7 +108,7 @@ export class Router extends BaseRouter<Handler> {
 
     add(method: string, pathname: string, handler: Handler): this {
         const segments = [method.toUpperCase(), ...pathname.split('/')]
-        super._add(segments, handler)
+        this._router.add(segments, handler)
         return this
     }
     all(pathname: string, handler: Handler): this {
@@ -157,11 +137,9 @@ export class Router extends BaseRouter<Handler> {
             request.method.toUpperCase(),
             ...url.pathname.split('/'),
         ]
-        const [handler, params] = super._route(segments) ?? [
-            this.defaultHandler,
-            new Map(),
-        ]
-        const resp = handler(event, params)
+        const matched = this._router.lookup(segments)
+        const handler = matched.handler ?? this.defaultHandler
+        const resp = handler(event, matched.params)
         return resp
     }
 }
