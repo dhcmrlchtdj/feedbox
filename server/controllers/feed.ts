@@ -3,6 +3,7 @@ import * as Boom from '@hapi/boom'
 import { model } from '../models'
 import { extractSite } from '../utils/extract-site'
 import { extractLinks } from '../utils/extract-link-from-opml'
+import { encodeHtmlEntities } from '../../util/html-entity'
 
 export const list = {
     async handler(request, _h) {
@@ -74,8 +75,8 @@ export const exportFeeds = {
         const feeds = await model.getFeedByUser(userId)
         const outlines = feeds
             .map((feed) => {
-                const text = extractSite(feed.url)
-                const xmlUrl = feed.url
+                const text = encodeHtmlEntities(extractSite(feed.url))
+                const xmlUrl = encodeHtmlEntities(feed.url)
                 return `<outline type="rss" text="${text}" xmlUrl="${xmlUrl}"/>`
             })
             .sort()

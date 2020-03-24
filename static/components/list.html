@@ -35,8 +35,12 @@
         <div class="tile">
             <div class="tile-content">
                 <div class="tile-title text-break">
-                    <a target="_blank" rel="noopener" href="{feed.url}">
-                        {feed.url}
+                    <a
+                        target="_blank"
+                        rel="noopener"
+                        href="{encodeHtmlEntities(feed.url)}"
+                    >
+                        {encodeHtmlEntities(feed.url)}
                     </a>
                 </div>
                 <div class="tile-subtitle text-gray">
@@ -65,6 +69,7 @@
 <script>
     import * as agent from '../utils/agent'
     import { format } from '../../util/format-date'
+    import { encodeHtmlEntities } from '../../util/html-entity'
 
     export let email = ''
     export let feeds = []
