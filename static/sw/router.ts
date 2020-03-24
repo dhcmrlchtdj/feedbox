@@ -2,7 +2,7 @@
 import App from '../components/app.html'
 import { WorkerRouter } from '../../util/router'
 import * as strategy from './strategy'
-import { version } from './version'
+import { CACHE_VERSION } from './version'
 
 const justStrategy = (
     name:
@@ -12,13 +12,13 @@ const justStrategy = (
         | 'networkFirst'
         | 'staleWhileRevalidate',
 ) => async (event: FetchEvent) => {
-    const cache = await caches.open(version)
+    const cache = await caches.open(CACHE_VERSION)
     const resp = await strategy[name](cache, event.request)
     return resp
 }
 
 const getThenUpdate = async (event: FetchEvent) => {
-    const cache = await caches.open(version)
+    const cache = await caches.open(CACHE_VERSION)
     const resp = await strategy.networkOnly(cache, event.request)
     if (resp.ok) cache.put('/api/v1/feeds', resp.clone())
     return resp
@@ -26,7 +26,7 @@ const getThenUpdate = async (event: FetchEvent) => {
 
 export const router = new WorkerRouter()
     .get('/', async (event) => {
-        const cache = await caches.open(version)
+        const cache = await caches.open(CACHE_VERSION)
         const resp = await strategy.cacheFirst(cache, event.request)
 
         return Promise.all([

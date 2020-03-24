@@ -1,3 +1,4 @@
 # git config filter.empty.smudge "cat"
 # git config filter.empty.clean "sed -n ''"
 dotenv filter=empty
+static/sw/version.ts ident
