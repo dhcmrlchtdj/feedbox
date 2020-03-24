@@ -4,7 +4,7 @@ import { WorkerRouter } from '../../util/router'
 import * as strategy from './strategy'
 import { CACHE_VERSION } from './version'
 
-const justStrategy = (
+const just = (
     name:
         | 'cacheOnly'
         | 'cacheFirst'
@@ -25,6 +25,8 @@ const getThenUpdate = async (event: FetchEvent) => {
 }
 
 export const router = new WorkerRouter()
+    .fallback(just('networkOnly'))
+    // homepage
     .get('/', async (event) => {
         const cache = await caches.open(CACHE_VERSION)
         const resp = await strategy.cacheFirst(cache, event.request)
@@ -63,9 +65,20 @@ export const router = new WorkerRouter()
                 return resp
             })
     })
+    // API
+    .get('/api/v1/feeds', just('staleWhileRevalidate'))
+    .get('/api/v1/user', just('staleWhileRevalidate'))
     .put('/api/v1/feeds/add', getThenUpdate)
     .delete('/api/v1/feeds/remove', getThenUpdate)
-    .get('/api/v1/user', justStrategy('staleWhileRevalidate'))
-    .get('/api/v1/feeds', justStrategy('staleWhileRevalidate'))
-    .get('/api/v1/feeds/export', justStrategy('networkOnly'))
-    .fallback(justStrategy('cacheFirst'))
+    // static
+    .get('/sw.js', just('networkOnly'))
+    .get('/favicon.ico', just('cacheFirst'))
+    .get('/npm/*', just('cacheFirst'))
+    .get('/:file', async (event, params) => {
+        const file = params.get('file')!
+        if (file.endsWith('.js')) {
+            return just('cacheFirst')(event)
+        } else {
+            return just('networkOnly')(event)
+        }
+    })
