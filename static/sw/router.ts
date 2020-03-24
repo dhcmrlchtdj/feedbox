@@ -74,7 +74,7 @@ export const router = new WorkerRouter()
     .get('/sw.js', just('networkOnly'))
     .get('/favicon.ico', just('cacheFirst'))
     .get('/npm/*', just('cacheFirst'))
-    .get('/:file', async (event, params) => {
+    .get('/:file', (event, params) => {
         const file = params.get('file')!
         if (file.endsWith('.js')) {
             return just('cacheFirst')(event)
