@@ -15,20 +15,21 @@ self.addEventListener('install', (event) => {
 
 self.addEventListener('activate', (event) => {
     console.log('[SW] activate | start', version)
-    const done = caches
-        .keys()
+    const done = self.clients
+        .claim()
+        .then(() => caches.keys())
         .then((keyList) => {
             const cs = keyList
                 .filter((key) => key !== version)
                 .map((key) => caches.delete(key))
             return Promise.all(cs)
         })
-        .then(() => self.clients.claim())
         .then(() => console.log('[SW] activate | done', version))
     event.waitUntil(done)
 })
 
 self.addEventListener('fetch', (event) => {
+    console.log('[SW] fetch', event.request.url)
     event.respondWith(router.route(event))
 })
 
@@ -43,7 +44,7 @@ self.addEventListener('message', (event) => {
                     cache.delete(`/api/v1/feeds`),
                 ]),
             )
-            .then(() => console.log('[SW] message | done'))
+            .then(() => console.log('[SW] message | done', event.data))
         event.waitUntil(done)
     }
 })
