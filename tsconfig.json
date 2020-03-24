@@ -8,6 +8,7 @@
         "esModuleInterop": true,
 
         "sourceMap": true,
+        "inlineSources": true,
         "importHelpers": true,
         "declaration": false,
         "noEmitOnError": false,
