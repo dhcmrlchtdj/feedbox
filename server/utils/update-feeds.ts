@@ -1,7 +1,7 @@
-import { model, FeedDoc } from '../models'
+import { model, Feed } from '../models'
 import { fetchFeed } from './fetch-feed'
 import { parseFeed, FeedItem } from './parse-feed'
-import { sendEmail } from './send-email'
+// import { sendEmail } from './send-email'
 import { extractSite } from './extract-site'
 import { Channel } from '../../util/sync'
 
@@ -18,55 +18,55 @@ type TEmail = {
 }
 
 export const updateFeeds = async () => {
-    const chFeedDoc = new Channel<FeedDoc>(Infinity)
-    const chFeedItem = new Channel<[FeedDoc, FeedItem]>(Infinity)
-    const chArticle = new Channel<[FeedDoc, TArticle]>(Infinity)
-    const chEmail = new Channel<[TEmail, number]>(Infinity)
+    const chFeedDoc = new Channel<Feed>(Infinity)
+    const chFeedItem = new Channel<[Feed, FeedItem]>(Infinity)
+    const chArticle = new Channel<[Feed, TArticle]>(Infinity)
+    const chEmail = new Channel<TEmail>(Infinity)
 
-    const feeds = await model.prepareFeedForUpdate()
+    const feeds = await model.getActiveFeeds()
     chFeedDoc.sendAll(feeds).then(() => chFeedDoc.close())
 
-    // feed doc => DB feed updated_at
-    // feed doc => feed item
+    // feed => update database
+    // feed => feed item
     chFeedDoc
         .onReceive(10, async (doc) => {
             const url = doc.url
             const resp = await fetchFeed(url)
             if (resp.isNone) return
             const items = await parseFeed(url, resp.getExn())
+            if (items.length === 0) return
 
-            // updated_at
-            if (items.length > 0) {
-                const first = items[0]
-                const dateSrc = first.date || first.meta.date || null
-                if (dateSrc !== null) {
-                    try {
-                        const date = new Date(dateSrc)
-                        await model.updateFeedUpdated(doc.id, date)
-                    } catch (err) {
-                        console.error(err)
-                    }
-                } else {
-                    const link = first.origlink || first.link || first.guid
-                    if (!doc.links.has(link)) {
-                        await model.updateFeedUpdated(doc.id, new Date())
-                    }
-                }
-            }
-
+            const linkSet = new Set<string>(doc.links)
             for (const item of items) {
+                const link = item.origlink || item.link || item.guid
+                if (linkSet.has(link)) continue
+                linkSet.add(link)
                 await chFeedItem.send([doc, item])
+            }
+            if (linkSet.size > doc.links.length) {
+                const links = Array.from(linkSet)
+                const updated = (() => {
+                    const first = items[0]
+                    const dateSrc = first.date || first.meta.date || null
+                    if (dateSrc !== null) {
+                        try {
+                            const date = new Date(dateSrc)
+                            return date
+                        } catch (err) {
+                            console.error(err)
+                        }
+                    }
+                    return new Date()
+                })()
+                await model.updateFeed(doc.id, links, updated)
             }
         })
         .then(() => chFeedItem.close())
 
     // feed item => article
-    // feed item => save link to DB
     chFeedItem
         .onReceive(20, async ([doc, item]) => {
             const link = item.origlink || item.link || item.guid
-            if (doc.links.has(link)) return
-
             const title = item.title || 'unknown'
             const site = extractSite(doc.url)
             const content = item.description || item.summary || 'unknown'
@@ -77,41 +77,25 @@ export const updateFeeds = async () => {
             }
 
             await chArticle.send([doc, article])
-            await model.addLink(doc.id, link)
         })
         .then(() => chArticle.close())
 
     // article => email
     chArticle
         .onReceive(20, async ([doc, article]) => {
-            const emails: [TEmail, number][] = doc.emails.map((addr) => [
-                {
-                    addr,
-                    subject: article.title,
-                    text: article.content,
-                },
-                0,
-            ])
+            const users = await model.getSubscribers(doc.id)
+            const emails: TEmail[] = users.map((user) => ({
+                addr: user.email,
+                subject: article.title,
+                text: article.content,
+            }))
             chEmail.sendAll(emails)
         })
         .then(() => chEmail.close())
 
     // email => send it
-    await chEmail.onReceive(10, async ([email, retry]) => {
-        if (retry < 3) {
-            const success = await sendEmail(
-                email.addr,
-                email.subject,
-                email.text,
-            )
-            if (success) {
-                return
-            } else {
-                // retry
-                chEmail.send([email, retry + 1])
-            }
-        } else {
-            return
-        }
+    await chEmail.onReceive(10, async (email) => {
+        console.log(email)
+        // await sendEmail(email.addr, email.subject, email.text)
     })
 }

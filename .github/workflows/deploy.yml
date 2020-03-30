@@ -8,6 +8,18 @@ on:
 jobs:
     heroku:
         runs-on: ubuntu-18.04
+        services:
+            postgres:
+                image: postgres
+                env:
+                    POSTGRES_USER: user
+                    POSTGRES_PASSWORD: password
+                    POSTGRES_DB: feedbox
+                options: >-
+                    --health-cmd pg_isready
+                    --health-interval 10s
+                    --health-timeout 5s
+                    --health-retries 5
         steps:
             - uses: actions/checkout@v2.0.0
             - uses: actions/setup-node@v1.1.0
@@ -26,15 +38,15 @@ jobs:
               env:
                   NODE_ENV: 'development'
                   SERVER: 'http://localhost:8000'
-                  COOKIE_SECRET: "crypto.randomBytes(2).toString('hex')"
-                  GITHUB_AUTH_SECRET: "crypto.randomBytes(2).toString('hex')"
+                  COOKIE_SECRET: 'crypto.randomBytes(2).toString("hex")'
+                  GITHUB_AUTH_SECRET: 'crypto.randomBytes(2).toString("hex")'
                   GITHUB_CLIENT_ID: 'https://github.com/settings/developers'
                   GITHUB_CLIENT_SECRET: 'https://github.com/settings/developers'
                   MAILGUN_API_KEY: 'key-example'
                   MAILGUN_DOMAIN: 'feedbox.example.com'
                   MAILGUN_FROM: 'feedbox <feedbox@example.com>'
                   ROLLBAR_TOKEN: 'https://rollbar.com'
-                  DATABASE_URL: 'postgres://example'
+                  DATABASE_URL: 'postgres://user:password@localhost:5432/feedbox'
             - uses: codecov/codecov-action@v1.0.5
               with:
                   token: ${{ secrets.CODECOV_TOKEN }}

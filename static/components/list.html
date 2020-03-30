@@ -44,7 +44,7 @@
                     </a>
                 </div>
                 <div class="tile-subtitle text-gray">
-                    <span>updated @ {format(feed.updated)}</span>
+                    <span>updated @ {formatDate(feed.updated)}</span>
                 </div>
             </div>
             <div class="tile-action">
@@ -76,6 +76,11 @@
 
     let addLoading = false
     let addUrl = ''
+
+    const formatDate = (date) => {
+        if (date === null) return 'never'
+        return format(date)
+    }
 
     const alertThenReload = () => {
         window.alert(err.message)

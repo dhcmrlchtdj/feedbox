@@ -65,40 +65,37 @@ Array [
 ]
 `;
 
-exports[`model prepareFeedForUpdate 1`] = `
+exports[`model getActiveFeeds 1`] = `
 Array [
   Object {
-    "emails": Array [
-      "user@example.com",
-    ],
     "id": 2,
-    "links": Set {},
+    "links": Array [],
     "updated": null,
     "url": "https://example.com/rss2",
   },
   Object {
-    "emails": Array [
-      "user@example.com",
-    ],
     "id": 3,
-    "links": Set {},
-    "updated": null,
+    "links": Array [
+      "feed1",
+      "feed2",
+    ],
+    "updated": 2020-02-02T00:00:00.000Z,
     "url": "https://example.com/rss3",
   },
 ]
 `;
 
-exports[`model updateFeedUpdated 1`] = `
+exports[`model updateFeed 1`] = `
 Array [
-  Object {
-    "id": 3,
-    "updated": 1580601600000,
-    "url": "https://example.com/rss3",
-  },
   Object {
     "id": 2,
     "updated": null,
     "url": "https://example.com/rss2",
+  },
+  Object {
+    "id": 3,
+    "updated": 2020-02-02T00:00:00.000Z,
+    "url": "https://example.com/rss3",
   },
 ]
 `;

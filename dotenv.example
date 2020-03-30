@@ -13,4 +13,4 @@ MAILGUN_FROM="feedbox <feedbox@example.com>"
 
 ROLLBAR_TOKEN="https://rollbar.com"
 
-DATABASE_URL="postgres://example"
+DATABASE_URL="postgres://user:password@localhost:5432/feedbox"

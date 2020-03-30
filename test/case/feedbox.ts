@@ -117,13 +117,13 @@ describe('feed API', () => {
 })
 
 describe('model', () => {
-    test('prepareFeedForUpdate', async () => {
-        const feed = await model.prepareFeedForUpdate()
-        expect(feed).toMatchSnapshot()
-    })
-    test('updateFeedUpdated', async () => {
-        await model.updateFeedUpdated(3, new Date(1580601600000))
+    test('updateFeed', async () => {
+        await model.updateFeed(3, ['feed1', 'feed2'], new Date(1580601600000))
         const curr = await model.getFeedByUser(1)
         expect(curr).toMatchSnapshot()
+    })
+    test('getActiveFeeds', async () => {
+        const feed = await model.getActiveFeeds()
+        expect(feed).toMatchSnapshot()
     })
 })

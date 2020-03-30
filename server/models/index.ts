@@ -85,54 +85,44 @@ export const model = {
         return r
     },
 
-    async prepareFeedForUpdate(): Promise<FeedDoc[]> {
+    async getActiveFeeds(): Promise<Feed[]> {
         const feeds = await conn()
             .select(
                 'feedbox_feed.id as id',
                 'feedbox_feed.url as url',
+                'feedbox_feed.links as links',
                 'feedbox_feed.updated as updated',
+            )
+            .from('feedbox_feed')
+            .innerJoin(
+                'feedbox_r_user_feed',
+                'feedbox_r_user_feed.feed_id',
+                'feedbox_feed.id',
+            )
+        return feeds
+    },
+
+    async getSubscribers(id: number): Promise<User[]> {
+        const users = await conn()
+            .select(
+                'feedbox_user.id as id',
+                'feedbox_user.github_id as githubId',
                 'feedbox_user.email as email',
             )
-            .from('feedbox_r_user_feed')
+            .from('feedbox_user')
             .innerJoin(
-                'feedbox_feed',
-                'feedbox_feed.id',
-                'feedbox_r_user_feed.feed_id',
-            )
-            .innerJoin(
-                'feedbox_user',
-                'feedbox_user.id',
+                'feedbox_r_user_feed',
                 'feedbox_r_user_feed.user_id',
+                'feedbox_user.id',
             )
-        const map = new Map<number, FeedDoc>()
-        feeds.forEach(({ id, url, updated, email }) => {
-            const v = map.get(id) ?? {
-                id,
-                url,
-                updated,
-                emails: [] as string[],
-                links: new Set(),
-            }
-            v.emails.push(email)
-            map.set(id, v)
-        })
-        const links = await conn()
-            .select('feed_id', 'url')
-            .from('feedbox_link')
-            .whereIn('feed_id', Array.from(map.keys()))
-        links.forEach(({ feed_id, url }) => {
-            const v = map.get(feed_id)!
-            v.links.add(url)
-        })
-        return Array.from(map.values())
+            .where({ 'feedbox_r_user_feed.feed_id': id })
+        return users
     },
 
-    async addLink(feed_id: number, url: string) {
-        await conn().insert({ feed_id, url }).into('feedbox_link')
-    },
-
-    async updateFeedUpdated(id: number, updated: Date) {
-        await conn()('feedbox_feed').where({ id }).update({ updated })
+    async updateFeed(id: number, links: string[], updated: Date) {
+        await conn()('feedbox_feed')
+            .where({ id })
+            .update({ links: JSON.stringify(links), updated })
     },
 
     async subscribe(user_id: number, feed_id: number) {
@@ -184,23 +174,10 @@ export interface Feed {
     id: number
     url: string
     updated: number | null
-}
-
-export interface Link {
-    id: number
-    url: string
-    feed_id: number
+    links: string[]
 }
 
 export interface RUserFeed {
     user_id: number
     feed_id: number
-}
-
-export interface FeedDoc {
-    id: number
-    url: string
-    updated: number | null
-    emails: string[]
-    links: Set<string>
 }

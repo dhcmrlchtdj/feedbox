@@ -1,30 +1,15 @@
 import * as path from 'path'
 
-const prod = process.env.NODE_ENV === 'production'
-
-const common = {
+export const config = {
     debug: process.env.DEBUG_SQL === 'true',
     migrations: {
         directory: path.resolve(__dirname, '../../migrations'),
         tableName: 'knex_migrations',
     },
-}
-
-const sqlite3 = {
-    client: 'sqlite3',
-    connection: {
-        filename: path.resolve(__dirname, './feedbox.sqlite'),
-    },
-    useNullAsDefault: true,
-}
-
-const pg = {
     client: 'pg',
-    connection: `${process.env.DATABASE_URL}?ssl=true`,
+    connection: process.env.DATABASE_URL,
     pool: { min: 2, max: 20 },
 }
 
-export const production = Object.assign({}, common, pg)
-export const development = Object.assign({}, common, sqlite3)
-export const config = prod ? production : development
-export default config
+export const production = config
+export const development = config
