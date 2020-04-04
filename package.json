@@ -30,7 +30,7 @@
         "dotenv-safe": "8.2.0",
         "fast-xml-parser": "3.16.0",
         "feedparser": "2.2.9",
-        "hapi-pino": "6.5.0",
+        "hapi-pino": "7.0.0",
         "iconv-lite": "0.5.1",
         "jschardet": "2.1.1",
         "knex": "0.20.11",
