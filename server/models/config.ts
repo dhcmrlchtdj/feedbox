@@ -8,7 +8,7 @@ export const config = {
     },
     client: 'pg',
     connection: process.env.DATABASE_URL,
-    pool: { min: 2, max: 20 },
+    pool: { min: 2, max: 10 },
 }
 
 export const production = config

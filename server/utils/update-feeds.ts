@@ -65,7 +65,7 @@ export const updateFeeds = async () => {
 
     // feed item => article
     chFeedItem
-        .onReceive(20, async ([doc, item]) => {
+        .onReceive(10, async ([doc, item]) => {
             const link = item.origlink || item.link || item.guid
             const title = item.title || 'unknown'
             const site = extractSite(doc.url)
@@ -82,7 +82,7 @@ export const updateFeeds = async () => {
 
     // article => email
     chArticle
-        .onReceive(20, async ([doc, article]) => {
+        .onReceive(10, async ([doc, article]) => {
             const users = await model.getSubscribers(doc.id)
             const emails: TEmail[] = users.map((user) => ({
                 addr: user.email,
@@ -95,7 +95,7 @@ export const updateFeeds = async () => {
 
     // email => send it
     await chEmail.onReceive(10, async (email) => {
-        console.log(email.text)
+        console.log(email.subject)
         // await sendEmail(email.addr, email.subject, email.text)
     })
 }
