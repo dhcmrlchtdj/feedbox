@@ -11,7 +11,7 @@ export const fetchFeed = async (feedurl: string): Promise<Option<string>> => {
         .then(async (resp) => {
             if (!resp.ok) throw new Error(resp.status.toString())
             const buf = await resp.buffer()
-            const encoding = chardet.detect(buf).encoding
+            const encoding = chardet.detect(buf).encoding || 'utf8'
             if (encoding === 'utf8') {
                 return Some(buf.toString())
             } else {
