@@ -168,6 +168,7 @@ export class Channel<T> {
     }
     close() {
         this.closed = true
+        this.cond.broadcast()
     }
     isClosed(): boolean {
         return this.closed

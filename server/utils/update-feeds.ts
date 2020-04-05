@@ -95,7 +95,7 @@ export const updateFeeds = async () => {
 
     // email => send it
     await chEmail.onReceive(10, async (email) => {
-        console.log(email)
+        console.log(email.text)
         // await sendEmail(email.addr, email.subject, email.text)
     })
 }
