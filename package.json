@@ -55,7 +55,7 @@
         "form-data": "3.0.0",
         "jest": "25.2.7",
         "nodemon": "2.0.2",
-        "prettier": "2.0.2",
+        "prettier": "2.0.3",
         "rollup": "2.3.3",
         "rollup-plugin-svelte": "5.2.1",
         "rollup-plugin-terser": "5.3.0",
