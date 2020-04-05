@@ -32,6 +32,21 @@ const genNoCache = (filename: string, forcePath?: string) => {
 }
 
 export const staticFiles = [
+    {
+        path: '/robots.txt',
+        method: 'get',
+        options: {
+            auth: false,
+            // max-age=86400, must-revalidate
+            cache: { expiresIn: 24 * 60 * 60 * 1000 },
+            async handler(_request, h) {
+                return h
+                    .response('User-agent: *')
+                    .etag('7e49dfd97319f5dd7cdaea8518cf43e0e8d01e5a-sha1')
+            },
+        },
+    },
+
     genNoCache('index.html', '/'),
     genNoCache('index.html'),
     genNoCache('sw.js'),
