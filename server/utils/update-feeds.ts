@@ -1,7 +1,7 @@
 import { model, Feed } from '../models'
 import { fetchFeed } from './fetch-feed'
 import { parseFeed, FeedItem } from './parse-feed'
-// import { sendEmail } from './send-email'
+import { sendEmail } from './send-email'
 import { extractSite } from './extract-site'
 import { Channel } from '../../util/sync'
 
@@ -95,7 +95,6 @@ export const updateFeeds = async () => {
 
     // email => send it
     await chEmail.onReceive(10, async (email) => {
-        console.log(email.subject)
-        // await sendEmail(email.addr, email.subject, email.text)
+        await sendEmail(email.addr, email.subject, email.text)
     })
 }
