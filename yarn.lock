@@ -1339,6 +1339,11 @@ chalk@^3.0.0:
     ansi-styles "^4.1.0"
     supports-color "^7.1.0"
 
+chardet@1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/chardet/-/chardet-1.0.0.tgz#65ba4e0ceed0434be13ceb20cc4ff4925981ae55"
+  integrity sha512-sRgcGMB9CDh4AnAELRZ0++YGu2W6MOx0gyNliIQddywtvIBXuA83ePfgyszHkrWI9dOuz51WyfC6lCizS4arpg==
+
 chokidar@^3.2.2:
   version "3.3.1"
   resolved "https://registry.yarnpkg.com/chokidar/-/chokidar-3.3.1.tgz#c84e5b3d18d9a4d77558fef466b1bf16bbeb3450"
@@ -3160,11 +3165,6 @@ jsbn@~0.1.0:
   version "0.1.1"
   resolved "https://registry.yarnpkg.com/jsbn/-/jsbn-0.1.1.tgz#a5e654c2e5a2deb5f201d96cefbca80c0ef2f513"
   integrity sha1-peZUwuWi3rXyAdls77yoDA7y9RM=
-
-jschardet@2.1.1:
-  version "2.1.1"
-  resolved "https://registry.yarnpkg.com/jschardet/-/jschardet-2.1.1.tgz#af6f8fd0b3b0f5d46a8fd9614a4fce490575c184"
-  integrity sha512-pA5qG9Zwm8CBpGlK/lo2GE9jPxwqRgMV7Lzc/1iaPccw6v4Rhj8Zg2BTyrdmHmxlJojnbLupLeRnaPLsq03x6Q==
 
 jsdom@^15.2.1:
   version "15.2.1"
