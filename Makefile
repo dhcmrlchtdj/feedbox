@@ -6,9 +6,12 @@ build:
 	rollup -c
 
 release: clean
-	$(MAKE) build migrate_latest
+	$(MAKE) build migrate
 
-migrate_latest: build
+start:
+	node ./_build/bin/server.js
+
+migrate: build
 	knex --knexfile=./_build/server/models/config.js migrate:latest
 
 dev:
@@ -27,6 +30,7 @@ fmt:
 	prettier --write .
 
 clean:
+	-knex --knexfile=./_build/server/models/config.js migrate:rollback --all
 	rm -rf ./_build
 
 .PHONY: build release migrate_latest dev test test_update fmt clean

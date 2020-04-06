@@ -5,7 +5,6 @@ import { lazy } from '../../util/lazy'
 const conn = lazy(() => Knex(config))
 
 export const model = {
-    async init() {},
     async destroy() {
         await conn().destroy()
     },

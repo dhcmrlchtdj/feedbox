@@ -1,13 +1,11 @@
+import './init-env'
 import * as path from 'path'
 import * as Hapi from '@hapi/hapi'
 import { addPlugins } from './plugins'
 import { routes } from './routes'
-import { prepare } from './prepare'
 import { model } from './models'
 
 const common = async () => {
-    await prepare()
-
     const server = Hapi.server({
         port: Number(process.env.PORT || 8000),
         host: '0.0.0.0',

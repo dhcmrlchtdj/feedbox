@@ -1,3 +1,4 @@
+import '../init-env'
 import * as path from 'path'
 
 export const config = {

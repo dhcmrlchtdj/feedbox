@@ -6,7 +6,7 @@
     "author": "h11 <nirisix@gmail.com>",
     "license": "UNLICENSED",
     "scripts": {
-        "start": "node ./_build/bin/server.js",
+        "start": "make start",
         "build": "make release"
     },
     "engines": {
