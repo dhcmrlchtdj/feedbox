@@ -1,4 +1,6 @@
-export async function cacheOnly(cache: Cache, req: Request | string) {
+type strategy = (cache: Cache, req: Request | string) => Promise<Response>
+
+export const cacheOnly: strategy = async (cache, req) => {
     const m = await cache.match(req)
     if (m) return m
     return new Response('Cache Not Found', {
@@ -7,7 +9,7 @@ export async function cacheOnly(cache: Cache, req: Request | string) {
     })
 }
 
-export async function cacheFirst(cache: Cache, req: Request | string) {
+export const cacheFirst: strategy = async (cache, req) => {
     const cached = await cache.match(req)
     if (cached) return cached
     const fetched = fetch(req).then((resp) => {
@@ -21,11 +23,11 @@ export async function cacheFirst(cache: Cache, req: Request | string) {
     return fetched
 }
 
-export async function networkOnly(_cache: Cache, req: Request | string) {
+export const networkOnly: strategy = async (_cache, req) => {
     return fetch(req)
 }
 
-export async function networkFirst(cache: Cache, req: Request | string) {
+export const networkFirst: strategy = async (cache, req) => {
     const cached = cache.match(req)
     const fetched = fetch(req).then((resp) => {
         if (resp.ok) {
@@ -43,10 +45,7 @@ export async function networkFirst(cache: Cache, req: Request | string) {
     return resp
 }
 
-export async function staleWhileRevalidate(
-    cache: Cache,
-    req: Request | string,
-) {
+export const staleWhileRevalidate: strategy = async (cache, req) => {
     const fetched = fetch(req).then((resp) => {
         if (resp.ok) {
             cache.put(req, resp.clone())
