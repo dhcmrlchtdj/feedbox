@@ -54,7 +54,7 @@
         "dotenv-safe": "8.2.0",
         "form-data": "3.0.0",
         "jest": "25.2.7",
-        "nodemon": "2.0.2",
+        "nodemon": "2.0.3",
         "prettier": "2.0.2",
         "rollup": "2.3.3",
         "rollup-plugin-svelte": "5.2.1",
