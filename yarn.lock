@@ -201,10 +201,10 @@
   resolved "https://registry.yarnpkg.com/@bcoe/v8-coverage/-/v8-coverage-0.2.3.tgz#75a2e8b51cb758a7553d6804a5932d7aace75c39"
   integrity sha512-0hYQ8SB4Db5zvZB4axdMHGwEaQjkZzFjQiN9LVYvIFB2nSUHW9tYpxWriPrWDASIxiaXax83REcLxuSdnGPZtw==
 
-"@cloudflare/workers-types@1.0.7":
-  version "1.0.7"
-  resolved "https://registry.yarnpkg.com/@cloudflare/workers-types/-/workers-types-1.0.7.tgz#3d21765eeeb6698c6db6700e2c8c5596881a1ddd"
-  integrity sha512-CuBeUSdOmE8h8HA7Rlc7852rwgBueQcQidWyN+MFGhfikzmLH/yodsbhVRfUqvlm7e0M0S5gzPs6qMnqUmqxeg==
+"@cloudflare/workers-types@1.0.8":
+  version "1.0.8"
+  resolved "https://registry.yarnpkg.com/@cloudflare/workers-types/-/workers-types-1.0.8.tgz#90419969166392ae45b63665dbb3c0bfde11b2f8"
+  integrity sha512-mHH9S6Ivv5cNNrMxYugloCI9Axjop+0DnPa91RlWkiZTLp3UcdMr7T/olxlq1o/EQckvbGDYXNO7B4AL15xfEA==
 
 "@cnakazawa/watch@^1.0.3":
   version "1.0.4"
