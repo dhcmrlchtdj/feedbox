@@ -1,182 +1,216 @@
-import Knex from 'knex'
-import { config } from './config'
-import { lazy } from '../../util/lazy'
-
-const conn = lazy(() => Knex(config))
+import { db } from './connection'
 
 export const model = {
     async destroy() {
-        await conn().destroy()
+        db.$pool.end()
     },
 
     async getUserById(id: number): Promise<User | null> {
-        const r = await conn()
-            .select('id', 'github_id as githubId', 'email')
-            .from('feedbox_user')
-            .where({ id })
-        if (r.length > 0) {
-            return r[0]
-        } else {
-            return null
-        }
+        const user = await db.oneOrNone<User>(
+            `SELECT id, type, info
+            FROM users
+            WHERE id = $1`,
+            id,
+        )
+        return user
     },
 
-    async getUserIdByGithub(
-        github_id: number,
+    async getOrCreateUserByGithub(
+        githubId: number,
         email: string,
-    ): Promise<number | null> {
-        const tnx = await conn().transaction()
-        try {
-            await tnx.raw(
-                `INSERT INTO feedbox_user(github_id,email) VALUES(?,?)
-                ON CONFLICT(github_id) DO UPDATE SET email=?`,
-                [github_id, email, email],
-            )
-            const r = await tnx
-                .select('id')
-                .from('feedbox_user')
-                .where({ email })
-            await tnx.commit()
-            return r[0].id
-        } catch (err) {
-            await tnx.rollback(err)
-            return null
-        }
+    ): Promise<User> {
+        const user = await db.one<GithubUser>(
+            `INSERT INTO users(type, info)
+             VALUES ('github', $1)
+             ON CONFLICT((info->>'githubId')) DO UPDATE SET info = $1
+             RETURNING id, type, info`,
+            [{ githubId, email }],
+        )
+        return user
     },
 
-    async getFeedIdByUrl(url: string): Promise<number | null> {
-        const tnx = await conn().transaction()
-        try {
-            await tnx.raw(
-                `INSERT INTO feedbox_feed(url) VALUES(?)
-                ON CONFLICT DO NOTHING`,
+    async getOrCreateUserByTelegram(chatId: number): Promise<User> {
+        const user = await db.tx(async (t) => {
+            let user = await t.oneOrNone<TelegramUser>(
+                `SELECT id, type, info
+                FROM users
+                WHERE type = 'telegram'
+                AND info->>'chatId' = $1`,
+                [String(chatId)],
+            )
+            if (user === null) {
+                user = await t.one<TelegramUser>(
+                    `INSERT INTO users(type, info)
+                    VALUES ('telegram', $1)
+                    RETURNING id, type, info`,
+                    [{ chatId }],
+                )
+            }
+            return user
+        })
+        return user
+    },
+
+    async getFeedIdByUrl(url: string): Promise<number> {
+        const id = await db.tx(async (t) => {
+            let feed = await t.oneOrNone<{ id: number }>(
+                `SELECT id
+                FROM feeds
+                WHERE url = $1`,
                 [url],
             )
-            const r = await tnx.select('id').from('feedbox_feed').where({ url })
-            await tnx.commit()
-            return r[0].id
-        } catch (err) {
-            await tnx.rollback(err)
-            return null
-        }
+            if (feed === null) {
+                feed = await t.one<{ id: number }>(
+                    `INSERT INTO feeds(url) VALUES ($1) RETURNING id`,
+                    [url],
+                )
+            }
+            return feed.id
+        })
+        return id
     },
 
     async getFeedByUser(userId: number): Promise<Feed[]> {
-        const r = await conn()
-            .select(
-                'feedbox_feed.id as id',
-                'feedbox_feed.url as url',
-                'feedbox_feed.updated as updated',
-            )
-            .from('feedbox_r_user_feed')
-            .innerJoin(
-                'feedbox_user',
-                'feedbox_user.id',
-                'feedbox_r_user_feed.user_id',
-            )
-            .innerJoin(
-                'feedbox_feed',
-                'feedbox_feed.id',
-                'feedbox_r_user_feed.feed_id',
-            )
-            .where('feedbox_user.id', userId)
-            .orderBy('feedbox_feed.updated', 'desc')
-        return r
-    },
-
-    async getActiveFeeds(): Promise<Feed[]> {
-        const feeds = await conn()
-            .select(
-                'feedbox_feed.id as id',
-                'feedbox_feed.url as url',
-                'feedbox_feed.links as links',
-                'feedbox_feed.updated as updated',
-            )
-            .from('feedbox_feed')
-            .innerJoin(
-                'feedbox_r_user_feed',
-                'feedbox_r_user_feed.feed_id',
-                'feedbox_feed.id',
-            )
+        const feeds = await db.manyOrNone<Feed>(
+            `SELECT
+                feeds.id AS id,
+                feeds.url AS url,
+                feeds.updated AS updated
+            FROM r_user_feed AS r
+            JOIN feeds ON r.feed_id = feeds.id
+            JOIN users ON r.user_id = users.id
+            WHERE users.id = $1
+            ORDER BY feeds.updated DESC`,
+            [userId],
+        )
         return feeds
     },
 
-    async getSubscribers(id: number): Promise<User[]> {
-        const users = await conn()
-            .select(
-                'feedbox_user.id as id',
-                'feedbox_user.github_id as githubId',
-                'feedbox_user.email as email',
-            )
-            .from('feedbox_user')
-            .innerJoin(
-                'feedbox_r_user_feed',
-                'feedbox_r_user_feed.user_id',
-                'feedbox_user.id',
-            )
-            .where({ 'feedbox_r_user_feed.feed_id': id })
-        return users
-    },
-
     async updateFeed(id: number, links: string[], updated: Date) {
-        await conn()('feedbox_feed')
-            .where({ id })
-            .update({ links: JSON.stringify(links), updated })
-    },
-
-    async subscribe(user_id: number, feed_id: number) {
-        await conn().raw(
-            `INSERT INTO feedbox_r_user_feed(user_id, feed_id) VALUES(?,?)
-            ON CONFLICT DO NOTHING`,
-            [user_id, feed_id],
+        await db.none(
+            `UPDATE feeds
+            SET links = $1, updated = $2
+            WHERE id = $3`,
+            [JSON.stringify(links), updated, id],
         )
     },
 
-    async unsubscribe(user_id: number, feed_id: number) {
-        await conn()
-            .from('feedbox_r_user_feed')
-            .where({ user_id, feed_id })
-            .del()
+    async getActiveFeeds(): Promise<Feed[]> {
+        const feeds = await db.manyOrNone<Feed>(
+            `SELECT
+                feeds.id AS id,
+                feeds.url AS url,
+                feeds.updated AS updated
+            FROM feeds
+            JOIN r_user_feed r ON r.feed_id = feeds.id`,
+        )
+        return feeds
     },
 
-    async subscribeUrls(user_id: number, urls: string[]) {
+    async getLinks(feedId: number): Promise<string[]> {
+        const feed = await db.one<{ links: string[] }>(
+            `SELECT links
+            FROM feeds
+            WHERE id = $1`,
+            [feedId],
+        )
+        return feed.links
+    },
+
+    async getSubscribers(feedId: number): Promise<User[]> {
+        const users = await db.manyOrNone<User>(
+            `SELECT
+                users.id AS id,
+                users.type AS type,
+                users.info AS info
+            FROM users
+            JOIN r_user_feed r ON r.user_id = users.id
+            WHERE r.feed_id = $1`,
+            feedId,
+        )
+        return users
+    },
+
+    async subscribe(userId: number, feedId: number) {
+        await db.none(
+            `INSERT INTO r_user_feed(user_id, feed_id)
+            VALUES ($1, $2)
+            ON CONFLICT DO NOTHING`,
+            [userId, feedId],
+        )
+    },
+
+    async unsubscribe(userId: number, feedId: number) {
+        await db.none(
+            `DELETE FROM r_user_feed
+            WHERE user_id = $1
+            AND feed_id = $2`,
+            [userId, feedId],
+        )
+    },
+
+    async subscribeUrls(userId: number, urls: string[]) {
         if (urls.length === 0) return
-        const qvalue = urls.map((_) => '(?)').join(',')
-        const qrange = urls.map((_) => '?').join(',')
-        const tnx = await conn().transaction()
-        try {
-            await tnx.raw(
-                `INSERT INTO feedbox_feed(url) VALUES ${qvalue}
+        await db.tx(async (t) => {
+            const fvalues = urls.map((_, idx) => `(\$${idx + 1})`).join(', ')
+            await t.none(
+                `INSERT INTO feeds(url) VALUES ${fvalues}
                 ON CONFLICT DO NOTHING`,
                 urls,
             )
-            await tnx.raw(
-                `INSERT INTO feedbox_r_user_feed(user_id, feed_id)
-                SELECT ?, feedbox_feed.id FROM feedbox_feed WHERE feedbox_feed.url in (${qrange})
-                ON CONFLICT DO NOTHING`,
-                [user_id, ...urls],
+
+            const ivalues = urls.map((_, idx) => `\$${idx + 1}`).join(', ')
+            const idObjs = await t.many(
+                `SELECT id FROM feeds
+                WHERE url IN (${ivalues})`,
+                urls,
             )
-            await tnx.commit()
-        } catch (err) {
-            await tnx.rollback(err)
-        }
+            const ids = idObjs.map((x) => x.id)
+
+            const rvalues = urls
+                .map((_, idx) => `(${userId}, \$${idx + 1})`)
+                .join(', ')
+            await t.none(
+                `INSERT INTO r_user_feed(user_id, feed_id)
+                VALUES ${rvalues}
+                ON CONFLICT DO NOTHING`,
+                ids,
+            )
+        })
+    },
+
+    async unsubscribeUrls(userId: number, urls: string[]) {
+        if (urls.length === 0) return
+        const uvalues = urls.map((_, idx) => `\$${idx + 2}`).join(', ')
+        await db.none(
+            `DELETE FROM r_user_feed
+            WHERE user_id = $1
+            AND feed_id IN
+                (SELECT id FROM feeds WHERE url in (${uvalues}))`,
+            [userId, ...urls],
+        )
     },
 }
 
-export interface User {
+export type GithubUser = {
     id: number
-    github_id: number
-    email: string
+    type: 'github'
+    info: {
+        githubId: number
+        email: string
+    }
 }
+export type TelegramUser = {
+    id: number
+    type: 'telegram'
+    info: {
+        chatId: number
+    }
+}
+export type User = GithubUser | TelegramUser
 
-export interface Feed {
+export type Feed = {
     id: number
     url: string
     updated: number | null
-    links: string[]
-}
-
-export interface RUserFeed {
-    user_id: number
-    feed_id: number
 }

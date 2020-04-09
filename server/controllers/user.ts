@@ -34,10 +34,13 @@ export const connectGithub = {
             if (!github.email) {
                 github.email = await getGithubEmail(credentials.token)
             }
-            const id = await model.getUserIdByGithub(github.id, github.email)
+            const user = await model.getOrCreateUserByGithub(
+                github.id,
+                github.email,
+            )
 
             // set cookie
-            request.session.set({ id, ts: Date.now() })
+            request.session.set({ id: user.id, ts: Date.now() })
 
             // redirect to home
             return h.redirect(process.env.SERVER)

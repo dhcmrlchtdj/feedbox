@@ -2,6 +2,7 @@ import * as Feed from './controllers/feed'
 import * as User from './controllers/user'
 import * as Helper from './controllers/helper'
 import { staticFiles } from './controllers/static'
+import * as TG from './controllers/telegram'
 
 export const routes = [
     { path: '/api/v1/feeds', method: 'get', options: Feed.list },
@@ -13,6 +14,12 @@ export const routes = [
     { path: '/api/v1/user', method: 'get', options: User.info },
     { path: '/api/logout', method: 'get', options: User.logout },
     { path: '/api/connect/github', method: 'get', options: User.connectGithub },
+
+    {
+        path: `/webhook/telegram/${process.env.TELEGRAM_WEBHOOK_PATH}`,
+        method: 'post',
+        options: TG.webhook,
+    },
 
     process.env.NODE_ENV !== 'production' && {
         path: '/api/v1/helper/feed-preview',

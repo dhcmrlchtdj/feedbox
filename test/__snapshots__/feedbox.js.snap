@@ -69,16 +69,76 @@ exports[`model getActiveFeeds 1`] = `
 Array [
   Object {
     "id": 2,
-    "links": Array [],
     "updated": null,
     "url": "https://example.com/rss2",
   },
   Object {
     "id": 3,
-    "links": Array [
-      "feed1",
-      "feed2",
-    ],
+    "updated": 2020-02-02T00:00:00.000Z,
+    "url": "https://example.com/rss3",
+  },
+]
+`;
+
+exports[`model getLinks 1`] = `
+Array [
+  "feed1",
+  "feed2",
+]
+`;
+
+exports[`model getSubscribers 1`] = `
+Array [
+  Object {
+    "id": 1,
+    "info": Object {
+      "email": "user@example.com",
+      "githubId": 1,
+    },
+    "type": "github",
+  },
+]
+`;
+
+exports[`model subscriberUrls 1`] = `
+Array [
+  Object {
+    "id": 2,
+    "updated": null,
+    "url": "https://example.com/rss2",
+  },
+  Object {
+    "id": 4,
+    "updated": null,
+    "url": "123",
+  },
+  Object {
+    "id": 5,
+    "updated": null,
+    "url": "456",
+  },
+  Object {
+    "id": 6,
+    "updated": null,
+    "url": "789",
+  },
+  Object {
+    "id": 3,
+    "updated": 2020-02-02T00:00:00.000Z,
+    "url": "https://example.com/rss3",
+  },
+]
+`;
+
+exports[`model unsubscriberUrls 1`] = `
+Array [
+  Object {
+    "id": 2,
+    "updated": null,
+    "url": "https://example.com/rss2",
+  },
+  Object {
+    "id": 3,
     "updated": 2020-02-02T00:00:00.000Z,
     "url": "https://example.com/rss3",
   },
@@ -112,8 +172,11 @@ exports[`user API /api/logout 3`] = `302`;
 
 exports[`user API /api/v1/user 1`] = `
 Object {
-  "email": "user@example.com",
-  "githubId": 1,
   "id": 1,
+  "info": Object {
+    "email": "user@example.com",
+    "githubId": 1,
+  },
+  "type": "github",
 }
 `;

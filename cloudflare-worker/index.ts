@@ -1,4 +1,4 @@
-import {} from '@cloudflare/workers-types'
+import type {} from '@cloudflare/workers-types'
 
 const apiHost = 'fbox.herokuapp.com'
 

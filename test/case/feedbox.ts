@@ -9,12 +9,8 @@ const auth = {
 }
 beforeAll(async () => {
     server = await init()
-    const id = await model.getUserIdByGithub(1, 'user@example.com')
-    if (id === null) {
-        throw Error('user id')
-    } else {
-        auth.credentials.userId = id
-    }
+    const user = await model.getOrCreateUserByGithub(1, 'user@example.com')
+    auth.credentials.userId = user.id
 })
 afterAll(async () => {
     if (server) {
@@ -123,7 +119,27 @@ describe('model', () => {
         expect(curr).toMatchSnapshot()
     })
     test('getActiveFeeds', async () => {
-        const feed = await model.getActiveFeeds()
-        expect(feed).toMatchSnapshot()
+        const feeds = await model.getActiveFeeds()
+        expect(feeds).toMatchSnapshot()
+    })
+    test('getLinks', async () => {
+        const links = await model.getLinks(3)
+        expect(links).toMatchSnapshot()
+    })
+    test('getSubscribers', async () => {
+        const users = await model.getSubscribers(3)
+        expect(users).toMatchSnapshot()
+    })
+
+    test('subscriberUrls', async () => {
+        await model.subscribeUrls(1, ['123', '456', '789'])
+        const feeds = await model.getFeedByUser(1)
+        expect(feeds).toMatchSnapshot()
+    })
+
+    test('unsubscriberUrls', async () => {
+        await model.unsubscribeUrls(1, ['123', '456', '789'])
+        const feeds = await model.getFeedByUser(1)
+        expect(feeds).toMatchSnapshot()
     })
 })
