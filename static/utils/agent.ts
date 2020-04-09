@@ -1,9 +1,10 @@
 const auth = async (r: Response) => {
-    const body = await r.json()
-    if (r.status === 401) {
-        throw new Error(`${JSON.stringify(body)}`)
-    } else {
+    if (r.ok) {
+        const body = await r.json()
         return body
+    } else {
+        const msg = await r.text()
+        throw new Error(msg)
     }
 }
 

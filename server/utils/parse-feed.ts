@@ -2,8 +2,7 @@ import FeedParser from 'feedparser'
 import { PassThrough } from 'stream'
 import { rollbar } from './rollbar'
 
-type FeedItem = FeedParser.Item
-export { FeedItem }
+export type FeedItem = FeedParser.Item
 
 export const parseFeed = async (
     feedurl: string,

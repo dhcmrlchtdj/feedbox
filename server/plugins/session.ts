@@ -1,8 +1,8 @@
 import * as cookieAuth from '@hapi/cookie'
 import { model } from '../models'
 
-// 7 days
-const ttl = 7 * 24 * 60 * 60 * 1000
+// 3 days
+const ttl = 3 * 24 * 60 * 60 * 1000
 
 const validate = async (_request, session: { id: number; ts: number }) => {
     if (session.ts + ttl > Date.now()) {
@@ -21,7 +21,7 @@ export const initSession = async (server) => {
         cookie: {
             name: 'token',
             password: process.env.COOKIE_SECRET,
-            ttl: 7 * 24 * 60 * 60 * 1000,
+            ttl: ttl,
             path: '/api',
             clearInvalid: true,
             isSameSite: 'Strict',
