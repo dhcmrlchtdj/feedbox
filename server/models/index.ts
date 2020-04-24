@@ -159,22 +159,12 @@ export const model = {
                 urls,
             )
 
-            const ivalues = urls.map((_, idx) => `\$${idx + 1}`).join(', ')
-            const idObjs = await t.many(
-                `SELECT id FROM feeds
-                WHERE url IN (${ivalues})`,
-                urls,
-            )
-            const ids = idObjs.map((x) => x.id)
-
-            const rvalues = urls
-                .map((_, idx) => `(${userId}, \$${idx + 1})`)
-                .join(', ')
+            const rvalues = urls.map((_, idx) => `\$${idx + 2}`).join(', ')
             await t.none(
                 `INSERT INTO r_user_feed(user_id, feed_id)
-                VALUES ${rvalues}
+                SELECT $1, id FROM feeds WHERE url IN (${rvalues})
                 ON CONFLICT DO NOTHING`,
-                ids,
+                [userId, ...urls],
             )
         })
     },
