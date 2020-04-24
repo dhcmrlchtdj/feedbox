@@ -47,7 +47,7 @@ jobs:
                   MAILGUN_DOMAIN: 'feedbox.example.com'
                   MAILGUN_FROM: 'feedbox <feedbox@example.com>'
                   TELEGRAM_BOT_TOKEN: '123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11'
-                  TELEGRAM_WEBHOOK_PATH: 'crypto.randomBytes(16).toString("hex")'
+                  TELEGRAM_WEBHOOK_PATH: 'crypto'
                   ROLLBAR_TOKEN: 'https://rollbar.com'
                   DATABASE_URL: 'postgres://user:password@localhost:5432/feedbox'
             - uses: codecov/codecov-action@v1.0.5
