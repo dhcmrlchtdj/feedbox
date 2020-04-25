@@ -24,7 +24,9 @@ actions.set('/list', async (_arg: string, msg: Message) => {
     const user = await model.getOrCreateUserByTelegram(chatId)
     const feeds = await model.getFeedByUser(user.id)
     const text =
-        feeds.length > 0 ? feeds.map((feed) => feed.url).join('\n') : 'empty'
+        feeds.length > 0
+            ? feeds.map((feed) => feed.url).join('\n')
+            : 'the feed list is empty'
     await telegramClient.send('sendMessage', {
         disable_web_page_preview: true,
         chat_id: chatId,
@@ -33,20 +35,28 @@ actions.set('/list', async (_arg: string, msg: Message) => {
     })
 })
 
-actions.set('/export_opml', async (_arg: string, msg: Message) => {
+actions.set('/export', async (_arg: string, msg: Message) => {
     const chatId = msg.chat.id
     const user = await model.getOrCreateUserByTelegram(chatId)
     const feeds = await model.getFeedByUser(user.id)
-    const opml = buildOpml(feeds)
-    await telegramClient.sendFile(
-        'sendDocument',
-        {
+    if (feeds.length > 0) {
+        const opml = buildOpml(feeds)
+        await telegramClient.sendFile(
+            'sendDocument',
+            {
+                chat_id: chatId,
+                reply_to_message_id: msg.message_id,
+                document: Buffer.from(opml),
+            },
+            { field: 'document', name: 'feed.opml', type: 'application/xml' },
+        )
+    } else {
+        await telegramClient.send('sendMessage', {
             chat_id: chatId,
             reply_to_message_id: msg.message_id,
-            document: Buffer.from(opml),
-        },
-        { field: 'document', name: 'feed.opml', type: 'application/xml' },
-    )
+            text: 'the feed list is empty',
+        })
+    }
 })
 
 actions.set('/add', async (arg: string, msg: Message) => {
