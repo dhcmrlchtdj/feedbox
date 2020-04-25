@@ -44,9 +44,22 @@ const handleMsg = async (msg: Message | undefined) => {
 
 export const telegramBot = {
     registerWebhook: async () => {
-        await telegramClient.send('setWebhook', {
-            url: `${process.env.SERVER}/webhook/telegram/${process.env.TELEGRAM_WEBHOOK_PATH}`,
-        })
+        await Promise.all([
+            telegramClient.send('setWebhook', {
+                url: `${process.env.SERVER}/webhook/telegram/${process.env.TELEGRAM_WEBHOOK_PATH}`,
+            }),
+            telegramClient.send('setMyCommands', {
+                commands: [
+                    { command: 'list', description: 'list all feeds' },
+                    { command: 'add', description: '[url] subscribe urls' },
+                    { command: 'del', description: '[url] unsubscribe urls' },
+                    {
+                        command: 'export',
+                        description: 'export feed list as OPML',
+                    },
+                ],
+            }),
+        ])
     },
     handleWebhook: async (payload: Update) => {
         await Promise.all([

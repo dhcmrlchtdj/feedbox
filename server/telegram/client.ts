@@ -15,6 +15,7 @@ export class TelegramClient {
     async send(type: 'sendPhoto', data: SendPhoto): Promise<Response>
     async send(type: 'sendAnimation', data: SendAnimation): Promise<Response>
     async send(type: 'sendVideo', data: SendVideo): Promise<Response>
+    async send(type: 'setMyCommands', data: SetMyCommands): Promise<Response>
     async send(
         type: 'answerCallbackQuery',
         data: AnswerCallbackQuery,
@@ -33,16 +34,7 @@ export class TelegramClient {
 
     async sendFile(
         type: 'sendDocument',
-        data: {
-            chat_id: number
-            document: Buffer
-            thumb?: string
-            caption?: string
-            parse_mode?: 'MarkdownV2' | 'HTML' | 'Markdown'
-            disable_notification?: boolean
-            reply_to_message_id?: number
-            reply_markup?: InlineKeyboardMarkup
-        },
+        data: SendDocumentBuffer,
         file: { field: 'document'; name: string; type: string },
     ): Promise<Response>
     async sendFile(
@@ -77,6 +69,27 @@ export class TelegramClient {
 export const telegramClient = new TelegramClient(
     process.env.TELEGRAM_BOT_TOKEN!,
 )
+type SendDocumentBuffer = {
+    chat_id: number
+    document: Buffer
+    thumb?: string
+    caption?: string
+    parse_mode?: 'MarkdownV2' | 'HTML' | 'Markdown'
+    disable_notification?: boolean
+    reply_to_message_id?: number
+    reply_markup?: InlineKeyboardMarkup
+}
+
+type BotCommand = {
+    // Text of the command, 1-32 characters. Can contain only lowercase English letters, digits and underscores.
+    command: string
+    // Description of the command, 3-256 characters.
+    description: string
+}
+
+type SetMyCommands = {
+    commands: BotCommand[]
+}
 
 type GetChatMember = {
     chat_id: number
