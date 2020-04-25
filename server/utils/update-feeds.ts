@@ -4,7 +4,7 @@ import { fetchFeed } from './fetch-feed'
 import { parseFeed } from './parse-feed'
 import type { FeedItem } from './parse-feed'
 import { sendEmail } from './send-email'
-import { telegramClient } from './telegram'
+import { telegramClient } from '../telegram/client'
 import { extractSite } from './extract-site'
 import { Channel } from '../../util/sync'
 

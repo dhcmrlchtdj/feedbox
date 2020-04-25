@@ -4,7 +4,7 @@ import * as Hapi from '@hapi/hapi'
 import { addPlugins } from './plugins'
 import { routes } from './routes'
 import { model } from './models'
-import { telegramClient } from './utils/telegram'
+import { telegramBot } from './telegram/bot'
 
 const common = async () => {
     const server = Hapi.server({
@@ -38,9 +38,7 @@ export const start = async () => {
     server.start()
 
     // init telegram webhook
-    await telegramClient.send('setWebhook', {
-        url: `${process.env.SERVER}/webhook/telegram/${process.env.TELEGRAM_WEBHOOK_PATH}`,
-    })
+    await telegramBot.registerWebhook()
 
     return server
 }
