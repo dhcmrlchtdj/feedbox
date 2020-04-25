@@ -10,7 +10,7 @@
         "build": "make release"
     },
     "engines": {
-        "node": "12.*",
+        "node": "14.*",
         "yarn": "1.*"
     },
     "jest": {
