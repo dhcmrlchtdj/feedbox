@@ -41,7 +41,7 @@ actions.set('/export', async (_arg: string, msg: Message) => {
     const feeds = await model.getFeedByUser(user.id)
     if (feeds.length > 0) {
         const opml = buildOpml(feeds)
-        await telegramClient.send(
+        await telegramClient.sendFile(
             'sendDocument',
             {
                 chat_id: chatId,
@@ -108,7 +108,7 @@ actions.set('/del_all', async (_arg: string, msg: Message) => {
     if (feeds.length > 0) {
         await model.unsubscribeAll(user.id)
         const opml = buildOpml(feeds)
-        await telegramClient.send(
+        await telegramClient.sendFile(
             'sendDocument',
             {
                 chat_id: chatId,

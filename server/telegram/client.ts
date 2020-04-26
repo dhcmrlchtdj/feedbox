@@ -20,15 +20,25 @@ export class TelegramClient {
         type: 'answerCallbackQuery',
         data: AnswerCallbackQuery,
     ): Promise<Response>
-
     async send(type: 'sendDocument', data: SendDocument): Promise<Response>
-    async send(
+    async send(type: string, data: Record<string, unknown>): Promise<Response> {
+        const url = `https://api.telegram.org/bot${this.token}/${type}`
+        const resp = await fetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data),
+        })
+        return resp
+    }
+
+    async sendFile(
         type: 'sendDocument',
         data: Omit<SendDocument, 'document'> & { document: Buffer },
         field: { document: FieldOpt },
     ): Promise<Response>
-
-    async send(
+    async sendFile(
         type: string,
         data: Record<string, unknown>,
         field?: Record<string, FieldOpt>,
