@@ -20,40 +20,23 @@ export class TelegramClient {
         type: 'answerCallbackQuery',
         data: AnswerCallbackQuery,
     ): Promise<Response>
-    async send(type: string, data: Record<string, unknown>): Promise<Response> {
-        const url = `https://api.telegram.org/bot${this.token}/${type}`
-        const resp = await fetch(url, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(data),
-        })
-        return resp
-    }
 
-    async sendFile(
+    async send(type: 'sendDocument', data: SendDocument): Promise<Response>
+    async send(
         type: 'sendDocument',
-        data: SendDocumentBuffer,
-        file: { field: 'document'; name: string; type: string },
+        data: Omit<SendDocument, 'document'> & { document: Buffer },
+        field: { document: FieldOpt },
     ): Promise<Response>
-    async sendFile(
+
+    async send(
         type: string,
         data: Record<string, unknown>,
-        file: { field: string; name: string; type: string },
+        field?: Record<string, FieldOpt>,
     ): Promise<Response> {
         const form = new FormData()
         Object.entries(data).forEach(([k, v]) => {
-            if (k === file.field) {
-                form.append(k, v, {
-                    filename: file.name,
-                    contentType: file.type,
-                })
-            } else {
-                form.append(k, v)
-            }
+            form.append(k, v, field?.[k])
         })
-
         const url = `https://api.telegram.org/bot${this.token}/${type}`
         const resp = await fetch(url, {
             method: 'POST',
@@ -69,9 +52,15 @@ export class TelegramClient {
 export const telegramClient = new TelegramClient(
     process.env.TELEGRAM_BOT_TOKEN!,
 )
-type SendDocumentBuffer = {
+
+type FieldOpt = {
+    filename: string
+    contentType?: string
+}
+
+type SendDocument = {
     chat_id: number
-    document: Buffer
+    document: string
     thumb?: string
     caption?: string
     parse_mode?: 'MarkdownV2' | 'HTML' | 'Markdown'

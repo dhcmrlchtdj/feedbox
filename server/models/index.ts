@@ -180,6 +180,14 @@ export const model = {
             [userId, ...urls],
         )
     },
+
+    async unsubscribeAll(userId: number) {
+        await db.none(
+            `DELETE FROM r_user_feed
+            WHERE user_id = $1`,
+            [userId],
+        )
+    },
 }
 
 export type GithubUser = {

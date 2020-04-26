@@ -53,6 +53,7 @@ export const telegramBot = {
                     { command: 'list', description: 'list all feeds' },
                     { command: 'add', description: '[url] subscribe urls' },
                     { command: 'del', description: '[url] unsubscribe urls' },
+                    { command: 'del_all', description: 'unsubscribe all' },
                     {
                         command: 'export',
                         description: 'export feed list as OPML',

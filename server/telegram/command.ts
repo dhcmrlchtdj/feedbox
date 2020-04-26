@@ -14,7 +14,7 @@ export const execute = async (cmd: string, args: string, msg: Message) => {
         await telegramClient.send('sendMessage', {
             chat_id: msg.chat.id,
             reply_to_message_id: msg.message_id,
-            text: `unknown command: ${cmd}`,
+            text: `unknown command`,
         })
     }
 }
@@ -41,14 +41,19 @@ actions.set('/export', async (_arg: string, msg: Message) => {
     const feeds = await model.getFeedByUser(user.id)
     if (feeds.length > 0) {
         const opml = buildOpml(feeds)
-        await telegramClient.sendFile(
+        await telegramClient.send(
             'sendDocument',
             {
                 chat_id: chatId,
                 reply_to_message_id: msg.message_id,
                 document: Buffer.from(opml),
             },
-            { field: 'document', name: 'feed.opml', type: 'application/xml' },
+            {
+                document: {
+                    filename: 'feed.opml',
+                    contentType: 'application/xml',
+                },
+            },
         )
     } else {
         await telegramClient.send('sendMessage', {
@@ -64,8 +69,11 @@ actions.set('/add', async (arg: string, msg: Message) => {
     const chatId = msg.chat.id
     const user = await model.getOrCreateUserByTelegram(chatId)
     const urls = arg.split(/\s+/).filter(isUrl)
-    await model.subscribeUrls(user.id, urls)
-    const text = urls.map((u) => `${u} added`).join('\n') || 'nothing to do'
+    let text = 'Usage: /add url'
+    if (urls.length > 0) {
+        await model.subscribeUrls(user.id, urls)
+        text = 'done'
+    }
     await telegramClient.send('sendMessage', {
         disable_web_page_preview: true,
         chat_id: chatId,
@@ -79,12 +87,47 @@ actions.set('/del', async (arg: string, msg: Message) => {
     const chatId = msg.chat.id
     const user = await model.getOrCreateUserByTelegram(chatId)
     const urls = arg.split(/\s+/).filter(isUrl)
-    await model.unsubscribeUrls(user.id, urls)
-    const text = urls.map((u) => `${u} deleted`).join('\n') || 'nothing to do'
+    let text = 'Usage: /del url'
+    if (urls.length > 0) {
+        await model.unsubscribeUrls(user.id, urls)
+        text = 'done'
+    }
     await telegramClient.send('sendMessage', {
         disable_web_page_preview: true,
         chat_id: chatId,
         reply_to_message_id: msg.message_id,
         text,
     })
+})
+
+actions.set('/del_all', async (_arg: string, msg: Message) => {
+    if (!(await isAdmin(msg))) return
+    const chatId = msg.chat.id
+    const user = await model.getOrCreateUserByTelegram(chatId)
+    const feeds = await model.getFeedByUser(user.id)
+    if (feeds.length > 0) {
+        await model.unsubscribeAll(user.id)
+        const opml = buildOpml(feeds)
+        await telegramClient.send(
+            'sendDocument',
+            {
+                chat_id: chatId,
+                reply_to_message_id: msg.message_id,
+                document: Buffer.from(opml),
+                caption: 'done',
+            },
+            {
+                document: {
+                    filename: 'backup.opml',
+                    contentType: 'application/xml',
+                },
+            },
+        )
+    } else {
+        await telegramClient.send('sendMessage', {
+            chat_id: chatId,
+            reply_to_message_id: msg.message_id,
+            text: 'the feed list is empty',
+        })
+    }
 })
