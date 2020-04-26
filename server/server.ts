@@ -37,8 +37,10 @@ export const start = async () => {
     const server = await common()
     server.start()
 
-    // init telegram webhook
-    await telegramBot.registerWebhook()
+    if (process.env.NODE_ENV === 'production') {
+        // init telegram webhook
+        await telegramBot.registerWebhook()
+    }
 
     return server
 }
