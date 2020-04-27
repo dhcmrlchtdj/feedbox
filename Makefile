@@ -6,9 +6,9 @@ build:
 	rollup -c
 
 release:
-	$(MAKE) --no-print-directory clean
-	$(MAKE) --no-print-directory build
-	$(MAKE) --no-print-directory up_db
+	@$(MAKE) --no-print-directory clean
+	@$(MAKE) --no-print-directory build
+	@$(MAKE) --no-print-directory up_db
 
 start:
 	node ./_build/bin/server.js
@@ -31,11 +31,14 @@ dev:
 		rollup -c -w & \
 		wait
 
-test: release
+test:
 	jest
 
-test_update: release
+test_update:
 	jest -u
+
+ci_test: release
+	@$(MAKE) --no-print-directory test
 
 fmt:
 	prettier --write .
@@ -43,4 +46,4 @@ fmt:
 clean:
 	rm -rf ./_build
 
-.PHONY: build release dev test test_update fmt clean up_db down_db
+.PHONY: build release dev test test_update fmt clean up_db down_db ci_test

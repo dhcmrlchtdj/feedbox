@@ -25,7 +25,7 @@
     onMount(() => {
         Promise.all([agent.get(`/api/v1/user`), agent.get(`/api/v1/feeds`)])
             .then(([user, resp]) => {
-                email = user.info.email
+                email = user.addition.email
                 feeds = resp
                 if (loaded.resolve) loaded.resolve(true)
             })

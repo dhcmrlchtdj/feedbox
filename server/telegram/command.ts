@@ -21,7 +21,7 @@ export const execute = async (cmd: string, args: string, msg: Message) => {
 
 actions.set('/list', async (_arg: string, msg: Message) => {
     const chatId = msg.chat.id
-    const user = await model.getOrCreateUserByTelegram(chatId)
+    const user = await model.getOrCreateUserByTelegram(String(chatId))
     const feeds = await model.getFeedByUser(user.id)
     const text =
         feeds.length > 0
@@ -37,7 +37,7 @@ actions.set('/list', async (_arg: string, msg: Message) => {
 
 actions.set('/export', async (_arg: string, msg: Message) => {
     const chatId = msg.chat.id
-    const user = await model.getOrCreateUserByTelegram(chatId)
+    const user = await model.getOrCreateUserByTelegram(String(chatId))
     const feeds = await model.getFeedByUser(user.id)
     if (feeds.length > 0) {
         const opml = buildOpml(feeds)
@@ -67,7 +67,7 @@ actions.set('/export', async (_arg: string, msg: Message) => {
 actions.set('/add', async (arg: string, msg: Message) => {
     if (!(await isAdmin(msg))) return
     const chatId = msg.chat.id
-    const user = await model.getOrCreateUserByTelegram(chatId)
+    const user = await model.getOrCreateUserByTelegram(String(chatId))
     const urls = arg.split(/\s+/).filter(isUrl)
     let text = 'Usage: /add url'
     if (urls.length > 0) {
@@ -85,7 +85,7 @@ actions.set('/add', async (arg: string, msg: Message) => {
 actions.set('/del', async (arg: string, msg: Message) => {
     if (!(await isAdmin(msg))) return
     const chatId = msg.chat.id
-    const user = await model.getOrCreateUserByTelegram(chatId)
+    const user = await model.getOrCreateUserByTelegram(String(chatId))
     const urls = arg.split(/\s+/).filter(isUrl)
     let text = 'Usage: /del url'
     if (urls.length > 0) {
@@ -103,7 +103,7 @@ actions.set('/del', async (arg: string, msg: Message) => {
 actions.set('/del_all', async (_arg: string, msg: Message) => {
     if (!(await isAdmin(msg))) return
     const chatId = msg.chat.id
-    const user = await model.getOrCreateUserByTelegram(chatId)
+    const user = await model.getOrCreateUserByTelegram(String(chatId))
     const feeds = await model.getFeedByUser(user.id)
     if (feeds.length > 0) {
         await model.unsubscribeAll(user.id)

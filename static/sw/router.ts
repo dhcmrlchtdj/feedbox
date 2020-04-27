@@ -45,7 +45,7 @@ export const router = new WorkerRouter()
             .then(async ([user, feeds]) => {
                 const state = {
                     loaded: { promise: true },
-                    email: user.info.email,
+                    email: user.addition.email,
                     feeds: feeds,
                 }
                 const tpl = await resp.clone().text()

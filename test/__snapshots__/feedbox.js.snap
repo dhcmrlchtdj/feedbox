@@ -90,12 +90,12 @@ Array [
 exports[`model getSubscribers 1`] = `
 Array [
   Object {
-    "id": 1,
-    "info": Object {
+    "addition": Object {
       "email": "user@example.com",
-      "githubId": 1,
     },
-    "type": "github",
+    "id": 1,
+    "pid": "1",
+    "platform": "github",
   },
 ]
 `;
@@ -172,11 +172,11 @@ exports[`user API /api/logout 3`] = `302`;
 
 exports[`user API /api/v1/user 1`] = `
 Object {
-  "id": 1,
-  "info": Object {
+  "addition": Object {
     "email": "user@example.com",
-    "githubId": 1,
   },
-  "type": "github",
+  "id": 1,
+  "pid": "1",
+  "platform": "github",
 }
 `;

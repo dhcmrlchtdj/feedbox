@@ -5,15 +5,11 @@ export const up = (next) => {
         await t.none(
             `CREATE TABLE users (
                 id SERIAL PRIMARY KEY,
-                type VARCHAR(64) NOT NULL,
-                info JSONB NOT NULL
+                platform VARCHAR(64) NOT NULL,
+                pid VARCHAR(256) NOT NULL,
+                addition JSONB NOT NULL DEFAULT '{}'::jsonb,
+                UNIQUE (platform, pid)
             )`,
-        )
-        await t.none(
-            `CREATE UNIQUE INDEX users_github_idx ON users( (info->>'githubId') )`,
-        )
-        await t.none(
-            `CREATE UNIQUE INDEX users_telegram_idx ON users( (info->>'chatId') )`,
         )
 
         await t.none(
@@ -28,9 +24,9 @@ export const up = (next) => {
         await t.none(
             `CREATE TABLE r_user_feed (
                 id SERIAL PRIMARY KEY,
-                user_id INT NOT NULL REFERENCES users(id),
-                feed_id INT NOT NULL REFERENCES feeds(id),
-                UNIQUE(user_id, feed_id)
+                uid INT NOT NULL REFERENCES users(id),
+                fid INT NOT NULL REFERENCES feeds(id),
+                UNIQUE(uid, fid)
             )`,
         )
     }).then(() => next())

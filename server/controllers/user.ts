@@ -30,12 +30,18 @@ export const connectGithub = {
             const credentials = request.auth.credentials
 
             // get/create user
-            const github = credentials.profile
+            const github = credentials.profile as {
+                id: number
+                username: string
+                displayName: string
+                email?: string
+                raw: unknown
+            }
             if (!github.email) {
                 github.email = await getGithubEmail(credentials.token)
             }
             const user = await model.getOrCreateUserByGithub(
-                github.id,
+                String(github.id),
                 github.email,
             )
 

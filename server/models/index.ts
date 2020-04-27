@@ -7,7 +7,7 @@ export const model = {
 
     async getUserById(id: number): Promise<User | null> {
         const user = await db.oneOrNone<User>(
-            `SELECT id, type, info
+            `SELECT id, platform, pid, addition
             FROM users
             WHERE id = $1`,
             id,
@@ -16,34 +16,52 @@ export const model = {
     },
 
     async getOrCreateUserByGithub(
-        githubId: number,
+        githubId: string,
         email: string,
     ): Promise<User> {
-        const user = await db.one<GithubUser>(
-            `INSERT INTO users(type, info)
-             VALUES ('github', $1)
-             ON CONFLICT((info->>'githubId')) DO UPDATE SET info = $1
-             RETURNING id, type, info`,
-            [{ githubId, email }],
-        )
+        const user = await db.tx(async (t) => {
+            let user = await t.oneOrNone<GithubUser>(
+                `SELECT id, platform, pid, addition
+                FROM users
+                WHERE platform = 'github'
+                AND pid = $1`,
+                [githubId],
+            )
+            if (user === null) {
+                user = await t.one<GithubUser>(
+                    `INSERT INTO users(platform, pid, addition)
+                    VALUES ('github', $1, $2)
+                    RETURNING id, platform, pid, addition`,
+                    [githubId, { email }],
+                )
+            } else {
+                if (user.addition.email !== email) {
+                    await t.none(
+                        `UPDATE users SET addition = $1 WHERE id = $2`,
+                        [{ email }, user.id],
+                    )
+                }
+            }
+            return user
+        })
         return user
     },
 
-    async getOrCreateUserByTelegram(chatId: number): Promise<User> {
+    async getOrCreateUserByTelegram(chatId: string): Promise<User> {
         const user = await db.tx(async (t) => {
             let user = await t.oneOrNone<TelegramUser>(
-                `SELECT id, type, info
+                `SELECT id, platform, pid, addition
                 FROM users
-                WHERE type = 'telegram'
-                AND info->>'chatId' = $1`,
-                [String(chatId)],
+                WHERE platform = 'telegram'
+                AND pid = $1`,
+                [chatId],
             )
             if (user === null) {
                 user = await t.one<TelegramUser>(
-                    `INSERT INTO users(type, info)
+                    `INSERT INTO users(platform, pid)
                     VALUES ('telegram', $1)
-                    RETURNING id, type, info`,
-                    [{ chatId }],
+                    RETURNING id, platform, pid, addition`,
+                    [chatId],
                 )
             }
             return user
@@ -77,8 +95,8 @@ export const model = {
                 feeds.url AS url,
                 feeds.updated AS updated
             FROM r_user_feed AS r
-            JOIN feeds ON r.feed_id = feeds.id
-            JOIN users ON r.user_id = users.id
+            JOIN feeds ON r.fid = feeds.id
+            JOIN users ON r.uid = users.id
             WHERE users.id = $1
             ORDER BY feeds.updated DESC`,
             [userId],
@@ -102,7 +120,7 @@ export const model = {
                 feeds.url AS url,
                 feeds.updated AS updated
             FROM feeds
-            JOIN r_user_feed r ON r.feed_id = feeds.id`,
+            JOIN r_user_feed r ON r.fid = feeds.id`,
         )
         return feeds
     },
@@ -121,11 +139,12 @@ export const model = {
         const users = await db.manyOrNone<User>(
             `SELECT
                 users.id AS id,
-                users.type AS type,
-                users.info AS info
+                users.platform AS platform,
+                users.pid AS pid,
+                users.addition AS addition
             FROM users
-            JOIN r_user_feed r ON r.user_id = users.id
-            WHERE r.feed_id = $1`,
+            JOIN r_user_feed r ON r.uid = users.id
+            WHERE r.fid = $1`,
             feedId,
         )
         return users
@@ -133,7 +152,7 @@ export const model = {
 
     async subscribe(userId: number, feedId: number) {
         await db.none(
-            `INSERT INTO r_user_feed(user_id, feed_id)
+            `INSERT INTO r_user_feed(uid, fid)
             VALUES ($1, $2)
             ON CONFLICT DO NOTHING`,
             [userId, feedId],
@@ -143,8 +162,8 @@ export const model = {
     async unsubscribe(userId: number, feedId: number) {
         await db.none(
             `DELETE FROM r_user_feed
-            WHERE user_id = $1
-            AND feed_id = $2`,
+            WHERE uid = $1
+            AND fid = $2`,
             [userId, feedId],
         )
     },
@@ -161,7 +180,7 @@ export const model = {
 
             const rvalues = urls.map((_, idx) => `\$${idx + 2}`).join(', ')
             await t.none(
-                `INSERT INTO r_user_feed(user_id, feed_id)
+                `INSERT INTO r_user_feed(uid, fid)
                 SELECT $1, id FROM feeds WHERE url IN (${rvalues})
                 ON CONFLICT DO NOTHING`,
                 [userId, ...urls],
@@ -174,8 +193,8 @@ export const model = {
         const uvalues = urls.map((_, idx) => `\$${idx + 2}`).join(', ')
         await db.none(
             `DELETE FROM r_user_feed
-            WHERE user_id = $1
-            AND feed_id IN
+            WHERE uid = $1
+            AND fid IN
                 (SELECT id FROM feeds WHERE url in (${uvalues}))`,
             [userId, ...urls],
         )
@@ -184,7 +203,7 @@ export const model = {
     async unsubscribeAll(userId: number) {
         await db.none(
             `DELETE FROM r_user_feed
-            WHERE user_id = $1`,
+            WHERE uid = $1`,
             [userId],
         )
     },
@@ -192,18 +211,17 @@ export const model = {
 
 export type GithubUser = {
     id: number
-    type: 'github'
-    info: {
-        githubId: number
+    platform: 'github'
+    pid: string
+    addition: {
         email: string
     }
 }
 export type TelegramUser = {
     id: number
-    type: 'telegram'
-    info: {
-        chatId: number
-    }
+    platform: 'telegram'
+    pid: string
+    addition: {}
 }
 export type User = GithubUser | TelegramUser
 

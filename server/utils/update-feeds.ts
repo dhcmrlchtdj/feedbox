@@ -61,12 +61,12 @@ export const updateFeeds = async () => {
         .onReceive(10, async ([feed, item]) => {
             const users = await model.getSubscribers(feed.id)
             const githubUsers = users.filter(
-                (u) => u.type === 'github',
+                (u) => u.platform === 'github',
             ) as GithubUser[]
             await chEmail.send([feed, item, githubUsers])
 
             const telegramUsers = users.filter(
-                (u) => u.type === 'telegram',
+                (u) => u.platform === 'telegram',
             ) as TelegramUser[]
             await chTelegram.send([item, telegramUsers])
         })
@@ -86,7 +86,7 @@ export const updateFeeds = async () => {
         const text = `${link}<br><br>${tags}<br><br>${content}`
 
         for (let user of users) {
-            await sendEmail(user.info.email, subject, text)
+            await sendEmail(user.addition.email, subject, text)
         }
     })
 
@@ -107,7 +107,7 @@ export const updateFeeds = async () => {
 
         for (let user of users) {
             await telegramClient.send('sendMessage', {
-                chat_id: user.info.chatId,
+                chat_id: Number(user.pid),
                 text: text.join('\n\n'),
             })
         }
