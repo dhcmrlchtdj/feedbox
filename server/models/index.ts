@@ -19,7 +19,7 @@ export const model = {
         githubId: string,
         email: string,
     ): Promise<User> {
-        const user = await db.tx(async (t) => {
+        return db.tx(async (t) => {
             let user = await t.oneOrNone<GithubUser>(
                 `SELECT id, platform, pid, addition
                 FROM users
@@ -44,11 +44,10 @@ export const model = {
             }
             return user
         })
-        return user
     },
 
     async getOrCreateUserByTelegram(chatId: string): Promise<User> {
-        const user = await db.tx(async (t) => {
+        return db.tx(async (t) => {
             let user = await t.oneOrNone<TelegramUser>(
                 `SELECT id, platform, pid, addition
                 FROM users
@@ -66,11 +65,10 @@ export const model = {
             }
             return user
         })
-        return user
     },
 
     async getFeedIdByUrl(url: string): Promise<number> {
-        const id = await db.tx(async (t) => {
+        return db.tx(async (t) => {
             let feed = await t.oneOrNone<{ id: number }>(
                 `SELECT id
                 FROM feeds
@@ -85,11 +83,10 @@ export const model = {
             }
             return feed.id
         })
-        return id
     },
 
     async getFeedByUser(userId: number): Promise<Feed[]> {
-        const feeds = await db.manyOrNone<Feed>(
+        return db.manyOrNone<Feed>(
             `SELECT
                 feeds.id AS id,
                 feeds.url AS url,
@@ -101,10 +98,13 @@ export const model = {
             ORDER BY feeds.updated DESC`,
             [userId],
         )
-        return feeds
     },
 
-    async updateFeed(id: number, links: string[], updated: Date) {
+    async updateFeed(
+        id: number,
+        links: string[],
+        updated: Date,
+    ): Promise<void> {
         await db.none(
             `UPDATE feeds
             SET links = $1, updated = $2
@@ -114,7 +114,7 @@ export const model = {
     },
 
     async getActiveFeeds(): Promise<Feed[]> {
-        const feeds = await db.manyOrNone<Feed>(
+        return db.manyOrNone<Feed>(
             `SELECT
                 feeds.id AS id,
                 feeds.url AS url,
@@ -122,7 +122,6 @@ export const model = {
             FROM feeds
             JOIN r_user_feed r ON r.fid = feeds.id`,
         )
-        return feeds
     },
 
     async getLinks(feedId: number): Promise<string[]> {
@@ -136,7 +135,7 @@ export const model = {
     },
 
     async getSubscribers(feedId: number): Promise<User[]> {
-        const users = await db.manyOrNone<User>(
+        return db.manyOrNone<User>(
             `SELECT
                 users.id AS id,
                 users.platform AS platform,
@@ -147,30 +146,31 @@ export const model = {
             WHERE r.fid = $1`,
             feedId,
         )
-        return users
     },
 
-    async subscribe(userId: number, feedId: number) {
-        await db.none(
+    async subscribe(userId: number, feedId: number): Promise<number> {
+        const r = await db.result(
             `INSERT INTO r_user_feed(uid, fid)
             VALUES ($1, $2)
             ON CONFLICT DO NOTHING`,
             [userId, feedId],
         )
+        return r.rowCount
     },
 
-    async unsubscribe(userId: number, feedId: number) {
-        await db.none(
+    async unsubscribe(userId: number, feedId: number): Promise<number> {
+        const r = await db.result(
             `DELETE FROM r_user_feed
             WHERE uid = $1
             AND fid = $2`,
             [userId, feedId],
         )
+        return r.rowCount
     },
 
-    async subscribeUrls(userId: number, urls: string[]) {
-        if (urls.length === 0) return
-        await db.tx(async (t) => {
+    async subscribeUrls(userId: number, urls: string[]): Promise<number> {
+        if (urls.length === 0) return 0
+        return db.tx(async (t) => {
             const fvalues = urls.map((_, idx) => `(\$${idx + 1})`).join(', ')
             await t.none(
                 `INSERT INTO feeds(url) VALUES ${fvalues}
@@ -179,33 +179,36 @@ export const model = {
             )
 
             const rvalues = urls.map((_, idx) => `\$${idx + 2}`).join(', ')
-            await t.none(
+            const r = await t.result(
                 `INSERT INTO r_user_feed(uid, fid)
                 SELECT $1, id FROM feeds WHERE url IN (${rvalues})
                 ON CONFLICT DO NOTHING`,
                 [userId, ...urls],
             )
+            return r.rowCount
         })
     },
 
-    async unsubscribeUrls(userId: number, urls: string[]) {
-        if (urls.length === 0) return
+    async unsubscribeUrls(userId: number, urls: string[]): Promise<number> {
+        if (urls.length === 0) return 0
         const uvalues = urls.map((_, idx) => `\$${idx + 2}`).join(', ')
-        await db.none(
+        const r = await db.result(
             `DELETE FROM r_user_feed
             WHERE uid = $1
             AND fid IN
                 (SELECT id FROM feeds WHERE url in (${uvalues}))`,
             [userId, ...urls],
         )
+        return r.rowCount
     },
 
-    async unsubscribeAll(userId: number) {
-        await db.none(
+    async unsubscribeAll(userId: number): Promise<number> {
+        const r = await db.result(
             `DELETE FROM r_user_feed
             WHERE uid = $1`,
             [userId],
         )
+        return r.rowCount
     },
 }
 

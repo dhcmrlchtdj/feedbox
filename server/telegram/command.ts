@@ -10,12 +10,6 @@ export const execute = async (cmd: string, args: string, msg: Message) => {
     const act = actions.get(cmd)
     if (act !== undefined) {
         await act(args, msg)
-    } else {
-        await telegramClient.send('sendMessage', {
-            chat_id: msg.chat.id,
-            reply_to_message_id: msg.message_id,
-            text: `unknown command`,
-        })
     }
 }
 
@@ -71,8 +65,12 @@ actions.set('/add', async (arg: string, msg: Message) => {
     const urls = arg.split(/\s+/).filter(isUrl)
     let text = 'Usage: /add url'
     if (urls.length > 0) {
-        await model.subscribeUrls(user.id, urls)
-        text = 'done'
+        const c = await model.subscribeUrls(user.id, urls)
+        if (c <= 1) {
+            text = `add ${c} feed`
+        } else {
+            text = `add ${c} feeds`
+        }
     }
     await telegramClient.send('sendMessage', {
         disable_web_page_preview: true,
@@ -89,8 +87,12 @@ actions.set('/del', async (arg: string, msg: Message) => {
     const urls = arg.split(/\s+/).filter(isUrl)
     let text = 'Usage: /del url'
     if (urls.length > 0) {
-        await model.unsubscribeUrls(user.id, urls)
-        text = 'done'
+        const c = await model.unsubscribeUrls(user.id, urls)
+        if (c <= 1) {
+            text = `delete ${c} feed`
+        } else {
+            text = `delete ${c} feeds`
+        }
     }
     await telegramClient.send('sendMessage', {
         disable_web_page_preview: true,
