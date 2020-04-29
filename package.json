@@ -57,7 +57,7 @@
         "migrate": "1.6.2",
         "nodemon": "2.0.3",
         "prettier": "2.0.5",
-        "rollup": "2.7.2",
+        "rollup": "2.7.4",
         "rollup-plugin-svelte": "5.2.1",
         "rollup-plugin-terser": "5.3.0",
         "svelte": "3.21.0",
