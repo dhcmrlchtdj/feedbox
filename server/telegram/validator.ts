@@ -5,11 +5,10 @@ import { telegramClient } from './client'
 export const isAdmin = async (msg: Message): Promise<boolean> => {
     const type = msg.chat.type
     if (type === 'group' || type === 'supergroup') {
-        const resp = await telegramClient.send('getChatMember', {
+        const member: ChatMember = await telegramClient.send('getChatMember', {
             chat_id: msg.chat.id,
             user_id: msg.from!.id,
         })
-        const member: ChatMember = await resp.json()
         return member.status === 'creator' || member.status === 'administrator'
     }
     // if (type === 'private' || type === 'channel') return true

@@ -1,6 +1,9 @@
-import type { InlineKeyboardMarkup } from 'telegram-typings'
+import type {
+    InlineKeyboardMarkup,
+    Message,
+    ChatMember,
+} from 'telegram-typings'
 import fetch from 'node-fetch'
-import type { Response } from 'node-fetch'
 import FormData from 'form-data'
 
 export class TelegramClient {
@@ -9,19 +12,20 @@ export class TelegramClient {
         this.token = token
     }
 
-    async send(type: 'getChatMember', data: GetChatMember): Promise<Response>
-    async send(type: 'setWebhook', data: SetWebhook): Promise<Response>
-    async send(type: 'sendMessage', data: SendMessage): Promise<Response>
-    async send(type: 'sendPhoto', data: SendPhoto): Promise<Response>
-    async send(type: 'sendAnimation', data: SendAnimation): Promise<Response>
-    async send(type: 'sendVideo', data: SendVideo): Promise<Response>
-    async send(type: 'setMyCommands', data: SetMyCommands): Promise<Response>
+    async send(type: 'getChatMember', data: GetChatMember): Promise<ChatMember>
+    async send(type: 'setWebhook', data: SetWebhook): Promise<boolean>
+    async send(type: 'setMyCommands', data: SetMyCommands): Promise<boolean>
     async send(
         type: 'answerCallbackQuery',
         data: AnswerCallbackQuery,
-    ): Promise<Response>
-    async send(type: 'sendDocument', data: SendDocument): Promise<Response>
-    async send(type: string, data: Record<string, unknown>): Promise<Response> {
+    ): Promise<boolean>
+    async send(type: 'sendDocument', data: SendDocument): Promise<Message>
+    async send(type: 'sendMessage', data: SendMessage): Promise<Message>
+    async send(type: 'sendPhoto', data: SendPhoto): Promise<Message>
+    async send(type: 'sendAnimation', data: SendAnimation): Promise<Message>
+    async send(type: 'sendVideo', data: SendVideo): Promise<Message>
+
+    async send(type: string, data: Record<string, unknown>): Promise<unknown> {
         const url = `https://api.telegram.org/bot${this.token}/${type}`
         const resp = await fetch(url, {
             method: 'POST',
@@ -30,19 +34,25 @@ export class TelegramClient {
             },
             body: JSON.stringify(data),
         })
-        return resp
+        const body: TGResponse = await resp.json()
+        if (body.ok) {
+            return body.result
+        } else {
+            throw new Error(body.description)
+        }
     }
 
     async sendFile(
         type: 'sendDocument',
         data: Omit<SendDocument, 'document'> & { document: Buffer },
         field: { document: FieldOpt },
-    ): Promise<Response>
+    ): Promise<Message>
+
     async sendFile(
         type: string,
         data: Record<string, unknown>,
         field?: Record<string, FieldOpt>,
-    ): Promise<Response> {
+    ): Promise<unknown> {
         const form = new FormData()
         Object.entries(data).forEach(([k, v]) => {
             form.append(k, v, field?.[k])
@@ -55,13 +65,30 @@ export class TelegramClient {
             },
             body: form.getBuffer(),
         })
-        return resp
+        const body: TGResponse = await resp.json()
+        if (body.ok) {
+            return body.result
+        } else {
+            throw new Error(body.description)
+        }
     }
 }
 
 export const telegramClient = new TelegramClient(
     process.env.TELEGRAM_BOT_TOKEN!,
 )
+
+type TGResponse =
+    | {
+          ok: true
+          result: unknown
+          description?: string
+      }
+    | {
+          ok: false
+          error_code: number
+          description: string
+      }
 
 type FieldOpt = {
     filename: string
