@@ -1,0 +1,11 @@
+{
+    "extends": "../../tsconfig.json",
+    "compilerOptions": {
+        "module": "ES6",
+        "target": "ES2019",
+        "lib": ["ES2019"],
+
+        "sourceMap": true,
+        "inlineSources": true
+    }
+}

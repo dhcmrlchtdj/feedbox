@@ -1,0 +1,18 @@
+{
+    "private": true,
+    "name": "@feedbox/cfworker",
+    "version": "0.0.0",
+    "main": "index.js",
+    "scripts": {
+        "build": "rollup --format=es --input=index.ts --file=index.js --plugin=typescript --no-esModule"
+    },
+    "dependencies": {
+        "tslib": "1.11.1"
+    },
+    "devDependencies": {
+        "@cloudflare/workers-types": "1.0.9",
+        "@rollup/plugin-typescript": "4.1.1",
+        "rollup": "2.7.5",
+        "typescript": "3.8.3"
+    }
+}
