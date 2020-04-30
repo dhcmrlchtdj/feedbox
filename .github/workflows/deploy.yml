@@ -27,7 +27,7 @@ jobs:
                   fetch-depth: 0
             - uses: actions/setup-node@v1.1.0
               with:
-                  version: '14.x'
+                  version: '12.x'
             - name: yarn-cache
               id: yarn-cache
               run: echo "::set-output name=dir::$(yarn cache dir)"

@@ -2,10 +2,6 @@
     "private": true,
     "name": "@feedbox/backend",
     "version": "0.0.0",
-    "engines": {
-        "node": "14.*",
-        "yarn": "1.*"
-    },
     "scripts": {
         "build": "tsc",
         "dev": "tsc -w & nodemon -w ../_build ../_build/backend/bin/server.js & wait"

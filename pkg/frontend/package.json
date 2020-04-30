@@ -2,10 +2,6 @@
     "private": true,
     "name": "@feedbox/frontend",
     "version": "0.0.0",
-    "engines": {
-        "node": "14.*",
-        "yarn": "1.*"
-    },
     "scripts": {
         "build": "rollup -c",
         "dev": "rollup -c -w"

@@ -9,7 +9,7 @@
     },
     "workspaces": ["pkg/*"],
     "engines": {
-        "node": "14.*",
+        "node": "12.*",
         "yarn": "1.*"
     },
     "devDependencies": {
