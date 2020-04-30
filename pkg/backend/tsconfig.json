@@ -10,7 +10,6 @@
         "incremental": true,
 
         "sourceMap": true,
-        "inlineSources": true,
 
         "noImplicitAny": false
     }
