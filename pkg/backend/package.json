@@ -1,0 +1,55 @@
+{
+    "private": true,
+    "name": "@feedbox/backend",
+    "version": "0.0.0",
+    "engines": {
+        "node": "14.*",
+        "yarn": "1.*"
+    },
+    "scripts": {
+        "build": "tsc",
+        "dev": "tsc -w & nodemon -w ../_build ../_build/backend/bin/server.js & wait"
+    },
+    "jest": {
+        "testEnvironment": "node",
+        "collectCoverage": true,
+        "coverageProvider": "v8",
+        "rootDir": "../_build",
+        "snapshotResolver": "./backend/test/jest.snapshot-resolver.js",
+        "testRegex": "backend/test/case/.*.js$"
+    },
+    "dependencies": {
+        "@hapi/bell": "12.0.0",
+        "@hapi/boom": "9.1.0",
+        "@hapi/cookie": "11.0.1",
+        "@hapi/hapi": "19.1.1",
+        "@hapi/inert": "6.0.1",
+        "@hapi/joi": "17.1.1",
+        "@sentry/node": "5.15.5",
+        "chardet": "1.0.0",
+        "dotenv-safe": "8.2.0",
+        "fast-xml-parser": "3.16.0",
+        "feedparser": "2.2.9",
+        "form-data": "3.0.0",
+        "hapi-pino": "8.0.0",
+        "hapi-sentry": "3.0.0",
+        "iconv-lite": "0.5.1",
+        "mailgun-js": "0.22.0",
+        "node-fetch": "2.6.0",
+        "pg-monitor": "1.4.0",
+        "pg-promise": "10.5.2",
+        "tslib": "1.11.1"
+    },
+    "devDependencies": {
+        "@types/feedparser": "2.2.3",
+        "@types/jest": "25.2.1",
+        "@types/mailgun-js": "0.22.4",
+        "@types/node": "13.13.4",
+        "@types/node-fetch": "2.5.7",
+        "jest": "25.5.2",
+        "migrate": "1.6.2",
+        "nodemon": "2.0.3",
+        "telegram-typings": "4.0.0-beta",
+        "typescript": "3.8.3"
+    }
+}
