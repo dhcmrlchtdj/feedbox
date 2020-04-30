@@ -1,6 +1,6 @@
-# [feedbox](https://feedbox.h11.io)
+# FeedBox
 
-feed to email
+forward feed to [email](https://feedbox.h11.io) or [telegram](https://t.me/feedboxbot)
 
 ---
 
