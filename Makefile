@@ -7,8 +7,9 @@ build: node_modules
 node_modules:
 	yarn install
 
-dev:
+dev: node_modules
 	cd ./pkg/frontend && yarn dev & \
+		cd ./pkg/common && yarn dev & \
 		cd ./pkg/backend && yarn dev & \
 		wait
 

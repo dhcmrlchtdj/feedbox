@@ -3,8 +3,10 @@
         "resolveJsonModule": true,
         "esModuleInterop": true,
 
+        "inlineSourceMap": false,
         "sourceMap": false,
         "inlineSources": false,
+
         "importHelpers": true,
         "declaration": false,
         "noEmitOnError": false,
