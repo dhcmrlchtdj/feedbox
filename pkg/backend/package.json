@@ -24,7 +24,7 @@
         "chardet": "1.0.0",
         "dotenv-safe": "8.2.0",
         "fast-xml-parser": "3.16.0",
-        "feedparser": "2.2.9",
+        "feedparser": "2.2.10",
         "form-data": "3.0.0",
         "hapi-pino": "8.0.0",
         "iconv-lite": "0.5.1",
