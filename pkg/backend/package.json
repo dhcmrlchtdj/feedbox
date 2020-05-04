@@ -4,7 +4,7 @@
     "version": "0.0.0",
     "scripts": {
         "build": "tsc",
-        "dev": "tsc -w & nodemon -w ../_build ../_build/backend/bin/server.js & wait"
+        "dev": "tsc -w & nodemon -w ../_build/backend ../_build/backend/bin/server.js & wait"
     },
     "jest": {
         "testEnvironment": "node",
@@ -21,19 +21,18 @@
         "@hapi/hapi": "19.1.1",
         "@hapi/inert": "6.0.1",
         "@hapi/joi": "17.1.1",
-        "@sentry/node": "5.15.5",
         "chardet": "1.0.0",
         "dotenv-safe": "8.2.0",
         "fast-xml-parser": "3.16.0",
         "feedparser": "2.2.9",
         "form-data": "3.0.0",
         "hapi-pino": "8.0.0",
-        "hapi-sentry": "3.0.0",
         "iconv-lite": "0.5.1",
         "mailgun-js": "0.22.0",
         "node-fetch": "2.6.0",
         "pg-monitor": "1.4.0",
         "pg-promise": "10.5.2",
+        "rollbar": "2.15.2",
         "tslib": "1.11.1"
     },
     "devDependencies": {

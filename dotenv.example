@@ -14,6 +14,6 @@ MAILGUN_FROM="feedbox <feedbox@example.com>"
 TELEGRAM_BOT_TOKEN="123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11"
 TELEGRAM_WEBHOOK_PATH="crypto.randomBytes(16).toString('hex')"
 
-SENTRY_DSN="https://key@sentry.io/id"
+ROLLBAR_TOKEN="https://rollbar.com/team/project/settings/access_tokens/ post_server_item"
 
 DATABASE_URL="postgres://user:password@localhost:5432/feedbox"

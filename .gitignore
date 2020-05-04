@@ -2,5 +2,7 @@ node_modules/
 coverage/
 _build/
 *.js
+yarn-error.log
+
 !pkg/frontend/rollup-plugin/*.js
 !pkg/frontend/rollup.config.js
