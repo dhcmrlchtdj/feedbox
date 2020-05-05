@@ -33,7 +33,7 @@
         "pg-monitor": "1.4.0",
         "pg-promise": "10.5.2",
         "rollbar": "2.15.2",
-        "tslib": "1.11.1"
+        "tslib": "1.11.2"
     },
     "devDependencies": {
         "@types/feedparser": "2.2.3",
