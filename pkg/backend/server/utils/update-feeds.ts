@@ -83,7 +83,7 @@ export const updateFeeds = async () => {
         const link = item.origlink || item.link || item.guid
         const tags = item.categories.map((tag) => `#${tag}`).join(' ')
         const content = item.description || item.summary || ''
-        const text = `${link}<br><br>${tags}<br><br>${content}`
+        const text = [link, tags, content].filter(Boolean).join('<br><br>')
 
         for (let user of users) {
             await sendEmail(user.addition.email, subject, text)
