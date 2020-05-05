@@ -1,5 +1,5 @@
 import { URL } from 'url'
-import { basename } from 'path'
+import { basename, parse } from 'path'
 
 export const extractSite = (url: string): string => {
     const u = new URL(url)
@@ -13,7 +13,7 @@ export const extractSite = (url: string): string => {
         case 'rsshub.app':
             return `rsshub${u.pathname}`
         case 'feed43.com':
-            return `feed43/${basename(u.pathname)}`
+            return `feed43/${parse(u.pathname).name}`
         default:
             return u.hostname
     }
