@@ -12,6 +12,8 @@ export const extractSite = (url: string): string => {
             return `dev.to/${basename(u.pathname)}`
         case 'rsshub.app':
             return `rsshub${u.pathname}`
+        case 'feed43.com':
+            return `feed43/${basename(u.pathname)}`
         default:
             return u.hostname
     }
