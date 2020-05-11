@@ -4,8 +4,10 @@ export const resolveSnapshotPath = (
     snapshotExtension: string,
 ) => {
     return (
-        testPath.replace('_build/backend/test/case', 'backend/test/__snapshots__') +
-        snapshotExtension
+        testPath.replace(
+            '_build/backend/test/case',
+            'backend/test/__snapshots__',
+        ) + snapshotExtension
     )
 }
 

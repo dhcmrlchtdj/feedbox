@@ -7,7 +7,9 @@
         "start": "make start",
         "build": "make release"
     },
-    "workspaces": ["pkg/*"],
+    "workspaces": [
+        "pkg/*"
+    ],
     "engines": {
         "node": "14.*",
         "yarn": "1.*"

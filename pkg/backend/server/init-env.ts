@@ -6,3 +6,5 @@ dotenv.config({
     path: path.resolve(__dirname, '../../../../dotenv'),
     example: path.resolve(__dirname, '../../../../dotenv.example'),
 })
+
+require('newrelic')

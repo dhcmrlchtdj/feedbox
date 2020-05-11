@@ -5,7 +5,7 @@ export const rollbar = new Rollbar({
     enabled: process.env.NODE_ENV === 'production',
     captureUncaught: true,
     captureUnhandledRejections: true,
-    reportLevel: 'debug'
+    reportLevel: 'debug',
 })
 
 // https://github.com/getsentry/sentry-javascript/issues/1781#issuecomment-444510327
