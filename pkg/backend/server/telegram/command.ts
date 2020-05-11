@@ -14,6 +14,7 @@ export const execute = async (cmd: string, args: string, msg: Message) => {
 }
 
 actions.set('/list', async (_arg: string, msg: Message) => {
+    if (!(await isAdmin(msg))) return
     const chatId = msg.chat.id
     const user = await model.getOrCreateUserByTelegram(String(chatId))
     const feeds = await model.getFeedByUser(user.id)
@@ -30,6 +31,7 @@ actions.set('/list', async (_arg: string, msg: Message) => {
 })
 
 actions.set('/export', async (_arg: string, msg: Message) => {
+    if (!(await isAdmin(msg))) return
     const chatId = msg.chat.id
     const user = await model.getOrCreateUserByTelegram(String(chatId))
     const feeds = await model.getFeedByUser(user.id)
