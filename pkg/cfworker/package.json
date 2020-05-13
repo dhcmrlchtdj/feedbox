@@ -7,12 +7,12 @@
         "build": "rollup --format=es --input=index.ts --file=index.js --plugin=typescript --no-esModule"
     },
     "dependencies": {
-        "tslib": "1.11.2"
+        "tslib": "2.0.0"
     },
     "devDependencies": {
         "@cloudflare/workers-types": "1.0.9",
-        "@rollup/plugin-typescript": "4.1.1",
-        "rollup": "2.9.0",
-        "typescript": "3.8.3"
+        "@rollup/plugin-typescript": "4.1.2",
+        "rollup": "2.11.2",
+        "typescript": "3.9.3"
     }
 }

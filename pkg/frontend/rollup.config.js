@@ -1,6 +1,6 @@
 import * as path from 'path'
 import json from '@rollup/plugin-json'
-import resolve from '@rollup/plugin-node-resolve'
+import { nodeResolve } from '@rollup/plugin-node-resolve'
 import typescript from '@rollup/plugin-typescript'
 import svelte from 'rollup-plugin-svelte'
 import { terser } from 'rollup-plugin-terser'
@@ -20,7 +20,7 @@ export default [
             sourcemap: true,
         },
         plugins: [
-            resolve(),
+            nodeResolve(),
             typescript(),
             dotenv({
                 path: path.resolve(__dirname, '../../dotenv'),
@@ -51,7 +51,7 @@ export default [
             sourcemap: true,
         },
         plugins: [
-            resolve(),
+            nodeResolve(),
             typescript(),
             dotenv({
                 path: path.resolve(__dirname, '../../dotenv'),
