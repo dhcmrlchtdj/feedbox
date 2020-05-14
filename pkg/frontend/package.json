@@ -7,7 +7,7 @@
         "dev": "rollup -c -w"
     },
     "dependencies": {
-        "tslib": "1.11.2"
+        "tslib": "2.0.0"
     },
     "devDependencies": {
         "@rollup/plugin-json": "4.0.3",
