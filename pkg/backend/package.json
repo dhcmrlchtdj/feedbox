@@ -44,7 +44,7 @@
         "@types/node-fetch": "2.5.7",
         "jest": "26.0.1",
         "migrate": "1.6.2",
-        "nodemon": "2.0.3",
+        "nodemon": "2.0.4",
         "telegram-typings": "4.0.0-beta",
         "typescript": "3.8.3"
     }
