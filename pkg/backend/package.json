@@ -26,7 +26,7 @@
         "fast-xml-parser": "3.16.0",
         "feedparser": "2.2.10",
         "form-data": "3.0.0",
-        "hapi-pino": "8.0.0",
+        "hapi-pino": "8.0.1",
         "iconv-lite": "0.5.1",
         "mailgun-js": "0.22.0",
         "newrelic": "6.7.0",
