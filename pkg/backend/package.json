@@ -15,7 +15,7 @@
         "testRegex": "backend/test/case/.*.js$"
     },
     "dependencies": {
-        "@hapi/bell": "12.0.0",
+        "@hapi/bell": "12.0.1",
         "@hapi/boom": "9.1.0",
         "@hapi/cookie": "11.0.1",
         "@hapi/hapi": "19.1.1",

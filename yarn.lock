@@ -314,14 +314,14 @@
   dependencies:
     "@hapi/hoek" "9.x.x"
 
-"@hapi/bell@12.0.0":
-  version "12.0.0"
-  resolved "https://registry.yarnpkg.com/@hapi/bell/-/bell-12.0.0.tgz#61795ca70924570501bffe2072c5617ead950376"
-  integrity sha512-K8+neT6sQjV4uhYsDGIY42W4jRpKyhCTaErUWgqTzKsQGgakB724rRrGo6VgAOy1SDofKgx8pseXFT8TrgxwyA==
+"@hapi/bell@12.0.1":
+  version "12.0.1"
+  resolved "https://registry.yarnpkg.com/@hapi/bell/-/bell-12.0.1.tgz#b3bac0249a9a584ff8dcb06f4b5475627ed9510a"
+  integrity sha512-B/5p2BvT/DRYYuoS+c40FJOZknutftyvCaorKLQHFRPqor5E3znWeJL27Eu3vhzj+UtoLOw3EMO4KNbU3YUyOg==
   dependencies:
     "@hapi/boom" "9.x.x"
     "@hapi/bounce" "2.x.x"
-    "@hapi/cryptiles" "5.x.x"
+    "@hapi/cryptiles" "^5.1.0"
     "@hapi/hoek" "9.x.x"
     "@hapi/joi" "17.x.x"
     "@hapi/wreck" "17.x.x"
@@ -390,10 +390,10 @@
     "@hapi/hoek" "9.x.x"
     "@hapi/joi" "17.x.x"
 
-"@hapi/cryptiles@5.x.x":
-  version "5.0.0"
-  resolved "https://registry.yarnpkg.com/@hapi/cryptiles/-/cryptiles-5.0.0.tgz#364ca3336594c7f261707a527c4d36da4a8eb86e"
-  integrity sha512-Yq43ti9N51Z7jbm0Q7YVCcofA+4Gh5wsBX/jZ++Z+FM8GYfBQ1WmI9ufZSL+BVX8vRxzDkdQ2fKoG6cxOQlnVQ==
+"@hapi/cryptiles@5.x.x", "@hapi/cryptiles@^5.1.0":
+  version "5.1.0"
+  resolved "https://registry.yarnpkg.com/@hapi/cryptiles/-/cryptiles-5.1.0.tgz#655de4cbbc052c947f696148c83b187fc2be8f43"
+  integrity sha512-fo9+d1Ba5/FIoMySfMqPBR/7Pa29J2RsiPrl7bkwo5W5o+AN1dAYQRi4SPrPwwVxVGKjgLOEWrsvt1BonJSfLA==
   dependencies:
     "@hapi/boom" "9.x.x"
 
