@@ -793,7 +793,7 @@
   dependencies:
     methods "^1.1.2"
 
-"@newrelic/native-metrics@^5.0.0":
+"@newrelic/native-metrics@^5.1.0":
   version "5.1.0"
   resolved "https://registry.yarnpkg.com/@newrelic/native-metrics/-/native-metrics-5.1.0.tgz#03c5b904792a5accff691268d3f8b20be2489776"
   integrity sha512-AD0C+QuPcmOH0n6hNfLacweJ/Kb35Hp9PChTmMqZ/7+Fflk2GbwrT/L/wVIZRXYrejByRV3Yh6Z1pyzl2g42Zg==
@@ -3896,10 +3896,10 @@ netmask@^1.0.6:
   resolved "https://registry.yarnpkg.com/netmask/-/netmask-1.0.6.tgz#20297e89d86f6f6400f250d9f4f6b4c1945fcd35"
   integrity sha1-ICl+idhvb2QA8lDZ9Pa0wZRfzTU=
 
-newrelic@6.7.0:
-  version "6.7.0"
-  resolved "https://registry.yarnpkg.com/newrelic/-/newrelic-6.7.0.tgz#577f3f4102b42617aab900fd1503f64124a739e4"
-  integrity sha512-NU5jCS8tm3T7A1ybEj+xShLilxPtKMS7nYzIf+QgbEsf8nFWoAvUdgr7J2Bszf6kC3mO0OsHKGLs/qb8CWU1qg==
+newrelic@6.8.0:
+  version "6.8.0"
+  resolved "https://registry.yarnpkg.com/newrelic/-/newrelic-6.8.0.tgz#ecba7e6689c5fb38557b543e12a7bd0dc895c7e9"
+  integrity sha512-uc/+7L/dx4LdFobplVfP1Ed9uolcJ86pSjkK8ozlkCJIai4IrCa+YVrmZ2qJRX2o06yKLG6hzTrTAQDtDxzEEQ==
   dependencies:
     "@grpc/grpc-js" "1.0.3"
     "@grpc/proto-loader" "^0.5.3"
@@ -3916,7 +3916,7 @@ newrelic@6.7.0:
     readable-stream "^3.1.1"
     semver "^5.3.0"
   optionalDependencies:
-    "@newrelic/native-metrics" "^5.0.0"
+    "@newrelic/native-metrics" "^5.1.0"
 
 next-tick@1:
   version "1.1.0"
