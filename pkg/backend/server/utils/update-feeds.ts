@@ -9,10 +9,10 @@ import { extractSite } from './extract-site'
 import { Channel } from '../../../common/sync'
 
 export const updateFeeds = async () => {
-    const chFeed = new Channel<Feed>(Infinity)
-    const chFeedItem = new Channel<[Feed, FeedItem]>(Infinity)
-    const chEmail = new Channel<[Feed, FeedItem, GithubUser[]]>(Infinity)
-    const chTelegram = new Channel<[FeedItem, TelegramUser[]]>(Infinity)
+    const chFeed = new Channel<Feed>(200)
+    const chFeedItem = new Channel<[Feed, FeedItem]>(20)
+    const chEmail = new Channel<[Feed, FeedItem, GithubUser[]]>(20)
+    const chTelegram = new Channel<[FeedItem, TelegramUser[]]>(20)
 
     const feeds = await model.getActiveFeeds()
     chFeed.sendAll(feeds).then(() => chFeed.close())
