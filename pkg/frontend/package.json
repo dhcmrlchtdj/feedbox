@@ -21,6 +21,6 @@
         "rollup-plugin-svelte": "5.2.2",
         "rollup-plugin-terser": "6.1.0",
         "svelte": "3.23.0",
-        "typescript": "3.9.3"
+        "typescript": "3.9.5"
     }
 }
