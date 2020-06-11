@@ -40,16 +40,15 @@ export const updateFeeds = async () => {
                 const links = Array.from(linkSet)
                 const updated = (() => {
                     const first = items[0]
-                    const dateSrc = first.date || first.meta.date || null
-                    if (dateSrc !== null) {
-                        try {
-                            const date = new Date(dateSrc)
-                            return date
-                        } catch (err) {
-                            console.error(err)
-                        }
+                    const date = first.date || first.meta.date
+                    if (
+                        date instanceof Date &&
+                        !Number.isNaN(date.getTime()) // Invalid Date
+                    ) {
+                        return date
+                    } else {
+                        return new Date()
                     }
-                    return new Date()
                 })()
                 await model.updateFeed(feed.id, links, updated)
             }
