@@ -115,12 +115,9 @@ export const model = {
 
     async getActiveFeeds(): Promise<Feed[]> {
         return db.manyOrNone<Feed>(
-            `SELECT
-                feeds.id AS id,
-                feeds.url AS url,
-                feeds.updated AS updated
+            `SELECT id, url, updated
             FROM feeds
-            JOIN r_user_feed r ON r.fid = feeds.id`,
+            WHERE id IN (SELECT fid FROM r_user_feed)`,
         )
     },
 
@@ -195,8 +192,7 @@ export const model = {
         const r = await db.result(
             `DELETE FROM r_user_feed
             WHERE uid = $1
-            AND fid IN
-                (SELECT id FROM feeds WHERE url in (${uvalues}))`,
+            AND fid IN (SELECT id FROM feeds WHERE url in (${uvalues}))`,
             [userId, ...urls],
         )
         return r.rowCount
