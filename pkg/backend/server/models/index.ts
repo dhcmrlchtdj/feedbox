@@ -87,15 +87,10 @@ export const model = {
 
     async getFeedByUser(userId: number): Promise<Feed[]> {
         return db.manyOrNone<Feed>(
-            `SELECT
-                feeds.id AS id,
-                feeds.url AS url,
-                feeds.updated AS updated
-            FROM r_user_feed AS r
-            JOIN feeds ON r.fid = feeds.id
-            JOIN users ON r.uid = users.id
-            WHERE users.id = $1
-            ORDER BY feeds.updated DESC`,
+            `SELECT id, url, updated
+            FROM feeds
+            WHERE id IN (SELECT fid FROM r_user_feed WHERE uid = $1)
+            ORDER BY updated DESC`,
             [userId],
         )
     },
@@ -133,14 +128,9 @@ export const model = {
 
     async getSubscribers(feedId: number): Promise<User[]> {
         return db.manyOrNone<User>(
-            `SELECT
-                users.id AS id,
-                users.platform AS platform,
-                users.pid AS pid,
-                users.addition AS addition
+            `SELECT id, platform, pid, addition
             FROM users
-            JOIN r_user_feed r ON r.uid = users.id
-            WHERE r.fid = $1`,
+            WHERE id IN (SELECT uid FROM r_user_feed WHERE fid = $1)`,
             feedId,
         )
     },
