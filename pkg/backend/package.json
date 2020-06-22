@@ -4,15 +4,15 @@
     "version": "0.0.0",
     "scripts": {
         "build": "tsc",
-        "dev": "tsc -w & nodemon -w ../_build/backend ../_build/backend/bin/server.js & wait"
+        "dev": "tsc -w & nodemon -w ./_build ./_build/bin/server.js & wait"
     },
     "jest": {
         "testEnvironment": "node",
         "collectCoverage": true,
         "coverageProvider": "v8",
-        "rootDir": "../_build",
-        "snapshotResolver": "./backend/test/jest.snapshot-resolver.js",
-        "testRegex": "backend/test/case/.*.js$"
+        "rootDir": "./_build",
+        "snapshotResolver": "./test/jest.snapshot-resolver.js",
+        "testRegex": "test/case/.*.js$"
     },
     "dependencies": {
         "@hapi/bell": "12.0.1",
@@ -32,8 +32,8 @@
         "newrelic": "6.9.0",
         "node-fetch": "2.6.0",
         "pg-monitor": "1.4.0",
-        "pg-promise": "10.5.6",
-        "rollbar": "2.16.2",
+        "pg-promise": "10.5.7",
+        "rollbar": "2.17.0",
         "tslib": "2.0.0"
     },
     "devDependencies": {
@@ -43,7 +43,6 @@
         "@types/node": "14.0.13",
         "@types/node-fetch": "2.5.7",
         "jest": "26.0.1",
-        "migrate": "1.6.2",
         "nodemon": "2.0.4",
         "telegram-typings": "4.0.0-beta",
         "typescript": "3.9.5"

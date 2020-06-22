@@ -5,16 +5,16 @@
     "license": "UNLICENSED",
     "scripts": {
         "start": "make start",
-        "build": "make release"
+        "build": "make heroku_build"
     },
     "workspaces": [
         "pkg/*"
     ],
     "engines": {
-        "node": "14.*",
-        "yarn": "1.*"
+        "node": "14.*"
     },
     "devDependencies": {
+        "migrate": "1.6.2",
         "prettier": "2.0.5"
     }
 }

@@ -1,8 +1,7 @@
 {
     "extends": "../../tsconfig.json",
     "compilerOptions": {
-        "outDir": "../_build/",
-
+        "outDir": "./_build/",
         "module": "CommonJS",
         "target": "ES2019",
         "lib": ["ES2019"],

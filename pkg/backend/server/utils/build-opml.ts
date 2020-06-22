@@ -1,5 +1,5 @@
 import { extractSite } from './extract-site'
-import { encodeHtmlEntities } from '../../../common/html-entity'
+import { encodeHtmlEntities } from './html-entity'
 
 // http://dev.opml.org/spec2.html
 export const buildOpml = (feeds: { url: string }[]): string => {

@@ -1,5 +1,3 @@
-import type {} from '@cloudflare/workers-types'
-
 const apiHost = 'fbox.herokuapp.com'
 
 const handle = (event: FetchEvent) => {

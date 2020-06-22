@@ -2,3 +2,4 @@ node_modules/
 coverage/
 _build/
 *.md
+pnpm-lock.yaml

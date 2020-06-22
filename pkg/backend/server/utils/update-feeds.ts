@@ -6,7 +6,7 @@ import type { FeedItem } from './parse-feed'
 import { sendEmail } from './send-email'
 import { telegramClient } from '../telegram/client'
 import { extractSite } from './extract-site'
-import { Channel } from '../../../common/sync'
+import { Channel } from './sync'
 
 export const updateFeeds = async () => {
     const chFeed = new Channel<Feed>(200)

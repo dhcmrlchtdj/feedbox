@@ -13,7 +13,7 @@ const common = async () => {
         routes: {
             payload: { allow: 'application/json' },
             files: {
-                relativeTo: path.resolve(__dirname, '../../frontend'),
+                relativeTo: path.resolve(__dirname, '../../../frontend/_build'),
             },
         },
     })

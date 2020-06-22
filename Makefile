@@ -1,67 +1,67 @@
 SHELL := bash
 PATH := ./node_modules/.bin:$(PATH)
 
-build: node_modules
+build:
 	@$(MAKE) -j --no-print-directory build_backend build_frontend build_cfworker
 
-node_modules:
-	yarn install
-
-dev: node_modules
-	cd ./pkg/frontend && yarn dev & \
-		cd ./pkg/common && yarn dev & \
-		cd ./pkg/backend && yarn dev & \
+dev:
+	cd ./pkg/frontend && pnpm run dev & \
+		cd ./pkg/backend && pnpm run dev & \
 		wait
 
 fmt:
 	prettier --write .
 
 clean:
-	rm -rf ./pkg/_build
+	rm -rf ./pkg/backend/_build ./pkg/frontend/_build
 
 start:
-	node ./pkg/_build/backend/bin/server.js
-
-release:
-	@$(MAKE) --no-print-directory clean
-	@$(MAKE) --no-print-directory build
-	@$(MAKE) --no-print-directory up_db
+	node ./pkg/backend/_build/bin/server.js
 
 test:
-	cd ./pkg/backend && DISABLE_LOGGER=true yarn jest
+	cd ./pkg/backend && DISABLE_LOGGER=true pnpx jest
 
 test_update:
-	cd ./pkg/backend && DISABLE_LOGGER=true yarn jest -u
+	cd ./pkg/backend && DISABLE_LOGGER=true pnpx jest -u
 
 build_backend:
-	cd ./pkg/backend && yarn build
+	cd ./pkg/backend && pnpm run build
 
-build_common:
-	cd ./pkg/common && yarn build
-
-build_frontend: build_common
-	cd ./pkg/frontend && yarn build
+build_frontend:
+	cd ./pkg/frontend && pnpm run build
 
 build_cfworker:
-	cd ./pkg/cfworker && yarn build
+	cd ./pkg/cfworker && pnpm run build
 
 up_db:
 	migrate up \
-		--store=./pkg/_build/backend/migration/pg-store.js \
-		--migrations-dir=./pkg/_build/backend/migration \
+		--store=./pkg/backend/_build/migration/pg-store.js \
+		--migrations-dir=./pkg/backend/_build/migration \
 		--matches='r*.js'
 
 down_db:
 	migrate down \
-		--store=./pkg/_build/backend/migration/pg-store.js \
-		--migrations-dir=./pkg/_build/backend/migration \
+		--store=./pkg/backend/_build/migration/pg-store.js \
+		--migrations-dir=./pkg/backend/_build/migration \
 		--matches='r*.js'
 
-ci_test: release
+ci_test:
+	npm i -g pnpm@5
+	pnpm install --ignore-scripts --prod=false
+	@$(MAKE) --no-print-directory clean
+	@$(MAKE) --no-print-directory build
 	@$(MAKE) --no-print-directory test
 
-.PHONY: build build_backend build_common build_frontend build_cfworker
-.PHONY: start release dev
+heroku_build:
+	npm i -g pnpm@5
+	pnpm install --ignore-scripts --prod=false
+	@$(MAKE) --no-print-directory clean
+	@$(MAKE) --no-print-directory build
+	@$(MAKE) --no-print-directory up_db
+
+.PHONY: build build_backend build_frontend build_cfworker
+.PHONY: start dev
 .PHONY: test test_update ci_test
 .PHONY: up_db down_db
 .PHONY: fmt clean
+.PHONY: heroku_build

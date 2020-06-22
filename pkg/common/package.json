@@ -1,9 +1,0 @@
-{
-    "private": true,
-    "name": "@feedbox/common",
-    "version": "0.0.0",
-    "scripts": {
-        "build": "tsc",
-        "dev": "tsc -w"
-    }
-}

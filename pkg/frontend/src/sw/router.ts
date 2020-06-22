@@ -1,6 +1,6 @@
 // @ts-ignore
 import App from '../components/app.html'
-import { WorkerRouter } from '@feedbox/common/router'
+import { WorkerRouter } from '../utils/router'
 import * as strategy from './strategy'
 import { CACHE_VERSION } from './version'
 

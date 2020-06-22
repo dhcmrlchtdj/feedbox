@@ -1,4 +1,4 @@
 // @ts-ignore
-import { bundle } from '../../../_build/frontend/manifest.json'
+import { bundle } from '../../_build/manifest.json'
 
 export const CACHE_VERSION = bundle.join(':')

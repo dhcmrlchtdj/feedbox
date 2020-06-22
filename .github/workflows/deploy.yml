@@ -7,7 +7,7 @@ on:
 
 jobs:
     heroku:
-        runs-on: ubuntu-18.04
+        runs-on: ubuntu-20.04
         services:
             postgres:
                 image: postgres
@@ -22,20 +22,18 @@ jobs:
                     --health-timeout 5s
                     --health-retries 5
         steps:
-            - uses: actions/checkout@v2.0.0
+            - uses: actions/checkout@v2.3.1
               with:
                   fetch-depth: 0
-            - uses: actions/setup-node@v1.1.0
+            - uses: actions/setup-node@v1.4.2
               with:
-                  version: '14.x'
-            - name: yarn-cache
-              id: yarn-cache
-              run: echo "::set-output name=dir::$(yarn cache dir)"
-            - uses: actions/cache@v1.1.2
+                  node-version: '14.x'
+            - uses: actions/cache@v2.0.0
               with:
-                  path: ${{ steps.yarn-cache.outputs.dir }}
-                  key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
-                  restore-keys: ${{ runner.os }}-yarn-
+                  path: ~/.pnpm-store
+                  key: ${{ runner.os }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}
+                  restore-keys: |
+                      ${{ runner.os }}-pnpm-
             - run: make ci_test
               env:
                   NODE_ENV: 'development'
@@ -68,7 +66,7 @@ jobs:
             - name: deploy cloudflare worker
               working-directory: ./pkg/cfworker
               run: |
-                  yarn add @cloudflare/wrangler
-                  yarn wrangler publish
+                  pnpm add @cloudflare/wrangler
+                  pnpx wrangler publish
               env:
                   CF_API_TOKEN: ${{ secrets.CF_API_TOKEN }}

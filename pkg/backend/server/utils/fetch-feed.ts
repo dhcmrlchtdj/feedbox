@@ -2,7 +2,8 @@ import * as chardet from 'chardet'
 import * as iconv from 'iconv-lite'
 import fetch from 'node-fetch'
 import { report } from './error-reporter'
-import { Option, Some, None } from '../../../common/option'
+import type { Option } from './option'
+import { Some, None } from './option'
 
 export const fetchFeed = async (feedurl: string): Promise<Option<string>> => {
     return fetch(feedurl, {

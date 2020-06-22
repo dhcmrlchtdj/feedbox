@@ -14,14 +14,14 @@ export default [
     {
         input: './src/app.ts',
         output: {
-            dir: '../_build/frontend',
+            dir: './_build',
             entryFileNames: '[name].[hash].js',
             format: 'esm',
             sourcemap: true,
         },
         plugins: [
-            nodeResolve(),
             typescript(),
+            nodeResolve(),
             dotenv({
                 path: path.resolve(__dirname, '../../dotenv'),
                 example: path.resolve(__dirname, '../../dotenv.example'),
@@ -32,11 +32,11 @@ export default [
                 immutable: true,
                 dev: !prod,
             }),
-            manifest('../_build/frontend/manifest.json'),
+            manifest('./_build/manifest.json'),
             template({
-                manifest: '../_build/frontend/manifest.json',
+                manifest: './_build/manifest.json',
                 files: {
-                    './src/template.html': '../_build/frontend/index.html',
+                    './src/template.html': './_build/index.html',
                 },
             }),
             prod && terser(),
@@ -45,7 +45,7 @@ export default [
     {
         input: './src/sw/index.ts',
         output: {
-            dir: '../_build/frontend',
+            dir: './_build',
             entryFileNames: 'sw.js',
             format: 'esm',
             sourcemap: true,

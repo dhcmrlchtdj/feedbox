@@ -5,7 +5,7 @@
         "target": "ES2019",
         "lib": ["ES2019", "DOM"],
 
-        "sourceMap": true,
+        "inlineSourceMap": true,
         "inlineSources": true
     }
 }
