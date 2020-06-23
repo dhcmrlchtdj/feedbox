@@ -50,6 +50,7 @@ ci_test:
 	pnpm install --ignore-scripts --prod=false
 	@$(MAKE) --no-print-directory clean
 	@$(MAKE) --no-print-directory build
+	@$(MAKE) --no-print-directory up_db
 	@$(MAKE) --no-print-directory test
 
 heroku_build:
