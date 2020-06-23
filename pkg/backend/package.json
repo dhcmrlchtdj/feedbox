@@ -29,7 +29,7 @@
         "hapi-pino": "8.0.1",
         "iconv-lite": "0.6.0",
         "mailgun-js": "0.22.0",
-        "newrelic": "6.9.0",
+        "newrelic": "6.10.0",
         "node-fetch": "2.6.0",
         "pg-monitor": "1.4.0",
         "pg-promise": "10.5.7",
