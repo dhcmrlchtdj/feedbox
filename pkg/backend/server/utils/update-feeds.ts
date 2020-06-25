@@ -74,7 +74,7 @@ export const updateFeeds = async () => {
             chTelegram.close()
         })
 
-    const t1 = chEmail.onReceive(10, async ([feed, item, users]) => {
+    const tEmail = chEmail.onReceive(3, async ([feed, item, users]) => {
         const title = item.title || 'unknown'
         const site = extractSite(feed.url)
         const subject = `"${title}" from "${site}"`
@@ -84,12 +84,12 @@ export const updateFeeds = async () => {
         const content = item.description || item.summary || ''
         const text = [link, tags, content].filter(Boolean).join('<br><br>')
 
-        for (let user of users) {
+        for (const user of users) {
             await sendEmail(user.addition.email, subject, text)
         }
     })
 
-    const t2 = chTelegram.onReceive(10, async ([item, users]) => {
+    const tTG = chTelegram.onReceive(3, async ([item, users]) => {
         const text: string[] = []
 
         const link = item.origlink || item.link || item.guid
@@ -104,7 +104,7 @@ export const updateFeeds = async () => {
             text.push(`comments: ${item.comments}`)
         }
 
-        for (let user of users) {
+        for (const user of users) {
             await telegramClient.send('sendMessage', {
                 chat_id: Number(user.pid),
                 text: text.join('\n\n'),
@@ -112,5 +112,5 @@ export const updateFeeds = async () => {
         }
     })
 
-    await Promise.all([t1, t2])
+    await Promise.all([tEmail, tTG])
 }
