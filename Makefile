@@ -33,17 +33,17 @@ build_frontend:
 build_cfworker:
 	cd ./pkg/cfworker && pnpm run build
 
+MIGRATE_ARG = --store=./pkg/backend/_build/migration/pg-store.js \
+			  --migrations-dir=./pkg/backend/_build/migration \
+			  --matches='r*.js'
+
 up_db:
-	migrate up \
-		--store=./pkg/backend/_build/migration/pg-store.js \
-		--migrations-dir=./pkg/backend/_build/migration \
-		--matches='r*.js'
+	migrate up $(MIGRATE_ARG)
+	migrate up $(MIGRATE_ARG)
 
 down_db:
-	migrate down \
-		--store=./pkg/backend/_build/migration/pg-store.js \
-		--migrations-dir=./pkg/backend/_build/migration \
-		--matches='r*.js'
+	migrate down $(MIGRATE_ARG)
+	migrate down $(MIGRATE_ARG)
 
 ci_test:
 	npm i -g pnpm@5

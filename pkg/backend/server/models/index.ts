@@ -102,9 +102,9 @@ export const model = {
     ): Promise<void> {
         await db.none(
             `UPDATE feeds
-            SET links = $1, updated = $2
+            SET link = $1, updated = $2
             WHERE id = $3`,
-            [JSON.stringify(links), updated, id],
+            [links, updated, id],
         )
     },
 
@@ -117,13 +117,13 @@ export const model = {
     },
 
     async getLinks(feedId: number): Promise<string[]> {
-        const feed = await db.one<{ links: string[] }>(
-            `SELECT links
+        const feed = await db.one<{ link: string[] }>(
+            `SELECT link
             FROM feeds
             WHERE id = $1`,
             [feedId],
         )
-        return feed.links
+        return feed.link
     },
 
     async getSubscribers(feedId: number): Promise<User[]> {
