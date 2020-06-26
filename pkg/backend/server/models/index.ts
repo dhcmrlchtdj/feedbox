@@ -95,14 +95,14 @@ export const model = {
         )
     },
 
-    async updateFeed(
+    async addNewFeeds(
         id: number,
         links: string[],
         updated: Date,
     ): Promise<void> {
         await db.none(
             `UPDATE feeds
-            SET link = $1, updated = $2
+            SET link = array_cat(link, $1::varchar[]), updated = $2
             WHERE id = $3`,
             [links, updated, id],
         )

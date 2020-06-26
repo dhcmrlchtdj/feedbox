@@ -114,7 +114,7 @@ describe('feed API', () => {
 
 describe('model', () => {
     test('updateFeed', async () => {
-        await model.updateFeed(3, ['feed1', 'feed2'], new Date(1580601600000))
+        await model.addNewFeeds(3, ['feed1', 'feed2'], new Date(1580601600000))
         const curr = await model.getFeedByUser(1)
         expect(curr).toMatchSnapshot()
     })

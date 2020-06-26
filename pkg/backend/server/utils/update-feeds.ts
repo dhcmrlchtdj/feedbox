@@ -29,15 +29,16 @@ export const updateFeeds = async () => {
 
             const oldLinks = await model.getLinks(feed.id)
             const linkSet = new Set(oldLinks)
+            const newLinks: string[] = []
             for (const item of items) {
                 const link = item.origlink || item.link || item.guid
                 if (linkSet.has(link)) continue
                 linkSet.add(link)
+                newLinks.push(link)
                 await chFeedItem.send([feed, item])
             }
 
-            if (linkSet.size > oldLinks.length) {
-                const links = Array.from(linkSet)
+            if (newLinks.length > 0) {
                 const updated = (() => {
                     const first = items[0]
                     const date = first.date || first.meta.date
@@ -50,7 +51,7 @@ export const updateFeeds = async () => {
                         return new Date()
                     }
                 })()
-                await model.updateFeed(feed.id, links, updated)
+                await model.addNewFeeds(feed.id, newLinks, updated)
             }
         })
         .then(() => chFeedItem.close())
