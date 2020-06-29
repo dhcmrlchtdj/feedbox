@@ -14,7 +14,7 @@
         "node": "14.*"
     },
     "devDependencies": {
-        "migrate": "1.6.2",
+        "migrate": "1.7.0",
         "prettier": "2.0.5"
     }
 }
