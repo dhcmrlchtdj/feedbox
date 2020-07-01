@@ -45,6 +45,6 @@
         "jest": "26.0.1",
         "nodemon": "2.0.4",
         "telegram-typings": "4.0.0-beta",
-        "typescript": "3.9.5"
+        "typescript": "3.9.6"
     }
 }
