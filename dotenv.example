@@ -17,10 +17,3 @@ TELEGRAM_WEBHOOK_PATH="crypto.randomBytes(16).toString('hex')"
 ROLLBAR_TOKEN="https://rollbar.com/team/project/settings/access_tokens/ post_server_item"
 
 DATABASE_URL="postgres://user:password@localhost:5432/feedbox"
-
-NEW_RELIC_ENABLED="false"
-NEW_RELIC_LOG="stdout"
-NEW_RELIC_LICENSE_KEY="key"
-NEW_RELIC_APP_NAME="feedbox"
-NEW_RELIC_NO_CONFIG_FILE="true"
-NEW_RELIC_LOG_LEVEL="info"

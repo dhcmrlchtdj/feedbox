@@ -1,4 +1,4 @@
-import * as Joi from '@hapi/joi'
+import * as Joi from 'joi'
 import { model } from '../models'
 import { buildOpml } from '../utils/build-opml'
 import { extractLinks } from '../utils/extract-link-from-opml'

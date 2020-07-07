@@ -1,4 +1,4 @@
-import * as Joi from '@hapi/joi'
+import * as Joi from 'joi'
 import { telegramBot } from '../telegram/bot'
 
 export const webhook = {

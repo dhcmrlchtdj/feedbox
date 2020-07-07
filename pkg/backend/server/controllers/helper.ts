@@ -1,4 +1,4 @@
-import * as Joi from '@hapi/joi'
+import * as Joi from 'joi'
 import { parseFeed } from '../utils/parse-feed'
 import { fetchFeed } from '../utils/fetch-feed'
 

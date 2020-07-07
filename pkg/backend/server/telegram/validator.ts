@@ -1,5 +1,5 @@
 import type { Message, ChatMember } from 'telegram-typings'
-import * as Joi from '@hapi/joi'
+import * as Joi from 'joi'
 import { telegramClient } from './client'
 
 export const isAdmin = async (msg: Message): Promise<boolean> => {
