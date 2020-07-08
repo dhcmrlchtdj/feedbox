@@ -27,7 +27,7 @@
         "feedparser": "2.2.10",
         "form-data": "3.0.0",
         "hapi-pino": "8.0.1",
-        "iconv-lite": "0.6.1",
+        "iconv-lite": "0.6.2",
         "mailgun-js": "0.22.0",
         "newrelic": "6.10.0",
         "node-fetch": "2.6.0",
