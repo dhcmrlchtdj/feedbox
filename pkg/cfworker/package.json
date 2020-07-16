@@ -13,6 +13,6 @@
         "@cloudflare/workers-types": "2.0.0",
         "@rollup/plugin-typescript": "5.0.1",
         "rollup": "2.19.0",
-        "typescript": "3.9.6"
+        "typescript": "3.9.7"
     }
 }
