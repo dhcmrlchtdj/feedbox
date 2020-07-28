@@ -40,7 +40,7 @@
         "@types/feedparser": "2.2.3",
         "@types/jest": "26.0.3",
         "@types/mailgun-js": "0.22.7",
-        "@types/node": "14.0.14",
+        "@types/node": "14.0.27",
         "@types/node-fetch": "2.5.7",
         "jest": "26.1.0",
         "nodemon": "2.0.4",
