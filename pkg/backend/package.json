@@ -42,7 +42,7 @@
         "@types/mailgun-js": "0.22.7",
         "@types/node": "14.0.14",
         "@types/node-fetch": "2.5.7",
-        "jest": "26.1.0",
+        "jest": "26.4.0",
         "nodemon": "2.0.4",
         "telegram-typings": "4.0.0-beta",
         "typescript": "3.9.6"
