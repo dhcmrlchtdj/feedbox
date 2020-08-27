@@ -31,7 +31,7 @@
         "mailgun-js": "0.22.0",
         "node-fetch": "2.6.0",
         "pg-monitor": "1.4.1",
-        "pg-promise": "10.5.8",
+        "pg-promise": "10.6.1",
         "rollbar": "2.19.2",
         "tslib": "2.0.1"
     },
