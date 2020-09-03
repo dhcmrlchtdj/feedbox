@@ -15,6 +15,6 @@
     },
     "devDependencies": {
         "migrate": "1.7.0",
-        "prettier": "2.0.5"
+        "prettier": "2.1.2"
     }
 }
