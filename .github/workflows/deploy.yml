@@ -25,48 +25,32 @@ jobs:
             - uses: actions/checkout@v2.3.1
               with:
                   fetch-depth: 0
-            - uses: actions/setup-node@v1.4.2
+            - uses: actions/setup-go@v2.1.2
               with:
-                  node-version: '14.x'
-            - uses: actions/cache@v2.0.0
+                  go-version: '1.x'
+            - uses: actions/cache@v2.1.1
               with:
-                  path: ~/.pnpm-store
-                  key: ${{ runner.os }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}
-                  restore-keys: |
-                      ${{ runner.os }}-pnpm-
-            - run: make ci_test
+                  path: ~/go/pkg/mod
+                  key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+                  restore-keys: ${{ runner.os }}-go-
+            - run: make test
               env:
-                  NODE_ENV: 'development'
+                  ENV: 'test'
                   SERVER: 'http://localhost:8000'
+                  PORT: '8000'
                   COOKIE_SECRET: 'crypto.randomBytes(16).toString("hex")'
-                  GITHUB_AUTH_SECRET: 'crypto.randomBytes(16).toString("hex")'
                   GITHUB_CLIENT_ID: 'https://github.com/settings/developers'
                   GITHUB_CLIENT_SECRET: 'https://github.com/settings/developers'
                   MAILGUN_API_KEY: 'key-example'
                   MAILGUN_DOMAIN: 'feedbox.example.com'
                   MAILGUN_FROM: 'feedbox <feedbox@example.com>'
                   TELEGRAM_BOT_TOKEN: '123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11'
+                  TELEGRAM_BOT_NAME: 'bot_name'
                   TELEGRAM_WEBHOOK_PATH: 'crypto'
                   ROLLBAR_TOKEN: 'post_server_item'
                   DATABASE_URL: 'postgres://user:password@localhost:5432/feedbox'
-                  NEW_RELIC_ENABLED: 'false'
-                  NEW_RELIC_LOG: 'stdout'
-                  NEW_RELIC_LICENSE_KEY: 'key'
-                  NEW_RELIC_APP_NAME: 'feedbox'
-                  NEW_RELIC_NO_CONFIG_FILE: 'true'
-                  NEW_RELIC_LOG_LEVEL: 'info'
-            - uses: codecov/codecov-action@v1.0.6
-              with:
-                  file: ./pkg/_build/coverage/coverage-final.json
             - name: deploy heroku
               run: git push --force https://heroku:$HEROKU_AUTH_TOKEN@git.heroku.com/$HEROKU_APP_NAME.git || echo
               env:
                   HEROKU_APP_NAME: 'fbox'
                   HEROKU_AUTH_TOKEN: ${{ secrets.HEROKU_AUTH_TOKEN }}
-            - name: deploy cloudflare worker
-              working-directory: ./pkg/cfworker
-              run: |
-                  pnpm add @cloudflare/wrangler
-                  pnpx wrangler publish
-              env:
-                  CF_API_TOKEN: ${{ secrets.CF_API_TOKEN }}

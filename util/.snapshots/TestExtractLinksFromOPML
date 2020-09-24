@@ -1,0 +1,5 @@
+([]string) (len=3) {
+  (string) (len=32) "https://blog.cloudflare.com/rss/",
+  (string) (len=24) "https://v8.dev/blog.atom",
+  (string) (len=29) "https://webkit.org/feed/atom/"
+}

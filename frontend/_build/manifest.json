@@ -1,0 +1,10 @@
+{
+    "bundle": [
+        "app.9c9d8f88.js"
+    ],
+    "entry": {
+        "app": "app.9c9d8f88.js"
+    },
+    "chunk": [],
+    "asset": []
+}

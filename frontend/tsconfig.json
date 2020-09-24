@@ -1,0 +1,35 @@
+{
+    "compilerOptions": {
+        "module": "ES6",
+        "target": "ES2019",
+        "lib": ["ES2019", "DOM"],
+
+        "sourceMap": false,
+        "inlineSourceMap": true,
+        "inlineSources": true,
+
+        "resolveJsonModule": true,
+        "esModuleInterop": true,
+
+        "importHelpers": true,
+        "declaration": false,
+        "noEmitOnError": false,
+        "moduleResolution": "node",
+
+        "noFallthroughCasesInSwitch": true,
+        "noImplicitReturns": true,
+        "noUnusedLocals": true,
+        "noUnusedParameters": true,
+
+        "strict": true,
+        "noImplicitAny": true,
+        "strictPropertyInitialization": true,
+        "strictBindCallApply": true,
+        "alwaysStrict": true,
+        "noImplicitThis": true,
+        "strictFunctionTypes": true,
+        "strictNullChecks": true,
+
+        "pretty": true
+    }
+}
