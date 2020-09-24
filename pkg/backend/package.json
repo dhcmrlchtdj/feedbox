@@ -18,9 +18,9 @@
         "@hapi/bell": "12.1.0",
         "@hapi/boom": "9.1.0",
         "@hapi/cookie": "11.0.1",
-        "@hapi/hapi": "20.0.0",
+        "@hapi/hapi": "20.0.1",
         "@hapi/inert": "6.0.2",
-        "chardet": "1.2.1",
+        "chardet": "1.2.2",
         "dotenv-safe": "8.2.0",
         "fast-xml-parser": "3.17.4",
         "feedparser": "2.2.10",
@@ -37,13 +37,13 @@
     },
     "devDependencies": {
         "@types/feedparser": "2.2.3",
-        "@types/jest": "26.0.13",
+        "@types/jest": "26.0.14",
         "@types/mailgun-js": "0.22.10",
-        "@types/node": "14.10.2",
+        "@types/node": "14.11.2",
         "@types/node-fetch": "2.5.7",
         "jest": "26.4.2",
         "nodemon": "2.0.4",
         "telegram-typings": "4.0.0-beta",
-        "typescript": "4.0.2"
+        "typescript": "4.0.3"
     }
 }
