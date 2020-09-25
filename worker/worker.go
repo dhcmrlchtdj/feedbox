@@ -73,7 +73,7 @@ func Start() {
 
 func fetchFeed(done *sync.WaitGroup, qFeed <-chan *db.Feed, qFeedItem chan<- *feedItem) {
 	work := func(wg *sync.WaitGroup) {
-		feedParser := gofeed.NewParser()
+		feedParser := util.NewFeedParser()
 		for dbFeed := range qFeed {
 			feed, err := feedParser.ParseURL(dbFeed.URL)
 			if err != nil {
@@ -176,6 +176,7 @@ func sendEmail(done *sync.WaitGroup, qGithub <-chan *githubItem) {
 			subject := fmt.Sprintf(`"%s" from "%s"`, item.Title, site)
 
 			var text strings.Builder
+			text.WriteString(item.Link)
 			if len(item.Categories) > 0 {
 				text.WriteString("<br><br>")
 				for _, tag := range item.Categories {
@@ -184,7 +185,6 @@ func sendEmail(done *sync.WaitGroup, qGithub <-chan *githubItem) {
 					text.WriteByte(' ')
 				}
 			}
-			text.WriteString(item.Link)
 			if item.Description != "" {
 				text.WriteString("<br><br>")
 				text.WriteString(item.Description)
@@ -218,13 +218,18 @@ func sendTelegram(done *sync.WaitGroup, qTelegram <-chan *telegramItem) {
 
 			var text strings.Builder
 			text.WriteString(item.Link)
-			text.WriteString("\n\n")
 			if len(item.Categories) > 0 {
+				text.WriteString("\n\n")
 				for _, tag := range item.Categories {
 					text.WriteByte('#')
 					text.WriteString(tag)
 					text.WriteByte(' ')
 				}
+			}
+			if comment, found := item.Custom["comments"]; found {
+				text.WriteString("\n\n")
+				text.WriteString("comment: ")
+				text.WriteString(comment)
 			}
 			content := text.String()
 
