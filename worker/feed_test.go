@@ -1,11 +1,11 @@
-package util_test
+package worker_test
 
 import (
 	"testing"
 
 	"github.com/bradleyjkemp/cupaloy"
 
-	"github.com/dhcmrlchtdj/feedbox/util"
+	"github.com/dhcmrlchtdj/feedbox/worker"
 )
 
 func TestParseRSSComment(t *testing.T) {
@@ -30,7 +30,7 @@ func TestParseRSSComment(t *testing.T) {
 		</channel>
 	</rss>
 	`
-	parser := util.NewFeedParser()
+	parser := worker.NewFeedParser()
 	feed, err := parser.ParseString(rss)
 	if err != nil {
 		t.Fatal(err)

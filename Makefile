@@ -17,17 +17,17 @@ fmt:
 
 test:
 	-ENV=test TZ=UTC go test ./database
-	-ENV=test go test ./server
-	-ENV=test go test ./util
+	-ENV=test TZ=UTC go test ./server
+	-ENV=test TZ=UTC go test ./util ./worker
 
 test_update:
 	-ENV=test TZ=UTC UPDATE_SNAPSHOTS=true go test ./database
-	-ENV=test UPDATE_SNAPSHOTS=true go test ./server
-	-ENV=test UPDATE_SNAPSHOTS=true go test ./util
+	-ENV=test TZ=UTC UPDATE_SNAPSHOTS=true go test ./server
+	-ENV=test TZ=UTC UPDATE_SNAPSHOTS=true go test ./worker ./util
 
-coverage:
-	ENV=test go test -cover -coverprofile=./_build/cover.out ./...
-	go tool cover -html=./_build/cover.out
+# coverage:
+#     ENV=test go test -cover -coverprofile=./_build/cover.out ./...
+#     go tool cover -html=./_build/cover.out
 
 migrate:
 	./_build/migrate up

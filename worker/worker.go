@@ -73,7 +73,7 @@ func Start() {
 
 func fetchFeed(done *sync.WaitGroup, qFeed <-chan *db.Feed, qFeedItem chan<- *feedItem) {
 	work := func(wg *sync.WaitGroup) {
-		feedParser := util.NewFeedParser()
+		feedParser := NewFeedParser()
 		for dbFeed := range qFeed {
 			feed, err := feedParser.ParseURL(dbFeed.URL)
 			if err != nil {
