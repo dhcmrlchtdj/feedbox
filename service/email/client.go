@@ -29,6 +29,7 @@ func Init() {
 
 func (client *MailgunClient) Send(addr string, subject string, text string) error {
 	message := client.MG.NewMessage(client.From, subject, text, addr)
+	message.SetHtml(text)
 	_, _, err := client.MG.Send(context.Background(), message)
 	return err
 }

@@ -1,11 +1,9 @@
-package util_test
+package util
 
 import (
 	"testing"
 
 	"github.com/bradleyjkemp/cupaloy"
-
-	"github.com/dhcmrlchtdj/feedbox/util"
 )
 
 func TestExtractSiteName(t *testing.T) {
@@ -19,7 +17,7 @@ func TestExtractSiteName(t *testing.T) {
 	}
 	for _, test := range tests {
 		t.Run(test, func(t *testing.T) {
-			cupaloy.SnapshotT(t, util.ExtractSiteName(test))
+			cupaloy.SnapshotT(t, ExtractSiteName(test))
 		})
 	}
 }

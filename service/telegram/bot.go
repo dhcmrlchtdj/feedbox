@@ -57,6 +57,7 @@ func handleMessage(message *Message) {
 				}
 			}
 			arg := string(utf16.Decode(text[entity.Offset+entity.Length:]))
+			arg = strings.TrimSpace(arg)
 			if err := executeCommand(cmd, arg, message); err != nil {
 				monitor.Client.Error(err)
 			}

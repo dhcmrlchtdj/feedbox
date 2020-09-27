@@ -40,17 +40,21 @@ func list(arg string, msg *Message) error {
 		return err
 	}
 
-	var text strings.Builder
+	var builder strings.Builder
 	for i, feed := range feeds {
 		if i > 0 {
-			text.WriteByte('\n')
+			builder.WriteByte('\n')
 		}
-		text.WriteString(feed.URL)
+		builder.WriteString(feed.URL)
+	}
+	text := builder.String()
+	if len(text) == 0 {
+		text = "feed list is empty"
 	}
 
 	return Client.SendMessage(&SendMessagePayload{
 		ChatID:           msg.Chat.ID,
-		Text:             text.String(),
+		Text:             text,
 		ReplyToMessageID: msg.MessageID,
 	})
 }
@@ -66,7 +70,7 @@ func add(arg string, msg *Message) error {
 		return err
 	}
 
-	text := "Usage: /add [url]"
+	var text string
 	if isValidURL(arg) {
 		feedID, err := db.Client.GetFeedIDByURL(arg)
 		if err == nil {
@@ -77,6 +81,8 @@ func add(arg string, msg *Message) error {
 		} else {
 			text = err.Error()
 		}
+	} else {
+		text = fmt.Sprintf("not a valid url: '%v'", arg)
 	}
 
 	return Client.SendMessage(&SendMessagePayload{
@@ -97,7 +103,7 @@ func remove(arg string, msg *Message) error {
 		return err
 	}
 
-	text := "Usage: /remove [url]"
+	var text string
 	if isValidURL(arg) {
 		feedID, err := db.Client.GetFeedIDByURL(arg)
 		if err == nil {
@@ -108,6 +114,8 @@ func remove(arg string, msg *Message) error {
 		} else {
 			text = err.Error()
 		}
+	} else {
+		text = fmt.Sprintf("not a valid url: '%v'", arg)
 	}
 
 	return Client.SendMessage(&SendMessagePayload{

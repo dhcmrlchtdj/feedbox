@@ -3,9 +3,11 @@ package worker
 import (
 	"fmt"
 	"net/http"
+	neturl "net/url"
 
 	"github.com/mmcdole/gofeed"
 	"github.com/mmcdole/gofeed/rss"
+	"github.com/pkg/errors"
 )
 
 type feedParser struct {
@@ -13,7 +15,7 @@ type feedParser struct {
 	client *http.Client
 }
 
-func NewFeedParser() *feedParser {
+func newFeedParser() *feedParser {
 	parser := gofeed.NewParser()
 	parser.RSSTranslator = newCustomRSSTranslator()
 	return &feedParser{parser, &http.Client{}}
@@ -33,7 +35,29 @@ func (p *feedParser) ParseURL(url string) (*gofeed.Feed, error) {
 	if resp.StatusCode != 200 {
 		return nil, fmt.Errorf("'%v' return '%v'", url, resp.Status)
 	}
-	return p.parser.Parse(resp.Body)
+	feed, err := p.parser.Parse(resp.Body)
+	if err != nil {
+		return nil, errors.Wrap(err, url)
+	}
+
+	base, err := neturl.Parse(url)
+	if err != nil {
+		return nil, errors.Wrap(err, url)
+	}
+	for _, item := range feed.Items {
+		absLink, err := base.Parse(item.Link)
+		if err != nil {
+			return nil, errors.Wrap(err, url)
+		}
+		link, err := absLink.MarshalBinary()
+		item.Link = string(link)
+	}
+
+	return feed, nil
+}
+
+func normalizeItemURL(url string, feed *gofeed.Feed) {
+	// TODO
 }
 
 func (p *feedParser) ParseString(s string) (*gofeed.Feed, error) {

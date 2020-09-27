@@ -249,7 +249,7 @@ func (db *Database) GetActiveFeeds() ([]Feed, error) {
 func (db *Database) AddFeedLinks(id int64, links []string, updated *time.Time) error {
 	_, err := db.pool.Exec(
 		context.Background(),
-		"UPDATE feeds SET link=array_cat(link, $1::varchar[]), updated=$2 WHERE id=$3",
+		"UPDATE feeds SET link=array_cat($1::varchar[], link), updated=$2 WHERE id=$3",
 		links, updated, id)
 	return err
 }

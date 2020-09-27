@@ -1,11 +1,9 @@
-package util_test
+package util
 
 import (
 	"testing"
 
 	"github.com/bradleyjkemp/cupaloy"
-
-	"github.com/dhcmrlchtdj/feedbox/util"
 )
 
 func TestExtractLinksFromOPML(t *testing.T) {
@@ -20,7 +18,7 @@ func TestExtractLinksFromOPML(t *testing.T) {
 	</body>
 	</opml>
 	`)
-	links, err := util.ExtractLinksFromOPML(opml)
+	links, err := ExtractLinksFromOPML(opml)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -33,6 +31,6 @@ func TestBuildOpml(t *testing.T) {
 		"https://v8.dev/blog.atom",
 		"https://webkit.org/feed/atom/",
 	}
-	opml := util.BuildOPML(feeds)
+	opml := BuildOPML(feeds)
 	cupaloy.SnapshotT(t, string(opml))
 }
