@@ -4,12 +4,14 @@ import (
 	"errors"
 	"fmt"
 	"os"
+	"strings"
 
 	"github.com/dgrijalva/jwt-go"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/logger"
 	"github.com/gofiber/fiber/v2/middleware/pprof"
 	"github.com/gofiber/fiber/v2/middleware/recover"
+	"github.com/gofiber/fiber/v2/middleware/requestid"
 
 	"github.com/dhcmrlchtdj/feedbox/server/handler"
 	"github.com/dhcmrlchtdj/feedbox/server/middleware/auth/cookie"
@@ -20,18 +22,37 @@ import (
 )
 
 func Create() *fiber.App {
+	prod := os.Getenv("ENV") == "prod"
 	// app
-	app := fiber.New(fiber.Config{
-		// Immutable:  true,
-		// BodyLimit:  4 * 1024 * 1024,
+	appConfig := fiber.Config{
+		// Prefork:       true,
+		// Immutable:     true,
+		// BodyLimit:     4 * 1024 * 1024,
+		ErrorHandler:  errorHandler,
 		StrictRouting: true,
 		CaseSensitive: true,
 		ETag:          true,
-		ErrorHandler:  errorHandler,
-	})
+	}
+	if prod {
+		appConfig.ProxyHeader = "CF-Connecting-IP"
+		appConfig.Prefork = true
+	}
+	app := fiber.New(appConfig)
+
+	// middleware
 	app.Use(recover.New())
-	if os.Getenv("ENV") != "prod" {
-		app.Use(logger.New())
+	app.Use(requestid.New())
+
+	format := loggerFormat
+	if prod {
+		format = strings.NewReplacer("\n", "", "\t", "").Replace(format) + "\n"
+	}
+	app.Use(logger.New(logger.Config{
+		Format:     format,
+		TimeFormat: "2006-01-02 15:04:05",
+	}))
+
+	if !prod {
 		app.Use(pprof.New())
 	}
 
@@ -109,3 +130,18 @@ func jwtValidator(cookieSecret []byte) func(string) ( /* *Credential */ interfac
 		}
 	}
 }
+
+var loggerFormat = `{
+	"time": "${time}",
+	"latency": "${latency}",
+	"method": "${method}",
+	"path": "${path}",
+	"status": ${status},
+	"bytes": ${bytesSent},
+	"request_id": "${header:x-request-id}",
+	"cf_ray": "${header:cf-ray}",
+	"ip": "${ip}",
+	"ua": "${ua}",
+	"referer": "${referer}"
+}
+`
