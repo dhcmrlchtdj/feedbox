@@ -42,6 +42,16 @@ func main() {
 		println("Usage: ./migrate [up | down | force VERSION | step N]")
 		printVersion()
 	}
+	checkErr := func(err error) {
+		if err != nil {
+			if err == migrate.ErrNoChange {
+				fmt.Println("no change.")
+			} else {
+				log.Fatal(err)
+			}
+		}
+		printVersion()
+	}
 
 	flag.Parse()
 	args := flag.Args()
@@ -52,25 +62,16 @@ func main() {
 
 	switch args[0] {
 	case "u", "up":
-		if err := m.Up(); err != nil && err != migrate.ErrNoChange {
-			log.Fatal(err)
-		}
-		printVersion()
+		checkErr(m.Up())
 	case "d", "down":
-		if err := m.Down(); err != nil && err != migrate.ErrNoChange {
-			log.Fatal(err)
-		}
-		printVersion()
+		checkErr(m.Down())
 	case "f", "force":
 		if len(args) != 2 {
 			printUsage()
 			return
 		}
 		if version, err := strconv.Atoi(args[1]); err == nil {
-			if err := m.Force(version); err != nil && err != migrate.ErrNoChange {
-				log.Fatal(err)
-			}
-			printVersion()
+			checkErr(m.Force(version))
 		} else {
 			printUsage()
 		}
@@ -80,10 +81,7 @@ func main() {
 			return
 		}
 		if n, err := strconv.Atoi(args[1]); err == nil {
-			if err := m.Steps(n); err != nil && err != migrate.ErrNoChange {
-				log.Fatal(err)
-			}
-			printVersion()
+			checkErr(m.Steps(n))
 		} else {
 			printUsage()
 		}
