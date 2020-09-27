@@ -11,7 +11,6 @@ import (
 	"github.com/gofiber/fiber/v2/middleware/logger"
 	"github.com/gofiber/fiber/v2/middleware/pprof"
 	"github.com/gofiber/fiber/v2/middleware/recover"
-	"github.com/gofiber/fiber/v2/middleware/requestid"
 
 	"github.com/dhcmrlchtdj/feedbox/server/handler"
 	"github.com/dhcmrlchtdj/feedbox/server/middleware/auth/cookie"
@@ -35,13 +34,12 @@ func Create() *fiber.App {
 	}
 	if prod {
 		appConfig.ProxyHeader = "CF-Connecting-IP"
-		appConfig.Prefork = true
 	}
 	app := fiber.New(appConfig)
 
 	// middleware
 	app.Use(recover.New())
-	app.Use(requestid.New())
+	// app.Use(requestid.New())
 
 	format := loggerFormat
 	if prod {
