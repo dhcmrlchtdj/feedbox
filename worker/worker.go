@@ -108,9 +108,9 @@ func fetchFeed(done *sync.WaitGroup, qFeed <-chan db.Feed, qFeedItem chan<- *fee
 				continue
 			}
 
-			updated := feed.UpdatedParsed
+			updated := newItems[0].PublishedParsed
 			if updated == nil {
-				updated = newItems[0].PublishedParsed
+				updated = feed.UpdatedParsed
 			}
 			err = db.Client.AddFeedLinks(dbFeed.ID, newLinks, updated)
 			if err != nil {
