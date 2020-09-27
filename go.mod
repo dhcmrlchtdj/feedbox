@@ -7,7 +7,7 @@ go 1.15
 
 require (
 	github.com/andybalholm/cascadia v1.2.0 // indirect
-	github.com/bradleyjkemp/cupaloy v1.3.0
+	github.com/bradleyjkemp/cupaloy/v2/v2 v2.6.0
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/go-chi/chi v4.1.2+incompatible // indirect
 	github.com/gofiber/fiber/v2 v2.0.2
