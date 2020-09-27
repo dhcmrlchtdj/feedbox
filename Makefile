@@ -31,3 +31,8 @@ test_update:
 
 migrate:
 	./_build/migrate up
+
+# outdated:
+#     go list -u -m -f '{{if not .Indirect}}{{.}}{{end}}' all
+# upgrade_dep:
+#     go get -t -u ./...
