@@ -40,28 +40,27 @@ func (p *feedParser) ParseURL(url string) (*gofeed.Feed, error) {
 		return nil, errors.Wrap(err, url)
 	}
 
-	base, err := neturl.Parse(url)
-	if err != nil {
+	if normalizeItemURL(url, feed) != nil {
 		return nil, errors.Wrap(err, url)
-	}
-	for _, item := range feed.Items {
-		absLink, err := base.Parse(item.Link)
-		if err != nil {
-			return nil, errors.Wrap(err, url)
-		}
-		link, err := absLink.MarshalBinary()
-		item.Link = string(link)
 	}
 
 	return feed, nil
 }
 
-func normalizeItemURL(url string, feed *gofeed.Feed) {
-	// TODO
-}
-
-func (p *feedParser) ParseString(s string) (*gofeed.Feed, error) {
-	return p.parser.ParseString(s)
+func normalizeItemURL(url string, feed *gofeed.Feed) error {
+	base, err := neturl.Parse(url)
+	if err != nil {
+		return err
+	}
+	for _, item := range feed.Items {
+		absLink, err := base.Parse(item.Link)
+		if err != nil {
+			return err
+		}
+		link, err := absLink.MarshalBinary()
+		item.Link = string(link)
+	}
+	return nil
 }
 
 type customRSSTranslator struct {
