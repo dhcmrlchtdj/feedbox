@@ -3,7 +3,7 @@ package util
 import (
 	"testing"
 
-	"github.com/bradleyjkemp/cupaloy"
+	"github.com/bradleyjkemp/cupaloy/v2"
 )
 
 func TestExtractSiteName(t *testing.T) {

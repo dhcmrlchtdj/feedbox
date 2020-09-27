@@ -1,9 +1,9 @@
 {
     "bundle": [
-        "app.9c9d8f88.js"
+        "app.77c080c3.js"
     ],
     "entry": {
-        "app": "app.9c9d8f88.js"
+        "app": "app.77c080c3.js"
     },
     "chunk": [],
     "asset": []
