@@ -190,7 +190,10 @@ func sendEmail(done *sync.WaitGroup, qGithub <-chan *githubItem) {
 					text.WriteByte(' ')
 				}
 			}
-			if item.Description != "" {
+			if item.Content != "" {
+				text.WriteString("<br><br>")
+				text.WriteString(item.Content)
+			} else if item.Description != "" {
 				text.WriteString("<br><br>")
 				text.WriteString(item.Description)
 			}
@@ -231,7 +234,7 @@ func sendTelegram(done *sync.WaitGroup, qTelegram <-chan *telegramItem) {
 					text.WriteByte(' ')
 				}
 			}
-			if comment, found := item.Custom["comments"]; found {
+			if comment, ok := item.Custom["comments"]; ok {
 				text.WriteString("\n\n")
 				text.WriteString("comment: ")
 				text.WriteString(comment)

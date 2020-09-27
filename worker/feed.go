@@ -74,9 +74,9 @@ func newCustomRSSTranslator() *customRSSTranslator {
 }
 
 func (ct *customRSSTranslator) Translate(feed interface{}) (*gofeed.Feed, error) {
-	rss, found := feed.(*rss.Feed)
-	if !found {
-		return nil, fmt.Errorf("Feed did not match expected type of *rss.Feed")
+	rss, ok := feed.(*rss.Feed)
+	if !ok {
+		return nil, errors.New("Feed did not match expected type of *rss.Feed")
 	}
 
 	f, err := ct.defaultTranslator.Translate(rss)

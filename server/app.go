@@ -75,10 +75,15 @@ func Create() *fiber.App {
 
 func errorHandler(c *fiber.Ctx, err error) error {
 	code := fiber.StatusInternalServerError
-	if e, ok := err.(*fiber.Error); ok {
+	var e *fiber.Error
+	if errors.As(err, &e) {
 		code = e.Code
+		if code != fiber.StatusUnauthorized {
+			monitor.Client.Error(err)
+		}
+	} else {
+		monitor.Client.Error(err)
 	}
-	monitor.Client.Error(err)
 	return c.Status(code).SendString(err.Error())
 }
 
