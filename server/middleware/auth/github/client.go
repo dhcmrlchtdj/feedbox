@@ -50,16 +50,13 @@ func getEmail(client *http.Client) (string, error) {
 		return "", err
 	}
 
-	for _, email := range emails {
-		if email.Primary && email.Verified {
-			return email.Email, nil
-		}
-	}
-
 	var verifiedEmails []string
 	for _, email := range emails {
 		if email.Verified {
 			verifiedEmails = append(verifiedEmails, email.Email)
+			if email.Primary {
+				return email.Email, nil
+			}
 		}
 	}
 	if len(verifiedEmails) > 0 {
