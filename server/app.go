@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 	"strings"
+	"time"
 
 	"github.com/dgrijalva/jwt-go"
 	"github.com/gofiber/fiber/v2"
@@ -22,6 +23,7 @@ import (
 
 func Create() *fiber.App {
 	prod := os.Getenv("ENV") == "prod"
+
 	// app
 	appConfig := fiber.Config{
 		// Prefork:       true,
@@ -47,7 +49,8 @@ func Create() *fiber.App {
 	}
 	app.Use(logger.New(logger.Config{
 		Format:     format,
-		TimeFormat: "2006-01-02 15:04:05",
+		TimeZone:   "UTC",
+		TimeFormat: time.RFC3339,
 	}))
 
 	if !prod {
