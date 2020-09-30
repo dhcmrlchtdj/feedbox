@@ -57,7 +57,12 @@ func Create() *fiber.App {
 		app.Use(pprof.New())
 	}
 
-	// route
+	setupRoute(app)
+
+	return app
+}
+
+func setupRoute(app *fiber.App) {
 	api := app.Group(
 		"/api/v1",
 		cookie.New(cookie.Config{
@@ -91,8 +96,6 @@ func Create() *fiber.App {
 	app.Get("/robots.txt", handler.StaticRobots)
 	app.Get("/favicon.ico", handler.StaticFavicon)
 	app.Get("/:filename", handler.StaticWithCache("./frontend/_build/"))
-
-	return app
 }
 
 func errorHandler(c *fiber.Ctx, err error) error {
