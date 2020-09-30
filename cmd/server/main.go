@@ -18,7 +18,7 @@ import (
 func main() {
 	if os.Getenv("ENV") != "prod" {
 		if err := godotenv.Load("./dotenv"); err != nil {
-			log.Fatal(err)
+			log.Fatalln(err)
 		}
 	}
 	err := util.CheckEnvs(
@@ -34,7 +34,7 @@ func main() {
 		"ROLLBAR_TOKEN",
 		"DATABASE_URL")
 	if err != nil {
-		log.Fatal(err)
+		log.Fatalln(err)
 	}
 
 	database.Init()
@@ -42,7 +42,7 @@ func main() {
 	monitor.Init()
 	telegram.Init()
 
-	var abort uint32 = 0
+	var abort uint32 = 0 // 1 == aborted
 	done := make(chan bool)
 
 	if os.Getenv("ENV") == "prod" {
@@ -60,7 +60,7 @@ func main() {
 	app := server.Create()
 	if err := app.Listen(":" + os.Getenv("PORT")); err != nil {
 		atomic.StoreUint32(&abort, 1)
-		log.Fatal(err)
+		log.Fatalln(err)
 	}
 
 	<-done

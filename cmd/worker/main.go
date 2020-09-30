@@ -17,7 +17,7 @@ import (
 func main() {
 	if os.Getenv("ENV") != "prod" {
 		if err := godotenv.Load("./dotenv"); err != nil {
-			log.Fatal(err)
+			log.Fatalln(err)
 		}
 	}
 	err := util.CheckEnvs(
@@ -31,7 +31,7 @@ func main() {
 		"ROLLBAR_TOKEN",
 		"DATABASE_URL")
 	if err != nil {
-		log.Fatal(err)
+		log.Fatalln(err)
 	}
 
 	database.Init()

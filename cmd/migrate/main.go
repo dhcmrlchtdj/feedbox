@@ -18,23 +18,23 @@ import (
 func main() {
 	if os.Getenv("ENV") != "prod" {
 		if err := godotenv.Load("./dotenv"); err != nil {
-			log.Fatal(err)
+			log.Fatalln(err)
 		}
 	}
 	if err := util.CheckEnvs("DATABASE_URL"); err != nil {
-		log.Fatal(err)
+		log.Fatalln(err)
 	}
 
 	m, err := migrate.New("file://database/migrations", os.Getenv("DATABASE_URL"))
 	if err != nil {
-		log.Fatal(err)
+		log.Fatalln(err)
 	}
 	defer m.Close()
 
 	printVersion := func() {
 		version, dirty, err := m.Version()
 		if err != nil {
-			log.Fatal(err)
+			log.Fatalln(err)
 		}
 		fmt.Printf("version: %v\ndirty:   %v\n", version, dirty)
 	}
@@ -47,7 +47,7 @@ func main() {
 			if err == migrate.ErrNoChange {
 				fmt.Println("no change.")
 			} else {
-				log.Fatal(err)
+				log.Fatalln(err)
 			}
 		}
 		printVersion()
