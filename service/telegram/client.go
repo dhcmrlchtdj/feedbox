@@ -8,6 +8,8 @@ import (
 	"net/http"
 	"os"
 	"sync"
+
+	"github.com/pkg/errors"
 )
 
 type TelegramClient struct {
@@ -109,27 +111,31 @@ func (client *TelegramClient) RawSend(cmd string, payload interface{}) ([]byte, 
 
 	var buf bytes.Buffer
 	if err := json.NewEncoder(&buf).Encode(payload); err != nil {
-		return nil, err
+		return nil, errors.Wrap(err, "telegram/"+cmd)
 	}
 
 	resp, err := http.Post(url, "application/json", &buf)
 	if err != nil {
-		return nil, err
+		return nil, errors.Wrap(err, "telegram/"+cmd)
 	}
 
 	defer resp.Body.Close()
-	return ioutil.ReadAll(resp.Body)
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return nil, errors.Wrap(err, "telegram/"+cmd)
+	}
+	return body, nil
 }
 
 func (client *TelegramClient) RawSendSimple(cmd string, payload interface{}) error {
 	body, err := client.RawSend(cmd, payload)
 	if err != nil {
-		return err
+		return errors.Wrap(err, "telegram/"+cmd)
 	}
 
 	var resp Response
 	if err := DecodeResponse(body, &resp); err != nil {
-		return err
+		return errors.Wrap(err, "telegram/"+cmd)
 	}
 
 	return nil
