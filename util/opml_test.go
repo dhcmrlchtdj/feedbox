@@ -1,6 +1,7 @@
 package util
 
 import (
+	"bytes"
 	"testing"
 
 	"github.com/bradleyjkemp/cupaloy/v2"
@@ -18,7 +19,7 @@ func TestExtractLinksFromOPML(t *testing.T) {
 	</body>
 	</opml>
 	`)
-	links, err := ExtractLinksFromOPML(opml)
+	links, err := ExtractLinksFromOPML(bytes.NewReader(opml))
 	if err != nil {
 		t.Fatal(err)
 	}

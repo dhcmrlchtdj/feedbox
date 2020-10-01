@@ -5,6 +5,7 @@ import (
 	"encoding/xml"
 	"fmt"
 	"html"
+	"io"
 
 	"github.com/dhcmrlchtdj/feedbox/database"
 )
@@ -17,10 +18,9 @@ type outline struct {
 	URL string `xml:"xmlUrl,attr"`
 }
 
-func ExtractLinksFromOPML(content []byte) ([]string, error) {
+func ExtractLinksFromOPML(content io.Reader) ([]string, error) {
 	var c opml
-	err := xml.Unmarshal(content, &c)
-	if err != nil {
+	if err := xml.NewDecoder(content).Decode(&c); err != nil {
 		return nil, err
 	}
 

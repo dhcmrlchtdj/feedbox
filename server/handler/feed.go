@@ -1,8 +1,6 @@
 package handler
 
 import (
-	"io/ioutil"
-
 	"github.com/gofiber/fiber/v2"
 
 	db "github.com/dhcmrlchtdj/feedbox/database"
@@ -93,11 +91,8 @@ func FeedImport(c *fiber.Ctx) error {
 	if err != nil {
 		return err
 	}
-	opml, err := ioutil.ReadAll(file)
-	if err != nil {
-		return err
-	}
-	urls, err := util.ExtractLinksFromOPML(opml)
+	urls, err := util.ExtractLinksFromOPML(file)
+	file.Close()
 	if err != nil {
 		return err
 	}
