@@ -3,6 +3,7 @@ package telegram
 import (
 	"bytes"
 	"encoding/json"
+	"io"
 	"io/ioutil"
 	"mime/multipart"
 	"net/http"
@@ -68,44 +69,29 @@ func (c *TelegramClient) SendDocument(payload *SendDocumentPayload) error {
 	if err != nil {
 		return err
 	}
-	if _, err = part.Write(payload.Document.Buffer); err != nil {
+
+	if _, err = part.Write(payload.Document.Content); err != nil {
 		return err
 	}
 
-	if err := writer.WriteField("chat_id", int64ToString(payload.ChatID)); err != nil {
+	if err := writeInt64(writer, "chat_id", payload.ChatID); err != nil {
 		return err
 	}
-	if payload.Caption != "" {
-		if err := writer.WriteField("caption", payload.Caption); err != nil {
-			return err
-		}
+	if err := writeString(writer, "caption", payload.Caption); err != nil {
+		return err
 	}
-	if payload.ParseMode != "" {
-		if err := writer.WriteField("parse_mode", payload.ParseMode); err != nil {
-			return err
-		}
+	if err := writeString(writer, "parse_mode", payload.ParseMode); err != nil {
+		return err
 	}
-	if payload.ReplyToMessageID != 0 {
-		if err := writer.WriteField("reply_to_message_id", int64ToString(payload.ReplyToMessageID)); err != nil {
-			return err
-		}
+	if err := writeInt64(writer, "reply_to_message_id", payload.ReplyToMessageID); err != nil {
+		return err
 	}
+
 	if err := writer.Close(); err != nil {
 		return err
 	}
 
-	url := "https://api.telegram.org/bot" + c.token + "/sendDocument"
-	resp, err := http.Post(url, writer.FormDataContentType(), &buf)
-	if err != nil {
-		return err
-	}
-	defer resp.Body.Close()
-	body, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		return err
-	}
-
-	return DecodeResponse(body, &Response{})
+	return c.RawSendFileSimple("sendDocument", writer.FormDataContentType(), &buf)
 }
 
 ///
@@ -134,11 +120,30 @@ func (client *TelegramClient) RawSend(cmd string, payload interface{}) ([]byte, 
 func (client *TelegramClient) RawSendSimple(cmd string, payload interface{}) error {
 	body, err := client.RawSend(cmd, payload)
 	if err != nil {
+		return err
+	}
+
+	if err := DecodeResponse(body, &Response{}); err != nil {
 		return errors.Wrap(err, "telegram/"+cmd)
 	}
 
-	var resp Response
-	if err := DecodeResponse(body, &resp); err != nil {
+	return nil
+}
+
+func (client *TelegramClient) RawSendFileSimple(cmd string, contentType string, payload io.Reader) error {
+	url := "https://api.telegram.org/bot" + client.token + "/" + cmd
+
+	resp, err := http.Post(url, contentType, payload)
+	if err != nil {
+		return errors.Wrap(err, "telegram/"+cmd)
+	}
+	defer resp.Body.Close()
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return errors.Wrap(err, "telegram/"+cmd)
+	}
+
+	if err := DecodeResponse(body, &Response{}); err != nil {
 		return errors.Wrap(err, "telegram/"+cmd)
 	}
 
@@ -150,4 +155,24 @@ func DecodeResponse(body []byte, t interface{ Check() error }) error {
 		return err
 	}
 	return t.Check()
+}
+
+func writeString(writer *multipart.Writer, fieldName string, field string) error {
+	if field != "" {
+		err := writer.WriteField(fieldName, field)
+		if err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+func writeInt64(writer *multipart.Writer, fieldName string, field int64) error {
+	if field != 0 {
+		err := writer.WriteField(fieldName, int64ToString(field))
+		if err != nil {
+			return err
+		}
+	}
+	return nil
 }

@@ -50,7 +50,7 @@ func handleMessage(message *Message) {
 			text := utf16.Encode([]rune(message.Text))
 			cmd := string(utf16.Decode(text[entity.Offset:entity.Length]))
 			if i := strings.Index(cmd, "@"); i != -1 {
-				name := cmd[i:]
+				name := cmd[i+1:]
 				cmd = cmd[:i]
 				if name != os.Getenv("TELEGRAM_BOT_NAME") {
 					continue

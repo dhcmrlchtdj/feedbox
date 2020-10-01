@@ -18,7 +18,7 @@ func sendTelegram(done *sync.WaitGroup, qTelegram <-chan *telegramItem) {
 			if isPodcast(item) {
 				sendTelegramPodcast(x)
 			} else {
-				sendTelegramPodcast(x)
+				sendTelegramLink(x)
 			}
 		}
 	}
@@ -94,8 +94,8 @@ func sendTelegramPodcast(tgItem *telegramItem) {
 		err := telegram.Client.SendAudio(&telegram.SendAudioPayload{
 			ChatID:  user,
 			Audio:   audio,
-			Caption: content,
 			Title:   item.Title,
+			Caption: content,
 		})
 		if err != nil {
 			monitor.Client.Error(err)

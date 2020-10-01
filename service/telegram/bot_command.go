@@ -150,8 +150,8 @@ func removeAll(arg string, msg *Message) error {
 			ReplyToMessageID: msg.MessageID,
 			Caption:          "done",
 			Document: InputFile{
-				Name:   "feeds.opml",
-				Buffer: opml,
+				Name:    "feeds.opml",
+				Content: opml,
 			},
 		})
 	} else {
@@ -185,8 +185,8 @@ func export(arg string, msg *Message) error {
 			ReplyToMessageID: msg.MessageID,
 			Caption:          "done",
 			Document: InputFile{
-				Name:   "feeds.opml",
-				Buffer: opml,
+				Name:    "feeds.opml",
+				Content: opml,
 			},
 		})
 	} else {

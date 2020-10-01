@@ -117,8 +117,8 @@ type SendDocumentPayload struct {
 type SendAudioPayload struct {
 	ChatID           int64  `json:"chat_id"`
 	Audio            string `json:"audio"`
-	Caption          string `json:"caption,omitempty"`
 	Title            string `json:"title,omitempty"`
+	Caption          string `json:"caption,omitempty"`
 	ParseMode        string `json:"parse_mode,omitempty"`
 	ReplyToMessageID int64  `json:"reply_to_message_id,omitempty"`
 }
@@ -126,6 +126,6 @@ type SendAudioPayload struct {
 ///
 
 type InputFile struct {
-	Name   string
-	Buffer []byte
+	Name    string
+	Content []byte
 }
