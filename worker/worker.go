@@ -11,7 +11,6 @@ import (
 	db "github.com/dhcmrlchtdj/feedbox/database"
 	"github.com/dhcmrlchtdj/feedbox/service/email"
 	"github.com/dhcmrlchtdj/feedbox/service/monitor"
-	"github.com/dhcmrlchtdj/feedbox/service/telegram"
 	"github.com/dhcmrlchtdj/feedbox/util"
 )
 
@@ -22,13 +21,13 @@ type feedItem struct {
 
 type githubItem struct {
 	feed  db.Feed
-	item  gofeed.Item
-	users []db.User
+	item  *gofeed.Item
+	users []string
 }
 
 type telegramItem struct {
-	item  gofeed.Item
-	users []db.User
+	item  *gofeed.Item
+	users []int64
 }
 
 func Start() {
@@ -74,7 +73,7 @@ func Start() {
 func fetchFeed(done *sync.WaitGroup, qFeed <-chan db.Feed, qFeedItem chan<- *feedItem) {
 	work := func(wg *sync.WaitGroup) {
 		defer wg.Done()
-		feedParser := newFeedParser()
+		feedParser := util.NewFeedParser()
 		for dbFeed := range qFeed {
 			feed, err := feedParser.ParseURL(dbFeed.URL)
 			if err != nil {
@@ -142,18 +141,21 @@ func dispatchFeed(done *sync.WaitGroup, qFeedItem <-chan *feedItem, qGithub chan
 				continue
 			}
 
-			githubUsers := []db.User{}
-			telegramUsers := []db.User{}
+			githubUsers := []string{}
+			telegramUsers := []int64{}
 			for _, user := range users {
 				switch user.Platform {
 				case "github":
-					githubUsers = append(githubUsers, user)
+					githubUsers = append(githubUsers, user.Addition["email"])
 				case "telegram":
-					telegramUsers = append(telegramUsers, user)
+					pid, err := strconv.ParseInt(user.PID, 10, 64)
+					if err == nil {
+						telegramUsers = append(telegramUsers, pid)
+					}
 				}
 			}
 			for i := range x.items {
-				item := x.items[i]
+				item := &x.items[i]
 				qGithub <- &githubItem{feed, item, githubUsers}
 				qTelegram <- &telegramItem{item, telegramUsers}
 			}
@@ -186,7 +188,7 @@ func sendEmail(done *sync.WaitGroup, qGithub <-chan *githubItem) {
 				text.WriteString("<br><br>")
 				for _, tag := range item.Categories {
 					text.WriteByte('#')
-					text.WriteString(tag)
+					text.WriteString(strings.TrimSpace(tag))
 					text.WriteByte(' ')
 				}
 			}
@@ -200,57 +202,7 @@ func sendEmail(done *sync.WaitGroup, qGithub <-chan *githubItem) {
 			content := text.String()
 
 			for _, user := range x.users {
-				err := email.Client.Send(user.Addition["email"], subject, content)
-				if err != nil {
-					monitor.Client.Error(err)
-					continue
-				}
-			}
-		}
-	}
-
-	var wg sync.WaitGroup
-	for i := 0; i < 3; i++ {
-		wg.Add(1)
-		go work(&wg)
-	}
-	wg.Wait()
-	done.Done()
-}
-
-func sendTelegram(done *sync.WaitGroup, qTelegram <-chan *telegramItem) {
-	work := func(wg *sync.WaitGroup) {
-		defer wg.Done()
-		for x := range qTelegram {
-			item := x.item
-
-			var text strings.Builder
-			text.WriteString(item.Link)
-			if len(item.Categories) > 0 {
-				text.WriteString("\n\n")
-				for _, tag := range item.Categories {
-					text.WriteByte('#')
-					text.WriteString(tag)
-					text.WriteByte(' ')
-				}
-			}
-			if comment, ok := item.Custom["comments"]; ok {
-				text.WriteString("\n\n")
-				text.WriteString("comment: ")
-				text.WriteString(comment)
-			}
-			content := text.String()
-
-			for _, user := range x.users {
-				chatID, err := strconv.ParseInt(user.PID, 10, 64)
-				if err != nil {
-					monitor.Client.Error(err)
-					continue
-				}
-				err = telegram.Client.SendMessage(&telegram.SendMessagePayload{
-					ChatID: chatID,
-					Text:   content,
-				})
+				err := email.Client.Send(user, subject, content)
 				if err != nil {
 					monitor.Client.Error(err)
 					continue

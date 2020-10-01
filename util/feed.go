@@ -1,4 +1,4 @@
-package worker
+package util
 
 import (
 	"fmt"
@@ -15,7 +15,7 @@ type feedParser struct {
 	client *http.Client
 }
 
-func newFeedParser() *feedParser {
+func NewFeedParser() *feedParser {
 	parser := gofeed.NewParser()
 	parser.RSSTranslator = newCustomRSSTranslator()
 	return &feedParser{parser, &http.Client{}}
@@ -85,7 +85,10 @@ func (ct *customRSSTranslator) Translate(feed interface{}) (*gofeed.Feed, error)
 	}
 
 	for i, item := range rss.Items {
-		f.Items[i].Custom = map[string]string{"comments": item.Comments}
+		comment := item.Comments
+		if len(comment) > 0 {
+			f.Items[i].Custom = map[string]string{"comments": comment}
+		}
 	}
 
 	return f, nil

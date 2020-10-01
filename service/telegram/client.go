@@ -56,6 +56,10 @@ func (c *TelegramClient) SendMessage(payload *SendMessagePayload) error {
 	return c.RawSendSimple("sendMessage", payload)
 }
 
+func (c *TelegramClient) SendAudio(payload *SendAudioPayload) error {
+	return c.RawSendSimple("sendAudio", payload)
+}
+
 func (c *TelegramClient) SendDocument(payload *SendDocumentPayload) error {
 	var buf bytes.Buffer
 	writer := multipart.NewWriter(&buf)
