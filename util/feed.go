@@ -10,18 +10,18 @@ import (
 	"github.com/pkg/errors"
 )
 
-type feedParser struct {
+type FeedParser struct {
 	parser *gofeed.Parser
 	client *http.Client
 }
 
-func NewFeedParser() *feedParser {
+func NewFeedParser() *FeedParser {
 	parser := gofeed.NewParser()
 	parser.RSSTranslator = newCustomRSSTranslator()
-	return &feedParser{parser, &http.Client{}}
+	return &FeedParser{parser, &http.Client{}}
 }
 
-func (p *feedParser) ParseURL(url string) (*gofeed.Feed, error) {
+func (p *FeedParser) ParseURL(url string) (*gofeed.Feed, error) {
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
 		return nil, err

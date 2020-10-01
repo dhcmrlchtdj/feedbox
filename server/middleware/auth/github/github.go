@@ -54,13 +54,12 @@ func New(cfg Config) fiber.Handler {
 		if code == "" {
 			url := conf.AuthCodeURL("state")
 			return c.Redirect(url)
-		} else {
-			profile, err := fetchProfile(code)
-			if err != nil {
-				return fiber.NewError(fiber.StatusUnauthorized, err.Error())
-			}
-			c.Locals("credential", profile)
-			return c.Next()
 		}
+		profile, err := fetchProfile(code)
+		if err != nil {
+			return fiber.NewError(fiber.StatusUnauthorized, err.Error())
+		}
+		c.Locals("credential", profile)
+		return c.Next()
 	}
 }

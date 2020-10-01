@@ -21,9 +21,8 @@ func isAdmin(msg *Message) bool {
 			return false
 		}
 		return member.Status == "creator" || member.Status == "administrator"
-	} else {
-		return true
 	}
+	return true
 }
 
 func isValidURL(link string) bool {

@@ -77,11 +77,10 @@ type Response struct {
 }
 
 func (r *Response) Check() error {
-	if r.Ok {
-		return nil
-	} else {
+	if !r.Ok {
 		return errors.New(r.Description)
 	}
+	return nil
 }
 
 ///

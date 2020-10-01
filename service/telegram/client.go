@@ -13,12 +13,12 @@ import (
 	"github.com/pkg/errors"
 )
 
-type TelegramClient struct {
+type TGClient struct {
 	token string
 }
 
 var (
-	Client = &TelegramClient{}
+	Client = &TGClient{}
 	once   sync.Once
 )
 
@@ -28,7 +28,7 @@ func Init() {
 	})
 }
 
-func (c *TelegramClient) GetChatMember(payload *GetChatMemberPayload) (*ChatMember, error) {
+func (c *TGClient) GetChatMember(payload *GetChatMemberPayload) (*ChatMember, error) {
 	body, err := Client.RawSend("getChatMember", payload)
 	if err != nil {
 		return nil, err
@@ -45,23 +45,23 @@ func (c *TelegramClient) GetChatMember(payload *GetChatMemberPayload) (*ChatMemb
 	return resp.Result, nil
 }
 
-func (c *TelegramClient) SetWebhook(payload *SetWebhookPayload) error {
+func (c *TGClient) SetWebhook(payload *SetWebhookPayload) error {
 	return c.RawSendSimple("setWebhook", payload)
 }
 
-func (c *TelegramClient) SetMyCommands(payload *SetMyCommandsPayload) error {
+func (c *TGClient) SetMyCommands(payload *SetMyCommandsPayload) error {
 	return c.RawSendSimple("setMyCommands", payload)
 }
 
-func (c *TelegramClient) SendMessage(payload *SendMessagePayload) error {
+func (c *TGClient) SendMessage(payload *SendMessagePayload) error {
 	return c.RawSendSimple("sendMessage", payload)
 }
 
-func (c *TelegramClient) SendAudio(payload *SendAudioPayload) error {
+func (c *TGClient) SendAudio(payload *SendAudioPayload) error {
 	return c.RawSendSimple("sendAudio", payload)
 }
 
-func (c *TelegramClient) SendDocument(payload *SendDocumentPayload) error {
+func (c *TGClient) SendDocument(payload *SendDocumentPayload) error {
 	var buf bytes.Buffer
 	writer := multipart.NewWriter(&buf)
 
@@ -96,8 +96,8 @@ func (c *TelegramClient) SendDocument(payload *SendDocumentPayload) error {
 
 ///
 
-func (client *TelegramClient) RawSend(cmd string, payload interface{}) ([]byte, error) {
-	url := "https://api.telegram.org/bot" + client.token + "/" + cmd
+func (c *TGClient) RawSend(cmd string, payload interface{}) ([]byte, error) {
+	url := "https://api.telegram.org/bot" + c.token + "/" + cmd
 
 	var buf bytes.Buffer
 	if err := json.NewEncoder(&buf).Encode(payload); err != nil {
@@ -117,8 +117,8 @@ func (client *TelegramClient) RawSend(cmd string, payload interface{}) ([]byte, 
 	return body, nil
 }
 
-func (client *TelegramClient) RawSendSimple(cmd string, payload interface{}) error {
-	body, err := client.RawSend(cmd, payload)
+func (c *TGClient) RawSendSimple(cmd string, payload interface{}) error {
+	body, err := c.RawSend(cmd, payload)
 	if err != nil {
 		return err
 	}
@@ -130,8 +130,8 @@ func (client *TelegramClient) RawSendSimple(cmd string, payload interface{}) err
 	return nil
 }
 
-func (client *TelegramClient) RawSendFileSimple(cmd string, contentType string, payload io.Reader) error {
-	url := "https://api.telegram.org/bot" + client.token + "/" + cmd
+func (c *TGClient) RawSendFileSimple(cmd string, contentType string, payload io.Reader) error {
+	url := "https://api.telegram.org/bot" + c.token + "/" + cmd
 
 	resp, err := http.Post(url, contentType, payload)
 	if err != nil {

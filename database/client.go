@@ -69,9 +69,8 @@ func readUser(row pgx.Row) (*User, error) {
 	if err != nil {
 		if errors.Is(err, pgx.ErrNoRows) {
 			return nil, nil
-		} else {
-			return nil, err
 		}
+		return nil, err
 	}
 	return &user, nil
 }
@@ -158,7 +157,7 @@ func (db *Database) GetOrCreateUserByGithub(githubID string, email string) (*Use
 
 	if user == nil || user.Addition["email"] != email {
 		addition := map[string]string{"email": email}
-		additionJson, err := json.Marshal(addition)
+		additionJSON, err := json.Marshal(addition)
 		if err != nil {
 			return nil, err
 		}
@@ -167,13 +166,13 @@ func (db *Database) GetOrCreateUserByGithub(githubID string, email string) (*Use
 			row = tx.QueryRow(
 				context.Background(),
 				"INSERT INTO users(platform, pid, addition) VALUES ('github', $1, $2) RETURNING id, platform, pid, addition",
-				githubID, additionJson)
+				githubID, additionJSON)
 			user, err = readUser(row)
 		} else {
 			_, err = tx.Exec(
 				context.Background(),
 				"UPDATE users SET addition = $2 WHERE id = $1",
-				user.ID, additionJson)
+				user.ID, additionJSON)
 		}
 		if err != nil {
 			return nil, err

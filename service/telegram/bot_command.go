@@ -154,13 +154,12 @@ func removeAll(arg string, msg *Message) error {
 				Content: opml,
 			},
 		})
-	} else {
-		return Client.SendMessage(&SendMessagePayload{
-			ChatID:           msg.Chat.ID,
-			Text:             "feed list is empty",
-			ReplyToMessageID: msg.MessageID,
-		})
 	}
+	return Client.SendMessage(&SendMessagePayload{
+		ChatID:           msg.Chat.ID,
+		Text:             "feed list is empty",
+		ReplyToMessageID: msg.MessageID,
+	})
 }
 
 func export(arg string, msg *Message) error {
@@ -189,11 +188,10 @@ func export(arg string, msg *Message) error {
 				Content: opml,
 			},
 		})
-	} else {
-		return Client.SendMessage(&SendMessagePayload{
-			ChatID:           msg.Chat.ID,
-			Text:             "feed list is empty",
-			ReplyToMessageID: msg.MessageID,
-		})
 	}
+	return Client.SendMessage(&SendMessagePayload{
+		ChatID:           msg.Chat.ID,
+		Text:             "feed list is empty",
+		ReplyToMessageID: msg.MessageID,
+	})
 }

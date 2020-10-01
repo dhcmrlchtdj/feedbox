@@ -133,9 +133,8 @@ func jwtValidator(cookieSecret []byte) func(string) ( /* *Credential */ interfac
 
 		if claims, ok := token.Claims.(*typing.Credential); ok && token.Valid {
 			return claims, nil
-		} else {
-			return nil, errors.New("invalid token")
 		}
+		return nil, errors.New("invalid token")
 	}
 }
 

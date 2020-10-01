@@ -19,6 +19,6 @@ func Init() {
 	rollbar.SetEnvironment("production")
 }
 
-func (_ *RollbarClient) Error(err error) {
+func (*RollbarClient) Error(err error) {
 	rollbar.Error(err)
 }
