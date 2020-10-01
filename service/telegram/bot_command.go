@@ -157,7 +157,7 @@ func removeAll(arg string, msg *Message) error {
 	} else {
 		return Client.SendMessage(&SendMessagePayload{
 			ChatID:           msg.Chat.ID,
-			Text:             "the feed list is empty",
+			Text:             "feed list is empty",
 			ReplyToMessageID: msg.MessageID,
 		})
 	}
@@ -192,7 +192,7 @@ func export(arg string, msg *Message) error {
 	} else {
 		return Client.SendMessage(&SendMessagePayload{
 			ChatID:           msg.Chat.ID,
-			Text:             "the feed list is empty",
+			Text:             "feed list is empty",
 			ReplyToMessageID: msg.MessageID,
 		})
 	}

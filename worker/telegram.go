@@ -76,6 +76,8 @@ func sendTelegramLink(tgItem *telegramItem) {
 func sendTelegramPodcast(tgItem *telegramItem) {
 	item := tgItem.item
 	var text strings.Builder
+	text.WriteString(item.Title)
+	text.WriteString("\n\n")
 	text.WriteString(item.Link)
 	if len(item.Categories) > 0 {
 		text.WriteString("\n\n")
@@ -90,9 +92,10 @@ func sendTelegramPodcast(tgItem *telegramItem) {
 
 	for _, user := range tgItem.users {
 		err := telegram.Client.SendAudio(&telegram.SendAudioPayload{
-			ChatID: user,
-			Audio: audio,
+			ChatID:  user,
+			Audio:   audio,
 			Caption: content,
+			Title:   item.Title,
 		})
 		if err != nil {
 			monitor.Client.Error(err)
