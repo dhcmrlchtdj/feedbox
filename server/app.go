@@ -4,7 +4,6 @@ import (
 	"encoding/base64"
 	"encoding/hex"
 	"encoding/json"
-	"errors"
 	"log"
 	"os"
 	"strings"
@@ -15,6 +14,7 @@ import (
 	"github.com/gofiber/fiber/v2/middleware/logger"
 	"github.com/gofiber/fiber/v2/middleware/pprof"
 	"github.com/gofiber/fiber/v2/middleware/recover"
+	"github.com/pkg/errors"
 	"golang.org/x/crypto/chacha20poly1305"
 
 	"github.com/dhcmrlchtdj/feedbox/server/handler"
@@ -139,15 +139,17 @@ func aeadValidator(cookieSecret string) func(string) ( /* *Credential */ interfa
 		if err != nil {
 			return nil, err
 		}
+
 		nonce, ciphertext := token[:aead.NonceSize()], token[aead.NonceSize():]
 		plaintext, err := aead.Open(nil, nonce, ciphertext, nil)
 		if err != nil {
-			return nil, err
+			return nil, errors.Wrap(err, "invalid token")
 		}
+
 		credential := typing.Credential{}
 		err = json.Unmarshal(plaintext, &credential)
 		if err != nil {
-			return nil, err
+			return nil, errors.Wrap(err, "invalid token")
 		}
 		if time.Now().Unix() > credential.ExpiresAt {
 			return nil, errors.New("expired token")

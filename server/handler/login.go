@@ -5,6 +5,7 @@ import (
 	"encoding/base64"
 	"encoding/hex"
 	"encoding/json"
+	"log"
 	"strconv"
 	"time"
 
@@ -30,6 +31,15 @@ func Logout(c *fiber.Ctx) error {
 }
 
 func ConnectGithub(cookieSecret string) fiber.Handler {
+	key, err := hex.DecodeString(cookieSecret)
+	if err != nil {
+		log.Fatalln(err)
+	}
+	aead, err := chacha20poly1305.NewX(key)
+	if err != nil {
+		log.Fatalln(err)
+	}
+
 	return func(c *fiber.Ctx) error {
 		credential := c.Locals("credential").(*github.Profile)
 		id := strconv.FormatInt(credential.ID, 10)
@@ -37,28 +47,21 @@ func ConnectGithub(cookieSecret string) fiber.Handler {
 		if err != nil {
 			return err
 		}
-		msg, err := json.Marshal(typing.Credential{
+		token := typing.Credential{
 			UserID:    user.ID,
 			ExpiresAt: time.Now().Add(time.Hour * 24 * 3).Unix(),
-		})
-		if err != nil {
-			return err
 		}
 
-		key, err := hex.DecodeString(cookieSecret)
+		plaintext, err := json.Marshal(token)
 		if err != nil {
 			return err
 		}
-		aead, err := chacha20poly1305.NewX(key)
-		if err != nil {
-			return err
-		}
-		nonce := make([]byte, aead.NonceSize(), aead.NonceSize()+len(msg)+aead.Overhead())
+		nonce := make([]byte, aead.NonceSize(), aead.NonceSize()+len(plaintext)+aead.Overhead())
 		if _, err := rand.Read(nonce); err != nil {
 			return err
 		}
-		token := aead.Seal(nonce, nonce, msg, nil)
-		tokenStr := base64.StdEncoding.EncodeToString(token)
+		ciphertext := aead.Seal(nonce, nonce, plaintext, nil)
+		tokenStr := base64.StdEncoding.EncodeToString(ciphertext)
 
 		c.Cookie(&fiber.Cookie{
 			Name:     "token",
