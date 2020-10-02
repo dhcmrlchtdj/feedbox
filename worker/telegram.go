@@ -14,12 +14,13 @@ func sendTelegram(done *sync.WaitGroup, qTelegram <-chan *telegramItem) {
 	work := func(wg *sync.WaitGroup) {
 		defer wg.Done()
 		for x := range qTelegram {
-			item := x.item
-			if isPodcast(item) {
-				sendTelegramPodcast(x)
-			} else {
-				sendTelegramLink(x)
-			}
+			sendTelegramLink(x)
+			// item := x.item
+			// if isPodcast(item) {
+			//     sendTelegramPodcast(x)
+			// } else {
+			//     sendTelegramLink(x)
+			// }
 		}
 	}
 
