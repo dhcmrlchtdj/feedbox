@@ -11,6 +11,7 @@ import (
 	"time"
 
 	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/middleware/expvar"
 	"github.com/gofiber/fiber/v2/middleware/logger"
 	"github.com/gofiber/fiber/v2/middleware/pprof"
 	"github.com/gofiber/fiber/v2/middleware/recover"
@@ -27,7 +28,6 @@ import (
 func Create() *fiber.App {
 	prod := os.Getenv("ENV") == "prod"
 
-	// app
 	appConfig := fiber.Config{
 		// Prefork:       true,
 		// Immutable:     true,
@@ -42,7 +42,15 @@ func Create() *fiber.App {
 	}
 	app := fiber.New(appConfig)
 
-	// middleware
+	setupMiddleware(app)
+	setupRoute(app)
+
+	return app
+}
+
+func setupMiddleware(app *fiber.App) {
+	prod := os.Getenv("ENV") == "prod"
+
 	app.Use(recover.New())
 	// app.Use(requestid.New())
 
@@ -58,11 +66,8 @@ func Create() *fiber.App {
 
 	if !prod {
 		app.Use(pprof.New())
+		app.Use(expvar.New())
 	}
-
-	setupRoute(app)
-
-	return app
 }
 
 func setupRoute(app *fiber.App) {
