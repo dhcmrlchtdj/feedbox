@@ -66,7 +66,7 @@ func setupApp() {
 	})
 
 	// route
-	api := app.Group("/api/v1", mock.Set(&typing.Credential{UserID: 1}))
+	api := app.Group("/api/v1", mock.Set(typing.Credential{UserID: 1}))
 	api.Get("/user", handler.UserInfo)
 	api.Get("/feeds", handler.FeedList)
 	api.Put("/feeds/add", validate.ContentType("application/json"), handler.FeedAdd)
@@ -78,7 +78,7 @@ func setupApp() {
 	app.Get(
 		"/api/connect/github",
 		mock.Set(&github.Profile{ID: 1, Email: "feedbox@example.com"}),
-		handler.ConnectGithub([]byte(os.Getenv("COOKIE_SECRET"))))
+		handler.ConnectGithub(os.Getenv("COOKIE_SECRET")))
 }
 
 func TestCreateUser(t *testing.T) {

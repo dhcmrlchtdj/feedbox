@@ -38,7 +38,7 @@ jobs:
                   ENV: 'test'
                   SERVER: 'http://localhost:8000'
                   PORT: '8000'
-                  COOKIE_SECRET: 'opensslrand'
+                  COOKIE_SECRET: '679aa943a570ed1d5c9be2a4ba2b9c4e6150564f6043cfc45d4ceb9dc9d626fe'
                   GITHUB_CLIENT_ID: 'https://github.com/settings/developers'
                   GITHUB_CLIENT_SECRET: 'https://github.com/settings/developers'
                   MAILGUN_API_KEY: 'key-example'
@@ -46,7 +46,7 @@ jobs:
                   MAILGUN_FROM: 'feedbox <feedbox@example.com>'
                   TELEGRAM_BOT_TOKEN: '123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11'
                   TELEGRAM_BOT_NAME: 'bot_name'
-                  TELEGRAM_WEBHOOK_PATH: 'opensslrand'
+                  TELEGRAM_WEBHOOK_PATH: 'openssl_rand_-hex_8'
                   ROLLBAR_TOKEN: 'post_server_item'
                   DATABASE_URL: 'postgres://user:password@localhost:5432/feedbox?sslmode=disable'
             - name: deploy heroku

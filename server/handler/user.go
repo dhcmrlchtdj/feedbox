@@ -8,7 +8,7 @@ import (
 )
 
 func UserInfo(c *fiber.Ctx) error {
-	credential := c.Locals("credential").(*typing.Credential)
+	credential := c.Locals("credential").(typing.Credential)
 	user, err := db.Client.GetUserByID(credential.UserID)
 	if err != nil {
 		return err

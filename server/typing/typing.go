@@ -1,8 +1,6 @@
 package typing
 
-import "github.com/dgrijalva/jwt-go"
-
 type Credential struct {
-	UserID int64
-	jwt.StandardClaims
+	UserID    int64
+	ExpiresAt int64
 }

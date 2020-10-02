@@ -1,17 +1,20 @@
 package server
 
 import (
+	"encoding/base64"
+	"encoding/hex"
+	"encoding/json"
 	"errors"
-	"fmt"
+	"log"
 	"os"
 	"strings"
 	"time"
 
-	"github.com/dgrijalva/jwt-go"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/logger"
 	"github.com/gofiber/fiber/v2/middleware/pprof"
 	"github.com/gofiber/fiber/v2/middleware/recover"
+	"golang.org/x/crypto/chacha20poly1305"
 
 	"github.com/dhcmrlchtdj/feedbox/server/handler"
 	"github.com/dhcmrlchtdj/feedbox/server/middleware/auth/cookie"
@@ -67,7 +70,7 @@ func setupRoute(app *fiber.App) {
 		"/api/v1",
 		cookie.New(cookie.Config{
 			Name:      "token",
-			Validator: jwtValidator([]byte(os.Getenv("COOKIE_SECRET"))),
+			Validator: aeadValidator(os.Getenv("COOKIE_SECRET")),
 		}))
 	api.Get("/user", handler.UserInfo)
 	api.Get("/feeds", handler.FeedList)
@@ -83,7 +86,7 @@ func setupRoute(app *fiber.App) {
 			ClientID:     os.Getenv("GITHUB_CLIENT_ID"),
 			ClientSecret: os.Getenv("GITHUB_CLIENT_SECRET"),
 		}),
-		handler.ConnectGithub([]byte(os.Getenv("COOKIE_SECRET"))))
+		handler.ConnectGithub(os.Getenv("COOKIE_SECRET")))
 
 	app.Post(
 		"/webhook/telegram/"+os.Getenv("TELEGRAM_WEBHOOK_PATH"),
@@ -116,25 +119,35 @@ func errorHandler(c *fiber.Ctx, err error) error {
 	return c.Status(code).SendString(err.Error())
 }
 
-func jwtValidator(cookieSecret []byte) func(string) ( /* *Credential */ interface{}, error) {
+func aeadValidator(cookieSecret string) func(string) ( /* *Credential */ interface{}, error) {
+	key, err := hex.DecodeString(cookieSecret)
+	if err != nil {
+		log.Fatalln(err)
+	}
+	aead, err := chacha20poly1305.NewX(key)
+	if err != nil {
+		log.Fatalln(err)
+	}
+
 	return func(tokenStr string) (interface{}, error) {
-		token, err := jwt.ParseWithClaims(
-			tokenStr,
-			&typing.Credential{},
-			func(token *jwt.Token) (interface{}, error) {
-				if token.Method.Alg() != jwt.SigningMethodHS256.Name {
-					return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
-				}
-				return cookieSecret, nil
-			})
+		token, err := base64.StdEncoding.DecodeString(tokenStr)
 		if err != nil {
 			return nil, err
 		}
-
-		if claims, ok := token.Claims.(*typing.Credential); ok && token.Valid {
-			return claims, nil
+		nonce, ciphertext := token[:aead.NonceSize()], token[aead.NonceSize():]
+		plaintext, err := aead.Open(nil, nonce, ciphertext, nil)
+		if err != nil {
+			return nil, err
 		}
-		return nil, errors.New("invalid token")
+		credential := typing.Credential{}
+		err = json.Unmarshal(plaintext, &credential)
+		if err != nil {
+			return nil, err
+		}
+		if time.Now().Unix() > credential.ExpiresAt {
+			return nil, errors.New("expired token")
+		}
+		return credential, nil
 	}
 }
 

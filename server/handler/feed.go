@@ -9,7 +9,7 @@ import (
 )
 
 func FeedList(c *fiber.Ctx) error {
-	credential := c.Locals("credential").(*typing.Credential)
+	credential := c.Locals("credential").(typing.Credential)
 	feeds, err := db.Client.GetFeedByUser(credential.UserID)
 	if err != nil {
 		return err
@@ -27,7 +27,7 @@ func FeedAdd(c *fiber.Ctx) error {
 		return err
 	}
 
-	credential := c.Locals("credential").(*typing.Credential)
+	credential := c.Locals("credential").(typing.Credential)
 
 	feedID, err := db.Client.GetFeedIDByURL(b.URL)
 	if err != nil {
@@ -55,7 +55,7 @@ func FeedRemove(c *fiber.Ctx) error {
 		return err
 	}
 
-	credential := c.Locals("credential").(*typing.Credential)
+	credential := c.Locals("credential").(typing.Credential)
 	if err := db.Client.Unsubscribe(credential.UserID, b.FeedID); err != nil {
 		return err
 	}
@@ -68,7 +68,7 @@ func FeedRemove(c *fiber.Ctx) error {
 }
 
 func FeedExport(c *fiber.Ctx) error {
-	credential := c.Locals("credential").(*typing.Credential)
+	credential := c.Locals("credential").(typing.Credential)
 
 	feeds, err := db.Client.GetFeedByUser(credential.UserID)
 	if err != nil {
@@ -81,7 +81,7 @@ func FeedExport(c *fiber.Ctx) error {
 }
 
 func FeedImport(c *fiber.Ctx) error {
-	credential := c.Locals("credential").(*typing.Credential)
+	credential := c.Locals("credential").(typing.Credential)
 
 	fileheader, err := c.FormFile("opml")
 	if err != nil {

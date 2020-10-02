@@ -1,11 +1,15 @@
 package handler
 
 import (
+	"crypto/rand"
+	"encoding/base64"
+	"encoding/hex"
+	"encoding/json"
 	"strconv"
 	"time"
 
-	"github.com/dgrijalva/jwt-go"
 	"github.com/gofiber/fiber/v2"
+	"golang.org/x/crypto/chacha20poly1305"
 
 	db "github.com/dhcmrlchtdj/feedbox/database"
 	"github.com/dhcmrlchtdj/feedbox/server/middleware/auth/github"
@@ -25,7 +29,7 @@ func Logout(c *fiber.Ctx) error {
 	return c.Redirect("/")
 }
 
-func ConnectGithub(cookieSecret []byte) fiber.Handler {
+func ConnectGithub(cookieSecret string) fiber.Handler {
 	return func(c *fiber.Ctx) error {
 		credential := c.Locals("credential").(*github.Profile)
 		id := strconv.FormatInt(credential.ID, 10)
@@ -33,17 +37,28 @@ func ConnectGithub(cookieSecret []byte) fiber.Handler {
 		if err != nil {
 			return err
 		}
-
-		token := jwt.NewWithClaims(jwt.SigningMethodHS256, &typing.Credential{
-			UserID: user.ID,
-			StandardClaims: jwt.StandardClaims{
-				ExpiresAt: time.Now().Add(time.Hour * 24 * 3).Unix(),
-			},
+		msg, err := json.Marshal(typing.Credential{
+			UserID:    user.ID,
+			ExpiresAt: time.Now().Add(time.Hour * 24 * 3).Unix(),
 		})
-		tokenStr, err := token.SignedString(cookieSecret)
 		if err != nil {
 			return err
 		}
+
+		key, err := hex.DecodeString(cookieSecret)
+		if err != nil {
+			return err
+		}
+		aead, err := chacha20poly1305.NewX(key)
+		if err != nil {
+			return err
+		}
+		nonce := make([]byte, aead.NonceSize(), aead.NonceSize()+len(msg)+aead.Overhead())
+		if _, err := rand.Read(nonce); err != nil {
+			return err
+		}
+		token := aead.Seal(nonce, nonce, msg, nil)
+		tokenStr := base64.StdEncoding.EncodeToString(token)
 
 		c.Cookie(&fiber.Cookie{
 			Name:     "token",
