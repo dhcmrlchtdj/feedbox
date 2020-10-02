@@ -10,7 +10,7 @@ require (
 	github.com/andybalholm/cascadia v1.2.0 // indirect
 	github.com/bradleyjkemp/cupaloy/v2 v2.6.0
 	github.com/go-chi/chi v4.1.2+incompatible // indirect
-	github.com/gofiber/fiber/v2 v2.0.4
+	github.com/gofiber/fiber/v2 v2.0.5
 	github.com/golang-migrate/migrate/v4 v4.13.0
 	github.com/hashicorp/errwrap v1.1.0 // indirect
 	github.com/jackc/pgx/v4 v4.9.0
