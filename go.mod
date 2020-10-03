@@ -26,7 +26,7 @@ require (
 	github.com/pkg/errors v0.9.1
 	github.com/rollbar/rollbar-go v1.2.0
 	github.com/rs/zerolog v1.20.0
-	golang.org/x/crypto v0.0.0-20201001193750-eb9a90e9f9cb
+	golang.org/x/crypto v0.0.0-20201002170205-7f63de1d35b0
 	golang.org/x/net v0.0.0-20200930145003-4acb6c075d10 // indirect
 	golang.org/x/oauth2 v0.0.0-20200902213428-5d25da1a8d43
 	golang.org/x/sys v0.0.0-20200930185726-fdedc70b468f // indirect
