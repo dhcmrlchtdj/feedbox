@@ -62,30 +62,30 @@ func (c *TGClient) SendAudio(payload *SendAudioPayload) error {
 }
 
 func (c *TGClient) SendDocument(payload *SendDocumentPayload) error {
-	var buf bytes.Buffer
-	writer := multipart.NewWriter(&buf)
-
-	if err := writeFile(writer, "document", payload.Document); err != nil {
-		return errors.Wrap(err, "telegram/sendDocument")
-	}
-	if err := writeInt64(writer, "chat_id", payload.ChatID); err != nil {
-		return errors.Wrap(err, "telegram/sendDocument")
-	}
-	if err := writeString(writer, "caption", payload.Caption); err != nil {
-		return errors.Wrap(err, "telegram/sendDocument")
-	}
-	if err := writeString(writer, "parse_mode", payload.ParseMode); err != nil {
-		return errors.Wrap(err, "telegram/sendDocument")
-	}
-	if err := writeInt64(writer, "reply_to_message_id", payload.ReplyToMessageID); err != nil {
-		return errors.Wrap(err, "telegram/sendDocument")
-	}
-
-	if err := writer.Close(); err != nil {
-		return errors.Wrap(err, "telegram/sendDocument")
-	}
-
-	return c.RawSendFileSimple("sendDocument", writer.FormDataContentType(), &buf)
+	r, w := io.Pipe()
+	writer := multipart.NewWriter(w)
+	go func() {
+		defer w.Close()
+		if err := writeFile(writer, "document", payload.Document); err != nil {
+			w.CloseWithError(err)
+		}
+		if err := writeInt64(writer, "chat_id", payload.ChatID); err != nil {
+			w.CloseWithError(err)
+		}
+		if err := writeString(writer, "caption", payload.Caption); err != nil {
+			w.CloseWithError(err)
+		}
+		if err := writeString(writer, "parse_mode", payload.ParseMode); err != nil {
+			w.CloseWithError(err)
+		}
+		if err := writeInt64(writer, "reply_to_message_id", payload.ReplyToMessageID); err != nil {
+			w.CloseWithError(err)
+		}
+		if err := writer.Close(); err != nil {
+			w.CloseWithError(err)
+		}
+	}()
+	return c.RawSendFileSimple("sendDocument", writer.FormDataContentType(), r)
 }
 
 ///
