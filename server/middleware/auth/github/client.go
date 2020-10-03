@@ -3,23 +3,28 @@ package github
 import (
 	"encoding/json"
 	"errors"
+	"io"
+	"io/ioutil"
 	"net/http"
 	"sort"
 )
 
 func getProfile(client *http.Client) (*Profile, error) {
-	res, err := client.Get("https://api.github.com/user")
+	resp, err := client.Get("https://api.github.com/user")
+	if resp != nil {
+		defer resp.Body.Close()
+	}
 	if err != nil {
 		return nil, err
 	}
-	defer res.Body.Close()
 
-	if res.StatusCode != 200 {
-		return nil, errors.New(res.Status)
+	if resp.StatusCode != 200 {
+		io.Copy(ioutil.Discard, resp.Body)
+		return nil, errors.New(resp.Status)
 	}
 
 	var profile Profile
-	err = json.NewDecoder(res.Body).Decode(&profile)
+	err = json.NewDecoder(resp.Body).Decode(&profile)
 	if err != nil {
 		return nil, err
 	}
@@ -34,18 +39,21 @@ type githubEmail struct {
 }
 
 func getEmail(client *http.Client) (string, error) {
-	res, err := client.Get("https://api.github.com/user/emails")
+	resp, err := client.Get("https://api.github.com/user/emails")
+	if resp != nil {
+		defer resp.Body.Close()
+	}
 	if err != nil {
 		return "", err
 	}
-	defer res.Body.Close()
 
-	if res.StatusCode != 200 {
-		return "", errors.New(res.Status)
+	if resp.StatusCode != 200 {
+		io.Copy(ioutil.Discard, resp.Body)
+		return "", errors.New(resp.Status)
 	}
 
 	var emails []githubEmail
-	err = json.NewDecoder(res.Body).Decode(&emails)
+	err = json.NewDecoder(resp.Body).Decode(&emails)
 	if err != nil {
 		return "", err
 	}

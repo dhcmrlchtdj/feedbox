@@ -2,6 +2,8 @@ package util
 
 import (
 	"fmt"
+	"io"
+	"io/ioutil"
 	"net/http"
 	neturl "net/url"
 
@@ -28,11 +30,14 @@ func (p *FeedParser) ParseURL(url string) (*gofeed.Feed, error) {
 	}
 	req.Header.Set("User-Agent", "feedbox.h11.io")
 	resp, err := p.client.Do(req)
+	if resp != nil {
+		defer resp.Body.Close()
+	}
 	if err != nil {
 		return nil, err
 	}
-	defer resp.Body.Close()
 	if resp.StatusCode != 200 {
+		io.Copy(ioutil.Discard, resp.Body)
 		return nil, fmt.Errorf("'%v' return '%v'", url, resp.Status)
 	}
 	feed, err := p.parser.Parse(resp.Body)

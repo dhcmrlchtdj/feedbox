@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"encoding/json"
 	"io"
-	"io/ioutil"
 	"mime/multipart"
 	"net/http"
 	"os"
@@ -29,10 +28,11 @@ func Init() {
 }
 
 func (c *TGClient) GetChatMember(payload *GetChatMemberPayload) (*ChatMember, error) {
-	body, err := Client.RawSend("getChatMember", payload)
+	body, err := Client.rawSend("getChatMember", payload)
 	if err != nil {
 		return nil, err
 	}
+	defer body.Close()
 
 	var resp struct {
 		Result *ChatMember `json:"result"`
@@ -90,7 +90,7 @@ func (c *TGClient) SendDocument(payload *SendDocumentPayload) error {
 
 ///
 
-func (c *TGClient) RawSend(cmd string, payload interface{}) ([]byte, error) {
+func (c *TGClient) rawSend(cmd string, payload interface{}) (io.ReadCloser, error) {
 	url := "https://api.telegram.org/bot" + c.token + "/" + cmd
 
 	var buf bytes.Buffer
@@ -100,22 +100,20 @@ func (c *TGClient) RawSend(cmd string, payload interface{}) ([]byte, error) {
 
 	resp, err := http.Post(url, "application/json", &buf)
 	if err != nil {
+		if resp != nil {
+			resp.Body.Close()
+		}
 		return nil, errors.Wrap(err, "telegram/"+cmd)
 	}
-
-	defer resp.Body.Close()
-	body, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		return nil, errors.Wrap(err, "telegram/"+cmd)
-	}
-	return body, nil
+	return resp.Body, nil
 }
 
 func (c *TGClient) RawSendSimple(cmd string, payload interface{}) error {
-	body, err := c.RawSend(cmd, payload)
+	body, err := c.rawSend(cmd, payload)
 	if err != nil {
 		return err
 	}
+	defer body.Close()
 
 	if err := DecodeResponse(body, &Response{}); err != nil {
 		return errors.Wrap(err, "telegram/"+cmd)
@@ -126,28 +124,23 @@ func (c *TGClient) RawSendSimple(cmd string, payload interface{}) error {
 
 func (c *TGClient) RawSendFileSimple(cmd string, contentType string, payload io.Reader) error {
 	url := "https://api.telegram.org/bot" + c.token + "/" + cmd
-
 	resp, err := http.Post(url, contentType, payload)
+	if resp != nil {
+		defer resp.Body.Close()
+	}
 	if err != nil {
 		return errors.Wrap(err, "telegram/"+cmd)
 	}
-	defer resp.Body.Close()
-	body, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
+	if err := DecodeResponse(resp.Body, &Response{}); err != nil {
 		return errors.Wrap(err, "telegram/"+cmd)
 	}
-
-	if err := DecodeResponse(body, &Response{}); err != nil {
-		return errors.Wrap(err, "telegram/"+cmd)
-	}
-
 	return nil
 }
 
 ///
 
-func DecodeResponse(body []byte, t interface{ Check() error }) error {
-	if err := json.Unmarshal(body, &t); err != nil {
+func DecodeResponse(body io.Reader, t interface{ Check() error }) error {
+	if err := json.NewDecoder(body).Decode(t); err != nil {
 		return err
 	}
 	return t.Check()
