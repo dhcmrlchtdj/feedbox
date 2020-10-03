@@ -1,1 +1,1 @@
-(string) (len=50) "[{\"id\":1,\"url\":\"http://127.0.0.1\",\"updated\":null}]"
+[{"id":1,"url":"http://127.0.0.1","updated":null}]

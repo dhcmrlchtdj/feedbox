@@ -1,1 +1,1 @@
-(string) (len=91) "token=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/api; HttpOnly; secure; SameSite=Strict"
+token=; max-age=1; path=/api; HttpOnly; secure; SameSite=Strict

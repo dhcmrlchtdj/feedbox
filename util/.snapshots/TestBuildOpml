@@ -1,1 +1,10 @@
-(string) (len=357) "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<opml version=\"1.0\">\n<head><title>feeds</title></head>\n<body>\n<outline type=\"rss\" text=\"blog.cloudflare.com\" xmlUrl=\"https://blog.cloudflare.com/rss/\"/>\n<outline type=\"rss\" text=\"v8.dev\" xmlUrl=\"https://v8.dev/blog.atom\"/>\n<outline type=\"rss\" text=\"webkit.org\" xmlUrl=\"https://webkit.org/feed/atom/\"/>\n</body>\n</opml>\n"
+<?xml version="1.0" encoding="utf-8"?>
+<opml version="1.0">
+<head><title>feeds</title></head>
+<body>
+<outline type="rss" text="blog.cloudflare.com" xmlUrl="https://blog.cloudflare.com/rss/"/>
+<outline type="rss" text="v8.dev" xmlUrl="https://v8.dev/blog.atom"/>
+<outline type="rss" text="webkit.org" xmlUrl="https://webkit.org/feed/atom/"/>
+</body>
+</opml>
+
