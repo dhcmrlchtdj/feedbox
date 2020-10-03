@@ -52,7 +52,7 @@ func handleMessage(message *Message) {
 			if i := strings.Index(cmd, "@"); i != -1 {
 				name := cmd[i+1:]
 				cmd = cmd[:i]
-				if name != os.Getenv("TELEGRAM_BOT_NAME") {
+				if strings.ToLower(name) != strings.ToLower(os.Getenv("TELEGRAM_BOT_NAME")) {
 					continue
 				}
 			}
