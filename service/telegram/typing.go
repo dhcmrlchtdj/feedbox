@@ -2,6 +2,7 @@ package telegram
 
 import (
 	"errors"
+	"io"
 )
 
 ///
@@ -126,5 +127,5 @@ type SendAudioPayload struct {
 
 type InputFile struct {
 	Name    string
-	Content []byte
+	Content io.Reader
 }

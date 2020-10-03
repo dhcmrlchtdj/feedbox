@@ -1,6 +1,7 @@
 package telegram
 
 import (
+	"bytes"
 	"fmt"
 	"strings"
 
@@ -151,7 +152,7 @@ func removeAll(arg string, msg *Message) error {
 			Caption:          "done",
 			Document: InputFile{
 				Name:    "feeds.opml",
-				Content: opml,
+				Content: bytes.NewReader(opml),
 			},
 		})
 	}
@@ -185,7 +186,7 @@ func export(arg string, msg *Message) error {
 			Caption:          "done",
 			Document: InputFile{
 				Name:    "feeds.opml",
-				Content: opml,
+				Content: bytes.NewReader(opml),
 			},
 		})
 	}

@@ -39,7 +39,7 @@ func (c *TGClient) GetChatMember(payload *GetChatMemberPayload) (*ChatMember, er
 		Response
 	}
 	if err := DecodeResponse(body, &resp); err != nil {
-		return nil, err
+		return nil, errors.Wrap(err, "telegram/getChatMember")
 	}
 
 	return resp.Result, nil
@@ -65,30 +65,24 @@ func (c *TGClient) SendDocument(payload *SendDocumentPayload) error {
 	var buf bytes.Buffer
 	writer := multipart.NewWriter(&buf)
 
-	part, err := writer.CreateFormFile("document", payload.Document.Name)
-	if err != nil {
-		return err
+	if err := writeFile(writer, "document", payload.Document); err != nil {
+		return errors.Wrap(err, "telegram/sendDocument")
 	}
-
-	if _, err = part.Write(payload.Document.Content); err != nil {
-		return err
-	}
-
 	if err := writeInt64(writer, "chat_id", payload.ChatID); err != nil {
-		return err
+		return errors.Wrap(err, "telegram/sendDocument")
 	}
 	if err := writeString(writer, "caption", payload.Caption); err != nil {
-		return err
+		return errors.Wrap(err, "telegram/sendDocument")
 	}
 	if err := writeString(writer, "parse_mode", payload.ParseMode); err != nil {
-		return err
+		return errors.Wrap(err, "telegram/sendDocument")
 	}
 	if err := writeInt64(writer, "reply_to_message_id", payload.ReplyToMessageID); err != nil {
-		return err
+		return errors.Wrap(err, "telegram/sendDocument")
 	}
 
 	if err := writer.Close(); err != nil {
-		return err
+		return errors.Wrap(err, "telegram/sendDocument")
 	}
 
 	return c.RawSendFileSimple("sendDocument", writer.FormDataContentType(), &buf)
@@ -150,12 +144,16 @@ func (c *TGClient) RawSendFileSimple(cmd string, contentType string, payload io.
 	return nil
 }
 
+///
+
 func DecodeResponse(body []byte, t interface{ Check() error }) error {
 	if err := json.Unmarshal(body, &t); err != nil {
 		return err
 	}
 	return t.Check()
 }
+
+///
 
 func writeString(writer *multipart.Writer, fieldName string, field string) error {
 	if field != "" {
@@ -173,6 +171,17 @@ func writeInt64(writer *multipart.Writer, fieldName string, field int64) error {
 		if err != nil {
 			return err
 		}
+	}
+	return nil
+}
+
+func writeFile(writer *multipart.Writer, fieldName string, file InputFile) error {
+	part, err := writer.CreateFormFile(fieldName, file.Name)
+	if err != nil {
+		return err
+	}
+	if _, err := io.Copy(part, file.Content); err != nil {
+		return err
 	}
 	return nil
 }
