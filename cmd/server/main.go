@@ -43,25 +43,21 @@ func main() {
 	telegram.Init()
 
 	var abort uint32 = 0 // 1 == aborted
-	done := make(chan bool)
-
-	if os.Getenv("ENV") == "prod" {
-		go func() {
-			time.Sleep(time.Second)
-			if atomic.LoadUint32(&abort) == 0 {
-				if err := telegram.RegisterWebhook(); err != nil {
-					monitor.Client.Error(err)
-				}
+	done := make(chan struct{}, 1)
+	go func() {
+		time.Sleep(time.Second)
+		if os.Getenv("ENV") == "prod" && atomic.LoadUint32(&abort) == 0 {
+			if err := telegram.RegisterWebhook(); err != nil {
+				monitor.Client.Error(err)
 			}
-			done <- true
-		}()
-	}
+		}
+		done <- struct{}{}
+	}()
 
 	app := server.Create()
 	if err := app.Listen(":" + os.Getenv("PORT")); err != nil {
 		atomic.StoreUint32(&abort, 1)
+		<-done
 		log.Fatalln(err)
 	}
-
-	<-done
 }
