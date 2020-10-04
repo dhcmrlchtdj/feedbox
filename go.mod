@@ -10,7 +10,7 @@ require (
 	github.com/andybalholm/cascadia v1.2.0 // indirect
 	github.com/bradleyjkemp/cupaloy/v2 v2.6.0
 	github.com/go-chi/chi v4.1.2+incompatible // indirect
-	github.com/gofiber/fiber/v2 v2.0.5
+	github.com/gofiber/fiber/v2 v2.0.6
 	github.com/golang-migrate/migrate/v4 v4.13.0
 	github.com/hashicorp/errwrap v1.1.0 // indirect
 	github.com/jackc/pgx/v4 v4.9.0
@@ -25,9 +25,8 @@ require (
 	github.com/modern-go/reflect2 v1.0.1 // indirect
 	github.com/pkg/errors v0.9.1
 	github.com/rollbar/rollbar-go v1.2.0
-	github.com/rs/zerolog v1.20.0
-	golang.org/x/crypto v0.0.0-20201001193750-eb9a90e9f9cb
-	golang.org/x/net v0.0.0-20200930145003-4acb6c075d10 // indirect
+	golang.org/x/crypto v0.0.0-20201002170205-7f63de1d35b0
+	golang.org/x/net v0.0.0-20201006153459-a7d1128ccaa0 // indirect
 	golang.org/x/oauth2 v0.0.0-20200902213428-5d25da1a8d43
-	golang.org/x/sys v0.0.0-20200930185726-fdedc70b468f // indirect
+	golang.org/x/sys v0.0.0-20201006155630-ac719f4daadf // indirect
 )
