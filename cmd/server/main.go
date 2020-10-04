@@ -57,6 +57,7 @@ func main() {
 	app := server.Create()
 	if err := app.Listen(":" + os.Getenv("PORT")); err != nil {
 		atomic.StoreUint32(&abort, 1)
+		monitor.Client.Error(err)
 		<-done
 		log.Fatalln(err)
 	}
