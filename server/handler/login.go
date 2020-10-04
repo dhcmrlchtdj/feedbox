@@ -22,7 +22,7 @@ func Logout(c *fiber.Ctx) error {
 		Name:     "token",
 		Value:    "",
 		Path:     "/api",
-		MaxAge:   1,
+		Expires:  time.Date(1970, time.January, 1, 0, 0, 0, 0, time.UTC),
 		Secure:   true,
 		HTTPOnly: true,
 		SameSite: "strict",
