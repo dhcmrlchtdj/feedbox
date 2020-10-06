@@ -2,7 +2,7 @@
     "compilerOptions": {
         "module": "ES6",
         "target": "ES2019",
-        "lib": ["ES2019", "DOM"],
+        "lib": ["ES2019"],
 
         "sourceMap": false,
         "inlineSourceMap": true,

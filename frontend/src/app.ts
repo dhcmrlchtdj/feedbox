@@ -1,3 +1,5 @@
+/// <reference lib="dom" />
+
 // @ts-ignore
 import App from './components/app.html'
 
