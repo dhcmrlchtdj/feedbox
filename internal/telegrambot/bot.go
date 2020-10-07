@@ -13,7 +13,7 @@ import (
 	"github.com/dhcmrlchtdj/feedbox/internal/telegram"
 )
 
-var HOOK_PATH string = func() string {
+var HookPath string = func() string {
 	path := make([]byte, 8)
 	if _, err := rand.Read(path); err != nil {
 		log.Fatalln(err)
@@ -24,7 +24,7 @@ var HOOK_PATH string = func() string {
 func RegisterWebhook() error {
 	err := global.TG.SetWebhook(
 		&telegram.SetWebhookPayload{
-			URL: fmt.Sprintf("%s/webhook/telegram/%s", os.Getenv("SERVER"), HOOK_PATH),
+			URL: fmt.Sprintf("%s/webhook/telegram/%s", os.Getenv("SERVER"), HookPath),
 		})
 	if err != nil {
 		return err

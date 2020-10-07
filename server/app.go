@@ -91,7 +91,7 @@ func setupRoute(app *fiber.App) {
 		handler.ConnectGithub)
 
 	app.Post(
-		"/webhook/telegram/"+telegrambot.HOOK_PATH,
+		"/webhook/telegram/"+telegrambot.HookPath,
 		validate.ContentType("application/json"),
 		handler.TelegramWebhook)
 

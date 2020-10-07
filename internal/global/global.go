@@ -9,9 +9,9 @@ import (
 )
 
 var (
-	DB      *database.Database = new(database.Database)
-	Monitor *monitor.Client    = new(monitor.Client)
-	Email   *email.Client      = new(email.Client)
-	TG      *telegram.Client   = new(telegram.Client)
-	Sign    *sign.Sign         = new(sign.Sign)
+	DB      *database.Database
+	Monitor *monitor.Client
+	Email   *email.Client
+	TG      *telegram.Client
+	Sign    *sign.Sign
 )

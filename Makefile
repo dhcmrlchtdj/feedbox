@@ -14,8 +14,11 @@ clean:
 fmt:
 	gofumports -w .
 
-test:
+lint:
+	-golint ./... | grep -v "should have comment or be unexported"
 	go vet ./...
+
+test: lint
 	ENV=test TZ=UTC go test ./server
 	ENV=test TZ=UTC go test ./internal/database
 	ENV=test TZ=UTC go test ./internal/util
