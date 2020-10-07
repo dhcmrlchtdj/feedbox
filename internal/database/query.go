@@ -4,15 +4,9 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
-	"log"
-	"os"
-	"sync"
 	"time"
 
 	"github.com/jackc/pgx/v4"
-	"github.com/jackc/pgx/v4/log/zerologadapter"
-	"github.com/jackc/pgx/v4/pgxpool"
-	"github.com/rs/zerolog"
 )
 
 type User struct {
@@ -26,41 +20,6 @@ type Feed struct {
 	ID      int64      `json:"id"`
 	URL     string     `json:"url"`
 	Updated *time.Time `json:"updated"`
-}
-
-type Database struct {
-	pool *pgxpool.Pool
-}
-
-var (
-	Client = &Database{}
-	once   sync.Once
-)
-
-func Init() {
-	once.Do(func() {
-		config, err := pgxpool.ParseConfig(os.Getenv("DATABASE_URL"))
-		if err != nil {
-			log.Fatal(err)
-			return
-		}
-		config.MaxConns = 10
-
-		if os.Getenv("ENV") == "dev" {
-			config.ConnConfig.LogLevel = pgx.LogLevelInfo
-			config.ConnConfig.Logger = zerologadapter.NewLogger(zerolog.New(os.Stdout))
-		}
-
-		Client.pool, err = pgxpool.ConnectConfig(context.Background(), config)
-		if err != nil {
-			log.Fatal(err)
-			return
-		}
-	})
-}
-
-func (db *Database) Close() {
-	db.pool.Close()
 }
 
 func readUser(row pgx.Row) (*User, error) {

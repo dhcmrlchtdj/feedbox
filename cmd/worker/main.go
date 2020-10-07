@@ -6,39 +6,40 @@ import (
 
 	"github.com/joho/godotenv"
 
-	"github.com/dhcmrlchtdj/feedbox/database"
-	"github.com/dhcmrlchtdj/feedbox/service/email"
-	"github.com/dhcmrlchtdj/feedbox/service/monitor"
-	"github.com/dhcmrlchtdj/feedbox/service/telegram"
-	"github.com/dhcmrlchtdj/feedbox/util"
+	"github.com/dhcmrlchtdj/feedbox/internal/database"
+	"github.com/dhcmrlchtdj/feedbox/internal/email"
+	"github.com/dhcmrlchtdj/feedbox/internal/global"
+	"github.com/dhcmrlchtdj/feedbox/internal/monitor"
+	"github.com/dhcmrlchtdj/feedbox/internal/telegram"
+	"github.com/dhcmrlchtdj/feedbox/internal/util"
 	"github.com/dhcmrlchtdj/feedbox/worker"
 )
 
 func main() {
+	var err error
+
 	if os.Getenv("ENV") != "prod" {
-		if err := godotenv.Load("./dotenv"); err != nil {
+		if err = godotenv.Load("./dotenv"); err != nil {
 			log.Fatalln(err)
 		}
 	}
-	err := util.CheckEnvs(
-		"ENV",
-		"MAILGUN_DOMAIN",
-		"MAILGUN_API_KEY",
-		"MAILGUN_FROM",
-		"TELEGRAM_WEBHOOK_PATH",
-		"TELEGRAM_BOT_TOKEN",
-		"TELEGRAM_BOT_NAME",
-		"ROLLBAR_TOKEN",
-		"DATABASE_URL")
+	util.CheckEnvs("ENV")
+
+	util.CheckEnvs("DATABASE_URL")
+	global.DB, err = database.New(os.Getenv("DATABASE_URL"), database.WithMaxConns(10))
 	if err != nil {
 		log.Fatalln(err)
 	}
+	defer global.DB.Close()
 
-	database.Init()
-	defer database.Client.Close()
-	email.Init()
-	monitor.Init()
-	telegram.Init()
+	util.CheckEnvs("ROLLBAR_TOKEN")
+	global.Monitor = monitor.New(os.Getenv("ROLLBAR_TOKEN"))
+
+	util.CheckEnvs("MAILGUN_DOMAIN", "MAILGUN_API_KEY", "MAILGUN_FROM")
+	global.Email = email.New(os.Getenv("MAILGUN_DOMAIN"), os.Getenv("MAILGUN_API_KEY"), os.Getenv("MAILGUN_FROM"))
+
+	util.CheckEnvs("TELEGRAM_BOT_NAME", "TELEGRAM_BOT_TOKEN")
+	global.TG = telegram.New(os.Getenv("TELEGRAM_BOT_NAME"), os.Getenv("TELEGRAM_BOT_TOKEN"))
 
 	worker.Start()
 }

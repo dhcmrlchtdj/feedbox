@@ -17,7 +17,9 @@ import (
 	_ "github.com/golang-migrate/migrate/v4/source/file"
 	"github.com/joho/godotenv"
 
-	"github.com/dhcmrlchtdj/feedbox/database"
+	"github.com/dhcmrlchtdj/feedbox/internal/database"
+	"github.com/dhcmrlchtdj/feedbox/internal/global"
+	"github.com/dhcmrlchtdj/feedbox/internal/sign"
 	"github.com/dhcmrlchtdj/feedbox/server/handler"
 	"github.com/dhcmrlchtdj/feedbox/server/middleware/auth/github"
 	"github.com/dhcmrlchtdj/feedbox/server/middleware/auth/mock"
@@ -29,20 +31,19 @@ var app *fiber.App
 
 func TestMain(m *testing.M) {
 	if err := godotenv.Load("../dotenv"); err != nil {
-		log.Fatal(err)
+		log.Fatalln(err)
 	}
 
-	database.Init()
-	defer database.Client.Close()
-
-	setupApp()
 	setupDatabase()
+	setupGlobal()
+	defer global.DB.Close()
+	setupApp()
 
 	os.Exit(m.Run())
 }
 
 func setupDatabase() {
-	m, err := migrate.New("file://../database/migrations", os.Getenv("DATABASE_URL"))
+	m, err := migrate.New("file://../migration", os.Getenv("DATABASE_URL"))
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -55,6 +56,20 @@ func setupDatabase() {
 	err1, err2 := m.Close()
 	if err1 != nil || err2 != nil {
 		log.Fatal(err)
+	}
+}
+
+func setupGlobal() {
+	var err error
+
+	global.DB, err = database.New(os.Getenv("DATABASE_URL"), database.WithMaxConns(10))
+	if err != nil {
+		log.Fatalln(err)
+	}
+
+	global.Sign, err = sign.New(os.Getenv("COOKIE_SECRET"))
+	if err != nil {
+		log.Fatalln(err)
 	}
 }
 
@@ -78,7 +93,7 @@ func setupApp() {
 	app.Get(
 		"/api/connect/github",
 		mock.Set(&github.Profile{ID: 1, Email: "feedbox@example.com"}),
-		handler.ConnectGithub(os.Getenv("COOKIE_SECRET")))
+		handler.ConnectGithub)
 }
 
 func TestCreateUser(t *testing.T) {

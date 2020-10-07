@@ -3,13 +3,13 @@ package handler
 import (
 	"github.com/gofiber/fiber/v2"
 
-	"github.com/dhcmrlchtdj/feedbox/util"
+	"github.com/dhcmrlchtdj/feedbox/internal/feedparser"
 )
 
 func HelperParseFeed(c *fiber.Ctx) error {
 	url := c.Params("*")
-	feedParser := util.NewFeedParser()
-	feed, err := feedParser.ParseURL(url)
+	fp := feedparser.New()
+	feed, err := fp.ParseURL(url)
 	if err != nil {
 		return err
 	}

@@ -12,41 +12,46 @@ import (
 	_ "github.com/golang-migrate/migrate/v4/source/file"
 	"github.com/joho/godotenv"
 
-	db "github.com/dhcmrlchtdj/feedbox/database"
+	"github.com/dhcmrlchtdj/feedbox/internal/database"
 )
 
+var db *database.Database
+
 func TestMain(m *testing.M) {
-	if err := godotenv.Load("../dotenv"); err != nil {
+	var err error
+	if err = godotenv.Load("../../dotenv"); err != nil {
 		log.Fatal(err)
 	}
 
 	setupDatabase()
-
-	db.Init()
-	defer db.Client.Close()
+	db, err = database.New(os.Getenv("DATABASE_URL"))
+	if err != nil {
+		log.Fatalln(err)
+	}
+	defer db.Close()
 
 	os.Exit(m.Run())
 }
 
 func setupDatabase() {
-	m, err := migrate.New("file://./migrations", os.Getenv("DATABASE_URL"))
+	m, err := migrate.New("file://../../migration", os.Getenv("DATABASE_URL"))
 	if err != nil {
-		log.Fatal(err)
+		log.Fatalln(err)
 	}
 	if err := m.Down(); err != nil && err != migrate.ErrNoChange {
-		log.Fatal(err)
+		log.Fatalln(err)
 	}
 	if err := m.Up(); err != nil && err != migrate.ErrNoChange {
-		log.Fatal(err)
+		log.Fatalln(err)
 	}
 	err1, err2 := m.Close()
 	if err1 != nil || err2 != nil {
-		log.Fatal(err)
+		log.Fatalln(err)
 	}
 }
 
 func TestGetOrCreateUserByGithub(t *testing.T) {
-	r, err := db.Client.GetOrCreateUserByGithub("123", "email@example.com")
+	r, err := db.GetOrCreateUserByGithub("123", "email@example.com")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -54,7 +59,7 @@ func TestGetOrCreateUserByGithub(t *testing.T) {
 }
 
 func TestGetOrCreateUserByTelegram(t *testing.T) {
-	r, err := db.Client.GetOrCreateUserByTelegram("321")
+	r, err := db.GetOrCreateUserByTelegram("321")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -63,14 +68,14 @@ func TestGetOrCreateUserByTelegram(t *testing.T) {
 
 func TestGetUserByID(t *testing.T) {
 	t.Run("uid1", func(t *testing.T) {
-		r, err := db.Client.GetUserByID(1)
+		r, err := db.GetUserByID(1)
 		if err != nil {
 			t.Fatal(err)
 		}
 		cupaloy.SnapshotT(t, r)
 	})
 	t.Run("uid2", func(t *testing.T) {
-		r, err := db.Client.GetUserByID(2)
+		r, err := db.GetUserByID(2)
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -80,14 +85,14 @@ func TestGetUserByID(t *testing.T) {
 
 func TestGetFeedIDByURL(t *testing.T) {
 	t.Run("add feed", func(t *testing.T) {
-		r, err := db.Client.GetFeedIDByURL("http://rss.example.com")
+		r, err := db.GetFeedIDByURL("http://rss.example.com")
 		if err != nil {
 			t.Fatal(err)
 		}
 		cupaloy.SnapshotT(t, r)
 	})
 	t.Run("get feed", func(t *testing.T) {
-		r, err := db.Client.GetFeedIDByURL("http://rss.example.com")
+		r, err := db.GetFeedIDByURL("http://rss.example.com")
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -104,7 +109,7 @@ func TestAddFeedLinks(t *testing.T) {
 	}
 	t.Run("time1", func(t *testing.T) {
 		time1 := time.Date(2000, time.January, 1, 0, 0, 0, 0, time.UTC)
-		err := db.Client.AddFeedLinks(
+		err := db.AddFeedLinks(
 			1,
 			[]string{"http://rss.example.com/1", "http://rss.example.com/2", "http://rss.example.com/3"},
 			&time1)
@@ -112,7 +117,7 @@ func TestAddFeedLinks(t *testing.T) {
 			t.Fatal(err)
 		}
 		r := feedAll{}
-		row := db.Client.QueryRow("select id, url, updated, link from feeds where id=$1", 1)
+		row := db.QueryRow("select id, url, updated, link from feeds where id=$1", 1)
 		err = row.Scan(&r.ID, &r.URL, &r.Updated, &r.Link)
 		if err != nil {
 			t.Fatal(err)
@@ -121,7 +126,7 @@ func TestAddFeedLinks(t *testing.T) {
 	})
 	t.Run("time2", func(t *testing.T) {
 		time2 := time.Date(2020, time.January, 1, 0, 0, 0, 0, time.UTC)
-		err := db.Client.AddFeedLinks(
+		err := db.AddFeedLinks(
 			1,
 			[]string{"http://rss.example.com/x", "http://rss.example.com/y", "http://rss.example.com/3"},
 			&time2)
@@ -129,7 +134,7 @@ func TestAddFeedLinks(t *testing.T) {
 			t.Fatal(err)
 		}
 		r := feedAll{}
-		row := db.Client.QueryRow("select id, url, updated, link from feeds where id=$1", 1)
+		row := db.QueryRow("select id, url, updated, link from feeds where id=$1", 1)
 		err = row.Scan(&r.ID, &r.URL, &r.Updated, &r.Link)
 		if err != nil {
 			t.Fatal(err)
@@ -139,7 +144,7 @@ func TestAddFeedLinks(t *testing.T) {
 }
 
 func TestGetLinks(t *testing.T) {
-	r, err := db.Client.GetLinks(1)
+	r, err := db.GetLinks(1)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -147,21 +152,21 @@ func TestGetLinks(t *testing.T) {
 }
 
 func TestSubscribe(t *testing.T) {
-	err := db.Client.Subscribe(1, 1)
+	err := db.Subscribe(1, 1)
 	if err != nil {
 		t.Fatal(err)
 	}
 }
 
 func TestSubscribeURLs(t *testing.T) {
-	err := db.Client.SubscribeURLs(1, []string{"http://rss.example.com", "http://atom.example.com"})
+	err := db.SubscribeURLs(1, []string{"http://rss.example.com", "http://atom.example.com"})
 	if err != nil {
 		t.Fatal(err)
 	}
 }
 
 func TestGetFeedByUser(t *testing.T) {
-	r, err := db.Client.GetFeedByUser(1)
+	r, err := db.GetFeedByUser(1)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -169,7 +174,7 @@ func TestGetFeedByUser(t *testing.T) {
 }
 
 func TestGetActiveFeeds(t *testing.T) {
-	r, err := db.Client.GetActiveFeeds()
+	r, err := db.GetActiveFeeds()
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -177,7 +182,7 @@ func TestGetActiveFeeds(t *testing.T) {
 }
 
 func TestGetSubscribers(t *testing.T) {
-	r, err := db.Client.GetSubscribers(1)
+	r, err := db.GetSubscribers(1)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -185,11 +190,11 @@ func TestGetSubscribers(t *testing.T) {
 }
 
 func TestUnsubscribe(t *testing.T) {
-	err := db.Client.Unsubscribe(1, 1)
+	err := db.Unsubscribe(1, 1)
 	if err != nil {
 		t.Fatal(err)
 	}
-	r, err := db.Client.GetFeedByUser(1)
+	r, err := db.GetFeedByUser(1)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -197,11 +202,11 @@ func TestUnsubscribe(t *testing.T) {
 }
 
 func TestUnsubscribeAll(t *testing.T) {
-	err := db.Client.UnsubscribeAll(1)
+	err := db.UnsubscribeAll(1)
 	if err != nil {
 		t.Fatal(err)
 	}
-	r, err := db.Client.GetFeedByUser(1)
+	r, err := db.GetFeedByUser(1)
 	if err != nil {
 		t.Fatal(err)
 	}

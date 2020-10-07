@@ -1,4 +1,4 @@
-package util
+package feedparser
 
 import (
 	"fmt"
@@ -17,7 +17,7 @@ type FeedParser struct {
 	client *http.Client
 }
 
-func NewFeedParser() *FeedParser {
+func New() *FeedParser {
 	parser := gofeed.NewParser()
 	parser.RSSTranslator = newCustomRSSTranslator()
 	return &FeedParser{parser, &http.Client{}}

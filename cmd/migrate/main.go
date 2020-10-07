@@ -12,7 +12,7 @@ import (
 	_ "github.com/golang-migrate/migrate/v4/source/file"
 	"github.com/joho/godotenv"
 
-	"github.com/dhcmrlchtdj/feedbox/util"
+	"github.com/dhcmrlchtdj/feedbox/internal/util"
 )
 
 func main() {
@@ -21,11 +21,9 @@ func main() {
 			log.Fatalln(err)
 		}
 	}
-	if err := util.CheckEnvs("DATABASE_URL"); err != nil {
-		log.Fatalln(err)
-	}
 
-	m, err := migrate.New("file://database/migrations", os.Getenv("DATABASE_URL"))
+	util.CheckEnvs("DATABASE_URL")
+	m, err := migrate.New("file://./migration", os.Getenv("DATABASE_URL"))
 	if err != nil {
 		log.Fatalln(err)
 	}

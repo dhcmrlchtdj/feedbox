@@ -7,7 +7,7 @@ import (
 	"html"
 	"io"
 
-	"github.com/dhcmrlchtdj/feedbox/database"
+	"github.com/dhcmrlchtdj/feedbox/internal/database"
 )
 
 type opml struct {

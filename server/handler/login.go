@@ -1,18 +1,13 @@
 package handler
 
 import (
-	"crypto/rand"
-	"encoding/base64"
-	"encoding/hex"
 	"encoding/json"
-	"log"
 	"strconv"
 	"time"
 
 	"github.com/gofiber/fiber/v2"
-	"golang.org/x/crypto/chacha20poly1305"
 
-	db "github.com/dhcmrlchtdj/feedbox/database"
+	"github.com/dhcmrlchtdj/feedbox/internal/global"
 	"github.com/dhcmrlchtdj/feedbox/server/middleware/auth/github"
 	"github.com/dhcmrlchtdj/feedbox/server/typing"
 )
@@ -30,49 +25,36 @@ func Logout(c *fiber.Ctx) error {
 	return c.Redirect("/")
 }
 
-func ConnectGithub(cookieSecret string) fiber.Handler {
-	key, err := hex.DecodeString(cookieSecret)
+func ConnectGithub(c *fiber.Ctx) error {
+	credential := c.Locals("credential").(*github.Profile)
+	id := strconv.FormatInt(credential.ID, 10)
+	user, err := global.DB.GetOrCreateUserByGithub(id, credential.Email)
 	if err != nil {
-		log.Fatalln(err)
+		return err
 	}
-	aead, err := chacha20poly1305.NewX(key)
+	token := typing.Credential{
+		UserID:    user.ID,
+		ExpiresAt: time.Now().Add(time.Hour * 24 * 3).Unix(),
+	}
+
+	plaintext, err := json.Marshal(token)
 	if err != nil {
-		log.Fatalln(err)
+		return err
+	}
+	tokenStr, err := global.Sign.EncodeToBase64(plaintext)
+	if err != nil {
+		return err
 	}
 
-	return func(c *fiber.Ctx) error {
-		credential := c.Locals("credential").(*github.Profile)
-		id := strconv.FormatInt(credential.ID, 10)
-		user, err := db.Client.GetOrCreateUserByGithub(id, credential.Email)
-		if err != nil {
-			return err
-		}
-		token := typing.Credential{
-			UserID:    user.ID,
-			ExpiresAt: time.Now().Add(time.Hour * 24 * 3).Unix(),
-		}
+	c.Cookie(&fiber.Cookie{
+		Name:     "token",
+		Value:    tokenStr,
+		Path:     "/api",
+		MaxAge:   int((time.Hour * 24 * 3) / time.Second),
+		Secure:   true,
+		HTTPOnly: true,
+		SameSite: "strict",
+	})
 
-		plaintext, err := json.Marshal(token)
-		if err != nil {
-			return err
-		}
-		nonce := make([]byte, aead.NonceSize(), aead.NonceSize()+len(plaintext)+aead.Overhead())
-		if _, err := rand.Read(nonce); err != nil {
-			return err
-		}
-		ciphertext := aead.Seal(nonce, nonce, plaintext, nil)
-		tokenStr := base64.StdEncoding.EncodeToString(ciphertext)
-
-		c.Cookie(&fiber.Cookie{
-			Name:     "token",
-			Value:    tokenStr,
-			Path:     "/api",
-			MaxAge:   int((time.Hour * 24 * 3) / time.Second),
-			Secure:   true,
-			HTTPOnly: true,
-			SameSite: "strict",
-		})
-
-		return c.Redirect("/")
-	}
+	return c.Redirect("/")
 }

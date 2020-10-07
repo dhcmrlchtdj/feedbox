@@ -3,14 +3,14 @@ package handler
 import (
 	"github.com/gofiber/fiber/v2"
 
-	db "github.com/dhcmrlchtdj/feedbox/database"
+	"github.com/dhcmrlchtdj/feedbox/internal/global"
+	"github.com/dhcmrlchtdj/feedbox/internal/util"
 	"github.com/dhcmrlchtdj/feedbox/server/typing"
-	"github.com/dhcmrlchtdj/feedbox/util"
 )
 
 func FeedList(c *fiber.Ctx) error {
 	credential := c.Locals("credential").(typing.Credential)
-	feeds, err := db.Client.GetFeedByUser(credential.UserID)
+	feeds, err := global.DB.GetFeedByUser(credential.UserID)
 	if err != nil {
 		return err
 	}
@@ -29,16 +29,16 @@ func FeedAdd(c *fiber.Ctx) error {
 
 	credential := c.Locals("credential").(typing.Credential)
 
-	feedID, err := db.Client.GetFeedIDByURL(b.URL)
+	feedID, err := global.DB.GetFeedIDByURL(b.URL)
 	if err != nil {
 		return err
 	}
 
-	if err := db.Client.Subscribe(credential.UserID, feedID); err != nil {
+	if err := global.DB.Subscribe(credential.UserID, feedID); err != nil {
 		return err
 	}
 
-	feeds, err := db.Client.GetFeedByUser(credential.UserID)
+	feeds, err := global.DB.GetFeedByUser(credential.UserID)
 	if err != nil {
 		return err
 	}
@@ -56,11 +56,11 @@ func FeedRemove(c *fiber.Ctx) error {
 	}
 
 	credential := c.Locals("credential").(typing.Credential)
-	if err := db.Client.Unsubscribe(credential.UserID, b.FeedID); err != nil {
+	if err := global.DB.Unsubscribe(credential.UserID, b.FeedID); err != nil {
 		return err
 	}
 
-	feeds, err := db.Client.GetFeedByUser(credential.UserID)
+	feeds, err := global.DB.GetFeedByUser(credential.UserID)
 	if err != nil {
 		return err
 	}
@@ -70,7 +70,7 @@ func FeedRemove(c *fiber.Ctx) error {
 func FeedExport(c *fiber.Ctx) error {
 	credential := c.Locals("credential").(typing.Credential)
 
-	feeds, err := db.Client.GetFeedByUser(credential.UserID)
+	feeds, err := global.DB.GetFeedByUser(credential.UserID)
 	if err != nil {
 		return err
 	}
@@ -97,11 +97,11 @@ func FeedImport(c *fiber.Ctx) error {
 		return err
 	}
 
-	if err := db.Client.SubscribeURLs(credential.UserID, urls); err != nil {
+	if err := global.DB.SubscribeURLs(credential.UserID, urls); err != nil {
 		return err
 	}
 
-	feeds, err := db.Client.GetFeedByUser(credential.UserID)
+	feeds, err := global.DB.GetFeedByUser(credential.UserID)
 	if err != nil {
 		return err
 	}

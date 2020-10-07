@@ -3,7 +3,8 @@ package handler
 import (
 	"github.com/gofiber/fiber/v2"
 
-	"github.com/dhcmrlchtdj/feedbox/service/telegram"
+	"github.com/dhcmrlchtdj/feedbox/internal/telegram"
+	"github.com/dhcmrlchtdj/feedbox/internal/telegrambot"
 )
 
 func TelegramWebhook(c *fiber.Ctx) error {
@@ -11,6 +12,6 @@ func TelegramWebhook(c *fiber.Ctx) error {
 	if err := c.BodyParser(&b); err != nil {
 		return err
 	}
-	telegram.HandleWebhook(&b)
+	telegrambot.HandleWebhook(&b)
 	return c.SendString("ok")
 }

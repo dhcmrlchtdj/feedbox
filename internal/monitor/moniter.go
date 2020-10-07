@@ -6,19 +6,18 @@ import (
 	"github.com/rollbar/rollbar-go"
 )
 
-type RollbarClient struct{}
+type Client struct{}
 
-var Client = &RollbarClient{}
-
-func Init() {
+func New(token string) *Client {
 	if os.Getenv("ENV") != "prod" {
 		rollbar.SetEnabled(false)
 	}
-
-	rollbar.SetToken(os.Getenv("ROLLBAR_TOKEN"))
+	rollbar.SetToken(token)
 	rollbar.SetEnvironment("production")
+
+	return &Client{}
 }
 
-func (*RollbarClient) Error(err error) {
+func (*Client) Error(err error) {
 	rollbar.Error(err)
 }

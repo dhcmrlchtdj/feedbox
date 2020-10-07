@@ -1,12 +1,10 @@
 package github
 
 import (
-	"os"
-
 	"github.com/gofiber/fiber/v2"
 	"github.com/pkg/errors"
 	"golang.org/x/oauth2"
-	oauth2Github "golang.org/x/oauth2/github"
+	"golang.org/x/oauth2/github"
 )
 
 type Profile struct {
@@ -21,9 +19,9 @@ type Config struct {
 
 func New(cfg Config) fiber.Handler {
 	conf := &oauth2.Config{
-		ClientID:     os.Getenv("GITHUB_CLIENT_ID"),
-		ClientSecret: os.Getenv("GITHUB_CLIENT_SECRET"),
-		Endpoint:     oauth2Github.Endpoint,
+		ClientID:     cfg.ClientID,
+		ClientSecret: cfg.ClientSecret,
+		Endpoint:     github.Endpoint,
 		Scopes:       []string{"user:email"},
 	}
 

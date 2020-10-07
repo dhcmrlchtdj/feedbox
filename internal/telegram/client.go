@@ -6,29 +6,25 @@ import (
 	"io"
 	"mime/multipart"
 	"net/http"
-	"os"
-	"sync"
+	"strconv"
+	"strings"
 
 	"github.com/pkg/errors"
 )
 
-type TGClient struct {
+type Client struct {
+	Name  string
 	token string
 }
 
-var (
-	Client = &TGClient{}
-	once   sync.Once
-)
-
-func Init() {
-	once.Do(func() {
-		Client.token = os.Getenv("TELEGRAM_BOT_TOKEN")
-	})
+func New(name string, token string) *Client {
+	return &Client{strings.ToLower(name), token}
 }
 
-func (c *TGClient) GetChatMember(payload *GetChatMemberPayload) (*ChatMember, error) {
-	body, err := Client.rawSend("getChatMember", payload)
+///
+
+func (c *Client) GetChatMember(payload *GetChatMemberPayload) (*ChatMember, error) {
+	body, err := c.rawSend("getChatMember", payload)
 	if err != nil {
 		return nil, err
 	}
@@ -45,23 +41,23 @@ func (c *TGClient) GetChatMember(payload *GetChatMemberPayload) (*ChatMember, er
 	return resp.Result, nil
 }
 
-func (c *TGClient) SetWebhook(payload *SetWebhookPayload) error {
-	return c.RawSendSimple("setWebhook", payload)
+func (c *Client) SetWebhook(payload *SetWebhookPayload) error {
+	return c.rawSendSimple("setWebhook", payload)
 }
 
-func (c *TGClient) SetMyCommands(payload *SetMyCommandsPayload) error {
-	return c.RawSendSimple("setMyCommands", payload)
+func (c *Client) SetMyCommands(payload *SetMyCommandsPayload) error {
+	return c.rawSendSimple("setMyCommands", payload)
 }
 
-func (c *TGClient) SendMessage(payload *SendMessagePayload) error {
-	return c.RawSendSimple("sendMessage", payload)
+func (c *Client) SendMessage(payload *SendMessagePayload) error {
+	return c.rawSendSimple("sendMessage", payload)
 }
 
-func (c *TGClient) SendAudio(payload *SendAudioPayload) error {
-	return c.RawSendSimple("sendAudio", payload)
+func (c *Client) SendAudio(payload *SendAudioPayload) error {
+	return c.rawSendSimple("sendAudio", payload)
 }
 
-func (c *TGClient) SendDocument(payload *SendDocumentPayload) error {
+func (c *Client) SendDocument(payload *SendDocumentPayload) error {
 	r, w := io.Pipe()
 	writer := multipart.NewWriter(w)
 	go func() {
@@ -85,12 +81,12 @@ func (c *TGClient) SendDocument(payload *SendDocumentPayload) error {
 			w.CloseWithError(err)
 		}
 	}()
-	return c.RawSendFileSimple("sendDocument", writer.FormDataContentType(), r)
+	return c.rawSendFileSimple("sendDocument", writer.FormDataContentType(), r)
 }
 
 ///
 
-func (c *TGClient) rawSend(cmd string, payload interface{}) (io.ReadCloser, error) {
+func (c *Client) rawSend(cmd string, payload interface{}) (io.ReadCloser, error) {
 	url := "https://api.telegram.org/bot" + c.token + "/" + cmd
 
 	var buf bytes.Buffer
@@ -108,7 +104,7 @@ func (c *TGClient) rawSend(cmd string, payload interface{}) (io.ReadCloser, erro
 	return resp.Body, nil
 }
 
-func (c *TGClient) RawSendSimple(cmd string, payload interface{}) error {
+func (c *Client) rawSendSimple(cmd string, payload interface{}) error {
 	body, err := c.rawSend(cmd, payload)
 	if err != nil {
 		return err
@@ -122,7 +118,7 @@ func (c *TGClient) RawSendSimple(cmd string, payload interface{}) error {
 	return nil
 }
 
-func (c *TGClient) RawSendFileSimple(cmd string, contentType string, payload io.Reader) error {
+func (c *Client) rawSendFileSimple(cmd string, contentType string, payload io.Reader) error {
 	url := "https://api.telegram.org/bot" + c.token + "/" + cmd
 	resp, err := http.Post(url, contentType, payload)
 	if resp != nil {
@@ -160,7 +156,8 @@ func writeString(writer *multipart.Writer, fieldName string, field string) error
 
 func writeInt64(writer *multipart.Writer, fieldName string, field int64) error {
 	if field != 0 {
-		err := writer.WriteField(fieldName, int64ToString(field))
+		val := strconv.FormatInt(field, 10)
+		err := writer.WriteField(fieldName, val)
 		if err != nil {
 			return err
 		}
