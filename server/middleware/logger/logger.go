@@ -22,9 +22,8 @@ func New() fiber.Handler {
 				Str("ip", c.IP()).
 				Dict("header", zerolog.Dict().
 					Strs("ips", c.IPs()).
-					Str("request_id", c.Get("x-request-id")).
-					Str("cf_request_id", c.Get("cf-request-id")).
-					Str("cf_ray", c.Get("cf-ray")).
+					Str("x-request-id", c.Get("x-request-id")).
+					Str("cf-request-id", c.Get("cf-request-id")).
 					Str("ua", c.Get("user-agent")).
 					Str("referer", c.Get("referer")),
 				),
