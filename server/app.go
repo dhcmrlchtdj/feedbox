@@ -3,12 +3,10 @@ package server
 import (
 	"encoding/json"
 	"os"
-	"strings"
 	"time"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/expvar"
-	"github.com/gofiber/fiber/v2/middleware/logger"
 	"github.com/gofiber/fiber/v2/middleware/pprof"
 	"github.com/gofiber/fiber/v2/middleware/recover"
 	"github.com/pkg/errors"
@@ -18,6 +16,7 @@ import (
 	"github.com/dhcmrlchtdj/feedbox/server/handler"
 	"github.com/dhcmrlchtdj/feedbox/server/middleware/auth/cookie"
 	"github.com/dhcmrlchtdj/feedbox/server/middleware/auth/github"
+	"github.com/dhcmrlchtdj/feedbox/server/middleware/logger"
 	"github.com/dhcmrlchtdj/feedbox/server/middleware/validate"
 	"github.com/dhcmrlchtdj/feedbox/server/typing"
 )
@@ -50,16 +49,7 @@ func setupMiddleware(app *fiber.App) {
 
 	app.Use(recover.New())
 	// app.Use(requestid.New())
-
-	format := loggerFormat
-	if prod {
-		format = strings.NewReplacer("\n", "", "\t", "").Replace(format) + "\n"
-	}
-	app.Use(logger.New(logger.Config{
-		Format:     format,
-		TimeZone:   "UTC",
-		TimeFormat: time.RFC3339,
-	}))
+	app.Use(logger.New())
 
 	if !prod {
 		app.Use(pprof.New())
@@ -133,18 +123,3 @@ func cookieValidator(tokenStr string) ( /* *Credential */ interface{}, error) {
 	}
 	return credential, nil
 }
-
-var loggerFormat = `{
-	"time": "${time}",
-	"latency": "${latency}",
-	"method": "${method}",
-	"path": "${path}",
-	"status": ${status},
-	"bytes": ${bytesSent},
-	"request_id": "${header:x-request-id}",
-	"cf_ray": "${header:cf-ray}",
-	"ip": "${ip}",
-	"ua": "${ua}",
-	"referer": "${referer}"
-}
-`
