@@ -19,7 +19,7 @@ require (
 	github.com/lib/pq v1.8.0 // indirect
 	github.com/mailgun/mailgun-go/v4 v4.2.0
 	github.com/mailru/easyjson v0.7.6 // indirect
-	github.com/mmcdole/gofeed v1.1.0
+	github.com/mmcdole/gofeed v1.1.1-0.20201005053009-96998c2d6be5
 	github.com/mmcdole/goxpp v0.0.0-20200921145534-2f3784f67354 // indirect
 	github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd // indirect
 	github.com/modern-go/reflect2 v1.0.1 // indirect
@@ -28,5 +28,5 @@ require (
 	golang.org/x/crypto v0.0.0-20201002170205-7f63de1d35b0
 	golang.org/x/net v0.0.0-20201006153459-a7d1128ccaa0 // indirect
 	golang.org/x/oauth2 v0.0.0-20200902213428-5d25da1a8d43
-	golang.org/x/sys v0.0.0-20201006155630-ac719f4daadf // indirect
+	golang.org/x/sys v0.0.0-20201007165808-a893ed343c85 // indirect
 )
