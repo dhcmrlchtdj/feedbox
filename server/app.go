@@ -17,6 +17,7 @@ import (
 	"github.com/dhcmrlchtdj/feedbox/server/middleware/auth/cookie"
 	"github.com/dhcmrlchtdj/feedbox/server/middleware/auth/github"
 	"github.com/dhcmrlchtdj/feedbox/server/middleware/logger"
+	"github.com/dhcmrlchtdj/feedbox/server/middleware/secure"
 	"github.com/dhcmrlchtdj/feedbox/server/middleware/validate"
 	"github.com/dhcmrlchtdj/feedbox/server/typing"
 )
@@ -49,7 +50,7 @@ func setupMiddleware(app *fiber.App) {
 
 	app.Use(recover.New())
 	app.Use(logger.New())
-	// app.Use(requestid.New())
+	app.Use(secure.New())
 
 	if !prod {
 		app.Use(pprof.New())
@@ -58,18 +59,18 @@ func setupMiddleware(app *fiber.App) {
 }
 
 func setupRoute(app *fiber.App) {
-	api := app.Group(
+	app.Use(
 		"/api/v1",
 		cookie.New(cookie.Config{
 			Name:      "token",
 			Validator: cookieValidator,
 		}))
-	api.Get("/user", handler.UserInfo)
-	api.Get("/feeds", handler.FeedList)
-	api.Put("/feeds/add", validate.ContentType("application/json"), handler.FeedAdd)
-	api.Delete("/feeds/remove", validate.ContentType("application/json"), handler.FeedRemove)
-	api.Get("/feeds/export", handler.FeedExport)
-	api.Post("/feeds/import", validate.ContentType("multipart/form-data"), handler.FeedImport)
+	app.Get("/api/v1/user", handler.UserInfo)
+	app.Get("/api/v1/feeds", handler.FeedList)
+	app.Put("/api/v1/feeds/add", validate.ContentType("application/json"), handler.FeedAdd)
+	app.Delete("/api/v1/feeds/remove", validate.ContentType("application/json"), handler.FeedRemove)
+	app.Get("/api/v1/feeds/export", handler.FeedExport)
+	app.Post("/api/v1/feeds/import", validate.ContentType("multipart/form-data"), handler.FeedImport)
 
 	app.Get("/api/logout", handler.Logout)
 	app.Get(
@@ -109,7 +110,7 @@ func errorHandler(c *fiber.Ctx, err error) error {
 	return c.Status(code).SendString(err.Error())
 }
 
-func cookieValidator(tokenStr string) ( /* *Credential */ interface{}, error) {
+func cookieValidator(tokenStr string) ( /* Credential */ interface{}, error) {
 	plaintext, err := global.Sign.DecodeFromBase64(tokenStr)
 	credential := typing.Credential{}
 	err = json.Unmarshal(plaintext, &credential)
