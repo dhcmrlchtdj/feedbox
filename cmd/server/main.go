@@ -29,7 +29,12 @@ func main() {
 	}
 	util.CheckEnvs("ENV")
 
-	zerolog.TimeFieldFormat = zerolog.TimeFormatUnix
+	if os.Getenv("ENV") == "prod" {
+		zerolog.TimeFieldFormat = zerolog.TimeFormatUnix
+	}
+	if os.Getenv("ENV") == "dev" {
+		log.Logger = log.Output(ZerologPrettyPrint)
+	}
 
 	util.CheckEnvs("DATABASE_URL")
 	global.DB, err = database.New(
