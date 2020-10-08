@@ -4,7 +4,9 @@ import (
 	"context"
 
 	"github.com/jackc/pgx/v4"
+	"github.com/jackc/pgx/v4/log/zerologadapter"
 	"github.com/jackc/pgx/v4/pgxpool"
+	"github.com/rs/zerolog"
 )
 
 type Database struct {
@@ -36,10 +38,14 @@ func WithMaxConns(maxConns int32) DbOption {
 	}
 }
 
-func WithLogger(level pgx.LogLevel, logger pgx.Logger) DbOption {
+func WithLogger(level string, logger zerolog.Logger) DbOption {
 	return func(config *pgxpool.Config) {
+		level, err := pgx.LogLevelFromString(level)
+		if err != nil {
+			panic(err)
+		}
 		config.ConnConfig.LogLevel = level
-		config.ConnConfig.Logger = logger
+		config.ConnConfig.Logger = zerologadapter.NewLogger(logger)
 	}
 }
 

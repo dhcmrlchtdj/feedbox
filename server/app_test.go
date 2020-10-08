@@ -3,7 +3,6 @@ package server_test
 import (
 	"bytes"
 	"io/ioutil"
-	"log"
 	"mime/multipart"
 	"net/http/httptest"
 	"os"
@@ -31,7 +30,7 @@ var app *fiber.App
 
 func TestMain(m *testing.M) {
 	if err := godotenv.Load("../dotenv"); err != nil {
-		log.Fatalln(err)
+		panic(err)
 	}
 
 	setupDatabase()
@@ -45,31 +44,34 @@ func TestMain(m *testing.M) {
 func setupDatabase() {
 	m, err := migrate.New("file://../migration", os.Getenv("DATABASE_URL"))
 	if err != nil {
-		log.Fatal(err)
+		panic(err)
 	}
 	if err := m.Down(); err != nil && err != migrate.ErrNoChange {
-		log.Fatal(err)
+		panic(err)
 	}
 	if err := m.Up(); err != nil && err != migrate.ErrNoChange {
-		log.Fatal(err)
+		panic(err)
 	}
 	err1, err2 := m.Close()
-	if err1 != nil || err2 != nil {
-		log.Fatal(err)
+	if err1 != nil {
+		panic(err1)
+	}
+	if err2 != nil {
+		panic(err2)
 	}
 }
 
 func setupGlobal() {
 	var err error
 
-	global.DB, err = database.New(os.Getenv("DATABASE_URL"), database.WithMaxConns(10))
+	global.DB, err = database.New(os.Getenv("DATABASE_URL"))
 	if err != nil {
-		log.Fatalln(err)
+		panic(err)
 	}
 
 	global.Sign, err = sign.New(os.Getenv("COOKIE_SECRET"))
 	if err != nil {
-		log.Fatalln(err)
+		panic(err)
 	}
 }
 

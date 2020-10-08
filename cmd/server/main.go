@@ -1,12 +1,12 @@
 package main
 
 import (
-	"log"
 	"os"
 	"sync/atomic"
 	"time"
 
 	"github.com/joho/godotenv"
+	"github.com/rs/zerolog/log"
 
 	"github.com/dhcmrlchtdj/feedbox/internal/database"
 	"github.com/dhcmrlchtdj/feedbox/internal/global"
@@ -23,15 +23,15 @@ func main() {
 
 	if os.Getenv("ENV") != "prod" {
 		if err = godotenv.Load("./dotenv"); err != nil {
-			log.Fatalln(err)
+			panic(err)
 		}
 	}
 	util.CheckEnvs("ENV")
 
 	util.CheckEnvs("DATABASE_URL")
-	global.DB, err = database.New(os.Getenv("DATABASE_URL"), database.WithMaxConns(10))
+	global.DB, err = database.New(os.Getenv("DATABASE_URL"), database.WithMaxConns(10), database.WithLogger("info", log.Logger))
 	if err != nil {
-		log.Fatalln(err)
+		panic(err)
 	}
 	defer global.DB.Close()
 
@@ -45,7 +45,7 @@ func main() {
 	util.CheckEnvs("COOKIE_SECRET")
 	global.Sign, err = sign.New(os.Getenv("COOKIE_SECRET"))
 	if err != nil {
-		log.Fatalln(err)
+		panic(err)
 	}
 
 	util.CheckEnvs("PORT")
@@ -67,6 +67,6 @@ func main() {
 		atomic.StoreUint32(&abort, 1)
 		global.Monitor.Error(err)
 		<-done
-		log.Fatalln(err)
+		panic(err)
 	}
 }

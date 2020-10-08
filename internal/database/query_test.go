@@ -1,7 +1,6 @@
 package database_test
 
 import (
-	"log"
 	"os"
 	"testing"
 	"time"
@@ -20,13 +19,13 @@ var db *database.Database
 func TestMain(m *testing.M) {
 	var err error
 	if err = godotenv.Load("../../dotenv"); err != nil {
-		log.Fatal(err)
+		panic(err)
 	}
 
 	setupDatabase()
 	db, err = database.New(os.Getenv("DATABASE_URL"))
 	if err != nil {
-		log.Fatalln(err)
+		panic(err)
 	}
 	defer db.Close()
 
@@ -36,17 +35,20 @@ func TestMain(m *testing.M) {
 func setupDatabase() {
 	m, err := migrate.New("file://../../migration", os.Getenv("DATABASE_URL"))
 	if err != nil {
-		log.Fatalln(err)
+		panic(err)
 	}
 	if err := m.Down(); err != nil && err != migrate.ErrNoChange {
-		log.Fatalln(err)
+		panic(err)
 	}
 	if err := m.Up(); err != nil && err != migrate.ErrNoChange {
-		log.Fatalln(err)
+		panic(err)
 	}
 	err1, err2 := m.Close()
-	if err1 != nil || err2 != nil {
-		log.Fatalln(err)
+	if err1 != nil {
+		panic(err1)
+	}
+	if err2 != nil {
+		panic(err2)
 	}
 }
 

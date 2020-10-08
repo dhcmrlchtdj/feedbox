@@ -1,10 +1,10 @@
 package main
 
 import (
-	"log"
 	"os"
 
 	"github.com/joho/godotenv"
+	"github.com/rs/zerolog/log"
 
 	"github.com/dhcmrlchtdj/feedbox/internal/database"
 	"github.com/dhcmrlchtdj/feedbox/internal/email"
@@ -20,15 +20,15 @@ func main() {
 
 	if os.Getenv("ENV") != "prod" {
 		if err = godotenv.Load("./dotenv"); err != nil {
-			log.Fatalln(err)
+			panic(err)
 		}
 	}
 	util.CheckEnvs("ENV")
 
 	util.CheckEnvs("DATABASE_URL")
-	global.DB, err = database.New(os.Getenv("DATABASE_URL"), database.WithMaxConns(10))
+	global.DB, err = database.New(os.Getenv("DATABASE_URL"), database.WithMaxConns(10), database.WithLogger("info", log.Logger))
 	if err != nil {
-		log.Fatalln(err)
+		panic(err)
 	}
 	defer global.DB.Close()
 

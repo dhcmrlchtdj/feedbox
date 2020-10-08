@@ -4,7 +4,6 @@ import (
 	"crypto/rand"
 	"encoding/hex"
 	"fmt"
-	"log"
 	"os"
 	"strings"
 	"unicode/utf16"
@@ -16,7 +15,7 @@ import (
 var HookPath string = func() string {
 	path := make([]byte, 8)
 	if _, err := rand.Read(path); err != nil {
-		log.Fatalln(err)
+		panic(err)
 	}
 	return hex.EncodeToString(path)
 }()
