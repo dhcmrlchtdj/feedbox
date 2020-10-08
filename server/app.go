@@ -102,10 +102,8 @@ func errorHandler(c *fiber.Ctx, err error) error {
 	var e *fiber.Error
 	if errors.As(err, &e) {
 		code = e.Code
-		if code != fiber.StatusUnauthorized {
-			global.Monitor.Error(err)
-		}
-	} else {
+	}
+	if code >= 500 {
 		global.Monitor.Error(err)
 	}
 	return c.Status(code).SendString(err.Error())
