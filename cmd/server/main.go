@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/joho/godotenv"
+	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
 
 	"github.com/dhcmrlchtdj/feedbox/internal/database"
@@ -28,8 +29,13 @@ func main() {
 	}
 	util.CheckEnvs("ENV")
 
+	zerolog.TimeFieldFormat = zerolog.TimeFormatUnix
+
 	util.CheckEnvs("DATABASE_URL")
-	global.DB, err = database.New(os.Getenv("DATABASE_URL"), database.WithMaxConns(10), database.WithLogger("info", log.Logger))
+	global.DB, err = database.New(
+		os.Getenv("DATABASE_URL"),
+		database.WithMaxConns(10),
+		database.WithLogger("info", log.Logger))
 	if err != nil {
 		panic(err)
 	}

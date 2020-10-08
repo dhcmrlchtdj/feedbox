@@ -48,8 +48,8 @@ func setupMiddleware(app *fiber.App) {
 	prod := os.Getenv("ENV") == "prod"
 
 	app.Use(recover.New())
-	// app.Use(requestid.New())
 	app.Use(logger.New())
+	// app.Use(requestid.New())
 
 	if !prod {
 		app.Use(pprof.New())

@@ -3,7 +3,6 @@ package telegrambot
 import (
 	"bytes"
 	"fmt"
-	"net/url"
 	"strconv"
 	"strings"
 
@@ -75,7 +74,7 @@ func add(arg string, msg *telegram.Message) error {
 	}
 
 	var text string
-	if isValidURL(arg) {
+	if util.IsValidURL(arg) {
 		feedID, err := global.DB.GetFeedIDByURL(arg)
 		if err == nil {
 			err = global.DB.Subscribe(user.ID, feedID)
@@ -108,7 +107,7 @@ func remove(arg string, msg *telegram.Message) error {
 	}
 
 	var text string
-	if isValidURL(arg) {
+	if util.IsValidURL(arg) {
 		feedID, err := global.DB.GetFeedIDByURL(arg)
 		if err == nil {
 			err = global.DB.Unsubscribe(user.ID, feedID)
@@ -214,14 +213,6 @@ func isAdmin(msg *telegram.Message) bool {
 			return false
 		}
 		return member.Status == "creator" || member.Status == "administrator"
-	}
-	return true
-}
-
-func isValidURL(link string) bool {
-	u, err := url.Parse(link)
-	if err != nil || u.Scheme == "" || u.Host == "" {
-		return false
 	}
 	return true
 }

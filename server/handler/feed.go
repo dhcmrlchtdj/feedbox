@@ -24,7 +24,11 @@ type feedAddBody struct {
 func FeedAdd(c *fiber.Ctx) error {
 	var b feedAddBody
 	if err := c.BodyParser(&b); err != nil {
-		return err
+		return fiber.NewError(fiber.StatusBadRequest, err.Error())
+	}
+
+	if !util.IsValidURL(b.URL) {
+		return fiber.NewError(fiber.StatusBadRequest, "not a valid url")
 	}
 
 	credential := c.Locals("credential").(typing.Credential)
@@ -52,7 +56,7 @@ type feedRemoveBody struct {
 func FeedRemove(c *fiber.Ctx) error {
 	var b feedRemoveBody
 	if err := c.BodyParser(&b); err != nil {
-		return err
+		return fiber.NewError(fiber.StatusBadRequest, err.Error())
 	}
 
 	credential := c.Locals("credential").(typing.Credential)

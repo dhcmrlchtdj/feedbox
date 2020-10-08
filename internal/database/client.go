@@ -13,9 +13,7 @@ type Database struct {
 	pool *pgxpool.Pool
 }
 
-type DbOption func(*pgxpool.Config)
-
-func New(configURL string, opts ...DbOption) (*Database, error) {
+func New(configURL string, opts ...func(*pgxpool.Config)) (*Database, error) {
 	config, err := pgxpool.ParseConfig(configURL)
 	if err != nil {
 		return nil, err
@@ -32,13 +30,13 @@ func New(configURL string, opts ...DbOption) (*Database, error) {
 	return &Database{pool}, nil
 }
 
-func WithMaxConns(maxConns int32) DbOption {
+func WithMaxConns(maxConns int32) func(*pgxpool.Config) {
 	return func(config *pgxpool.Config) {
 		config.MaxConns = maxConns
 	}
 }
 
-func WithLogger(level string, logger zerolog.Logger) DbOption {
+func WithLogger(level string, logger zerolog.Logger) func(*pgxpool.Config) {
 	return func(config *pgxpool.Config) {
 		level, err := pgx.LogLevelFromString(level)
 		if err != nil {
