@@ -1,6 +1,7 @@
 package main
 
 import (
+	"errors"
 	"flag"
 	"fmt"
 	"os"
@@ -31,9 +32,14 @@ func main() {
 	printVersion := func() {
 		version, dirty, err := m.Version()
 		if err != nil {
-			panic(err)
+			if errors.Is(err, migrate.ErrNilVersion) {
+				fmt.Print("version: nil\ndirty:   false\n")
+			} else {
+				panic(err)
+			}
+		} else {
+			fmt.Printf("version: %v\ndirty:   %v\n", version, dirty)
 		}
-		fmt.Printf("version: %v\ndirty:   %v\n", version, dirty)
 	}
 	printUsage := func() {
 		println("Usage: ./migrate [up | down | force VERSION | step N]")
@@ -41,7 +47,7 @@ func main() {
 	}
 	checkErr := func(err error) {
 		if err != nil {
-			if err == migrate.ErrNoChange {
+			if errors.Is(err, migrate.ErrNoChange) {
 				fmt.Println("no change.")
 			} else {
 				panic(err)
