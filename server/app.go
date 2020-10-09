@@ -112,6 +112,9 @@ func errorHandler(c *fiber.Ctx, err error) error {
 
 func cookieValidator(tokenStr string) ( /* Credential */ interface{}, error) {
 	plaintext, err := global.Sign.DecodeFromBase64(tokenStr)
+	if err != nil {
+		return nil, err
+	}
 	credential := typing.Credential{}
 	err = json.Unmarshal(plaintext, &credential)
 	if err != nil {

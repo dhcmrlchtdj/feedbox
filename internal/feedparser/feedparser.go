@@ -63,6 +63,9 @@ func normalizeItemURL(url string, feed *gofeed.Feed) error {
 			return err
 		}
 		link, err := absLink.MarshalBinary()
+		if err != nil {
+			return err
+		}
 		item.Link = string(link)
 	}
 	return nil
