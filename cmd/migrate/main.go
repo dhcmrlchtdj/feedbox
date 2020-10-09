@@ -31,14 +31,12 @@ func main() {
 
 	printVersion := func() {
 		version, dirty, err := m.Version()
-		if err != nil {
-			if errors.Is(err, migrate.ErrNilVersion) {
-				fmt.Print("version: nil\ndirty:   false\n")
-			} else {
-				panic(err)
-			}
-		} else {
+		if err == nil {
 			fmt.Printf("version: %v\ndirty:   %v\n", version, dirty)
+		} else if errors.Is(err, migrate.ErrNilVersion) {
+			fmt.Print("version: nil\ndirty:   false\n")
+		} else {
+			panic(err)
 		}
 	}
 	printUsage := func() {
@@ -46,44 +44,30 @@ func main() {
 		printVersion()
 	}
 	checkErr := func(err error) {
-		if err != nil {
-			if errors.Is(err, migrate.ErrNoChange) {
-				fmt.Println("no change.")
-			} else {
-				panic(err)
-			}
+		if err == nil {
+			fmt.Println("done.")
+		} else if errors.Is(err, migrate.ErrNoChange) {
+			fmt.Println("no change.")
+		} else {
+			panic(err)
 		}
 		printVersion()
 	}
 
 	flag.Parse()
-	args := flag.Args()
-	if len(args) == 0 {
-		printUsage()
-		return
-	}
-
-	switch args[0] {
+	switch flag.Arg(0) {
 	case "u", "up":
 		checkErr(m.Up())
 	case "d", "down":
 		checkErr(m.Down())
 	case "f", "force":
-		if len(args) != 2 {
-			printUsage()
-			return
-		}
-		if version, err := strconv.Atoi(args[1]); err == nil {
+		if version, err := strconv.Atoi(flag.Arg(1)); err == nil {
 			checkErr(m.Force(version))
 		} else {
 			printUsage()
 		}
 	case "s", "step":
-		if len(args) != 2 {
-			printUsage()
-			return
-		}
-		if n, err := strconv.Atoi(args[1]); err == nil {
+		if n, err := strconv.Atoi(flag.Arg(1)); err == nil {
 			checkErr(m.Steps(n))
 		} else {
 			printUsage()
