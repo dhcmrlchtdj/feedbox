@@ -104,6 +104,7 @@ func errorHandler(c *fiber.Ctx, err error) error {
 	if errors.As(err, &e) {
 		code = e.Code
 	}
+	c.Set("cache-control", "no-store")
 	if code >= 500 {
 		global.Monitor.Error(err)
 	}

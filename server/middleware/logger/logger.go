@@ -1,6 +1,7 @@
 package logger
 
 import (
+	"sync"
 	"time"
 
 	"github.com/gofiber/fiber/v2"
@@ -9,11 +10,25 @@ import (
 )
 
 func New() fiber.Handler {
+	var once sync.Once
+	var errHandler fiber.ErrorHandler
+
 	logger := log.Logger.With().Str("module", "server").Logger()
+
 	return func(c *fiber.Ctx) error {
+		once.Do(func() {
+			errHandler = c.App().Config().ErrorHandler
+		})
+
 		start := time.Now()
-		err := c.Next()
+		chainErr := c.Next()
 		stop := time.Now()
+
+		if chainErr != nil {
+			if err := errHandler(c, chainErr); err != nil {
+				_ = c.SendStatus(fiber.StatusInternalServerError)
+			}
+		}
 
 		logger.Info().
 			Dict("request", zerolog.Dict().
@@ -35,6 +50,6 @@ func New() fiber.Handler {
 			).
 			Send()
 
-		return err
+		return nil
 	}
 }

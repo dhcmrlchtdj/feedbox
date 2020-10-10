@@ -8,8 +8,7 @@ import (
 
 func StaticWithoutCache(filename string) fiber.Handler {
 	return func(c *fiber.Ctx) error {
-		// c.Set("cache-control", "no-cache")
-		c.Set("cache-control", "max-age=0, must-revalidate")
+		c.Set("cache-control", "no-cache")
 		return c.SendFile(filename)
 	}
 }
