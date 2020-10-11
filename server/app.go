@@ -16,6 +16,7 @@ import (
 	"github.com/dhcmrlchtdj/feedbox/server/handler"
 	"github.com/dhcmrlchtdj/feedbox/server/middleware/auth/cookie"
 	"github.com/dhcmrlchtdj/feedbox/server/middleware/auth/github"
+	"github.com/dhcmrlchtdj/feedbox/server/middleware/etag"
 	"github.com/dhcmrlchtdj/feedbox/server/middleware/logger"
 	"github.com/dhcmrlchtdj/feedbox/server/middleware/secure"
 	"github.com/dhcmrlchtdj/feedbox/server/middleware/validate"
@@ -32,7 +33,7 @@ func Create() *fiber.App {
 		ErrorHandler:  errorHandler,
 		StrictRouting: true,
 		CaseSensitive: true,
-		ETag:          true,
+		// ETag:          true,
 	}
 	if prod {
 		appConfig.ProxyHeader = "CF-Connecting-IP"
@@ -50,6 +51,7 @@ func setupMiddleware(app *fiber.App) {
 
 	app.Use(recover.New())
 	app.Use(logger.New())
+	app.Use(etag.New())
 	app.Use(secure.New())
 
 	if !prod {
