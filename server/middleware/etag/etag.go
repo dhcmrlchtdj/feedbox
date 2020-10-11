@@ -39,11 +39,11 @@ func New() fiber.Handler {
 		// Generate ETag for response
 		sum := xxhash.Sum64(body)
 		serverEtag := fmt.Sprintf("W/\"%016x\"", sum)
-
 		c.Set("etag", serverEtag)
+
 		if match(clientEtag, serverEtag) {
 			c.Status(fiber.StatusNotModified)
-			c.Send(nil)
+			return c.Send(nil)
 		}
 
 		return nil
