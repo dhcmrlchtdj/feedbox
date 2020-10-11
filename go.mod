@@ -6,9 +6,11 @@ module github.com/dhcmrlchtdj/feedbox
 go 1.15
 
 require (
+	github.com/PuerkitoBio/goquery v1.6.0 // indirect
 	github.com/andybalholm/brotli v1.0.1 // indirect
 	github.com/andybalholm/cascadia v1.2.0 // indirect
 	github.com/bradleyjkemp/cupaloy/v2 v2.6.0
+	github.com/cespare/xxhash/v2 v2.1.1
 	github.com/go-chi/chi v4.1.2+incompatible // indirect
 	github.com/gofiber/fiber/v2 v2.0.6
 	github.com/golang-migrate/migrate/v4 v4.13.0
@@ -27,7 +29,7 @@ require (
 	github.com/rollbar/rollbar-go v1.2.0
 	github.com/rs/zerolog v1.20.0
 	golang.org/x/crypto v0.0.0-20201002170205-7f63de1d35b0
-	golang.org/x/net v0.0.0-20201006153459-a7d1128ccaa0 // indirect
+	golang.org/x/net v0.0.0-20201010224723-4f7140c49acb // indirect
 	golang.org/x/oauth2 v0.0.0-20200902213428-5d25da1a8d43
-	golang.org/x/sys v0.0.0-20201007165808-a893ed343c85 // indirect
+	golang.org/x/sys v0.0.0-20201009025420-dfb3f7c4e634 // indirect
 )

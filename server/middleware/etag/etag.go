@@ -1,18 +1,19 @@
 package etag
 
 import (
-	"encoding/hex"
+	"fmt"
 	"strings"
 
+	"github.com/cespare/xxhash/v2"
 	"github.com/gofiber/fiber/v2"
-	"golang.org/x/crypto/blake2b"
 )
 
+// https://www.w3.org/Protocols/HTTP/1.1/rfc2616bis/issues/#i71
 func match(clientEtag string, serverEtag string) bool {
 	if strings.HasPrefix(clientEtag, "W/") {
-		return clientEtag[2:] == serverEtag
+		return clientEtag[2:] == serverEtag[2:]
 	}
-	return clientEtag == serverEtag
+	return clientEtag == serverEtag[2:]
 }
 
 func New() fiber.Handler {
@@ -36,14 +37,13 @@ func New() fiber.Handler {
 		clientEtag := c.Get(fiber.HeaderIfNoneMatch)
 
 		// Generate ETag for response
-		sum := blake2b.Sum256(body)
-		serverEtag := "\"" + hex.EncodeToString(sum[:16]) + "\""
+		sum := xxhash.Sum64(body)
+		serverEtag := fmt.Sprintf("W/\"%016x\"", sum)
 
+		c.Set("etag", serverEtag)
 		if match(clientEtag, serverEtag) {
 			c.Status(fiber.StatusNotModified)
 			c.Send(nil)
-		} else {
-			c.Set("etag", "W/"+serverEtag)
 		}
 
 		return nil
