@@ -22,50 +22,21 @@ type Feed struct {
 	Updated *time.Time `json:"updated"`
 }
 
-func readUser(row pgx.Row) (*User, error) {
-	var user User
-	err := row.Scan(&user.ID, &user.Platform, &user.PID, &user.Addition)
-	if err != nil {
-		if errors.Is(err, pgx.ErrNoRows) {
-			return nil, nil
-		}
-		return nil, err
-	}
-	return &user, nil
-}
-
-func readUsers(rows pgx.Rows) ([]User, error) {
-	users := []User{}
-	for rows.Next() {
-		var user User
-		err := rows.Scan(&user.ID, &user.Platform, &user.PID, &user.Addition)
-		if err != nil {
-			return nil, err
-		}
-		users = append(users, user)
-	}
-	return users, nil
-}
-
-func readFeeds(rows pgx.Rows) ([]Feed, error) {
-	feeds := []Feed{}
-	for rows.Next() {
-		var feed Feed
-		err := rows.Scan(&feed.ID, &feed.URL, &feed.Updated)
-		if err != nil {
-			return nil, err
-		}
-		feeds = append(feeds, feed)
-	}
-	return feeds, nil
-}
+///
 
 func (db *Database) GetUserByID(id int64) (*User, error) {
 	row := db.pool.QueryRow(
 		context.Background(),
 		"SELECT id, platform, pid, addition FROM users WHERE id = $1",
 		id)
-	return readUser(row)
+	user, err := readUser(row)
+	if err != nil {
+		return nil, err
+	}
+	if user == nil {
+		return nil, errors.New("userID not found")
+	}
+	return user, nil
 }
 
 func (db *Database) GetFeedIDByURL(url string) (int64, error) {
@@ -132,6 +103,7 @@ func (db *Database) GetOrCreateUserByGithub(githubID string, email string) (*Use
 				context.Background(),
 				"UPDATE users SET addition = $2 WHERE id = $1",
 				user.ID, additionJSON)
+			user.Addition["email"] = email
 		}
 		if err != nil {
 			return nil, err
@@ -282,4 +254,44 @@ func (db *Database) SubscribeURLs(userID int64, urls []string) error {
 
 func (db *Database) QueryRow(sql string, args ...interface{}) pgx.Row {
 	return db.pool.QueryRow(context.Background(), sql, args...)
+}
+
+///
+
+func readUser(row pgx.Row) (*User, error) {
+	var user User
+	err := row.Scan(&user.ID, &user.Platform, &user.PID, &user.Addition)
+	if err != nil {
+		if errors.Is(err, pgx.ErrNoRows) {
+			return nil, nil
+		}
+		return nil, err
+	}
+	return &user, nil
+}
+
+func readUsers(rows pgx.Rows) ([]User, error) {
+	users := []User{}
+	for rows.Next() {
+		var user User
+		err := rows.Scan(&user.ID, &user.Platform, &user.PID, &user.Addition)
+		if err != nil {
+			return nil, err
+		}
+		users = append(users, user)
+	}
+	return users, nil
+}
+
+func readFeeds(rows pgx.Rows) ([]Feed, error) {
+	feeds := []Feed{}
+	for rows.Next() {
+		var feed Feed
+		err := rows.Scan(&feed.ID, &feed.URL, &feed.Updated)
+		if err != nil {
+			return nil, err
+		}
+		feeds = append(feeds, feed)
+	}
+	return feeds, nil
 }

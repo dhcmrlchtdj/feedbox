@@ -1,6 +1,8 @@
 package handler
 
 import (
+	"fmt"
+
 	"github.com/gofiber/fiber/v2"
 
 	"github.com/dhcmrlchtdj/feedbox/internal/global"
@@ -99,6 +101,14 @@ func FeedImport(c *fiber.Ctx) error {
 	file.Close()
 	if err != nil {
 		return err
+	}
+
+	for _, u := range urls {
+		if !util.IsValidURL(u) {
+			return fiber.NewError(
+				fiber.StatusBadRequest,
+				fmt.Sprintf("OPML contains invalid url: '%s'", u))
+		}
 	}
 
 	if err := global.DB.SubscribeURLs(credential.UserID, urls); err != nil {
