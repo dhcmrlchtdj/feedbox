@@ -8,16 +8,22 @@ import (
 
 func StaticWithoutCache(filename string) fiber.Handler {
 	return func(c *fiber.Ctx) error {
+		if err := c.SendFile(filename); err != nil {
+			return err
+		}
 		c.Set("cache-control", "no-cache")
-		return c.SendFile(filename)
+		return nil
 	}
 }
 
 func StaticWithCache(dirname string) fiber.Handler {
 	return func(c *fiber.Ctx) error {
-		c.Set("cache-control", "max-age=31536000, must-revalidate")
 		filename := c.Params("filename")
-		return c.SendFile(dirname + filename)
+		if err := c.SendFile(dirname + filename); err != nil {
+			return err
+		}
+		c.Set("cache-control", "max-age=31536000, must-revalidate")
+		return nil
 	}
 }
 

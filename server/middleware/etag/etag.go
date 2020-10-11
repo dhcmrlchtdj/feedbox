@@ -1,12 +1,19 @@
 package etag
 
 import (
-	"fmt"
-	"hash/crc32"
+	"encoding/hex"
 	"strings"
 
 	"github.com/gofiber/fiber/v2"
+	"golang.org/x/crypto/blake2b"
 )
+
+func match(clientEtag string, serverEtag string) bool {
+	if strings.HasPrefix(clientEtag, "W/") {
+		return clientEtag[2:] == serverEtag
+	}
+	return clientEtag == serverEtag
+}
 
 func New() fiber.Handler {
 	return func(c *fiber.Ctx) error {
@@ -29,27 +36,14 @@ func New() fiber.Handler {
 		clientEtag := c.Get(fiber.HeaderIfNoneMatch)
 
 		// Generate ETag for response
-		crc32q := crc32.MakeTable(0xD5828281)
-		etag := fmt.Sprintf("\"%d-%v\"", len(body), crc32.Checksum(body, crc32q))
+		sum := blake2b.Sum256(body)
+		serverEtag := "\"" + hex.EncodeToString(sum[:16]) + "\""
 
-		// Check if client's ETag is weak
-		if strings.HasPrefix(clientEtag, "W/") {
-			// Check if server's ETag is weak
-			if clientEtag[2:] == etag || clientEtag[2:] == etag[2:] {
-				// W/1 == 1 || W/1 == W/1
-				c.Status(fiber.StatusNotModified)
-				c.Send(nil)
-			} else {
-				// W/1 != W/2 || W/1 != 2
-				c.Set("etag", etag)
-			}
-		} else if strings.Contains(clientEtag, etag) {
-			// 1 == 1
+		if match(clientEtag, serverEtag) {
 			c.Status(fiber.StatusNotModified)
 			c.Send(nil)
 		} else {
-			// 1 != 2
-			c.Set("etag", etag)
+			c.Set("etag", "W/"+serverEtag)
 		}
 
 		return nil

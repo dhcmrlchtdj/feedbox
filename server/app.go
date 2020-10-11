@@ -33,7 +33,6 @@ func Create() *fiber.App {
 		ErrorHandler:  errorHandler,
 		StrictRouting: true,
 		CaseSensitive: true,
-		// ETag:          true,
 	}
 	if prod {
 		appConfig.ProxyHeader = "CF-Connecting-IP"
@@ -106,7 +105,6 @@ func errorHandler(c *fiber.Ctx, err error) error {
 	if errors.As(err, &e) {
 		code = e.Code
 	}
-	c.Set("cache-control", "no-store")
 	if code >= 500 {
 		global.Monitor.Error(err)
 	}
