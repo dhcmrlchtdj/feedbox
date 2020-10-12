@@ -30,26 +30,29 @@ func New() fiber.Handler {
 			}
 		}
 
+		reqHeader := zerolog.Dict()
+		c.Request().Header.VisitAll(func(key []byte, value []byte) {
+			k := string(key)
+			if k != "Cookie" {
+				reqHeader = reqHeader.Bytes(k, value)
+			}
+		})
+		respHeader := zerolog.Dict()
+		c.Response().Header.VisitAll(func(key []byte, value []byte) {
+			k := string(key)
+			if k != "Set-Cookie" {
+				respHeader = respHeader.Bytes(k, value)
+			}
+		})
+
 		logger.Info().
-			Dict("request", zerolog.Dict().
-				Str("method", c.Method()).
-				Str("path", c.Path()).
-				Str("ip", c.IP()).
-				Dict("header", zerolog.Dict().
-					Str("x-forwarded-for", c.Get("x-forwarded-for")).
-					Str("x-request-id", c.Get("x-request-id")).
-					Str("cf-request-id", c.Get("cf-request-id")).
-					Str("if-none-match", c.Get("if-none-match")).
-					Str("ua", c.Get("user-agent")).
-					Str("referer", c.Get("referer")),
-				),
-			).
-			Dict("response", zerolog.Dict().
-				Int("bytes", len(c.Response().Body())).
-				Int("status", c.Response().StatusCode()).
-				Bytes("etag", c.Response().Header.Peek("etag")).
-				Dur("latency", stop.Sub(start)),
-			).
+			Str("method", c.Method()).
+			Str("path", c.Path()).
+			Int("status", c.Response().StatusCode()).
+			Int("bytes", len(c.Response().Body())).
+			Dict("request", reqHeader).
+			Dict("response", respHeader).
+			Dur("latency", stop.Sub(start)).
 			Send()
 
 		return nil

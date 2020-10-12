@@ -35,8 +35,7 @@ func New() fiber.Handler {
 
 		// https://www.w3.org/Protocols/HTTP/1.1/rfc2616bis/issues/#i71
 		if strings.Contains(clientEtag, serverEtag[2:]) {
-			c.Status(fiber.StatusNotModified)
-			return c.Send(nil)
+			return c.Status(fiber.StatusNotModified).Send(nil)
 		}
 
 		return nil

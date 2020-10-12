@@ -8,6 +8,7 @@ import (
 
 func StaticWithoutCache(filename string) fiber.Handler {
 	return func(c *fiber.Ctx) error {
+		c.Request().Header.Del("If-Modified-Since")
 		if err := c.SendFile(filename); err != nil {
 			return err
 		}
@@ -19,6 +20,7 @@ func StaticWithoutCache(filename string) fiber.Handler {
 func StaticWithCache(dirname string) fiber.Handler {
 	return func(c *fiber.Ctx) error {
 		filename := c.Params("filename")
+		c.Request().Header.Del("If-Modified-Since")
 		if err := c.SendFile(dirname + filename); err != nil {
 			return err
 		}
