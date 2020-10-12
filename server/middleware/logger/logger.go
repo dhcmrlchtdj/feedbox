@@ -20,6 +20,14 @@ func New() fiber.Handler {
 			errHandler = c.App().Config().ErrorHandler
 		})
 
+		reqHeader := zerolog.Dict()
+		c.Request().Header.VisitAll(func(key []byte, value []byte) {
+			k := string(key)
+			if k != "Cookie" {
+				reqHeader = reqHeader.Bytes(k, value)
+			}
+		})
+
 		start := time.Now()
 		chainErr := c.Next()
 		stop := time.Now()
@@ -30,13 +38,6 @@ func New() fiber.Handler {
 			}
 		}
 
-		reqHeader := zerolog.Dict()
-		c.Request().Header.VisitAll(func(key []byte, value []byte) {
-			k := string(key)
-			if k != "Cookie" {
-				reqHeader = reqHeader.Bytes(k, value)
-			}
-		})
 		respHeader := zerolog.Dict()
 		c.Response().Header.VisitAll(func(key []byte, value []byte) {
 			k := string(key)
