@@ -9,6 +9,12 @@ import (
 	"github.com/jackc/pgx/v4"
 )
 
+///
+
+var ErrEmptyRow = errors.New("empty row")
+
+///
+
 type User struct {
 	ID       int64             `json:"id"`
 	Platform string            `json:"platform"`
@@ -34,7 +40,7 @@ func (db *Database) GetUserByID(id int64) (*User, error) {
 		return nil, err
 	}
 	if user == nil {
-		return nil, errors.New("userID not found")
+		return nil, ErrEmptyRow
 	}
 	return user, nil
 }

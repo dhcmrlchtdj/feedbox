@@ -29,10 +29,11 @@ func main() {
 	}
 	util.CheckEnvs("ENV")
 
-	if os.Getenv("ENV") == "prod" {
-		zerolog.TimeFieldFormat = zerolog.TimeFormatUnix
-	}
+	zerolog.TimestampFieldName = "t"
+	zerolog.LevelFieldName = "l"
+	zerolog.TimeFieldFormat = zerolog.TimeFormatUnix
 	if os.Getenv("ENV") == "dev" {
+		zerolog.TimeFieldFormat = time.RFC3339
 		log.Logger = log.Output(ZerologPrettyPrint)
 	}
 

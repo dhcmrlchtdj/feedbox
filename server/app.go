@@ -100,21 +100,18 @@ func setupRoute(app *fiber.App) {
 }
 
 func errorHandler(c *fiber.Ctx, err error) error {
-	code := fiber.StatusInternalServerError
-	var e *fiber.Error
-	if errors.As(err, &e) {
-		code = e.Code
-	}
+	notCare := fiber.DefaultErrorHandler(c, err)
+	code := c.Response().StatusCode()
 	if code >= 500 {
 		global.Monitor.Error(err)
 	}
-	return c.Status(code).SendString(err.Error())
+	return notCare
 }
 
 func cookieValidator(tokenStr string) ( /* Credential */ interface{}, error) {
 	plaintext, err := global.Sign.DecodeFromBase64(tokenStr)
 	if err != nil {
-		return nil, err
+		return nil, errors.Wrap(err, "invalid token")
 	}
 	credential := typing.Credential{}
 	err = json.Unmarshal(plaintext, &credential)
@@ -124,5 +121,14 @@ func cookieValidator(tokenStr string) ( /* Credential */ interface{}, error) {
 	if time.Now().Unix() > credential.ExpiresAt {
 		return nil, errors.New("expired token")
 	}
+
+	// _, err = global.DB.GetUserByID(credential.UserID)
+	// if err != nil {
+	//     if errors.Is(err, database.ErrEmptyRow) {
+	//         err = errors.New("invalid user")
+	//     }
+	//     return nil, err
+	// }
+
 	return credential, nil
 }

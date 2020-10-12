@@ -8,20 +8,13 @@ import (
 	"github.com/gofiber/fiber/v2"
 
 	"github.com/dhcmrlchtdj/feedbox/internal/global"
+	"github.com/dhcmrlchtdj/feedbox/server/middleware/auth/cookie"
 	"github.com/dhcmrlchtdj/feedbox/server/middleware/auth/github"
 	"github.com/dhcmrlchtdj/feedbox/server/typing"
 )
 
 func Logout(c *fiber.Ctx) error {
-	c.Cookie(&fiber.Cookie{
-		Name:     "token",
-		Value:    "",
-		Path:     "/api",
-		Expires:  time.Date(1970, time.January, 1, 0, 0, 0, 0, time.UTC),
-		Secure:   true,
-		HTTPOnly: true,
-		SameSite: "strict",
-	})
+	cookie.Clear(c)
 	return c.Redirect("/")
 }
 
@@ -46,15 +39,7 @@ func ConnectGithub(c *fiber.Ctx) error {
 		return err
 	}
 
-	c.Cookie(&fiber.Cookie{
-		Name:     "token",
-		Value:    tokenStr,
-		Path:     "/api",
-		MaxAge:   int((time.Hour * 24 * 3) / time.Second),
-		Secure:   true,
-		HTTPOnly: true,
-		SameSite: "strict",
-	})
+	cookie.Set(c, tokenStr)
 
 	return c.Redirect("/")
 }
