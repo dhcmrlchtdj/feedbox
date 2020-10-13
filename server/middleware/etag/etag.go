@@ -17,7 +17,8 @@ func New() fiber.Handler {
 
 		resp := c.Response()
 		// Don't generate ETags for invalid responses
-		if resp.StatusCode() != fiber.StatusOK {
+		status := resp.StatusCode()
+		if status < 200 && status >= 300 {
 			return nil
 		}
 		body := resp.Body()

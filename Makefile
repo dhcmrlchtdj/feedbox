@@ -19,9 +19,9 @@ lint:
 	go vet ./...
 
 test: lint
-	ENV=test TZ=UTC go test ./server
-	ENV=test TZ=UTC go test ./internal/database
-	ENV=test TZ=UTC go test ./internal/util
+	ENV=test TZ=UTC go test ./server -race
+	ENV=test TZ=UTC go test ./internal/database -race
+	ENV=test TZ=UTC go test ./internal/util -race
 
 test_update:
 	-ENV=test TZ=UTC UPDATE_SNAPSHOTS=true go test ./server
