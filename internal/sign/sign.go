@@ -4,8 +4,8 @@ import (
 	"crypto/cipher"
 	"crypto/rand"
 	"encoding/base64"
+	"encoding/hex"
 
-	"golang.org/x/crypto/blake2b"
 	"golang.org/x/crypto/chacha20poly1305"
 )
 
@@ -14,8 +14,11 @@ type Sign struct {
 }
 
 func New(secret string) (*Sign, error) {
-	key := blake2b.Sum256([]byte(secret))
-	aead, err := chacha20poly1305.NewX(key[:])
+	key, err := hex.DecodeString(secret)
+	if err != nil {
+		return nil, err
+	}
+	aead, err := chacha20poly1305.NewX(key)
 	if err != nil {
 		return nil, err
 	}
