@@ -1,6 +1,7 @@
 package logger
 
 import (
+	"os"
 	"sync"
 	"time"
 
@@ -13,6 +14,7 @@ func New() fiber.Handler {
 	var once sync.Once
 	var errHandler fiber.ErrorHandler
 
+	prod := os.Getenv("ENV") == "prod"
 	logger := log.Logger.With().Str("module", "server").Logger()
 
 	return func(c *fiber.Ctx) error {
@@ -23,9 +25,10 @@ func New() fiber.Handler {
 		reqHeader := zerolog.Dict()
 		c.Request().Header.VisitAll(func(key []byte, value []byte) {
 			k := string(key)
-			if k != "Cookie" {
-				reqHeader = reqHeader.Bytes(k, value)
+			if prod && k == "Cookie" {
+				return
 			}
+			reqHeader = reqHeader.Bytes(k, value)
 		})
 
 		start := time.Now()
@@ -38,19 +41,22 @@ func New() fiber.Handler {
 			}
 		}
 
+		resp := c.Response()
+
 		respHeader := zerolog.Dict()
-		c.Response().Header.VisitAll(func(key []byte, value []byte) {
+		resp.Header.VisitAll(func(key []byte, value []byte) {
 			k := string(key)
-			if k != "Set-Cookie" {
-				respHeader = respHeader.Bytes(k, value)
+			if prod && k == "Set-Cookie" {
+				return
 			}
+			respHeader = respHeader.Bytes(k, value)
 		})
 
 		logger.Info().
 			Str("method", c.Method()).
 			Str("path", c.Path()).
-			Int("status", c.Response().StatusCode()).
-			Int("bytes", len(c.Response().Body())).
+			Int("status", resp.StatusCode()).
+			Int("bytes", len(resp.Body())).
 			Dict("request", reqHeader).
 			Dict("response", respHeader).
 			Dur("latency", stop.Sub(start)).

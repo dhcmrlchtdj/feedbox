@@ -15,17 +15,23 @@ func New() fiber.Handler {
 			return err
 		}
 
+		if c.Method() != fiber.MethodGet {
+			return nil
+		}
+
 		resp := c.Response()
 		// Don't generate ETags for invalid responses
 		status := resp.StatusCode()
 		if status < 200 && status >= 300 {
 			return nil
 		}
+
 		body := resp.Body()
 		// Skips ETag if no response body is present
 		if len(body) <= 0 {
 			return nil
 		}
+
 		// Get ETag header from request
 		clientEtag := c.Get(fiber.HeaderIfNoneMatch)
 
