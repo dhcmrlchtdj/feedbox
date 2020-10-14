@@ -11,7 +11,6 @@ require (
 	github.com/andybalholm/cascadia v1.2.0 // indirect
 	github.com/bradleyjkemp/cupaloy/v2 v2.6.0
 	github.com/cespare/xxhash/v2 v2.1.1
-	github.com/go-chi/chi v4.1.2+incompatible // indirect
 	github.com/gofiber/fiber/v2 v2.0.6
 	github.com/golang-migrate/migrate/v4 v4.13.0
 	github.com/hashicorp/errwrap v1.1.0 // indirect
@@ -19,8 +18,6 @@ require (
 	github.com/joho/godotenv v1.3.0
 	github.com/klauspost/compress v1.11.1 // indirect
 	github.com/lib/pq v1.8.0 // indirect
-	github.com/mailgun/mailgun-go/v4 v4.2.0
-	github.com/mailru/easyjson v0.7.6 // indirect
 	github.com/mmcdole/gofeed v1.1.1-0.20201005053009-96998c2d6be5
 	github.com/mmcdole/goxpp v0.0.0-20200921145534-2f3784f67354 // indirect
 	github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd // indirect
@@ -31,5 +28,6 @@ require (
 	golang.org/x/crypto v0.0.0-20201012173705-84dcc777aaee
 	golang.org/x/net v0.0.0-20201010224723-4f7140c49acb // indirect
 	golang.org/x/oauth2 v0.0.0-20200902213428-5d25da1a8d43
-	golang.org/x/sys v0.0.0-20201013081832-0aaa2718063a // indirect
+	golang.org/x/sys v0.0.0-20201014080544-cc95f250f6bc // indirect
+	google.golang.org/appengine v1.6.7 // indirect
 )
