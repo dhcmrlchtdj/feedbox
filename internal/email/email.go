@@ -2,6 +2,7 @@ package email
 
 import (
 	"bytes"
+	"encoding/json"
 	"net/http"
 
 	"github.com/pkg/errors"
@@ -53,7 +54,14 @@ func (c *Client) Send(addr string, subject string, text string) error {
 	}
 
 	if resp.StatusCode != 200 {
-		return errors.Errorf("email: %s", resp.Status)
+		e := errors.New(resp.Status)
+		var r struct {
+			Message string `json:"message,omitempty"`
+		}
+		if err := json.NewDecoder(resp.Body).Decode(&r); err != nil {
+			return errors.Wrap(e, err.Error())
+		}
+		return errors.Wrap(e, r.Message)
 	}
 
 	return nil
