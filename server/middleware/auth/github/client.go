@@ -3,8 +3,6 @@ package github
 import (
 	"encoding/json"
 	"errors"
-	"io"
-	"io/ioutil"
 	"net/http"
 	"sort"
 )
@@ -19,7 +17,6 @@ func getProfile(client *http.Client) (*Profile, error) {
 	}
 
 	if resp.StatusCode != 200 {
-		io.Copy(ioutil.Discard, resp.Body)
 		return nil, errors.New(resp.Status)
 	}
 
@@ -48,7 +45,6 @@ func getEmail(client *http.Client) (string, error) {
 	}
 
 	if resp.StatusCode != 200 {
-		io.Copy(ioutil.Discard, resp.Body)
 		return "", errors.New(resp.Status)
 	}
 

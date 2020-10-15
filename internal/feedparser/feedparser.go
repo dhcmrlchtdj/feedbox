@@ -2,8 +2,6 @@ package feedparser
 
 import (
 	"fmt"
-	"io"
-	"io/ioutil"
 	"net/http"
 	neturl "net/url"
 
@@ -37,7 +35,6 @@ func (p *FeedParser) ParseURL(url string) (*gofeed.Feed, error) {
 		return nil, err
 	}
 	if resp.StatusCode != 200 {
-		io.Copy(ioutil.Discard, resp.Body)
 		return nil, fmt.Errorf("'%v' return '%v'", url, resp.Status)
 	}
 	feed, err := p.parser.Parse(resp.Body)

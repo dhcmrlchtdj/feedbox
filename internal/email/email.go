@@ -2,8 +2,6 @@ package email
 
 import (
 	"bytes"
-	"io"
-	"io/ioutil"
 	"net/http"
 
 	"github.com/pkg/errors"
@@ -53,7 +51,6 @@ func (c *Client) Send(addr string, subject string, text string) error {
 		return err
 	}
 
-	io.Copy(ioutil.Discard, resp.Body)
 	if resp.StatusCode != 200 {
 		return errors.Errorf("email: %s", resp.Status)
 	}
