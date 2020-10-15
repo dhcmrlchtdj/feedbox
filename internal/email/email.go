@@ -6,6 +6,8 @@ import (
 	"io/ioutil"
 	"net/http"
 
+	"github.com/pkg/errors"
+
 	"github.com/dhcmrlchtdj/feedbox/internal/multipart"
 )
 
@@ -44,12 +46,17 @@ func (c *Client) Send(addr string, subject string, text string) error {
 	req.SetBasicAuth("api", c.APIKey)
 	req.Header.Set("content-type", m.ContentType)
 	resp, err := c.Client.Do(req)
+	if resp != nil {
+		defer resp.Body.Close()
+	}
 	if err != nil {
 		return err
 	}
-	if resp != nil {
-		io.Copy(ioutil.Discard, resp.Body)
-		resp.Body.Close()
+
+	io.Copy(ioutil.Discard, resp.Body)
+	if resp.StatusCode != 200 {
+		return errors.Errorf("email: %s", resp.Status)
 	}
+
 	return nil
 }
