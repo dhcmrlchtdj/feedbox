@@ -33,7 +33,7 @@ func New() fiber.Handler {
 
 		start := time.Now()
 		chainErr := c.Next()
-		stop := time.Now()
+		latency := time.Since(start)
 
 		if chainErr != nil {
 			if err := errHandler(c, chainErr); err != nil {
@@ -59,7 +59,7 @@ func New() fiber.Handler {
 			Int("bytes", len(resp.Body())).
 			Dict("request", reqHeader).
 			Dict("response", respHeader).
-			Dur("latency", stop.Sub(start)).
+			Dur("latency", latency).
 			Send()
 
 		return nil

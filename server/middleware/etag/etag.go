@@ -15,33 +15,24 @@ func New() fiber.Handler {
 			return err
 		}
 
-		if c.Method() != fiber.MethodGet {
-			return nil
-		}
-
 		resp := c.Response()
-		// Don't generate ETags for invalid responses
-		status := resp.StatusCode()
-		if status < 200 && status >= 300 {
+		if (c.Method() != fiber.MethodGet) ||
+			(resp.StatusCode() != fiber.StatusOK) {
 			return nil
 		}
 
 		body := resp.Body()
-		// Skips ETag if no response body is present
 		if len(body) <= 0 {
 			return nil
 		}
 
-		// Get ETag header from request
-		clientEtag := c.Get(fiber.HeaderIfNoneMatch)
+		clientETags := c.Get("if-none-match")
 
-		// Generate ETag for response
 		sum := xxhash.Sum64(body)
-		serverEtag := fmt.Sprintf("W/\"%d-%016x\"", len(body), sum)
-		c.Set("etag", serverEtag)
+		serverETag := fmt.Sprintf("W/\"%d-%016x\"", len(body), sum)
+		c.Set("etag", serverETag)
 
-		// https://www.w3.org/Protocols/HTTP/1.1/rfc2616bis/issues/#i71
-		if strings.Contains(clientEtag, serverEtag[2:]) {
+		if strings.Contains(clientETags, serverETag) {
 			return c.Status(fiber.StatusNotModified).Send(nil)
 		}
 
