@@ -139,6 +139,7 @@ func dispatchFeed(done *sync.WaitGroup, qFeedItem <-chan *feedItem, qGithub chan
 			feed := x.feed
 			users, err := global.DB.GetSubscribers(feed.ID)
 			if err != nil {
+				global.Monitor.Error(err)
 				continue
 			}
 
@@ -150,7 +151,9 @@ func dispatchFeed(done *sync.WaitGroup, qFeedItem <-chan *feedItem, qGithub chan
 					githubUsers = append(githubUsers, user.Addition["email"])
 				case "telegram":
 					pid, err := strconv.ParseInt(user.PID, 10, 64)
-					if err == nil {
+					if err != nil {
+						global.Monitor.Error(err)
+					} else {
 						telegramUsers = append(telegramUsers, pid)
 					}
 				}
