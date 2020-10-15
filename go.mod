@@ -11,8 +11,9 @@ require (
 	github.com/andybalholm/cascadia v1.2.0 // indirect
 	github.com/bradleyjkemp/cupaloy/v2 v2.6.0
 	github.com/cespare/xxhash/v2 v2.1.1
-	github.com/gofiber/fiber/v2 v2.0.6
+	github.com/gofiber/fiber/v2 v2.1.0
 	github.com/golang-migrate/migrate/v4 v4.13.0
+	github.com/golang/protobuf v1.4.3 // indirect
 	github.com/hashicorp/errwrap v1.1.0 // indirect
 	github.com/jackc/pgx/v4 v4.9.0
 	github.com/joho/godotenv v1.3.0
@@ -28,6 +29,5 @@ require (
 	golang.org/x/crypto v0.0.0-20201012173705-84dcc777aaee
 	golang.org/x/net v0.0.0-20201010224723-4f7140c49acb // indirect
 	golang.org/x/oauth2 v0.0.0-20200902213428-5d25da1a8d43
-	golang.org/x/sys v0.0.0-20201014080544-cc95f250f6bc // indirect
 	google.golang.org/appengine v1.6.7 // indirect
 )
