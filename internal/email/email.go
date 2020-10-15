@@ -4,8 +4,9 @@ import (
 	"bytes"
 	"io"
 	"io/ioutil"
-	"mime/multipart"
 	"net/http"
+
+	"github.com/dhcmrlchtdj/feedbox/internal/multipart"
 )
 
 type Client struct {
@@ -25,32 +26,23 @@ func New(domain string, apiKey string, from string) *Client {
 }
 
 func (c *Client) Send(addr string, subject string, text string) error {
-	payload := &bytes.Buffer{}
-	writer := multipart.NewWriter(payload)
-	if err := writer.WriteField("from", c.From); err != nil {
+	payload := new(bytes.Buffer)
+	m := multipart.New(payload).
+		Str("form", c.From).
+		Str("to", addr).
+		Str("subject", subject).
+		Str("text", text).
+		Str("html", text)
+	if err := m.Close(); err != nil {
 		return err
 	}
-	if err := writer.WriteField("to", addr); err != nil {
-		return err
-	}
-	if err := writer.WriteField("subject", subject); err != nil {
-		return err
-	}
-	if err := writer.WriteField("text", text); err != nil {
-		return err
-	}
-	if err := writer.WriteField("html", text); err != nil {
-		return err
-	}
-	if err := writer.Close(); err != nil {
-		return err
-	}
+
 	req, err := http.NewRequest("POST", c.URLPrefix+"/message", payload)
 	if err != nil {
 		return err
 	}
 	req.SetBasicAuth("api", c.APIKey)
-	req.Header.Set("content-type", writer.FormDataContentType())
+	req.Header.Set("content-type", m.ContentType)
 	resp, err := c.Client.Do(req)
 	if err != nil {
 		return err

@@ -4,12 +4,12 @@ import (
 	"bytes"
 	"encoding/json"
 	"io"
-	"mime/multipart"
 	"net/http"
-	"strconv"
 	"strings"
 
 	"github.com/pkg/errors"
+
+	"github.com/dhcmrlchtdj/feedbox/internal/multipart"
 )
 
 type Client struct {
@@ -59,29 +59,18 @@ func (c *Client) SendAudio(payload *SendAudioPayload) error {
 
 func (c *Client) SendDocument(payload *SendDocumentPayload) error {
 	r, w := io.Pipe()
-	writer := multipart.NewWriter(w)
+	m := multipart.New(w)
 	go func() {
-		defer w.Close()
-		if err := writeFile(writer, "document", payload.Document); err != nil {
-			w.CloseWithError(err)
-		}
-		if err := writeInt64(writer, "chat_id", payload.ChatID); err != nil {
-			w.CloseWithError(err)
-		}
-		if err := writeString(writer, "caption", payload.Caption); err != nil {
-			w.CloseWithError(err)
-		}
-		if err := writeString(writer, "parse_mode", payload.ParseMode); err != nil {
-			w.CloseWithError(err)
-		}
-		if err := writeInt64(writer, "reply_to_message_id", payload.ReplyToMessageID); err != nil {
-			w.CloseWithError(err)
-		}
-		if err := writer.Close(); err != nil {
-			w.CloseWithError(err)
-		}
+		m.
+			Int64("chat_id", payload.ChatID).
+			File("document", payload.Document.Name, payload.Document.Content).
+			Str("caption", payload.Caption).
+			Str("parse_mode", payload.ParseMode).
+			Int64("reply_to_message_id", payload.ReplyToMessageID)
+		err := m.Close()
+		w.CloseWithError(err)
 	}()
-	return c.rawSendFileSimple("sendDocument", writer.FormDataContentType(), r)
+	return c.rawSendFileSimple("sendDocument", m.ContentType, r)
 }
 
 ///
@@ -140,38 +129,4 @@ func DecodeResponse(body io.Reader, t interface{ Check() error }) error {
 		return err
 	}
 	return t.Check()
-}
-
-///
-
-func writeString(writer *multipart.Writer, fieldName string, field string) error {
-	if field != "" {
-		err := writer.WriteField(fieldName, field)
-		if err != nil {
-			return err
-		}
-	}
-	return nil
-}
-
-func writeInt64(writer *multipart.Writer, fieldName string, field int64) error {
-	if field != 0 {
-		val := strconv.FormatInt(field, 10)
-		err := writer.WriteField(fieldName, val)
-		if err != nil {
-			return err
-		}
-	}
-	return nil
-}
-
-func writeFile(writer *multipart.Writer, fieldName string, file InputFile) error {
-	part, err := writer.CreateFormFile(fieldName, file.Name)
-	if err != nil {
-		return err
-	}
-	if _, err := io.Copy(part, file.Content); err != nil {
-		return err
-	}
-	return nil
 }
