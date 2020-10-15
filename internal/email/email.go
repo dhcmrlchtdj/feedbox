@@ -10,40 +10,41 @@ import (
 )
 
 type Client struct {
-	URLPrefix string
-	From      string
-	APIKey    string
-	Client    *http.Client
+	urlPrefix string
+	from      string
+	apiKey    string
+	client    *http.Client
 }
 
 func New(domain string, apiKey string, from string) *Client {
 	return &Client{
-		URLPrefix: "https://api.mailgun.net/v3/" + domain,
-		From:      from,
-		APIKey:    apiKey,
-		Client:    &http.Client{},
+		urlPrefix: "https://api.mailgun.net/v3/" + domain,
+		from:      from,
+		apiKey:    apiKey,
+		client:    &http.Client{},
 	}
 }
 
 func (c *Client) Send(addr string, subject string, text string) error {
 	payload := new(bytes.Buffer)
 	m := multipart.New(payload).
-		Str("form", c.From).
+		Str("from", c.from).
 		Str("to", addr).
 		Str("subject", subject).
 		Str("text", text).
-		Str("html", text)
+		Str("html", text).
+		Str("o:dkim", "yes")
 	if err := m.Close(); err != nil {
 		return err
 	}
 
-	req, err := http.NewRequest("POST", c.URLPrefix+"/message", payload)
+	req, err := http.NewRequest("POST", c.urlPrefix+"/messages", payload)
 	if err != nil {
 		return err
 	}
-	req.SetBasicAuth("api", c.APIKey)
+	req.SetBasicAuth("api", c.apiKey)
 	req.Header.Set("content-type", m.ContentType)
-	resp, err := c.Client.Do(req)
+	resp, err := c.client.Do(req)
 	if resp != nil {
 		defer resp.Body.Close()
 	}
