@@ -75,6 +75,7 @@ func (c *Client) SendDocument(payload *SendDocumentPayload) error {
 
 ///
 
+// caller MUST close response.Body
 func (c *Client) rawSend(cmd string, payload interface{}) (io.ReadCloser, error) {
 	url := "https://api.telegram.org/bot" + c.token + "/" + cmd
 
@@ -85,11 +86,9 @@ func (c *Client) rawSend(cmd string, payload interface{}) (io.ReadCloser, error)
 
 	resp, err := http.Post(url, "application/json", &buf)
 	if err != nil {
-		if resp != nil {
-			resp.Body.Close()
-		}
 		return nil, errors.Wrap(err, "telegram/"+cmd)
 	}
+
 	return resp.Body, nil
 }
 
@@ -100,7 +99,7 @@ func (c *Client) rawSendSimple(cmd string, payload interface{}) error {
 	}
 	defer body.Close()
 
-	if err := DecodeResponse(body, &Response{}); err != nil {
+	if err := DecodeResponse(body, new(Response)); err != nil {
 		return errors.Wrap(err, "telegram/"+cmd)
 	}
 
@@ -110,15 +109,15 @@ func (c *Client) rawSendSimple(cmd string, payload interface{}) error {
 func (c *Client) rawSendFileSimple(cmd string, contentType string, payload io.Reader) error {
 	url := "https://api.telegram.org/bot" + c.token + "/" + cmd
 	resp, err := http.Post(url, contentType, payload)
-	if resp != nil {
-		defer resp.Body.Close()
-	}
 	if err != nil {
 		return errors.Wrap(err, "telegram/"+cmd)
 	}
-	if err := DecodeResponse(resp.Body, &Response{}); err != nil {
+	defer resp.Body.Close()
+
+	if err := DecodeResponse(resp.Body, new(Response)); err != nil {
 		return errors.Wrap(err, "telegram/"+cmd)
 	}
+
 	return nil
 }
 

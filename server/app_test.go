@@ -3,7 +3,6 @@ package server_test
 import (
 	"bytes"
 	"io/ioutil"
-	"mime/multipart"
 	"net/http/httptest"
 	"os"
 	"strings"
@@ -18,6 +17,7 @@ import (
 
 	"github.com/dhcmrlchtdj/feedbox/internal/database"
 	"github.com/dhcmrlchtdj/feedbox/internal/global"
+	"github.com/dhcmrlchtdj/feedbox/internal/multipart"
 	"github.com/dhcmrlchtdj/feedbox/internal/sign"
 	"github.com/dhcmrlchtdj/feedbox/server/handler"
 	"github.com/dhcmrlchtdj/feedbox/server/middleware/auth/github"
@@ -177,7 +177,8 @@ func TestExportFeed(t *testing.T) {
 }
 
 func TestImportFeed(t *testing.T) {
-	opml := []byte(`<?xml version="1.0" encoding="utf-8"?>
+	opml := strings.NewReader(`
+	<?xml version="1.0" encoding="utf-8"?>
 	<opml version="1.0">
 	<head><title>feeds</title></head>
 	<body>
@@ -187,25 +188,20 @@ func TestImportFeed(t *testing.T) {
 	</body>
 	</opml>`)
 	var payload bytes.Buffer
-	writer := multipart.NewWriter(&payload)
-	part, err := writer.CreateFormFile("opml", "feed.opml")
-	if err != nil {
+	m := multipart.New(&payload).
+		File("opml", "feed.opml", opml)
+	if err := m.Close(); err != nil {
 		t.Fatal(err)
 	}
-	if _, err = part.Write(opml); err != nil {
-		t.Fatal(err)
-	}
-	if err := writer.Close(); err != nil {
-		t.Fatal(err)
-	}
-
 	req := httptest.NewRequest("POST", "http://127.0.0.1:8000/api/v1/feeds/import", &payload)
-	req.Header.Set("content-type", writer.FormDataContentType())
+	req.Header.Set("content-type", m.ContentType)
+
 	resp, err := app.Test(req)
 	if err != nil {
 		t.Fatal(err)
 	}
 	defer resp.Body.Close()
+
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
 		t.Fatal(err)

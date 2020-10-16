@@ -113,17 +113,15 @@ func cookieValidator(tokenStr string) ( /* Credential */ interface{}, error) {
 	if err != nil {
 		return nil, errors.Wrap(err, "invalid token")
 	}
-	credential := typing.Credential{}
-	err = json.Unmarshal(plaintext, &credential)
-	if err != nil {
+	var credential typing.Credential
+	if err := json.Unmarshal(plaintext, &credential); err != nil {
 		return nil, errors.Wrap(err, "invalid token")
 	}
 	if time.Now().Unix() > credential.ExpiresAt {
 		return nil, errors.New("expired token")
 	}
 
-	// _, err = global.DB.GetUserByID(credential.UserID)
-	// if err != nil {
+	// if _, err = global.DB.GetUserByID(credential.UserID); err != nil {
 	//     if errors.Is(err, database.ErrEmptyRow) {
 	//         err = errors.New("invalid user")
 	//     }

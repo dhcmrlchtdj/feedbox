@@ -27,13 +27,13 @@ func (p *FeedParser) ParseURL(url string) (*gofeed.Feed, error) {
 		return nil, err
 	}
 	req.Header.Set("User-Agent", "feedbox.h11.io")
+
 	resp, err := p.client.Do(req)
-	if resp != nil {
-		defer resp.Body.Close()
-	}
 	if err != nil {
 		return nil, err
 	}
+	defer resp.Body.Close()
+
 	if resp.StatusCode != 200 {
 		return nil, fmt.Errorf("'%v' return '%v'", url, resp.Status)
 	}
@@ -73,8 +73,9 @@ type customRSSTranslator struct {
 }
 
 func newCustomRSSTranslator() *customRSSTranslator {
-	t := &customRSSTranslator{}
-	t.defaultTranslator = &gofeed.DefaultRSSTranslator{}
+	t := &customRSSTranslator{
+		defaultTranslator: new(gofeed.DefaultRSSTranslator),
+	}
 	return t
 }
 
@@ -90,9 +91,9 @@ func (ct *customRSSTranslator) Translate(feed interface{}) (*gofeed.Feed, error)
 	}
 
 	for i, item := range rss.Items {
-		comment := item.Comments
-		if len(comment) > 0 {
-			f.Items[i].Custom = map[string]string{"comments": comment}
+		comments := item.Comments
+		if len(comments) > 0 {
+			f.Items[i].Custom = map[string]string{"comments": comments}
 		}
 	}
 

@@ -17,12 +17,12 @@ import (
 var db *database.Database
 
 func TestMain(m *testing.M) {
-	var err error
-	if err = godotenv.Load("../../dotenv"); err != nil {
+	if err := godotenv.Load("../../dotenv"); err != nil {
 		panic(err)
 	}
 
 	setupDatabase()
+	var err error
 	db, err = database.New(os.Getenv("DATABASE_URL"))
 	if err != nil {
 		panic(err)

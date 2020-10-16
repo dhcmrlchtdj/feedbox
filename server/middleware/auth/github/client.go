@@ -9,12 +9,10 @@ import (
 
 func getProfile(client *http.Client) (*Profile, error) {
 	resp, err := client.Get("https://api.github.com/user")
-	if resp != nil {
-		defer resp.Body.Close()
-	}
 	if err != nil {
 		return nil, err
 	}
+	defer resp.Body.Close()
 
 	if resp.StatusCode != 200 {
 		return nil, errors.New(resp.Status)
@@ -37,12 +35,10 @@ type githubEmail struct {
 
 func getEmail(client *http.Client) (string, error) {
 	resp, err := client.Get("https://api.github.com/user/emails")
-	if resp != nil {
-		defer resp.Body.Close()
-	}
 	if err != nil {
 		return "", err
 	}
+	defer resp.Body.Close()
 
 	if resp.StatusCode != 200 {
 		return "", errors.New(resp.Status)
@@ -55,12 +51,13 @@ func getEmail(client *http.Client) (string, error) {
 	}
 
 	var verifiedEmails []string
-	for _, email := range emails {
+	for i := range emails {
+		email := emails[i]
 		if email.Verified {
-			verifiedEmails = append(verifiedEmails, email.Email)
 			if email.Primary {
 				return email.Email, nil
 			}
+			verifiedEmails = append(verifiedEmails, email.Email)
 		}
 	}
 	if len(verifiedEmails) > 0 {

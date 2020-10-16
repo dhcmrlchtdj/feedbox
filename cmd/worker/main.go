@@ -17,10 +17,8 @@ import (
 )
 
 func main() {
-	var err error
-
 	if os.Getenv("ENV") != "prod" {
-		if err = godotenv.Load("./dotenv"); err != nil {
+		if err := godotenv.Load("./dotenv"); err != nil {
 			panic(err)
 		}
 	}
@@ -31,13 +29,14 @@ func main() {
 	zerolog.TimeFieldFormat = zerolog.TimeFormatUnix
 
 	util.CheckEnvs("DATABASE_URL")
-	global.DB, err = database.New(
+	db, err := database.New(
 		os.Getenv("DATABASE_URL"),
 		database.WithMaxConns(10),
 		database.WithLogger("info", log.Logger))
 	if err != nil {
 		panic(err)
 	}
+	global.DB = db
 	defer global.DB.Close()
 
 	util.CheckEnvs("ROLLBAR_TOKEN")

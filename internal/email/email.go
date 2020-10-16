@@ -27,8 +27,8 @@ func New(domain string, apiKey string, from string) *Client {
 }
 
 func (c *Client) Send(addr string, subject string, text string) error {
-	payload := new(bytes.Buffer)
-	m := multipart.New(payload).
+	var payload bytes.Buffer
+	m := multipart.New(&payload).
 		Str("from", c.from).
 		Str("to", addr).
 		Str("subject", subject).
@@ -39,19 +39,18 @@ func (c *Client) Send(addr string, subject string, text string) error {
 		return err
 	}
 
-	req, err := http.NewRequest("POST", c.urlPrefix+"/messages", payload)
+	req, err := http.NewRequest("POST", c.urlPrefix+"/messages", &payload)
 	if err != nil {
 		return err
 	}
 	req.SetBasicAuth("api", c.apiKey)
 	req.Header.Set("content-type", m.ContentType)
+
 	resp, err := c.client.Do(req)
-	if resp != nil {
-		defer resp.Body.Close()
-	}
 	if err != nil {
 		return err
 	}
+	defer resp.Body.Close()
 
 	if resp.StatusCode != 200 {
 		e := errors.New(resp.Status)

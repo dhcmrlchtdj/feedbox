@@ -20,10 +20,8 @@ import (
 )
 
 func main() {
-	var err error
-
 	if os.Getenv("ENV") != "prod" {
-		if err = godotenv.Load("./dotenv"); err != nil {
+		if err := godotenv.Load("./dotenv"); err != nil {
 			panic(err)
 		}
 	}
@@ -38,13 +36,14 @@ func main() {
 	}
 
 	util.CheckEnvs("DATABASE_URL")
-	global.DB, err = database.New(
+	db, err := database.New(
 		os.Getenv("DATABASE_URL"),
 		database.WithMaxConns(10),
 		database.WithLogger("info", log.Logger))
 	if err != nil {
 		panic(err)
 	}
+	global.DB = db
 	defer global.DB.Close()
 
 	util.CheckEnvs("ROLLBAR_TOKEN")
@@ -62,7 +61,7 @@ func main() {
 
 	util.CheckEnvs("PORT")
 	util.CheckEnvs("GITHUB_CLIENT_ID", "GITHUB_CLIENT_SECRET")
-	var abort uint32 = 0 // 1 == aborted
+	var abort uint32 = 0 // 0==normal, 1==aborted
 	done := make(chan struct{}, 1)
 	go func() {
 		time.Sleep(time.Second)
