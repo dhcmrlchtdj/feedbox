@@ -1,8 +1,6 @@
 package util
 
-import (
-	"os"
-)
+import "os"
 
 func CheckEnvs(names ...string) {
 	for _, name := range names {

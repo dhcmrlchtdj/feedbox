@@ -1,10 +1,11 @@
 package handler
 
 import (
-	"fmt"
+	"errors"
 
 	"github.com/gofiber/fiber/v2"
 
+	"github.com/dhcmrlchtdj/feedbox/internal/database"
 	"github.com/dhcmrlchtdj/feedbox/internal/global"
 	"github.com/dhcmrlchtdj/feedbox/internal/util"
 	"github.com/dhcmrlchtdj/feedbox/server/typing"
@@ -29,14 +30,13 @@ func FeedAdd(c *fiber.Ctx) error {
 		return fiber.NewError(fiber.StatusBadRequest, err.Error())
 	}
 
-	if !util.IsValidURL(b.URL) {
-		return fiber.NewError(fiber.StatusBadRequest, "not a valid url")
-	}
-
 	credential := c.Locals("credential").(typing.Credential)
 
 	feedID, err := global.DB.GetFeedIDByURL(b.URL)
 	if err != nil {
+		if errors.Is(err, database.ErrInvalidURL) {
+			return fiber.NewError(fiber.StatusBadRequest, err.Error())
+		}
 		return err
 	}
 
@@ -103,15 +103,10 @@ func FeedImport(c *fiber.Ctx) error {
 		return err
 	}
 
-	for _, u := range urls {
-		if !util.IsValidURL(u) {
-			return fiber.NewError(
-				fiber.StatusBadRequest,
-				fmt.Sprintf("OPML contains invalid url: '%s'", u))
-		}
-	}
-
 	if err := global.DB.SubscribeURLs(credential.UserID, urls); err != nil {
+		if errors.Is(err, database.ErrInvalidURL) {
+			return fiber.NewError(fiber.StatusBadRequest, err.Error())
+		}
 		return err
 	}
 

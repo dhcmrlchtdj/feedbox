@@ -2,29 +2,42 @@ package telegrambot
 
 import (
 	"bytes"
-	"fmt"
 	"strconv"
 	"strings"
+
+	"github.com/pkg/errors"
 
 	"github.com/dhcmrlchtdj/feedbox/internal/global"
 	"github.com/dhcmrlchtdj/feedbox/internal/telegram"
 	"github.com/dhcmrlchtdj/feedbox/internal/util"
 )
 
-func executeCommand(cmd string, arg string, msg *telegram.Message) error {
+func executeCommand(cmd string, arg string, msg *telegram.Message) {
+	var err error
 	switch cmd {
 	case "/list":
-		return list(arg, msg)
+		err = list(arg, msg)
 	case "/add":
-		return add(arg, msg)
+		err = add(arg, msg)
 	case "/remove":
-		return remove(arg, msg)
+		err = remove(arg, msg)
 	case "/remove_all":
-		return removeAll(arg, msg)
+		err = removeAll(arg, msg)
 	case "/export":
-		return export(arg, msg)
+		err = export(arg, msg)
 	default:
-		return fmt.Errorf("unknown command: %v", cmd)
+		err = errors.Errorf("unknown command: '%v'", cmd)
+	}
+	if err != nil {
+		global.Monitor.Error(err)
+		e := global.TG.SendMessage(&telegram.SendMessagePayload{
+			ChatID:           msg.Chat.ID,
+			Text:             err.Error(),
+			ReplyToMessageID: msg.MessageID,
+		})
+		if e != nil {
+			global.Monitor.Error(e)
+		}
 	}
 }
 
@@ -72,25 +85,17 @@ func add(arg string, msg *telegram.Message) error {
 	if err != nil {
 		return err
 	}
-
-	var text string
-	if util.IsValidURL(arg) {
-		feedID, err := global.DB.GetFeedIDByURL(arg)
-		if err == nil {
-			err = global.DB.Subscribe(user.ID, feedID)
-		}
-		if err == nil {
-			text = "added"
-		} else {
-			text = err.Error()
-		}
-	} else {
-		text = fmt.Sprintf("not a valid url: '%v'", arg)
+	feedID, err := global.DB.GetFeedIDByURL(arg)
+	if err != nil {
+		return err
+	}
+	if err := global.DB.Subscribe(user.ID, feedID); err != nil {
+		return err
 	}
 
 	return global.TG.SendMessage(&telegram.SendMessagePayload{
 		ChatID:           msg.Chat.ID,
-		Text:             text,
+		Text:             "added",
 		ReplyToMessageID: msg.MessageID,
 	})
 }
@@ -105,25 +110,17 @@ func remove(arg string, msg *telegram.Message) error {
 	if err != nil {
 		return err
 	}
-
-	var text string
-	if util.IsValidURL(arg) {
-		feedID, err := global.DB.GetFeedIDByURL(arg)
-		if err == nil {
-			err = global.DB.Unsubscribe(user.ID, feedID)
-		}
-		if err == nil {
-			text = "removed"
-		} else {
-			text = err.Error()
-		}
-	} else {
-		text = fmt.Sprintf("not a valid url: '%v'", arg)
+	feedID, err := global.DB.GetFeedIDByURL(arg)
+	if err != nil {
+		return err
+	}
+	if err := global.DB.Unsubscribe(user.ID, feedID); err != nil {
+		return err
 	}
 
 	return global.TG.SendMessage(&telegram.SendMessagePayload{
 		ChatID:           msg.Chat.ID,
-		Text:             text,
+		Text:             "removed",
 		ReplyToMessageID: msg.MessageID,
 	})
 }
@@ -145,23 +142,19 @@ func removeAll(arg string, msg *telegram.Message) error {
 	if err := global.DB.UnsubscribeAll(user.ID); err != nil {
 		return err
 	}
-
-	if len(feeds) > 0 {
-		opml := util.BuildOPMLFromFeed(feeds)
-		return global.TG.SendDocument(&telegram.SendDocumentPayload{
-			ChatID:           msg.Chat.ID,
-			ReplyToMessageID: msg.MessageID,
-			Caption:          "done",
-			Document: telegram.InputFile{
-				Name:    "feeds.opml",
-				Content: bytes.NewReader(opml),
-			},
-		})
+	if len(feeds) == 0 {
+		return errors.New("feed list is empty")
 	}
-	return global.TG.SendMessage(&telegram.SendMessagePayload{
+
+	opml := util.BuildOPMLFromFeed(feeds)
+	return global.TG.SendDocument(&telegram.SendDocumentPayload{
 		ChatID:           msg.Chat.ID,
-		Text:             "feed list is empty",
 		ReplyToMessageID: msg.MessageID,
+		Caption:          "done",
+		Document: telegram.InputFile{
+			Name:    "feeds.opml",
+			Content: bytes.NewReader(opml),
+		},
 	})
 }
 
@@ -179,23 +172,19 @@ func export(arg string, msg *telegram.Message) error {
 	if err != nil {
 		return err
 	}
-
-	if len(feeds) > 0 {
-		opml := util.BuildOPMLFromFeed(feeds)
-		return global.TG.SendDocument(&telegram.SendDocumentPayload{
-			ChatID:           msg.Chat.ID,
-			ReplyToMessageID: msg.MessageID,
-			Caption:          "done",
-			Document: telegram.InputFile{
-				Name:    "feeds.opml",
-				Content: bytes.NewReader(opml),
-			},
-		})
+	if len(feeds) == 0 {
+		return errors.New("feed list is empty")
 	}
-	return global.TG.SendMessage(&telegram.SendMessagePayload{
+
+	opml := util.BuildOPMLFromFeed(feeds)
+	return global.TG.SendDocument(&telegram.SendDocumentPayload{
 		ChatID:           msg.Chat.ID,
-		Text:             "feed list is empty",
 		ReplyToMessageID: msg.MessageID,
+		Caption:          "done",
+		Document: telegram.InputFile{
+			Name:    "feeds.opml",
+			Content: bytes.NewReader(opml),
+		},
 	})
 }
 

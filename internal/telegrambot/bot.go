@@ -70,10 +70,7 @@ func handleMessage(message *telegram.Message) {
 			}
 			arg := string(utf16.Decode(text[entity.Offset+entity.Length:]))
 			arg = strings.TrimSpace(arg)
-			if err := executeCommand(cmd, arg, message); err != nil {
-				global.Monitor.Error(err)
-			}
-			return
+			executeCommand(cmd, arg, message)
 		}
 	}
 }

@@ -3,15 +3,18 @@ package database
 import (
 	"context"
 	"encoding/json"
-	"errors"
 	"time"
 
 	"github.com/jackc/pgx/v4"
+	"github.com/pkg/errors"
 )
 
 ///
 
-var ErrEmptyRow = errors.New("empty row")
+var (
+	ErrEmptyRow   = errors.New("empty row")
+	ErrInvalidURL = errors.New("invalid url")
+)
 
 ///
 
@@ -46,6 +49,10 @@ func (db *Database) GetUserByID(id int64) (*User, error) {
 }
 
 func (db *Database) GetFeedIDByURL(url string) (int64, error) {
+	if !isValidURL(url) {
+		return 0, ErrInvalidURL
+	}
+
 	tx, err := db.pool.Begin(context.Background())
 	if err != nil {
 		return 0, err
@@ -236,6 +243,12 @@ func (db *Database) UnsubscribeAll(userID int64) error {
 func (db *Database) SubscribeURLs(userID int64, urls []string) error {
 	if len(urls) == 0 {
 		return nil
+	}
+
+	for _, u := range urls {
+		if !isValidURL(u) {
+			return errors.Wrap(ErrInvalidURL, u)
+		}
 	}
 
 	_, err := db.pool.Exec(
