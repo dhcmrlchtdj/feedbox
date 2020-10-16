@@ -14,10 +14,12 @@ func New() fiber.Handler {
 		if err != nil {
 			return err
 		}
+		if c.Method() != fiber.MethodGet {
+			return nil
+		}
 
 		resp := c.Response()
-		if (c.Method() != fiber.MethodGet) ||
-			(resp.StatusCode() != fiber.StatusOK) {
+		if resp.StatusCode() != fiber.StatusOK {
 			return nil
 		}
 
