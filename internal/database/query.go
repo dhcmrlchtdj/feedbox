@@ -3,6 +3,7 @@ package database
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"time"
 
 	"github.com/jackc/pgx/v4"
@@ -34,6 +35,11 @@ type Feed struct {
 ///
 
 func (db *Database) GetUserByID(id int64) (*User, error) {
+	key := fmt.Sprintf("%v-%v", "GetUserByID", id)
+	if v, ok := db.cache.Load(key); ok {
+		return v.(*User), nil
+	}
+
 	row := db.pool.QueryRow(
 		context.Background(),
 		"SELECT id, platform, pid, addition FROM users WHERE id = $1",
@@ -45,12 +51,19 @@ func (db *Database) GetUserByID(id int64) (*User, error) {
 	if user == nil {
 		return nil, ErrEmptyRow
 	}
+
+	db.cache.Store(key, user)
 	return user, nil
 }
 
 func (db *Database) GetFeedIDByURL(url string) (int64, error) {
 	if !isValidURL(url) {
 		return 0, ErrInvalidURL
+	}
+
+	key := fmt.Sprintf("%v-%v", "GetFeedIDByURL", url)
+	if v, ok := db.cache.Load(key); ok {
+		return v.(int64), nil
 	}
 
 	tx, err := db.pool.Begin(context.Background())
@@ -79,10 +92,16 @@ func (db *Database) GetFeedIDByURL(url string) (int64, error) {
 		return 0, err
 	}
 
+	db.cache.Store(key, feedID)
 	return feedID, nil
 }
 
 func (db *Database) GetOrCreateUserByGithub(githubID string, email string) (*User, error) {
+	key := fmt.Sprintf("%v-%v-%v", "GetOrCreateUserByGithub", githubID, email)
+	if v, ok := db.cache.Load(key); ok {
+		return v.(*User), nil
+	}
+
 	tx, err := db.pool.Begin(context.Background())
 	if err != nil {
 		return nil, err
@@ -128,10 +147,16 @@ func (db *Database) GetOrCreateUserByGithub(githubID string, email string) (*Use
 		return nil, err
 	}
 
+	db.cache.Store(key, user)
 	return user, nil
 }
 
 func (db *Database) GetOrCreateUserByTelegram(chatID string) (*User, error) {
+	key := fmt.Sprintf("%v-%v", "GetOrCreateUserByTelegram", chatID)
+	if v, ok := db.cache.Load(key); ok {
+		return v.(*User), nil
+	}
+
 	tx, err := db.pool.Begin(context.Background())
 	if err != nil {
 		return nil, err
@@ -163,6 +188,7 @@ func (db *Database) GetOrCreateUserByTelegram(chatID string) (*User, error) {
 		return nil, err
 	}
 
+	db.cache.Store(key, user)
 	return user, nil
 }
 

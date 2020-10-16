@@ -11,6 +11,7 @@ import (
 	"github.com/gofiber/fiber/v2/middleware/recover"
 	"github.com/pkg/errors"
 
+	"github.com/dhcmrlchtdj/feedbox/internal/database"
 	"github.com/dhcmrlchtdj/feedbox/internal/global"
 	"github.com/dhcmrlchtdj/feedbox/internal/telegrambot"
 	"github.com/dhcmrlchtdj/feedbox/server/handler"
@@ -121,12 +122,12 @@ func cookieValidator(tokenStr string) ( /* Credential */ interface{}, error) {
 		return nil, errors.New("expired token")
 	}
 
-	// if _, err = global.DB.GetUserByID(credential.UserID); err != nil {
-	//     if errors.Is(err, database.ErrEmptyRow) {
-	//         err = errors.New("invalid user")
-	//     }
-	//     return nil, err
-	// }
+	if _, err = global.DB.GetUserByID(credential.UserID); err != nil {
+		if errors.Is(err, database.ErrEmptyRow) {
+			err = errors.New("invalid user")
+		}
+		return nil, err
+	}
 
 	return credential, nil
 }

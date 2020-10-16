@@ -2,6 +2,7 @@ package database
 
 import (
 	"context"
+	"sync"
 
 	"github.com/jackc/pgx/v4"
 	"github.com/jackc/pgx/v4/log/zerologadapter"
@@ -10,7 +11,8 @@ import (
 )
 
 type Database struct {
-	pool *pgxpool.Pool
+	pool  *pgxpool.Pool
+	cache *sync.Map
 }
 
 func New(configURL string, opts ...func(*pgxpool.Config)) (*Database, error) {
@@ -27,7 +29,7 @@ func New(configURL string, opts ...func(*pgxpool.Config)) (*Database, error) {
 	if err != nil {
 		return nil, err
 	}
-	return &Database{pool}, nil
+	return &Database{pool, new(sync.Map)}, nil
 }
 
 func WithMaxConns(maxConns int32) func(*pgxpool.Config) {
