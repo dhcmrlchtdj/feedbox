@@ -99,6 +99,11 @@ type SetMyCommandsPayload struct {
 	Commands []BotCommand `json:"commands"`
 }
 
+const (
+	ParseModeHTML     = "HTML"
+	ParseModeMarkdowm = "MarkdownV2"
+)
+
 type SendMessagePayload struct {
 	ChatID           int64  `json:"chat_id"`
 	Text             string `json:"text"`

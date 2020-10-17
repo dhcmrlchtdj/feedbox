@@ -21,6 +21,8 @@ var (
 func executeCommand(cmd string, arg string, msg *telegram.Message) {
 	var err error
 	switch cmd {
+	case "/start":
+		err = start(arg, msg)
 	case "/list":
 		err = list(arg, msg)
 	case "/add":
@@ -34,6 +36,7 @@ func executeCommand(cmd string, arg string, msg *telegram.Message) {
 	default:
 		err = ErrCmdUnknown
 	}
+
 	if err != nil {
 		if errors.Is(err, database.ErrInvalidURL) ||
 			errors.Is(err, ErrCmdUnknown) ||
@@ -49,6 +52,15 @@ func executeCommand(cmd string, arg string, msg *telegram.Message) {
 	if err != nil {
 		global.Monitor.Error(err)
 	}
+}
+
+func start(arg string, msg *telegram.Message) error {
+	return global.TG.SendMessage(&telegram.SendMessagePayload{
+		ChatID:           msg.Chat.ID,
+		Text:             "<code>hello, world<code>",
+		ParseMode:        telegram.ParseModeHTML,
+		ReplyToMessageID: msg.MessageID,
+	})
 }
 
 func list(arg string, msg *telegram.Message) error {
