@@ -7,6 +7,7 @@ import (
 
 	"github.com/pkg/errors"
 
+	"github.com/dhcmrlchtdj/feedbox/internal/database"
 	"github.com/dhcmrlchtdj/feedbox/internal/global"
 	"github.com/dhcmrlchtdj/feedbox/internal/telegram"
 	"github.com/dhcmrlchtdj/feedbox/internal/util"
@@ -34,7 +35,9 @@ func executeCommand(cmd string, arg string, msg *telegram.Message) {
 		err = ErrCmdUnknown
 	}
 	if err != nil {
-		if errors.Is(err, ErrCmdUnknown) || errors.Is(err, ErrCmdEmptyList) {
+		if errors.Is(err, database.ErrInvalidURL) ||
+			errors.Is(err, ErrCmdUnknown) ||
+			errors.Is(err, ErrCmdEmptyList) {
 			text := err.Error()
 			err = global.TG.SendMessage(&telegram.SendMessagePayload{
 				ChatID:           msg.Chat.ID,
@@ -94,6 +97,7 @@ func add(arg string, msg *telegram.Message) error {
 	}
 	feedID, err := global.DB.GetFeedIDByURL(arg)
 	if err != nil {
+		// TODO
 		return err
 	}
 	if err := global.DB.Subscribe(user.ID, feedID); err != nil {
@@ -119,6 +123,7 @@ func remove(arg string, msg *telegram.Message) error {
 	}
 	feedID, err := global.DB.GetFeedIDByURL(arg)
 	if err != nil {
+		// TODO
 		return err
 	}
 	if err := global.DB.Unsubscribe(user.ID, feedID); err != nil {
