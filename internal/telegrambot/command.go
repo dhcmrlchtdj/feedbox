@@ -57,7 +57,7 @@ func executeCommand(cmd string, arg string, msg *telegram.Message) {
 func start(arg string, msg *telegram.Message) error {
 	return global.TG.SendMessage(&telegram.SendMessagePayload{
 		ChatID:           msg.Chat.ID,
-		Text:             "<code>hello, world<code>",
+		Text:             "<code>hello, world</code>",
 		ParseMode:        telegram.ParseModeHTML,
 		ReplyToMessageID: msg.MessageID,
 	})
