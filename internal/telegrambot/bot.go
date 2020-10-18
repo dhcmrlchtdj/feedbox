@@ -3,7 +3,6 @@ package telegrambot
 import (
 	"crypto/rand"
 	"encoding/hex"
-	"fmt"
 	"os"
 	"strings"
 	"unicode/utf16"
@@ -23,7 +22,7 @@ var HookPath string = func() string {
 func RegisterWebhook() error {
 	err := global.TG.SetWebhook(
 		&telegram.SetWebhookPayload{
-			URL: fmt.Sprintf("%s/webhook/telegram/%s", os.Getenv("SERVER"), HookPath),
+			URL: os.Getenv("SERVER") + "/webhook/telegram/" + HookPath,
 		})
 	if err != nil {
 		return err
