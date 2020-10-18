@@ -3,7 +3,7 @@ package database
 import (
 	"context"
 	"encoding/json"
-	"fmt"
+	"strconv"
 	"time"
 
 	"github.com/jackc/pgx/v4"
@@ -35,7 +35,7 @@ type Feed struct {
 ///
 
 func (db *Database) GetUserByID(id int64) (*User, error) {
-	key := fmt.Sprintf("%v-%v", "GetUserByID", id)
+	key := "UID:" + strconv.FormatInt(id, 10)
 	if v, ok := db.cache.Load(key); ok {
 		return v.(*User), nil
 	}
@@ -56,48 +56,8 @@ func (db *Database) GetUserByID(id int64) (*User, error) {
 	return user, nil
 }
 
-func (db *Database) GetFeedIDByURL(url string) (int64, error) {
-	if !isValidURL(url) {
-		return 0, ErrInvalidURL
-	}
-
-	key := fmt.Sprintf("%v-%v", "GetFeedIDByURL", url)
-	if v, ok := db.cache.Load(key); ok {
-		return v.(int64), nil
-	}
-
-	tx, err := db.pool.Begin(context.Background())
-	if err != nil {
-		return 0, err
-	}
-	defer tx.Rollback(context.Background())
-
-	var feedID int64
-	row := tx.QueryRow(context.Background(), "SELECT id FROM feeds WHERE url=$1", url)
-	err = row.Scan(&feedID)
-	if err != nil {
-		if errors.Is(err, pgx.ErrNoRows) {
-			row = tx.QueryRow(context.Background(), "INSERT INTO feeds(url) VALUES ($1) RETURNING id", url)
-			err = row.Scan(&feedID)
-			if err != nil {
-				return 0, err
-			}
-		} else {
-			return 0, err
-		}
-	}
-
-	err = tx.Commit(context.Background())
-	if err != nil {
-		return 0, err
-	}
-
-	db.cache.Store(key, feedID)
-	return feedID, nil
-}
-
 func (db *Database) GetOrCreateUserByGithub(githubID string, email string) (*User, error) {
-	key := fmt.Sprintf("%v-%v-%v", "GetOrCreateUserByGithub", githubID, email)
+	key := "GITHUB:" + githubID + ":" + email
 	if v, ok := db.cache.Load(key); ok {
 		return v.(*User), nil
 	}
@@ -142,17 +102,17 @@ func (db *Database) GetOrCreateUserByGithub(githubID string, email string) (*Use
 		}
 	}
 
-	err = tx.Commit(context.Background())
-	if err != nil {
+	if err := tx.Commit(context.Background()); err != nil {
 		return nil, err
 	}
 
 	db.cache.Store(key, user)
+	db.cache.Store("UID:"+strconv.FormatInt(user.ID, 10), user)
 	return user, nil
 }
 
 func (db *Database) GetOrCreateUserByTelegram(chatID string) (*User, error) {
-	key := fmt.Sprintf("%v-%v", "GetOrCreateUserByTelegram", chatID)
+	key := "TELEGRAM:" + chatID
 	if v, ok := db.cache.Load(key); ok {
 		return v.(*User), nil
 	}
@@ -183,13 +143,49 @@ func (db *Database) GetOrCreateUserByTelegram(chatID string) (*User, error) {
 		}
 	}
 
-	err = tx.Commit(context.Background())
-	if err != nil {
+	if err := tx.Commit(context.Background()); err != nil {
 		return nil, err
 	}
 
 	db.cache.Store(key, user)
 	return user, nil
+}
+
+func (db *Database) GetFeedIDByURL(url string) (int64, error) {
+	if !isValidURL(url) {
+		return 0, ErrInvalidURL
+	}
+
+	key := "GetFeedIDByURL:" + url
+	if v, ok := db.cache.Load(key); ok {
+		return v.(int64), nil
+	}
+
+	tx, err := db.pool.Begin(context.Background())
+	if err != nil {
+		return 0, err
+	}
+	defer tx.Rollback(context.Background())
+
+	var feedID int64
+	row := tx.QueryRow(context.Background(), "SELECT id FROM feeds WHERE url=$1", url)
+	if err := row.Scan(&feedID); err != nil {
+		if errors.Is(err, pgx.ErrNoRows) {
+			row = tx.QueryRow(context.Background(), "INSERT INTO feeds(url) VALUES ($1) RETURNING id", url)
+			if err := row.Scan(&feedID); err != nil {
+				return 0, err
+			}
+		} else {
+			return 0, err
+		}
+	}
+
+	if err := tx.Commit(context.Background()); err != nil {
+		return 0, err
+	}
+
+	db.cache.Store(key, feedID)
+	return feedID, nil
 }
 
 func (db *Database) GetFeedByUser(userID int64) ([]Feed, error) {

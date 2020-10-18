@@ -11,11 +11,11 @@ clean:
 	# go clean -testcache ./...
 	-rm -rf ./_build
 
-fmt:
+fmt: lint
 	gofumports -w .
 
 lint:
-	-golint ./... | grep -v "should have comment or be unexported"
+	-golint ./... | grep -v "or be unexported"
 	go vet ./...
 
 test: lint
