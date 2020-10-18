@@ -12,7 +12,8 @@ func StaticWithoutCache(filename string) fiber.Handler {
 		if err := c.SendFile(filename); err != nil {
 			return err
 		}
-		c.Set("cache-control", "no-cache")
+		// c.Set("cache-control", "no-cache")
+		c.Set("cache-control", "max-age=0, stale-while-revalidate=86400")
 		return nil
 	}
 }
