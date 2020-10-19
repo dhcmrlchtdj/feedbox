@@ -1,8 +1,9 @@
 package telegram
 
 import (
-	"errors"
 	"io"
+
+	"github.com/pkg/errors"
 )
 
 ///

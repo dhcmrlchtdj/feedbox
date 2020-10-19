@@ -2,9 +2,10 @@ package github
 
 import (
 	"encoding/json"
-	"errors"
 	"net/http"
 	"sort"
+
+	"github.com/pkg/errors"
 )
 
 func getProfile(client *http.Client) (*Profile, error) {
