@@ -12,8 +12,7 @@ func StaticWithoutCache(filename string) fiber.Handler {
 		if err := c.SendFile(filename); err != nil {
 			return err
 		}
-		// c.Set("cache-control", "no-cache")
-		c.Set("cache-control", "max-age=0, stale-while-revalidate=86400")
+		c.Set("cache-control", "no-cache, must-revalidate")
 		return nil
 	}
 }
@@ -25,13 +24,13 @@ func StaticWithCache(dirname string) fiber.Handler {
 		if err := c.SendFile(dirname + filename); err != nil {
 			return err
 		}
-		c.Set("cache-control", "max-age=31536000, must-revalidate")
+		c.Set("cache-control", "max-age=31536000, must-revalidate") // 60*60*24*365
 		return nil
 	}
 }
 
 func StaticRobots(c *fiber.Ctx) error {
-	c.Set("cache-control", "max-age=86400, must-revalidate")
+	c.Set("cache-control", "max-age=86400, must-revalidate") // 60*60*24
 	return c.SendString("User-agent: *")
 }
 
@@ -45,6 +44,6 @@ var icon = func() []byte {
 
 func StaticFavicon(c *fiber.Ctx) error {
 	c.Set("content-type", "image/png")
-	c.Set("cache-control", "max-age=86400, must-revalidate")
+	c.Set("cache-control", "max-age=86400, must-revalidate") // 60*60*24
 	return c.Send(icon)
 }
