@@ -1,7 +1,7 @@
 package etag
 
 import (
-	"strconv"
+	"fmt"
 	"strings"
 
 	"github.com/cespare/xxhash/v2"
@@ -31,7 +31,7 @@ func New() fiber.Handler {
 		clientETags := c.Get("if-none-match")
 
 		sum := xxhash.Sum64(body)
-		serverETag := strconv.FormatUint(sum, 16)
+		serverETag := fmt.Sprintf("W/\"%d-%016x\"", len(body), sum)
 		c.Set("etag", serverETag)
 
 		if strings.Contains(clientETags, serverETag) {
