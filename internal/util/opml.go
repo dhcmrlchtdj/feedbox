@@ -34,6 +34,9 @@ func ExtractLinksFromOPML(content io.Reader) ([]string, error) {
 func BuildOPML(urls []string) []byte {
 	var b bytes.Buffer
 
+	// 90 is the average length of <outline>
+	b.Grow(100 + len(urls)*90)
+
 	b.WriteString("<?xml version=\"1.0\" encoding=\"utf-8\"?>\n")
 	b.WriteString("<opml version=\"1.0\">\n")
 	b.WriteString("<head><title>feeds</title></head>\n")

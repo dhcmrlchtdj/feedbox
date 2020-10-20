@@ -1,7 +1,6 @@
 package feedparser
 
 import (
-	"fmt"
 	"net/http"
 	neturl "net/url"
 
@@ -35,16 +34,18 @@ func (p *FeedParser) ParseURL(url string) (*gofeed.Feed, error) {
 	defer resp.Body.Close()
 
 	if resp.StatusCode != 200 {
-		return nil, fmt.Errorf("'%v' return '%v'", url, resp.Status)
+		return nil, errors.Errorf("'%v' return '%v'", url, resp.Status)
 	}
 	feed, err := p.parser.Parse(resp.Body)
 	if err != nil {
 		return nil, errors.Wrap(err, url)
 	}
 
-	if normalizeItemURL(url, feed) != nil {
+	// fix item
+	if err := normalizeItemURL(url, feed); err != nil {
 		return nil, errors.Wrap(err, url)
 	}
+	restoreFeedburnerLink(feed)
 
 	return feed, nil
 }
@@ -66,6 +67,28 @@ func normalizeItemURL(url string, feed *gofeed.Feed) error {
 		item.Link = string(link)
 	}
 	return nil
+}
+
+func restoreFeedburnerLink(feed *gofeed.Feed) {
+	if _, found := feed.Extensions["feedburner"]; !found {
+		return
+	}
+
+	for _, item := range feed.Items {
+		feedburner, found := item.Extensions["feedburner"]
+		if !found {
+			continue
+		}
+		origLinks, found := feedburner["origLink"]
+		if !found {
+			continue
+		}
+		if len(origLinks) == 0 {
+			continue
+		}
+		origLink := origLinks[0]
+		item.Link = origLink.Value
+	}
 }
 
 type customRSSTranslator struct {
