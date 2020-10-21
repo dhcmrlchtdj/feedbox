@@ -25,8 +25,6 @@ import (
 )
 
 func Create() *fiber.App {
-	prod := os.Getenv("ENV") == "prod"
-
 	appConfig := fiber.Config{
 		// Prefork:       true,
 		// Immutable:     true,
@@ -34,9 +32,7 @@ func Create() *fiber.App {
 		ErrorHandler:  errorHandler,
 		StrictRouting: true,
 		CaseSensitive: true,
-	}
-	if prod {
-		appConfig.ProxyHeader = "CF-Connecting-IP"
+		// ProxyHeader:   "CF-Connecting-IP",
 	}
 	app := fiber.New(appConfig)
 
