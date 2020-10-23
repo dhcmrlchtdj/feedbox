@@ -1,8 +1,6 @@
 package telegrambot
 
 import (
-	"crypto/rand"
-	"encoding/hex"
 	"fmt"
 	"os"
 	"strings"
@@ -12,18 +10,13 @@ import (
 	"github.com/dhcmrlchtdj/feedbox/internal/telegram"
 )
 
-var HookPath string = func() string {
-	path := make([]byte, 8)
-	if _, err := rand.Read(path); err != nil {
-		panic(err)
-	}
-	return hex.EncodeToString(path)
-}()
-
 func RegisterWebhook() error {
+	// curl -XPOST -v 'https://api.telegram.org/bot<<token>>/setWebhook' -H 'content-type: application/json' -d '{"url":"<<url>>"}'
 	err := global.TG.SetWebhook(
 		&telegram.SetWebhookPayload{
-			URL: fmt.Sprintf("%s/webhook/telegram/%s", os.Getenv("SERVER"), HookPath),
+			URL: fmt.Sprintf("%s/webhook/telegram/%s",
+				os.Getenv("SERVER"),
+				os.Getenv("TELEGRAM_WEBHOOK_PATH")),
 		})
 	if err != nil {
 		return err

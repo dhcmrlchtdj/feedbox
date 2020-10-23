@@ -109,7 +109,6 @@ func add(arg string, msg *telegram.Message) error {
 	}
 	feedID, err := global.DB.GetFeedIDByURL(arg)
 	if err != nil {
-		// TODO
 		return err
 	}
 	if err := global.DB.Subscribe(user.ID, feedID); err != nil {
@@ -135,7 +134,6 @@ func remove(arg string, msg *telegram.Message) error {
 	}
 	feedID, err := global.DB.GetFeedIDByURL(arg)
 	if err != nil {
-		// TODO
 		return err
 	}
 	if err := global.DB.Unsubscribe(user.ID, feedID); err != nil {

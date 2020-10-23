@@ -13,7 +13,6 @@ import (
 
 	"github.com/dhcmrlchtdj/feedbox/internal/database"
 	"github.com/dhcmrlchtdj/feedbox/internal/global"
-	"github.com/dhcmrlchtdj/feedbox/internal/telegrambot"
 	"github.com/dhcmrlchtdj/feedbox/server/handler"
 	"github.com/dhcmrlchtdj/feedbox/server/middleware/auth/cookie"
 	"github.com/dhcmrlchtdj/feedbox/server/middleware/auth/github"
@@ -80,7 +79,7 @@ func setupRoute(app *fiber.App) {
 		handler.ConnectGithub)
 
 	app.Post(
-		"/webhook/telegram/"+telegrambot.HookPath,
+		"/webhook/telegram/"+os.Getenv("TELEGRAM_WEBHOOK_PATH"),
 		validate.ContentType("application/json"),
 		handler.TelegramWebhook)
 

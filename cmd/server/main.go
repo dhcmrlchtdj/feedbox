@@ -2,7 +2,6 @@ package main
 
 import (
 	"os"
-	"sync/atomic"
 	"time"
 
 	"github.com/joho/godotenv"
@@ -14,7 +13,6 @@ import (
 	"github.com/dhcmrlchtdj/feedbox/internal/monitor"
 	"github.com/dhcmrlchtdj/feedbox/internal/sign"
 	"github.com/dhcmrlchtdj/feedbox/internal/telegram"
-	"github.com/dhcmrlchtdj/feedbox/internal/telegrambot"
 	"github.com/dhcmrlchtdj/feedbox/internal/util"
 	"github.com/dhcmrlchtdj/feedbox/server"
 )
@@ -59,25 +57,10 @@ func main() {
 		panic(err)
 	}
 
-	util.CheckEnvs("PORT")
 	util.CheckEnvs("GITHUB_CLIENT_ID", "GITHUB_CLIENT_SECRET")
-	var abort uint32 = 0 // 0==normal, 1==aborted
-	done := make(chan struct{}, 1)
-	go func() {
-		time.Sleep(time.Second)
-		if os.Getenv("ENV") == "prod" && atomic.LoadUint32(&abort) == 0 {
-			if err := telegrambot.RegisterWebhook(); err != nil {
-				global.Monitor.Error(err)
-			}
-		}
-		done <- struct{}{}
-	}()
-
+	util.CheckEnvs("PORT", "TELEGRAM_WEBHOOK_PATH")
 	app := server.Create()
 	if err := app.Listen(":" + os.Getenv("PORT")); err != nil {
-		atomic.StoreUint32(&abort, 1)
-		global.Monitor.Error(err)
-		<-done
 		panic(err)
 	}
 }
