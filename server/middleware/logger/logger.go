@@ -53,7 +53,7 @@ func New() fiber.Handler {
 		})
 
 		logger.Info().
-			Str("remote", c.IP()).
+			// Str("remote", c.IP()).
 			Str("method", c.Method()).
 			Str("path", c.Path()).
 			Int("status", resp.StatusCode()).
