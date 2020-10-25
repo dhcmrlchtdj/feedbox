@@ -2,7 +2,6 @@ package database
 
 import (
 	"context"
-	"encoding/json"
 	"strconv"
 	"time"
 
@@ -79,22 +78,18 @@ func (db *Database) GetOrCreateUserByGithub(githubID string, email string) (*Use
 
 	if user == nil || user.Addition["email"] != email {
 		addition := map[string]string{"email": email}
-		additionJSON, err := json.Marshal(addition)
-		if err != nil {
-			return nil, err
-		}
 
 		if user == nil {
 			row = tx.QueryRow(
 				context.Background(),
 				"INSERT INTO users(platform, pid, addition) VALUES ('github', $1, $2) RETURNING id, platform, pid, addition",
-				githubID, additionJSON)
+				githubID, addition)
 			user, err = readUser(row)
 		} else {
 			_, err = tx.Exec(
 				context.Background(),
 				"UPDATE users SET addition = $2 WHERE id = $1",
-				user.ID, additionJSON)
+				user.ID, addition)
 			user.Addition["email"] = email
 		}
 		if err != nil {
