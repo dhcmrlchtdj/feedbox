@@ -209,7 +209,7 @@ func (db *Database) GetActiveFeeds() ([]Feed, error) {
 func (db *Database) AddFeedLinks(id int64, links []string, updated *time.Time) error {
 	_, err := db.pool.Exec(
 		context.Background(),
-		"UPDATE feeds SET link=array_cat($1::varchar[], link), updated=$2 WHERE id=$3",
+		"UPDATE feeds SET link=array_cat($1::TEXT[], link), updated=$2 WHERE id=$3",
 		links, updated, id)
 	return err
 }
@@ -270,7 +270,7 @@ func (db *Database) SubscribeURLs(userID int64, urls []string) error {
 
 	_, err := db.pool.Exec(
 		context.Background(),
-		"INSERT INTO feeds(url) SELECT unnest($1::varchar[]) EXCEPT SELECT url FROM feeds",
+		"INSERT INTO feeds(url) SELECT unnest($1::TEXT[]) EXCEPT SELECT url FROM feeds",
 		urls)
 	if err != nil {
 		return err
@@ -278,7 +278,7 @@ func (db *Database) SubscribeURLs(userID int64, urls []string) error {
 
 	_, err = db.pool.Exec(
 		context.Background(),
-		`WITH fids AS (SELECT id AS fid FROM feeds WHERE url = ANY($1::varchar[]))
+		`WITH fids AS (SELECT id AS fid FROM feeds WHERE url = ANY($1::TEXT[]))
 		INSERT INTO r_user_feed(uid, fid) SELECT $2 AS uid, fid FROM fids ON CONFLICT DO NOTHING`,
 		urls, userID)
 	if err != nil {
