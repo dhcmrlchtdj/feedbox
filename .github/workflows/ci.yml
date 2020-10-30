@@ -1,9 +1,15 @@
 name: ci
 
-on: [pull_request]
+on:
+    push:
+        branches:
+            - master
+    pull_request:
+        branches:
+            - master
 
 jobs:
-    ci:
+    test:
         runs-on: ubuntu-20.04
         services:
             postgres:
@@ -44,3 +50,15 @@ jobs:
                   TELEGRAM_WEBHOOK_PATH: '131cd9868e9cf396a807c265a3c97e72'
                   ROLLBAR_TOKEN: 'post_server_item'
                   DATABASE_URL: 'postgres://user:password@localhost:5432/feedbox?sslmode=disable'
+    deploy:
+        if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+        needs: test
+        runs-on: ubuntu-20.04
+        steps:
+            - uses: actions/checkout@v2.3.1
+              with:
+                  fetch-depth: 0
+            - name: deploy heroku
+              run: git push --force https://heroku:$HEROKU_AUTH_TOKEN@git.heroku.com/fbox.git
+              env:
+                  HEROKU_AUTH_TOKEN: ${{ secrets.HEROKU_AUTH_TOKEN }}
