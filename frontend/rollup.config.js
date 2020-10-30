@@ -115,7 +115,7 @@ function hashDir(dir) {
     }
 
     const hash = crypto.createHash('sha256')
-    files.forEach((file) => {
+    files.sort().forEach((file) => {
         const data = fs.readFileSync(file)
         hash.update(data)
     })
