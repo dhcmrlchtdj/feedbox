@@ -1,4 +1,2 @@
-// @ts-ignore
-import { bundle } from '../../_build/manifest.json'
-
-export const CACHE_VERSION = bundle.join(':')
+declare const __SW_CACHE_VERSION__: string
+export const CACHE_VERSION: string = __SW_CACHE_VERSION__

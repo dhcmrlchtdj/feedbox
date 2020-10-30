@@ -1,11 +1,10 @@
+import * as fs from 'fs'
 import * as path from 'path'
-import json from '@rollup/plugin-json'
-import { nodeResolve } from '@rollup/plugin-node-resolve'
-import typescript from '@rollup/plugin-typescript'
+import replace from '@rollup/plugin-replace'
 import svelte from 'rollup-plugin-svelte'
+import typescript from '@rollup/plugin-typescript'
+import { nodeResolve } from '@rollup/plugin-node-resolve'
 import { terser } from 'rollup-plugin-terser'
-import { manifest } from './rollup-plugin/manifest'
-import { template } from './rollup-plugin/template'
 
 const prod = process.env.NODE_ENV === 'production'
 
@@ -27,13 +26,12 @@ export default [
                 immutable: true,
                 dev: !prod,
             }),
-            manifest('./_build/manifest.json'),
-            template({
-                manifest: './_build/manifest.json',
-                files: {
-                    './src/template.html': './_build/index.html',
+            template([
+                {
+                    input: './src/template.html',
+                    output: './_build/index.html',
                 },
-            }),
+            ]),
             prod && terser(),
         ],
     },
@@ -46,9 +44,12 @@ export default [
             sourcemap: true,
         },
         plugins: [
+            replace({
+                // TODO: hash(./src/**/*, ./rollup.config, ./tsconfig.json, ./pnpm-lock.yaml)
+                __SW_CACHE_VERSION__: JSON.stringify(Date.now().toString()),
+            }),
             nodeResolve(),
             typescript(),
-            json(),
             svelte({
                 generate: 'ssr',
                 immutable: true,
@@ -58,3 +59,37 @@ export default [
         ],
     },
 ]
+
+function template(files) {
+    const { mkdir, writeFile, readFile } = fs.promises
+    const readStr = async (p) => (await readFile(p)).toString()
+    return {
+        name: 'template',
+        generateBundle: async (_output, bundle) => {
+            const entry = Object.values(bundle)
+                .filter((b) => b.isEntry)
+                .reduce((acc, b) => {
+                    acc.push([b.name, b.fileName])
+                    return acc
+                }, [])
+
+            const replace = (tmpl) => {
+                return entry.reduce((acc, [chunkName, fileName]) => {
+                    const r = acc.replace(
+                        new RegExp(`__${chunkName}__`, 'g'),
+                        fileName,
+                    )
+                    return r
+                }, tmpl)
+            }
+
+            const tasks = files.map(async (file) => {
+                const tmpl = await readStr(file.input)
+                const content = replace(tmpl)
+                await mkdir(path.dirname(file.output), { recursive: true })
+                await writeFile(file.output, content)
+            })
+            await tasks
+        },
+    }
+}
