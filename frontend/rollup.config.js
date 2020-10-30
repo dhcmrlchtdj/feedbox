@@ -1,5 +1,6 @@
 import * as fs from 'fs'
 import * as path from 'path'
+import * as crypto from 'crypto'
 import replace from '@rollup/plugin-replace'
 import svelte from 'rollup-plugin-svelte'
 import typescript from '@rollup/plugin-typescript'
@@ -45,8 +46,7 @@ export default [
         },
         plugins: [
             replace({
-                // TODO: hash(./src/**/*, ./rollup.config, ./tsconfig.json, ./pnpm-lock.yaml)
-                __SW_CACHE_VERSION__: JSON.stringify(Date.now().toString()),
+                __SW_CACHE_VERSION__: JSON.stringify(hashDir('.')),
             }),
             nodeResolve(),
             typescript(),
@@ -92,4 +92,34 @@ function template(files) {
             await tasks
         },
     }
+}
+
+function hashDir(dir) {
+    const files = []
+    const next = [['.', fs.readdirSync(dir, { withFileTypes: true })]]
+    while (next.length > 0) {
+        const [parent, curr] = next.pop()
+        curr.forEach((f) => {
+            const name = f.name
+            if (name.startsWith('.') || name.startsWith('_')) return
+            const filepath = path.join(parent, name)
+            if (f.isFile()) {
+                files.push(filepath)
+            } else if (f.isDirectory()) {
+                next.push([
+                    filepath,
+                    fs.readdirSync(filepath, { withFileTypes: true }),
+                ])
+            }
+        })
+    }
+
+    const hash = crypto.createHash('sha256')
+    files.forEach((file) => {
+        const data = fs.readFileSync(file)
+        hash.update(data)
+    })
+    const digest = hash.digest('hex')
+
+    return digest.slice(0, 16)
 }
