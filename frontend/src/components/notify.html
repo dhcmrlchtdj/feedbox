@@ -1,6 +1,12 @@
 <div
     class="p-absolute m2"
-    style="width: 10em; right: 0.4rem; top: 0.4rem; z-index: 10"
+    style="
+        width: 10em;
+        right: 0.4rem;
+        top: 0.4rem;
+        z-index: 10;
+        contain: content;
+    "
 >
     {#each $notify as n, i (n.key)}
     <div class="toast toast-success mb-2" transition:fly="{{x:100}}">
