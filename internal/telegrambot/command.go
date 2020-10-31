@@ -19,6 +19,10 @@ var (
 )
 
 func executeCommand(cmd string, arg string, msg *telegram.Message) {
+	if !isAdmin(msg) {
+		return
+	}
+
 	var err error
 	switch cmd {
 	case "/start":
@@ -48,9 +52,9 @@ func executeCommand(cmd string, arg string, msg *telegram.Message) {
 				ReplyToMessageID: msg.MessageID,
 			})
 		}
-	}
-	if err != nil {
-		global.Monitor.Error(err)
+		if err != nil {
+			global.Monitor.Error(err)
+		}
 	}
 }
 
@@ -64,10 +68,6 @@ func start(arg string, msg *telegram.Message) error {
 }
 
 func list(arg string, msg *telegram.Message) error {
-	if !isAdmin(msg) {
-		return nil
-	}
-
 	chatID := strconv.FormatInt(msg.Chat.ID, 10)
 	user, err := global.DB.GetOrCreateUserByTelegram(chatID)
 	if err != nil {
@@ -98,10 +98,6 @@ func list(arg string, msg *telegram.Message) error {
 }
 
 func add(arg string, msg *telegram.Message) error {
-	if !isAdmin(msg) {
-		return nil
-	}
-
 	chatID := strconv.FormatInt(msg.Chat.ID, 10)
 	user, err := global.DB.GetOrCreateUserByTelegram(chatID)
 	if err != nil {
@@ -123,10 +119,6 @@ func add(arg string, msg *telegram.Message) error {
 }
 
 func remove(arg string, msg *telegram.Message) error {
-	if !isAdmin(msg) {
-		return nil
-	}
-
 	chatID := strconv.FormatInt(msg.Chat.ID, 10)
 	user, err := global.DB.GetOrCreateUserByTelegram(chatID)
 	if err != nil {
@@ -148,10 +140,6 @@ func remove(arg string, msg *telegram.Message) error {
 }
 
 func removeAll(arg string, msg *telegram.Message) error {
-	if !isAdmin(msg) {
-		return nil
-	}
-
 	chatID := strconv.FormatInt(msg.Chat.ID, 10)
 	user, err := global.DB.GetOrCreateUserByTelegram(chatID)
 	if err != nil {
@@ -181,10 +169,6 @@ func removeAll(arg string, msg *telegram.Message) error {
 }
 
 func export(arg string, msg *telegram.Message) error {
-	if !isAdmin(msg) {
-		return nil
-	}
-
 	chatID := strconv.FormatInt(msg.Chat.ID, 10)
 	user, err := global.DB.GetOrCreateUserByTelegram(chatID)
 	if err != nil {
