@@ -1,0 +1,46 @@
+<div class="column col-12">
+    <div class="input-group">
+        <input
+            class="form-input"
+            type="text"
+            placeholder="feed url"
+            bind:value="{url}"
+        />
+        <button
+            type="button"
+            class="btn btn-primary input-group-btn"
+            class:loading="{loading}"
+            class:disabled="{loading}"
+            on:click="{add}"
+        >
+            add
+        </button>
+    </div>
+</div>
+<div class="column col-12"><div class="divider"></div></div>
+
+<script>
+    import { feeds, notify, newNotify } from './store'
+    import * as agent from '../utils/agent'
+
+    let loading = false
+    let url = ''
+
+    const add = async () => {
+        if (loading === true) throw new Error('loading is true')
+        loading = true
+
+        agent
+            .put(`/api/v1/feeds/add`, { url })
+            .then((resp) => feeds.set(resp))
+            .then(() => newNotify('added'))
+            .catch((err) => {
+                window.alert(err.message)
+                location.reload()
+            })
+            .then(() => {
+                url = ''
+                loading = false
+            })
+    }
+</script>
