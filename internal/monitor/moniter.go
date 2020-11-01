@@ -24,5 +24,8 @@ func New(token string) *Client {
 func (*Client) Error(err error) {
 	log.Info().Str("module", "monitor").Err(err).Send()
 	rollbar.Error(err)
+}
+
+func (*Client) Wait() {
 	rollbar.Wait()
 }
