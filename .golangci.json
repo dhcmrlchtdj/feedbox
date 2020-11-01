@@ -1,0 +1,24 @@
+{
+    "linters-settings": {
+        "errcheck": {
+            "check-type-assertions": false,
+            "check-blank": true
+        },
+        "govet": {
+            "enable-all": true,
+            "disable": ["shadow"]
+        },
+        "gocritic": {
+            "enabled-tags": [
+                "diagnostic",
+                "performance",
+                "style",
+                "experimental",
+                "opinionated"
+            ]
+        },
+        "maligned": {
+            "suggest-new": true
+        }
+    }
+}

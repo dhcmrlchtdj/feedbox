@@ -29,7 +29,7 @@ func main() {
 	zerolog.TimeFieldFormat = zerolog.TimeFormatUnix
 	if os.Getenv("ENV") == "dev" {
 		zerolog.TimeFieldFormat = time.RFC3339
-		log.Logger = log.Output(ZerologPrettyPrint)
+		log.Logger = log.Output(util.JSONConsoleWriter{Out: os.Stderr})
 	}
 
 	util.CheckEnvs("DATABASE_URL")

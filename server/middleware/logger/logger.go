@@ -37,7 +37,7 @@ func New() fiber.Handler {
 
 		if chainErr != nil {
 			if err := errHandler(c, chainErr); err != nil {
-				_ = c.SendStatus(fiber.StatusInternalServerError)
+				c.SendStatus(fiber.StatusInternalServerError) //nolint:errcheck
 			}
 		}
 

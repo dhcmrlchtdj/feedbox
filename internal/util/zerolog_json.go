@@ -1,17 +1,16 @@
-package main
+package util
 
 import (
 	"bytes"
 	"encoding/json"
 	"io"
-	"os"
 )
 
-type zerologPrettyPrint struct {
+type JSONConsoleWriter struct {
 	Out io.Writer
 }
 
-func (w zerologPrettyPrint) Write(data []byte) (int, error) {
+func (w JSONConsoleWriter) Write(data []byte) (int, error) {
 	var evt map[string]interface{}
 
 	decoder := json.NewDecoder(bytes.NewReader(data))
@@ -28,5 +27,3 @@ func (w zerologPrettyPrint) Write(data []byte) (int, error) {
 
 	return len(data), nil
 }
-
-var ZerologPrettyPrint = zerologPrettyPrint{Out: os.Stderr}

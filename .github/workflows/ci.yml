@@ -41,7 +41,7 @@ jobs:
             - uses: golangci/golangci-lint-action@v2.3.0
               with:
                   version: v1.32.1
-                  args: -p 'bugs,complexity,format,performance,unused' -D 'noctx,gosec'
+                  args: -p 'bugs,complexity,format,performance,unused' -D 'noctx'
             - run: make test
               env:
                   ENV: 'test'

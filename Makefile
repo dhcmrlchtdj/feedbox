@@ -15,7 +15,7 @@ fmt: lint
 	gofumports -w .
 
 lint:
-	golangci-lint run -p 'bugs,complexity,format,performance,unused' -D 'noctx,gosec'
+	golangci-lint run -p 'bugs,complexity,performance,unused' -D 'noctx'
 
 test:
 	ENV=test TZ=UTC go test -race ./server

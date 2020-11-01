@@ -70,7 +70,7 @@ func (c *Client) SendDocument(payload *SendDocumentPayload) error {
 			Str("parse_mode", payload.ParseMode).
 			Int64("reply_to_message_id", payload.ReplyToMessageID)
 		err := m.Close()
-		_ = w.CloseWithError(err) // _ == err
+		w.CloseWithError(err) //nolint:errcheck
 	}()
 	return c.rawSendFileSimple("sendDocument", m.ContentType, r)
 }
@@ -86,7 +86,7 @@ func (c *Client) rawSend(cmd string, payload interface{}) (io.ReadCloser, error)
 		return nil, errors.Wrap(err, "telegram/"+cmd)
 	}
 
-	resp, err := http.Post(url, "application/json", &buf) //nolint:bodyclose
+	resp, err := http.Post(url, "application/json", &buf) //nolint:bodyclose,gosec
 	if err != nil {
 		return nil, errors.Wrap(err, "telegram/"+cmd)
 	}
@@ -110,7 +110,7 @@ func (c *Client) rawSendSimple(cmd string, payload interface{}) error {
 
 func (c *Client) rawSendFileSimple(cmd string, contentType string, payload io.Reader) error {
 	url := "https://api.telegram.org/bot" + c.token + "/" + cmd
-	resp, err := http.Post(url, contentType, payload)
+	resp, err := http.Post(url, contentType, payload) //nolint:gosec
 	if err != nil {
 		return errors.Wrap(err, "telegram/"+cmd)
 	}
