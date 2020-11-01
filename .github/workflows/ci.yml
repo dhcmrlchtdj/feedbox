@@ -4,9 +4,13 @@ on:
     push:
         branches:
             - master
+        paths-ignore:
+            - 'frontend/**'
     pull_request:
         branches:
             - master
+        paths-ignore:
+            - 'frontend/**'
 
 jobs:
     test:
