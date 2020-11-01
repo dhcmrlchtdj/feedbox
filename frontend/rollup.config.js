@@ -101,7 +101,12 @@ function hashDir(dir) {
         const [parent, curr] = next.pop()
         curr.forEach((f) => {
             const name = f.name
-            if (name.startsWith('.') || name.startsWith('_')) return
+            if (
+                name.startsWith('.') ||
+                name.startsWith('_') ||
+                name.startsWith('node_modules')
+            )
+                return
             const filepath = path.join(parent, name)
             if (f.isFile()) {
                 files.push(filepath)
