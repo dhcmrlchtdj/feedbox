@@ -4,6 +4,7 @@ import (
 	"os"
 
 	"github.com/rollbar/rollbar-go"
+	"github.com/rs/zerolog/log"
 )
 
 var C *Client = nil
@@ -21,5 +22,6 @@ func New(token string) *Client {
 }
 
 func (*Client) Error(err error) {
+	log.Info().Str("module", "monitor").Err(err).Send()
 	rollbar.Error(err)
 }
