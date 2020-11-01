@@ -1,6 +1,8 @@
 package github
 
 import (
+	"context"
+
 	"github.com/gofiber/fiber/v2"
 	"github.com/pkg/errors"
 	"golang.org/x/oauth2"
@@ -26,11 +28,11 @@ func New(cfg Config) fiber.Handler {
 	}
 
 	fetchProfile := func(code string) (*Profile, error) {
-		authToken, err := conf.Exchange(oauth2.NoContext, code)
+		authToken, err := conf.Exchange(context.Background(), code)
 		if err != nil {
 			return nil, errors.Wrap(err, "github login exchange")
 		}
-		client := conf.Client(oauth2.NoContext, authToken)
+		client := conf.Client(context.Background(), authToken)
 
 		profile, err := getProfile(client)
 		if err != nil {

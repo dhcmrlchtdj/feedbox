@@ -1,13 +1,15 @@
-package util
+package util_test
 
 import (
 	"testing"
 
 	"github.com/bradleyjkemp/cupaloy/v2"
+
+	"github.com/dhcmrlchtdj/feedbox/internal/util"
 )
 
 func TestExtractSiteName(t *testing.T) {
-	tests := []string{
+	cases := []string{
 		"https://feeds.feedburner.com/example",
 		"https://medium.com/feed/example",
 		"https://dev.to/feed/example",
@@ -15,9 +17,10 @@ func TestExtractSiteName(t *testing.T) {
 		"https://feed43.com/example.xml",
 		"https://example.com/rss",
 	}
-	for _, test := range tests {
-		t.Run(test, func(t *testing.T) {
-			cupaloy.SnapshotT(t, ExtractSiteName(test))
+	for i := range cases {
+		url := cases[i]
+		t.Run(url, func(t *testing.T) {
+			cupaloy.SnapshotT(t, util.ExtractSiteName(url))
 		})
 	}
 }

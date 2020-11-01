@@ -26,17 +26,17 @@ func executeCommand(cmd string, arg string, msg *telegram.Message) {
 	var err error
 	switch cmd {
 	case "/start":
-		err = start(arg, msg)
+		err = start(msg)
 	case "/list":
-		err = list(arg, msg)
+		err = list(msg)
 	case "/add":
 		err = add(arg, msg)
 	case "/remove":
 		err = remove(arg, msg)
 	case "/remove_all":
-		err = removeAll(arg, msg)
+		err = removeAll(msg)
 	case "/export":
-		err = export(arg, msg)
+		err = export(msg)
 	default:
 		err = ErrCmdUnknown
 	}
@@ -58,7 +58,7 @@ func executeCommand(cmd string, arg string, msg *telegram.Message) {
 	}
 }
 
-func start(arg string, msg *telegram.Message) error {
+func start(msg *telegram.Message) error {
 	return telegram.C.SendMessage(&telegram.SendMessagePayload{
 		ChatID:           msg.Chat.ID,
 		Text:             "<code>hello, world</code>",
@@ -67,7 +67,7 @@ func start(arg string, msg *telegram.Message) error {
 	})
 }
 
-func list(arg string, msg *telegram.Message) error {
+func list(msg *telegram.Message) error {
 	chatID := strconv.FormatInt(msg.Chat.ID, 10)
 	user, err := database.C.GetOrCreateUserByTelegram(chatID)
 	if err != nil {
@@ -139,7 +139,7 @@ func remove(arg string, msg *telegram.Message) error {
 	})
 }
 
-func removeAll(arg string, msg *telegram.Message) error {
+func removeAll(msg *telegram.Message) error {
 	chatID := strconv.FormatInt(msg.Chat.ID, 10)
 	user, err := database.C.GetOrCreateUserByTelegram(chatID)
 	if err != nil {
@@ -168,7 +168,7 @@ func removeAll(arg string, msg *telegram.Message) error {
 	})
 }
 
-func export(arg string, msg *telegram.Message) error {
+func export(msg *telegram.Message) error {
 	chatID := strconv.FormatInt(msg.Chat.ID, 10)
 	user, err := database.C.GetOrCreateUserByTelegram(chatID)
 	if err != nil {

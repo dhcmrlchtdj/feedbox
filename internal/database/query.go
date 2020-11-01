@@ -65,7 +65,7 @@ func (db *Database) GetOrCreateUserByGithub(githubID string, email string) (*Use
 	if err != nil {
 		return nil, err
 	}
-	defer tx.Rollback(context.Background())
+	defer tx.Rollback(context.Background()) //nolint:errcheck
 
 	row := tx.QueryRow(
 		context.Background(),
@@ -116,7 +116,7 @@ func (db *Database) GetOrCreateUserByTelegram(chatID string) (*User, error) {
 	if err != nil {
 		return nil, err
 	}
-	defer tx.Rollback(context.Background())
+	defer tx.Rollback(context.Background()) //nolint:errcheck
 
 	row := tx.QueryRow(
 		context.Background(),
@@ -160,7 +160,7 @@ func (db *Database) GetFeedIDByURL(url string) (int64, error) {
 	if err != nil {
 		return 0, err
 	}
-	defer tx.Rollback(context.Background())
+	defer tx.Rollback(context.Background()) //nolint:errcheck
 
 	var feedID int64
 	row := tx.QueryRow(context.Background(), "SELECT id FROM feeds WHERE url=$1", url)

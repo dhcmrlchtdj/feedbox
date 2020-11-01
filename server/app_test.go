@@ -7,6 +7,7 @@ import (
 	"os"
 	"strings"
 	"testing"
+	"time"
 
 	"github.com/bradleyjkemp/cupaloy/v2"
 	"github.com/gofiber/fiber/v2"
@@ -14,6 +15,7 @@ import (
 	_ "github.com/golang-migrate/migrate/v4/database/postgres"
 	_ "github.com/golang-migrate/migrate/v4/source/file"
 	"github.com/joho/godotenv"
+	"github.com/pkg/errors"
 
 	"github.com/dhcmrlchtdj/feedbox/internal/database"
 	"github.com/dhcmrlchtdj/feedbox/internal/multipart"
@@ -32,20 +34,28 @@ func TestMain(m *testing.M) {
 		panic(err)
 	}
 
-	setupDatabase()
-	var err error
-	database.C, err = database.New(os.Getenv("DATABASE_URL"))
-	if err != nil {
-		panic(err)
-	}
-	sign.S, err = sign.New(os.Getenv("COOKIE_SECRET"))
-	if err != nil {
-		panic(err)
-	}
-	defer database.C.Close()
-	setupApp()
+	code := func() int {
+		setupDatabase()
 
-	os.Exit(m.Run())
+		var err error
+
+		database.C, err = database.New(os.Getenv("DATABASE_URL"))
+		if err != nil {
+			panic(err)
+		}
+		defer database.C.Close()
+
+		sign.S, err = sign.New(os.Getenv("COOKIE_SECRET"))
+		if err != nil {
+			panic(err)
+		}
+
+		setupApp()
+
+		return m.Run()
+	}()
+
+	os.Exit(code)
 }
 
 func setupDatabase() {
@@ -53,10 +63,10 @@ func setupDatabase() {
 	if err != nil {
 		panic(err)
 	}
-	if err := m.Down(); err != nil && err != migrate.ErrNoChange {
+	if err := m.Down(); err != nil && !errors.Is(err, migrate.ErrNoChange) {
 		panic(err)
 	}
-	if err := m.Up(); err != nil && err != migrate.ErrNoChange {
+	if err := m.Up(); err != nil && !errors.Is(err, migrate.ErrNoChange) {
 		panic(err)
 	}
 	err1, err2 := m.Close()
@@ -76,7 +86,8 @@ func setupApp() {
 	})
 
 	// route
-	api := app.Group("/api/v1", mock.Set(typing.Credential{UserID: 1}))
+	credential := typing.Credential{UserID: 1, ExpiresAt: time.Now().Add(time.Hour).Unix()}
+	api := app.Group("/api/v1", mock.Set(credential))
 	api.Get("/user", handler.UserInfo)
 	api.Get("/feeds", handler.FeedList)
 	api.Put("/feeds/add", validate.ContentType("application/json"), handler.FeedAdd)

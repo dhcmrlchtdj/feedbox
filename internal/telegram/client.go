@@ -20,7 +20,7 @@ type Client struct {
 }
 
 func New(name string, token string) *Client {
-	return &Client{strings.ToLower(name), token}
+	return &Client{Name: strings.ToLower(name), token: token}
 }
 
 ///
@@ -70,7 +70,7 @@ func (c *Client) SendDocument(payload *SendDocumentPayload) error {
 			Str("parse_mode", payload.ParseMode).
 			Int64("reply_to_message_id", payload.ReplyToMessageID)
 		err := m.Close()
-		w.CloseWithError(err)
+		_ = w.CloseWithError(err) // _ == err
 	}()
 	return c.rawSendFileSimple("sendDocument", m.ContentType, r)
 }
@@ -86,7 +86,7 @@ func (c *Client) rawSend(cmd string, payload interface{}) (io.ReadCloser, error)
 		return nil, errors.Wrap(err, "telegram/"+cmd)
 	}
 
-	resp, err := http.Post(url, "application/json", &buf)
+	resp, err := http.Post(url, "application/json", &buf) //nolint:bodyclose
 	if err != nil {
 		return nil, errors.Wrap(err, "telegram/"+cmd)
 	}

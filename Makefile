@@ -15,10 +15,9 @@ fmt: lint
 	gofumports -w .
 
 lint:
-	-golint ./... | grep -v "or be unexported"
-	go vet ./...
+	golangci-lint run -p 'bugs,complexity,format,performance,unused' -D 'noctx,gosec'
 
-test: lint
+test:
 	ENV=test TZ=UTC go test -race ./server
 	ENV=test TZ=UTC go test -race ./internal/database
 	ENV=test TZ=UTC go test -race ./internal/util

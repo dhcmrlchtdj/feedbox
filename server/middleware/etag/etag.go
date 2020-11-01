@@ -24,7 +24,7 @@ func New() fiber.Handler {
 		}
 
 		body := resp.Body()
-		if len(body) <= 0 {
+		if len(body) == 0 {
 			return nil
 		}
 

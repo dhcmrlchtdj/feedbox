@@ -10,6 +10,7 @@ import (
 	_ "github.com/golang-migrate/migrate/v4/database/postgres"
 	_ "github.com/golang-migrate/migrate/v4/source/file"
 	"github.com/joho/godotenv"
+	"github.com/pkg/errors"
 
 	"github.com/dhcmrlchtdj/feedbox/internal/database"
 )
@@ -21,15 +22,20 @@ func TestMain(m *testing.M) {
 		panic(err)
 	}
 
-	setupDatabase()
-	var err error
-	db, err = database.New(os.Getenv("DATABASE_URL"))
-	if err != nil {
-		panic(err)
-	}
-	defer db.Close()
+	code := func() int {
+		setupDatabase()
 
-	os.Exit(m.Run())
+		var err error
+		db, err = database.New(os.Getenv("DATABASE_URL"))
+		if err != nil {
+			panic(err)
+		}
+		defer db.Close()
+
+		return m.Run()
+	}()
+
+	os.Exit(code)
 }
 
 func setupDatabase() {
@@ -37,10 +43,10 @@ func setupDatabase() {
 	if err != nil {
 		panic(err)
 	}
-	if err := m.Down(); err != nil && err != migrate.ErrNoChange {
+	if err := m.Down(); err != nil && !errors.Is(err, migrate.ErrNoChange) {
 		panic(err)
 	}
-	if err := m.Up(); err != nil && err != migrate.ErrNoChange {
+	if err := m.Up(); err != nil && !errors.Is(err, migrate.ErrNoChange) {
 		panic(err)
 	}
 	err1, err2 := m.Close()

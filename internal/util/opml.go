@@ -24,7 +24,7 @@ func ExtractLinksFromOPML(content io.Reader) ([]string, error) {
 		return nil, err
 	}
 
-	var links []string
+	links := []string{}
 	for _, o := range c.Outlines {
 		links = append(links, o.URL)
 	}
@@ -35,7 +35,7 @@ func BuildOPML(urls []string) []byte {
 	var b bytes.Buffer
 
 	// 90 is the average length of <outline>
-	b.Grow(100 + len(urls)*90)
+	// b.Grow(100 + len(urls)*90)
 
 	b.WriteString("<?xml version=\"1.0\" encoding=\"utf-8\"?>\n")
 	b.WriteString("<opml version=\"1.0\">\n")
@@ -56,7 +56,7 @@ func BuildOPML(urls []string) []byte {
 }
 
 func BuildOPMLFromFeed(feeds []database.Feed) []byte {
-	var urls []string
+	urls := []string{}
 	for _, feed := range feeds {
 		urls = append(urls, feed.URL)
 	}
