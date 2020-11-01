@@ -12,6 +12,8 @@ import (
 	"github.com/dhcmrlchtdj/feedbox/internal/multipart"
 )
 
+var C *Client = nil
+
 type Client struct {
 	Name  string
 	token string

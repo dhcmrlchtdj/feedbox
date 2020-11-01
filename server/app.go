@@ -12,7 +12,8 @@ import (
 	"github.com/pkg/errors"
 
 	"github.com/dhcmrlchtdj/feedbox/internal/database"
-	"github.com/dhcmrlchtdj/feedbox/internal/global"
+	"github.com/dhcmrlchtdj/feedbox/internal/monitor"
+	"github.com/dhcmrlchtdj/feedbox/internal/sign"
 	"github.com/dhcmrlchtdj/feedbox/server/handler"
 	"github.com/dhcmrlchtdj/feedbox/server/middleware/auth/cookie"
 	"github.com/dhcmrlchtdj/feedbox/server/middleware/auth/github"
@@ -99,13 +100,13 @@ func errorHandler(c *fiber.Ctx, err error) error {
 	notCare := fiber.DefaultErrorHandler(c, err)
 	code := c.Response().StatusCode()
 	if code >= 500 {
-		global.Monitor.Error(err)
+		monitor.C.Error(err)
 	}
 	return notCare
 }
 
 func cookieValidator(tokenStr string) ( /* Credential */ interface{}, error) {
-	plaintext, err := global.Sign.DecodeFromBase64(tokenStr)
+	plaintext, err := sign.S.DecodeFromBase64(tokenStr)
 	if err != nil {
 		return nil, errors.Wrap(err, "invalid token")
 	}
@@ -117,7 +118,7 @@ func cookieValidator(tokenStr string) ( /* Credential */ interface{}, error) {
 		return nil, errors.New("expired token")
 	}
 
-	if _, err = global.DB.GetUserByID(credential.UserID); err != nil {
+	if _, err = database.C.GetUserByID(credential.UserID); err != nil {
 		if errors.Is(err, database.ErrEmptyRow) {
 			err = errors.New("invalid user")
 		}

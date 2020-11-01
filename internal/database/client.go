@@ -10,6 +10,8 @@ import (
 	"github.com/rs/zerolog"
 )
 
+var C *Database = nil
+
 type Database struct {
 	pool  *pgxpool.Pool
 	cache *sync.Map

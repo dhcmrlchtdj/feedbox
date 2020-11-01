@@ -5,14 +5,13 @@ import (
 	"github.com/pkg/errors"
 
 	"github.com/dhcmrlchtdj/feedbox/internal/database"
-	"github.com/dhcmrlchtdj/feedbox/internal/global"
 	"github.com/dhcmrlchtdj/feedbox/internal/util"
 	"github.com/dhcmrlchtdj/feedbox/server/typing"
 )
 
 func FeedList(c *fiber.Ctx) error {
 	credential := c.Locals("credential").(typing.Credential)
-	feeds, err := global.DB.GetFeedByUser(credential.UserID)
+	feeds, err := database.C.GetFeedByUser(credential.UserID)
 	if err != nil {
 		return err
 	}
@@ -31,7 +30,7 @@ func FeedAdd(c *fiber.Ctx) error {
 
 	credential := c.Locals("credential").(typing.Credential)
 
-	feedID, err := global.DB.GetFeedIDByURL(b.URL)
+	feedID, err := database.C.GetFeedIDByURL(b.URL)
 	if err != nil {
 		if errors.Is(err, database.ErrInvalidURL) {
 			return fiber.NewError(fiber.StatusBadRequest, err.Error())
@@ -39,11 +38,11 @@ func FeedAdd(c *fiber.Ctx) error {
 		return err
 	}
 
-	if err := global.DB.Subscribe(credential.UserID, feedID); err != nil {
+	if err := database.C.Subscribe(credential.UserID, feedID); err != nil {
 		return err
 	}
 
-	feeds, err := global.DB.GetFeedByUser(credential.UserID)
+	feeds, err := database.C.GetFeedByUser(credential.UserID)
 	if err != nil {
 		return err
 	}
@@ -61,11 +60,11 @@ func FeedRemove(c *fiber.Ctx) error {
 	}
 
 	credential := c.Locals("credential").(typing.Credential)
-	if err := global.DB.Unsubscribe(credential.UserID, b.FeedID); err != nil {
+	if err := database.C.Unsubscribe(credential.UserID, b.FeedID); err != nil {
 		return err
 	}
 
-	feeds, err := global.DB.GetFeedByUser(credential.UserID)
+	feeds, err := database.C.GetFeedByUser(credential.UserID)
 	if err != nil {
 		return err
 	}
@@ -75,7 +74,7 @@ func FeedRemove(c *fiber.Ctx) error {
 func FeedExport(c *fiber.Ctx) error {
 	credential := c.Locals("credential").(typing.Credential)
 
-	feeds, err := global.DB.GetFeedByUser(credential.UserID)
+	feeds, err := database.C.GetFeedByUser(credential.UserID)
 	if err != nil {
 		return err
 	}
@@ -102,14 +101,14 @@ func FeedImport(c *fiber.Ctx) error {
 		return err
 	}
 
-	if err := global.DB.SubscribeURLs(credential.UserID, urls); err != nil {
+	if err := database.C.SubscribeURLs(credential.UserID, urls); err != nil {
 		if errors.Is(err, database.ErrInvalidURL) {
 			return fiber.NewError(fiber.StatusBadRequest, err.Error())
 		}
 		return err
 	}
 
-	feeds, err := global.DB.GetFeedByUser(credential.UserID)
+	feeds, err := database.C.GetFeedByUser(credential.UserID)
 	if err != nil {
 		return err
 	}

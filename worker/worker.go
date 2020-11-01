@@ -9,8 +9,9 @@ import (
 	"github.com/mmcdole/gofeed"
 
 	"github.com/dhcmrlchtdj/feedbox/internal/database"
+	"github.com/dhcmrlchtdj/feedbox/internal/email"
 	"github.com/dhcmrlchtdj/feedbox/internal/feedparser"
-	"github.com/dhcmrlchtdj/feedbox/internal/global"
+	"github.com/dhcmrlchtdj/feedbox/internal/monitor"
 	"github.com/dhcmrlchtdj/feedbox/internal/telegram"
 	"github.com/dhcmrlchtdj/feedbox/internal/util"
 )
@@ -38,9 +39,9 @@ func Start() {
 	qGithub := make(chan *githubItem)
 	qTelegram := make(chan *telegramItem)
 
-	feeds, err := global.DB.GetActiveFeeds()
+	feeds, err := database.C.GetActiveFeeds()
 	if err != nil {
-		global.Monitor.Error(err)
+		monitor.C.Error(err)
 		return
 	}
 	if len(feeds) == 0 {
@@ -78,13 +79,13 @@ func fetchFeed(done *sync.WaitGroup, qFeed <-chan database.Feed, qFeedItem chan<
 		for dbFeed := range qFeed {
 			feed, err := fp.ParseURL(dbFeed.URL)
 			if err != nil {
-				global.Monitor.Error(err)
+				monitor.C.Error(err)
 				continue
 			}
 
-			oldLinks, err := global.DB.GetLinks(dbFeed.ID)
+			oldLinks, err := database.C.GetLinks(dbFeed.ID)
 			if err != nil {
-				global.Monitor.Error(err)
+				monitor.C.Error(err)
 				continue
 			}
 			oldLinkSet := map[string]bool{}
@@ -112,9 +113,9 @@ func fetchFeed(done *sync.WaitGroup, qFeed <-chan database.Feed, qFeedItem chan<
 			if updated == nil {
 				updated = feed.UpdatedParsed
 			}
-			err = global.DB.AddFeedLinks(dbFeed.ID, newLinks, updated)
+			err = database.C.AddFeedLinks(dbFeed.ID, newLinks, updated)
 			if err != nil {
-				global.Monitor.Error(err)
+				monitor.C.Error(err)
 				continue
 			}
 
@@ -137,9 +138,9 @@ func dispatchFeed(done *sync.WaitGroup, qFeedItem <-chan *feedItem, qGithub chan
 		defer wg.Done()
 		for x := range qFeedItem {
 			feed := x.feed
-			users, err := global.DB.GetSubscribers(feed.ID)
+			users, err := database.C.GetSubscribers(feed.ID)
 			if err != nil {
-				global.Monitor.Error(err)
+				monitor.C.Error(err)
 				continue
 			}
 
@@ -152,7 +153,7 @@ func dispatchFeed(done *sync.WaitGroup, qFeedItem <-chan *feedItem, qGithub chan
 				case "telegram":
 					pid, err := strconv.ParseInt(user.PID, 10, 64)
 					if err != nil {
-						global.Monitor.Error(err)
+						monitor.C.Error(err)
 					} else {
 						telegramUsers = append(telegramUsers, pid)
 					}
@@ -206,9 +207,9 @@ func sendEmail(done *sync.WaitGroup, qGithub <-chan *githubItem) {
 			content := text.String()
 
 			for _, user := range x.users {
-				err := global.Email.Send(user, subject, content)
+				err := email.C.Send(user, subject, content)
 				if err != nil {
-					global.Monitor.Error(err)
+					monitor.C.Error(err)
 					continue
 				}
 			}
@@ -247,12 +248,12 @@ func sendTelegram(done *sync.WaitGroup, qTelegram <-chan *telegramItem) {
 			content := text.String()
 
 			for _, user := range x.users {
-				err := global.TG.SendMessage(&telegram.SendMessagePayload{
+				err := telegram.C.SendMessage(&telegram.SendMessagePayload{
 					ChatID: user,
 					Text:   content,
 				})
 				if err != nil {
-					global.Monitor.Error(err)
+					monitor.C.Error(err)
 					return
 				}
 			}

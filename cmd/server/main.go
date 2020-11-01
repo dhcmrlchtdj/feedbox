@@ -9,7 +9,6 @@ import (
 	"github.com/rs/zerolog/log"
 
 	"github.com/dhcmrlchtdj/feedbox/internal/database"
-	"github.com/dhcmrlchtdj/feedbox/internal/global"
 	"github.com/dhcmrlchtdj/feedbox/internal/monitor"
 	"github.com/dhcmrlchtdj/feedbox/internal/sign"
 	"github.com/dhcmrlchtdj/feedbox/internal/telegram"
@@ -41,18 +40,18 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	global.DB = db
-	defer global.DB.Close()
+	database.C = db
+	defer db.Close()
 
 	util.CheckEnvs("ROLLBAR_TOKEN")
-	global.Monitor = monitor.New(os.Getenv("ROLLBAR_TOKEN"))
+	monitor.C = monitor.New(os.Getenv("ROLLBAR_TOKEN"))
 
 	util.CheckEnvs("SERVER")
 	util.CheckEnvs("TELEGRAM_BOT_NAME", "TELEGRAM_BOT_TOKEN")
-	global.TG = telegram.New(os.Getenv("TELEGRAM_BOT_NAME"), os.Getenv("TELEGRAM_BOT_TOKEN"))
+	telegram.C = telegram.New(os.Getenv("TELEGRAM_BOT_NAME"), os.Getenv("TELEGRAM_BOT_TOKEN"))
 
 	util.CheckEnvs("COOKIE_SECRET")
-	global.Sign, err = sign.New(os.Getenv("COOKIE_SECRET"))
+	sign.S, err = sign.New(os.Getenv("COOKIE_SECRET"))
 	if err != nil {
 		panic(err)
 	}

@@ -6,6 +6,8 @@ import (
 	"github.com/rollbar/rollbar-go"
 )
 
+var C *Client = nil
+
 type Client struct{}
 
 func New(token string) *Client {

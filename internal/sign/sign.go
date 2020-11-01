@@ -9,6 +9,8 @@ import (
 	"golang.org/x/crypto/chacha20poly1305"
 )
 
+var S *Sign = nil
+
 type Sign struct {
 	aead cipher.AEAD
 }

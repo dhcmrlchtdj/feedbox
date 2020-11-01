@@ -9,7 +9,6 @@ import (
 
 	"github.com/dhcmrlchtdj/feedbox/internal/database"
 	"github.com/dhcmrlchtdj/feedbox/internal/email"
-	"github.com/dhcmrlchtdj/feedbox/internal/global"
 	"github.com/dhcmrlchtdj/feedbox/internal/monitor"
 	"github.com/dhcmrlchtdj/feedbox/internal/telegram"
 	"github.com/dhcmrlchtdj/feedbox/internal/util"
@@ -36,17 +35,17 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	global.DB = db
-	defer global.DB.Close()
+	database.C = db
+	defer db.Close()
 
 	util.CheckEnvs("ROLLBAR_TOKEN")
-	global.Monitor = monitor.New(os.Getenv("ROLLBAR_TOKEN"))
+	monitor.C = monitor.New(os.Getenv("ROLLBAR_TOKEN"))
 
 	util.CheckEnvs("MAILGUN_DOMAIN", "MAILGUN_API_KEY", "MAILGUN_FROM")
-	global.Email = email.New(os.Getenv("MAILGUN_DOMAIN"), os.Getenv("MAILGUN_API_KEY"), os.Getenv("MAILGUN_FROM"))
+	email.C = email.New(os.Getenv("MAILGUN_DOMAIN"), os.Getenv("MAILGUN_API_KEY"), os.Getenv("MAILGUN_FROM"))
 
 	util.CheckEnvs("TELEGRAM_BOT_NAME", "TELEGRAM_BOT_TOKEN")
-	global.TG = telegram.New(os.Getenv("TELEGRAM_BOT_NAME"), os.Getenv("TELEGRAM_BOT_TOKEN"))
+	telegram.C = telegram.New(os.Getenv("TELEGRAM_BOT_NAME"), os.Getenv("TELEGRAM_BOT_TOKEN"))
 
 	worker.Start()
 }

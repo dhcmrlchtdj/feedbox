@@ -16,7 +16,6 @@ import (
 	"github.com/joho/godotenv"
 
 	"github.com/dhcmrlchtdj/feedbox/internal/database"
-	"github.com/dhcmrlchtdj/feedbox/internal/global"
 	"github.com/dhcmrlchtdj/feedbox/internal/multipart"
 	"github.com/dhcmrlchtdj/feedbox/internal/sign"
 	"github.com/dhcmrlchtdj/feedbox/server/handler"
@@ -34,8 +33,16 @@ func TestMain(m *testing.M) {
 	}
 
 	setupDatabase()
-	setupGlobal()
-	defer global.DB.Close()
+	var err error
+	database.C, err = database.New(os.Getenv("DATABASE_URL"))
+	if err != nil {
+		panic(err)
+	}
+	sign.S, err = sign.New(os.Getenv("COOKIE_SECRET"))
+	if err != nil {
+		panic(err)
+	}
+	defer database.C.Close()
 	setupApp()
 
 	os.Exit(m.Run())
@@ -58,20 +65,6 @@ func setupDatabase() {
 	}
 	if err2 != nil {
 		panic(err2)
-	}
-}
-
-func setupGlobal() {
-	var err error
-
-	global.DB, err = database.New(os.Getenv("DATABASE_URL"))
-	if err != nil {
-		panic(err)
-	}
-
-	global.Sign, err = sign.New(os.Getenv("COOKIE_SECRET"))
-	if err != nil {
-		panic(err)
 	}
 }
 

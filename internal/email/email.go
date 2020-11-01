@@ -10,6 +10,8 @@ import (
 	"github.com/dhcmrlchtdj/feedbox/internal/multipart"
 )
 
+var C *Client = nil
+
 type Client struct {
 	urlPrefix string
 	from      string
