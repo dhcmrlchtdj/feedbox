@@ -61,43 +61,20 @@ func (db *Database) GetOrCreateUserByGithub(githubID string, email string) (*Use
 		return v.(*User), nil
 	}
 
-	tx, err := db.pool.Begin(context.Background())
-	if err != nil {
-		return nil, err
-	}
-	defer tx.Rollback(context.Background()) //nolint:errcheck
-
-	row := tx.QueryRow(
-		context.Background(),
-		`SELECT id, platform, pid, addition FROM users WHERE platform = 'github' AND pid = $1`,
-		githubID)
+	row := db.pool.QueryRow(context.Background(),
+		`WITH t AS (
+			INSERT INTO users(platform, pid, addition) VALUES ('github', $1, $2)
+			ON CONFLICT(platform, pid) DO UPDATE SET addition=EXCLUDED.addition
+			RETURNING id, platform, pid, addition
+		)
+		(
+			SELECT id, platform, pid, addition FROM t
+			UNION ALL
+			SELECT id, platform, pid, addition FROM users WHERE platform = 'github' AND pid = $1
+		) LIMIT 1`,
+		githubID, map[string]string{"email": email})
 	user, err := readUser(row)
 	if err != nil {
-		return nil, err
-	}
-
-	if user == nil || user.Addition["email"] != email {
-		addition := map[string]string{"email": email}
-
-		if user == nil {
-			row = tx.QueryRow(
-				context.Background(),
-				"INSERT INTO users(platform, pid, addition) VALUES ('github', $1, $2) RETURNING id, platform, pid, addition",
-				githubID, addition)
-			user, err = readUser(row)
-		} else {
-			_, err = tx.Exec(
-				context.Background(),
-				"UPDATE users SET addition = $2 WHERE id = $1",
-				user.ID, addition)
-			user.Addition["email"] = email
-		}
-		if err != nil {
-			return nil, err
-		}
-	}
-
-	if err := tx.Commit(context.Background()); err != nil {
 		return nil, err
 	}
 
@@ -112,33 +89,20 @@ func (db *Database) GetOrCreateUserByTelegram(chatID string) (*User, error) {
 		return v.(*User), nil
 	}
 
-	tx, err := db.pool.Begin(context.Background())
-	if err != nil {
-		return nil, err
-	}
-	defer tx.Rollback(context.Background()) //nolint:errcheck
-
-	row := tx.QueryRow(
-		context.Background(),
-		`SELECT id, platform, pid, addition FROM users WHERE platform = 'telegram' AND pid = $1`,
+	row := db.pool.QueryRow(context.Background(),
+		`WITH t AS (
+			INSERT INTO users(platform, pid) VALUES ('telegram', $1)
+			ON CONFLICT DO NOTHING
+			RETURNING id, platform, pid, addition
+		)
+		(
+			SELECT id, platform, pid, addition FROM t
+			UNION ALL
+			SELECT id, platform, pid, addition FROM users WHERE platform = 'telegram' AND pid = $1
+		) LIMIT 1`,
 		chatID)
 	user, err := readUser(row)
 	if err != nil {
-		return nil, err
-	}
-
-	if user == nil {
-		row = tx.QueryRow(
-			context.Background(),
-			"INSERT INTO users(platform, pid) VALUES ('telegram', $1) RETURNING id, platform, pid, addition",
-			chatID)
-		user, err = readUser(row)
-		if err != nil {
-			return nil, err
-		}
-	}
-
-	if err := tx.Commit(context.Background()); err != nil {
 		return nil, err
 	}
 
@@ -156,26 +120,12 @@ func (db *Database) GetFeedIDByURL(url string) (int64, error) {
 		return v.(int64), nil
 	}
 
-	tx, err := db.pool.Begin(context.Background())
-	if err != nil {
-		return 0, err
-	}
-	defer tx.Rollback(context.Background()) //nolint:errcheck
-
 	var feedID int64
-	row := tx.QueryRow(context.Background(), "SELECT id FROM feeds WHERE url=$1", url)
+	row := db.pool.QueryRow(context.Background(),
+		`WITH t AS (INSERT INTO feeds(url) VALUES($1) ON CONFLICT DO NOTHING RETURNING id)
+		(SELECT id FROM t UNION ALL SELECT id FROM feeds WHERE url=$1) LIMIT 1`,
+		url)
 	if err := row.Scan(&feedID); err != nil {
-		if errors.Is(err, pgx.ErrNoRows) {
-			row = tx.QueryRow(context.Background(), "INSERT INTO feeds(url) VALUES ($1) RETURNING id", url)
-			if err := row.Scan(&feedID); err != nil {
-				return 0, err
-			}
-		} else {
-			return 0, err
-		}
-	}
-
-	if err := tx.Commit(context.Background()); err != nil {
 		return 0, err
 	}
 
