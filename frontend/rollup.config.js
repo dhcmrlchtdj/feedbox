@@ -46,7 +46,7 @@ export default [
         },
         plugins: [
             replace({
-                __SW_CACHE_VERSION__: JSON.stringify(hashDir('.')),
+                __SW_CACHE_VERSION__: JSON.stringify(hashDir()),
             }),
             nodeResolve(),
             typescript(),
@@ -94,9 +94,9 @@ function template(files) {
     }
 }
 
-function hashDir(dir) {
+function hashDir() {
     const files = []
-    const next = [['.', fs.readdirSync(dir, { withFileTypes: true })]]
+    const next = [['.', fs.readdirSync('.', { withFileTypes: true })]]
     while (next.length > 0) {
         const [parent, curr] = next.pop()
         curr.forEach((f) => {
