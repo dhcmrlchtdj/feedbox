@@ -82,7 +82,6 @@ func setupApp() {
 	app = fiber.New(fiber.Config{
 		StrictRouting: true,
 		CaseSensitive: true,
-		ETag:          true,
 	})
 
 	// route

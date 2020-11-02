@@ -18,14 +18,14 @@ lint:
 	golangci-lint run -p 'bugs,complexity,performance,unused' -D 'noctx'
 
 test:
-	ENV=test TZ=UTC go test -race ./server
-	ENV=test TZ=UTC go test -race ./internal/database
 	ENV=test TZ=UTC go test -race ./internal/util
+	ENV=test TZ=UTC go test -race ./internal/database
+	ENV=test TZ=UTC go test -race ./server
 
 test_update:
-	-ENV=test TZ=UTC UPDATE_SNAPSHOTS=true go test ./server
-	-ENV=test TZ=UTC UPDATE_SNAPSHOTS=true go test ./internal/database
 	-ENV=test TZ=UTC UPDATE_SNAPSHOTS=true go test ./internal/util
+	-ENV=test TZ=UTC UPDATE_SNAPSHOTS=true go test ./internal/database
+	-ENV=test TZ=UTC UPDATE_SNAPSHOTS=true go test ./server
 
 # coverage:
 #     ENV=test go test -cover -coverprofile=./_build/cover.out ./...
