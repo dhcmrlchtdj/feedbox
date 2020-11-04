@@ -15,7 +15,7 @@ require (
 	github.com/golang-migrate/migrate/v4 v4.13.0
 	github.com/golang/protobuf v1.4.3 // indirect
 	github.com/hashicorp/errwrap v1.1.0 // indirect
-	github.com/jackc/pgx/v4 v4.9.0
+	github.com/jackc/pgx/v4 v4.9.2
 	github.com/joho/godotenv v1.3.0
 	github.com/klauspost/compress v1.11.2 // indirect
 	github.com/lib/pq v1.8.0 // indirect
