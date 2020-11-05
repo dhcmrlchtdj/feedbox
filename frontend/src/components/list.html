@@ -1,5 +1,5 @@
 {#each $feeds as feed (feed.id)}
-<div class="column col-12">
+<div class="column col-12" transition:slide>
     <div class="tile">
         <div class="tile-content">
             <div class="tile-title text-break">
@@ -34,6 +34,7 @@
 {/each}
 
 <script>
+    import { slide } from 'svelte/transition'
     import { feeds, notify, newNotify } from './store'
     import * as agent from '../utils/agent'
     import { format } from '../utils/format-date'
