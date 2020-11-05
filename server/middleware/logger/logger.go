@@ -1,7 +1,6 @@
 package logger
 
 import (
-	"os"
 	"sync"
 	"time"
 
@@ -14,7 +13,6 @@ func New() fiber.Handler {
 	var once sync.Once
 	var errHandler fiber.ErrorHandler
 
-	prod := os.Getenv("ENV") == "prod"
 	logger := log.Logger.With().Str("module", "server").Logger()
 
 	return func(c *fiber.Ctx) error {
@@ -24,11 +22,8 @@ func New() fiber.Handler {
 
 		reqHeader := zerolog.Dict()
 		c.Request().Header.VisitAll(func(key []byte, value []byte) {
-			k := string(key)
-			if prod && k == "Cookie" {
-				return
-			}
-			reqHeader = reqHeader.Bytes(k, value)
+			// k := *(*string)(unsafe.Pointer(&key))
+			reqHeader = reqHeader.Bytes(string(key), value)
 		})
 
 		start := time.Now()
@@ -45,11 +40,7 @@ func New() fiber.Handler {
 
 		respHeader := zerolog.Dict()
 		resp.Header.VisitAll(func(key []byte, value []byte) {
-			k := string(key)
-			if prod && k == "Set-Cookie" {
-				return
-			}
-			respHeader = respHeader.Bytes(k, value)
+			respHeader = respHeader.Bytes(string(key), value)
 		})
 
 		logger.Info().
