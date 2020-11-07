@@ -17,6 +17,9 @@ fmt: lint
 lint:
 	golangci-lint run -p 'bugs,complexity,performance,unused' -D 'noctx'
 
+dev:
+	go run ./cmd/server
+
 test:
 	ENV=test TZ=UTC go test -race ./internal/util
 	ENV=test TZ=UTC go test -race ./internal/database
