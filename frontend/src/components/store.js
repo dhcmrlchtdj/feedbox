@@ -12,3 +12,5 @@ export const newNotify = (msg) => {
         notify.update((prev) => [...prev.filter((x) => x.key !== key)])
     }, 5 * 1000)
 }
+
+export const initialized = writable(false)

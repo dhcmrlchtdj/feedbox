@@ -1,6 +1,10 @@
 <div class="container grid-sm">
     {#await loaded.promise}
-    <Loading></Loading>
+    <div class="columns">
+        <div class="column col-12">
+            <div class="loading loading-lg"></div>
+        </div>
+    </div>
     {:then}
     <div class="columns">
         <Heading></Heading>
@@ -16,7 +20,6 @@
 <script>
     import { onMount } from 'svelte'
 
-    import Loading from './loading.html'
     import Auth from './auth.html'
     import Heading from './heading.html'
     import Add from './add.html'
@@ -40,6 +43,7 @@
             .then(([user, resp]) => {
                 store.email.set(user.addition.email)
                 store.feeds.set(resp)
+                store.initialized.set(true)
                 if (loaded.resolve) loaded.resolve(true)
             })
             .catch((err) => {

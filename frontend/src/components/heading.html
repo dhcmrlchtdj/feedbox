@@ -1,5 +1,10 @@
 <div class="column col-12">
     <h1 class="d-inline-block mb-0">FeedBox</h1>
+    <span
+        class="loading d-inline-block"
+        style="width: 1rem"
+        class:d-invisible="{$initialized}"
+    ></span>
     <span>{$email}</span>
     <a href="/api/v1/feeds/export" target="_blank">export</a>
     <a href="/api/logout" on:click="{logout}">logout</a>
@@ -7,7 +12,7 @@
 <div class="column col-12"><div class="divider"></div></div>
 
 <script>
-    import { email } from './store'
+    import { email, initialized } from './store'
 
     const logout = () => {
         const sw = navigator.serviceWorker
