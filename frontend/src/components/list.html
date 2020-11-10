@@ -3,12 +3,8 @@
     <div class="tile">
         <div class="tile-content">
             <div class="tile-title text-break">
-                <a
-                    target="_blank"
-                    rel="noopener"
-                    href="{encodeHtmlEntities(feed.url)}"
-                >
-                    {encodeHtmlEntities(feed.url)}
+                <a target="_blank" rel="noopener" href="{feed.url}">
+                    {feed.url}
                 </a>
             </div>
             <div class="tile-subtitle text-gray">
@@ -38,7 +34,6 @@
     import { feeds, notify, newNotify } from './store'
     import * as agent from '../utils/agent'
     import { format } from '../utils/format-date'
-    import { encodeHtmlEntities } from '../utils/html-entity'
 
     const formatDate = (date) => {
         if (date === null) return 'never'

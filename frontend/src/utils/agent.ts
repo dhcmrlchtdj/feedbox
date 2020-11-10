@@ -9,11 +9,12 @@ const auth = async (r: Response) => {
 }
 
 type headers = Record<string, string>
+type data = Record<string, unknown>
 
 const req = async (
     method: string,
     url: string,
-    data: null | Object,
+    data: null | data,
     headers: headers = {},
 ) => {
     if (!headers['Content-Type']) {
@@ -31,18 +32,9 @@ const req = async (
 
 export const get = async (url: string, headers: headers) =>
     req('GET', url, null, headers)
-export const post = async (
-    url: string,
-    data: Record<string, any>,
-    headers: headers,
-) => req('POST', url, data, headers)
-export const put = async (
-    url: string,
-    data: Record<string, any>,
-    headers: headers,
-) => req('PUT', url, data, headers)
-export const del = async (
-    url: string,
-    data: Record<string, any>,
-    headers: headers,
-) => req('DELETE', url, data, headers)
+export const post = async (url: string, data: data, headers: headers) =>
+    req('POST', url, data, headers)
+export const put = async (url: string, data: data, headers: headers) =>
+    req('PUT', url, data, headers)
+export const del = async (url: string, data: data, headers: headers) =>
+    req('DELETE', url, data, headers)
