@@ -79,7 +79,7 @@ jobs:
                 make build
                 echo '!/_build' > .gitignore
                 git add -A .
-                git commit --allow-empty-message -m
+                git commit --allow-empty-message --message=''
               working-directory: ./frontend
             - name: deploy heroku
               run: git push --force https://heroku:$HEROKU_AUTH_TOKEN@git.heroku.com/fbox.git
