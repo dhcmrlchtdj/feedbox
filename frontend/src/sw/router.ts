@@ -5,12 +5,7 @@ import * as strategy from './strategy'
 import { CACHE_VERSION } from './version'
 
 const just = (
-    name:
-        | 'cacheOnly'
-        | 'cacheFirst'
-        | 'networkOnly'
-        | 'networkFirst'
-        | 'staleWhileRevalidate',
+    name: 'cacheOnly' | 'cacheFirst' | 'networkOnly' | 'networkFirst',
 ) => async (event: FetchEvent) => {
     const cache = await caches.open(CACHE_VERSION)
     const resp = await strategy[name](cache, event.request)
@@ -66,8 +61,8 @@ export const router = new WorkerRouter()
             })
     })
     // API
-    .get('/api/v1/feeds', just('staleWhileRevalidate'))
-    .get('/api/v1/user', just('staleWhileRevalidate'))
+    .get('/api/v1/feeds', just('networkFirst'))
+    .get('/api/v1/user', just('networkFirst'))
     .put('/api/v1/feeds/add', getThenUpdate)
     .delete('/api/v1/feeds/remove', getThenUpdate)
     // static
