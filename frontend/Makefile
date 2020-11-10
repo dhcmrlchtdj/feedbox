@@ -10,3 +10,6 @@ dev:
 
 fmt:
 	prettier --write .
+
+upgrade_dep:
+	pnpm upgrade --latest -i
