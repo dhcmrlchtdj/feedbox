@@ -186,7 +186,8 @@ func (db *Database) GetFeedIDByURL(url string) (int64, error) {
 func (db *Database) GetFeedByUser(userID int64) ([]Feed, error) {
 	rows, err := db.pool.Query(
 		context.Background(),
-		"SELECT id, url, updated FROM feeds WHERE id IN (SELECT fid FROM r_user_feed WHERE uid = $1) ORDER BY updated DESC",
+		`SELECT id, url, updated FROM feeds WHERE id IN (SELECT fid FROM r_user_feed WHERE uid = $1)
+		ORDER BY updated DESC NULLS FIRST`,
 		userID)
 	if err != nil {
 		return nil, err
