@@ -79,7 +79,7 @@ func fetchFeed(done *sync.WaitGroup, qFeed <-chan database.Feed, qFeedItem chan<
 		for dbFeed := range qFeed {
 			feed, err := fp.ParseURL(dbFeed.URL)
 			if err != nil {
-				monitor.C.Error(err)
+				monitor.C.Warn(err)
 				continue
 			}
 

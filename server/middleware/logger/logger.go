@@ -43,8 +43,8 @@ func New() fiber.Handler {
 			respHeader = respHeader.Bytes(string(key), value)
 		})
 
-		logger.Info().
-			// Str("remote", c.IP()).
+		logger.
+			Info().
 			Str("method", c.Method()).
 			Str("path", c.Path()).
 			Int("status", resp.StatusCode()).

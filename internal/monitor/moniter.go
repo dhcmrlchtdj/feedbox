@@ -22,8 +22,13 @@ func New(token string) *Client {
 }
 
 func (*Client) Error(err error) {
-	log.Info().Str("module", "monitor").Err(err).Send()
+	log.Error().Str("module", "monitor").Err(err).Send()
 	rollbar.Error(err)
+}
+
+func (*Client) Warn(err error) {
+	log.Warn().Str("module", "monitor").Err(err).Send()
+	rollbar.Warning(err)
 }
 
 func (*Client) Wait() {
