@@ -27,7 +27,10 @@
     let url = ''
 
     const add = async () => {
-        if (loading === true) throw new Error('loading is true')
+        if (loading === true) {
+            window.alert('processing')
+            return
+        }
         loading = true
 
         agent

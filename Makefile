@@ -11,7 +11,7 @@ clean:
 	# go clean -testcache ./...
 	-rm -rf ./_build
 
-fmt: lint
+fmt:
 	gofumports -w .
 
 lint:

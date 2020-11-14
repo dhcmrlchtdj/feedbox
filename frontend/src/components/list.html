@@ -1,59 +1,8 @@
 {#each $feeds as feed (feed.id)}
-<div class="column col-12" transition:slide>
-    <div class="tile">
-        <div class="tile-content">
-            <div class="tile-title text-break">
-                <a target="_blank" rel="noopener" href="{feed.url}">
-                    {feed.url}
-                </a>
-            </div>
-            <div class="tile-subtitle text-gray">
-                <span>updated @ {formatDate(feed.updated)}</span>
-            </div>
-        </div>
-        <div class="tile-action">
-            <div>
-                <button
-                    type="button"
-                    class="btn btn-error"
-                    class:loading="{feed.loading}"
-                    class:disabled="{feed.loading}"
-                    on:click="{() => remove(feed)}"
-                >
-                    remove
-                </button>
-            </div>
-        </div>
-    </div>
-    <div class="divider"></div>
-</div>
+<ListItem {feed}></ListItem>
 {/each}
 
 <script>
-    import { slide } from 'svelte/transition'
-    import { feeds, notify, newNotify } from './store'
-    import * as agent from '../utils/agent'
-    import { format } from '../utils/format-date'
-
-    const formatDate = (date) => {
-        if (date === null) return 'never'
-        return format(date)
-    }
-
-    const remove = async (feed) => {
-        const c = window.confirm(`remove "${feed.url}"`)
-        if (!c) return
-
-        if (feed.loading === true) throw new Error('loading is true')
-        feed.loading = true
-
-        agent
-            .del(`/api/v1/feeds/remove`, { feedID: feed.id })
-            .then((resp) => feeds.set(resp))
-            .then(() => newNotify('removed'))
-            .catch((err) => {
-                window.alert(err.message)
-                location.reload()
-            })
-    }
+    import { feeds } from './store'
+    import ListItem from './list-item.html'
 </script>

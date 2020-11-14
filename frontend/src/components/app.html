@@ -47,8 +47,10 @@
                 if (loaded.resolve) loaded.resolve(true)
             })
             .catch((err) => {
-                console.error(err.stack)
                 if (loaded.reject) loaded.reject(err.message)
+                store.initialized.set(true)
+                window.alert(err.message)
+                location.reload()
             })
     })
 </script>
