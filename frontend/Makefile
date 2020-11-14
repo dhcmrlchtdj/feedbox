@@ -16,4 +16,4 @@ fmt:
 
 upgrade_dep:
 	pnpm upgrade --latest -i
-	pnpm store prune
+	# pnpm store prune
