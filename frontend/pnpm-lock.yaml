@@ -6,9 +6,9 @@ devDependencies:
   '@rollup/plugin-typescript': 6.1.0_66c0221b3cde985c2512091a2e846a04
   prettier: 2.1.2
   rollup: 2.33.1
-  rollup-plugin-svelte: 6.1.1_rollup@2.33.1+svelte@3.29.6
+  rollup-plugin-svelte: 6.1.1_rollup@2.33.1+svelte@3.29.7
   rollup-plugin-terser: 7.0.2_rollup@2.33.1
-  svelte: 3.29.6
+  svelte: 3.29.7
   typescript: 4.0.5
 lockfileVersion: 5.2
 packages:
@@ -262,13 +262,13 @@ packages:
     dev: true
     resolution:
       integrity: sha512-lDfCPaMKfOJXjy0dPayzPdF1phampNWr3qFCjAu+rw/qbQmr5jWH5xN2hwh9QKfw9E5v4hwV7A+jrCmL8yjjqA==
-  /rollup-plugin-svelte/6.1.1_rollup@2.33.1+svelte@3.29.6:
+  /rollup-plugin-svelte/6.1.1_rollup@2.33.1+svelte@3.29.7:
     dependencies:
       require-relative: 0.8.7
       rollup: 2.33.1
       rollup-pluginutils: 2.8.2
       sourcemap-codec: 1.4.8
-      svelte: 3.29.6
+      svelte: 3.29.7
     dev: true
     peerDependencies:
       rollup: '>=1.19.2'
@@ -351,12 +351,12 @@ packages:
       node: '>=8'
     resolution:
       integrity: sha512-qpCAvRl9stuOHveKsn7HncJRvv501qIacKzQlO/+Lwxc9+0q2wLyv4Dfvt80/DPn2pqOBsJdDiogXGR9+OvwRw==
-  /svelte/3.29.6:
+  /svelte/3.29.7:
     dev: true
     engines:
       node: '>= 8'
     resolution:
-      integrity: sha512-VIQMHPPEg/d4BQTy+WX1hHi/0EzjwjgjBK+DF0kLFy5hBsDKHQemd7xrCO1Spz57sT0xUb/YgRwFoozQrK0cmQ==
+      integrity: sha512-rx0g311kBODvEWUU01DFBUl3MJuJven04bvTVFUG/w0On/wuj0PajQY/QlXcJndFxG+W1s8iXKaB418tdHWc3A==
   /terser/5.3.8:
     dependencies:
       commander: 2.20.3
@@ -387,6 +387,6 @@ specifiers:
   rollup: 2.33.1
   rollup-plugin-svelte: 6.1.1
   rollup-plugin-terser: 7.0.2
-  svelte: 3.29.6
+  svelte: 3.29.7
   tslib: 2.0.3
   typescript: 4.0.5
