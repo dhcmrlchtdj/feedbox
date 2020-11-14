@@ -33,12 +33,12 @@
     import * as agent from '../utils/agent'
     import { format } from '../utils/format-date'
 
-    export let feed = null
+    export let feed = {}
 
     let loading = false
 
     const formatDate = (date) => {
-        if (date === null) return 'never'
+        if (!date) return 'never'
         return format(date)
     }
 
