@@ -76,6 +76,7 @@ jobs:
             - run: |
                 npm i -g pnpm@5
                 pnpm install
+                pnpm store prune
                 make build
                 echo '!/_build' > .gitignore
                 git config user.name "$GITHUB_ACTOR"
