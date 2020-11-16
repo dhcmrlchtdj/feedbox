@@ -31,7 +31,8 @@
     import * as agent from '../utils/agent'
     import { Deferred } from '../utils/deferred'
 
-    const state = window.__STATE__ || {}
+    // self -> Window | ServiceWorkerGlobalScope
+    const state = self.__STATE__ || {}
     export let loaded = state.loaded || new Deferred()
     export let email = state.email || ''
     export let feeds = state.feeds || []
