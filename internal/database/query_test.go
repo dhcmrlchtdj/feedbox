@@ -174,7 +174,7 @@ func TestSubscribeURLs(t *testing.T) {
 }
 
 func TestGetFeedByUser(t *testing.T) {
-	r, err := db.GetFeedByUser(1)
+	r, err := db.GetFeedByUser(1, "updated")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -202,7 +202,7 @@ func TestUnsubscribe(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	r, err := db.GetFeedByUser(1)
+	r, err := db.GetFeedByUser(1, "updated")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -214,7 +214,7 @@ func TestUnsubscribeAll(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	r, err := db.GetFeedByUser(1)
+	r, err := db.GetFeedByUser(1, "updated")
 	if err != nil {
 		t.Fatal(err)
 	}

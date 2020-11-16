@@ -11,7 +11,7 @@ import (
 
 func FeedList(c *fiber.Ctx) error {
 	credential := c.Locals("credential").(typing.Credential)
-	feeds, err := database.C.GetFeedByUser(credential.UserID)
+	feeds, err := database.C.GetFeedByUser(credential.UserID, "updated")
 	if err != nil {
 		return err
 	}
@@ -42,7 +42,7 @@ func FeedAdd(c *fiber.Ctx) error {
 		return err
 	}
 
-	feeds, err := database.C.GetFeedByUser(credential.UserID)
+	feeds, err := database.C.GetFeedByUser(credential.UserID, "updated")
 	if err != nil {
 		return err
 	}
@@ -64,7 +64,7 @@ func FeedRemove(c *fiber.Ctx) error {
 		return err
 	}
 
-	feeds, err := database.C.GetFeedByUser(credential.UserID)
+	feeds, err := database.C.GetFeedByUser(credential.UserID, "updated")
 	if err != nil {
 		return err
 	}
@@ -74,7 +74,7 @@ func FeedRemove(c *fiber.Ctx) error {
 func FeedExport(c *fiber.Ctx) error {
 	credential := c.Locals("credential").(typing.Credential)
 
-	feeds, err := database.C.GetFeedByUser(credential.UserID)
+	feeds, err := database.C.GetFeedByUser(credential.UserID, "url")
 	if err != nil {
 		return err
 	}
@@ -108,7 +108,7 @@ func FeedImport(c *fiber.Ctx) error {
 		return err
 	}
 
-	feeds, err := database.C.GetFeedByUser(credential.UserID)
+	feeds, err := database.C.GetFeedByUser(credential.UserID, "updated")
 	if err != nil {
 		return err
 	}

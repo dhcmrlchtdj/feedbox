@@ -73,7 +73,7 @@ func list(msg *telegram.Message) error {
 	if err != nil {
 		return err
 	}
-	feeds, err := database.C.GetFeedByUser(user.ID)
+	feeds, err := database.C.GetFeedByUser(user.ID, "url")
 	if err != nil {
 		return err
 	}
@@ -145,7 +145,7 @@ func removeAll(msg *telegram.Message) error {
 	if err != nil {
 		return err
 	}
-	feeds, err := database.C.GetFeedByUser(user.ID)
+	feeds, err := database.C.GetFeedByUser(user.ID, "url")
 	if err != nil {
 		return err
 	}
@@ -174,7 +174,7 @@ func export(msg *telegram.Message) error {
 	if err != nil {
 		return err
 	}
-	feeds, err := database.C.GetFeedByUser(user.ID)
+	feeds, err := database.C.GetFeedByUser(user.ID, "url")
 	if err != nil {
 		return err
 	}

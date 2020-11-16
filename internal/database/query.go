@@ -183,12 +183,15 @@ func (db *Database) GetFeedIDByURL(url string) (int64, error) {
 	return feedID, nil
 }
 
-func (db *Database) GetFeedByUser(userID int64) ([]Feed, error) {
-	rows, err := db.pool.Query(
-		context.Background(),
-		`SELECT id, url, updated FROM feeds WHERE id IN (SELECT fid FROM r_user_feed WHERE uid = $1)
-		ORDER BY updated DESC NULLS FIRST`,
-		userID)
+func (db *Database) GetFeedByUser(userID int64, orderBy string) ([]Feed, error) {
+	query := "SELECT id, url, updated FROM feeds WHERE id IN (SELECT fid FROM r_user_feed WHERE uid = $1)"
+	switch orderBy {
+	case "updated":
+		query += " ORDER BY updated DESC NULLS FIRST"
+	case "url":
+		query += " ORDER BY url ASC NULLS FIRST"
+	}
+	rows, err := db.pool.Query(context.Background(), query, userID)
 	if err != nil {
 		return nil, err
 	}
