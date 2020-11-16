@@ -5,14 +5,14 @@ build: node_modules
 	rm -rf ./_build
 	NODE_ENV=production rollup -c
 
-node_modules:
-	pnpm install
-
-dev:
+dev: node_modules
 	rollup -c -w
 
 fmt:
 	prettier --write .
+
+node_modules:
+	pnpm install
 
 upgrade_dep:
 	pnpm upgrade --latest -i
