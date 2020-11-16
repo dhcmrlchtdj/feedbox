@@ -84,7 +84,7 @@ func list(msg *telegram.Message) error {
 	var builder strings.Builder
 	for i, feed := range feeds {
 		if i > 0 {
-			builder.WriteByte('\n')
+			builder.WriteString("\n\n")
 		}
 		builder.WriteString(feed.URL)
 	}
