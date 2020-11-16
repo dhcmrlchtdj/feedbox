@@ -189,7 +189,7 @@ func (db *Database) GetFeedByUser(userID int64, orderBy string) ([]Feed, error) 
 	case "updated":
 		query += " ORDER BY updated DESC NULLS FIRST"
 	case "url":
-		query += " ORDER BY url ASC NULLS FIRST"
+		query += " ORDER BY url ASC"
 	}
 	rows, err := db.pool.Query(context.Background(), query, userID)
 	if err != nil {
