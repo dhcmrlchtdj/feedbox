@@ -46,7 +46,7 @@ export default [
         },
         plugins: [
             replace({
-                __SW_CACHE_VERSION__: JSON.stringify(hashDir()),
+                __STATIC_VERSION__: JSON.stringify(hashDir()),
             }),
             nodeResolve(),
             typescript(),

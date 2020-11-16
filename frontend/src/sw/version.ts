@@ -1,2 +1,3 @@
-declare const __SW_CACHE_VERSION__: string
-export const CACHE_VERSION: string = __SW_CACHE_VERSION__
+declare const __STATIC_VERSION__: string
+export const STATIC = __STATIC_VERSION__
+export const API = 'v20201116'

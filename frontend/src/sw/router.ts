@@ -2,33 +2,35 @@
 import App from '../components/app.html'
 import { WorkerRouter } from '../utils/router'
 import * as strategy from './strategy'
-import { CACHE_VERSION } from './version'
+import * as version from './version'
 
 const just = (
-    name: 'cacheOnly' | 'cacheFirst' | 'networkOnly' | 'networkFirst',
+    cacheName: string,
+    strategyName: 'cacheOnly' | 'cacheFirst' | 'networkOnly' | 'networkFirst',
 ) => async (event: FetchEvent) => {
-    const cache = await caches.open(CACHE_VERSION)
-    const resp = await strategy[name](cache, event.request)
+    const cache = await caches.open(cacheName)
+    const resp = await strategy[strategyName](cache, event.request)
     return resp
 }
 
 const getThenUpdate = async (event: FetchEvent) => {
-    const cache = await caches.open(CACHE_VERSION)
+    const cache = await caches.open(version.API)
     const resp = await strategy.networkOnly(cache, event.request)
     if (resp.ok) cache.put('/api/v1/feeds', resp.clone())
     return resp
 }
 
 export const router = new WorkerRouter()
-    .fallback(just('networkOnly'))
+    .fallback(just(version.API, 'networkOnly'))
     // homepage
     .get('/', async (event) => {
-        const cache = await caches.open(CACHE_VERSION)
-        const resp = await strategy.cacheFirst(cache, event.request)
+        const apiCache = await caches.open(version.API)
+        const staticCache = await caches.open(version.STATIC)
 
+        const resp = await strategy.cacheFirst(staticCache, event.request)
         return Promise.all([
-            strategy.cacheOnly(cache, `/api/v1/user`),
-            strategy.cacheOnly(cache, `/api/v1/feeds`),
+            strategy.cacheOnly(apiCache, `/api/v1/user`),
+            strategy.cacheOnly(apiCache, `/api/v1/feeds`),
         ])
             .then(async ([user, feeds]) => {
                 if (user && feeds) {
@@ -61,19 +63,19 @@ export const router = new WorkerRouter()
             })
     })
     // API
-    .get('/api/v1/feeds', just('networkFirst'))
-    .get('/api/v1/user', just('networkFirst'))
+    .get('/api/v1/feeds', just(version.API, 'networkFirst'))
+    .get('/api/v1/user', just(version.API, 'networkFirst'))
     .put('/api/v1/feeds/add', getThenUpdate)
     .delete('/api/v1/feeds/remove', getThenUpdate)
     // static
-    .get('/sw.js', just('networkOnly'))
-    .get('/favicon.ico', just('cacheFirst'))
-    .get('/npm/*', just('cacheFirst'))
+    .get('/sw.js', just(version.STATIC, 'networkOnly'))
+    .get('/favicon.ico', just(version.STATIC, 'cacheFirst'))
+    .get('/npm/*', just(version.STATIC, 'cacheFirst'))
     .get('/:file', (event, params) => {
         const file = params.get('file')!
         if (file.endsWith('.js')) {
-            return just('cacheFirst')(event)
+            return just(version.STATIC, 'cacheFirst')(event)
         } else {
-            return just('networkOnly')(event)
+            return just(version.STATIC, 'networkOnly')(event)
         }
     })

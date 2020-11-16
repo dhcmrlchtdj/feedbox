@@ -31,7 +31,7 @@
     import * as agent from '../utils/agent'
     import { Deferred } from '../utils/deferred'
 
-    const state = self.__STATE__ || {}
+    const state = window.__STATE__ || {}
     export let loaded = state.loaded || new Deferred()
     export let email = state.email || ''
     export let feeds = state.feeds || []
@@ -47,10 +47,8 @@
                 if (loaded.resolve) loaded.resolve(true)
             })
             .catch((err) => {
-                if (loaded.reject) loaded.reject(err.message)
                 store.initialized.set(true)
-                window.alert(err.message)
-                location.reload()
+                if (loaded.reject) loaded.reject(err.message)
             })
     })
 </script>
