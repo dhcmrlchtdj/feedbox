@@ -9,7 +9,7 @@
     "
 >
     {#each $notify as n, i (n.key)}
-    <div class="toast toast-success mb-2" transition:fly="{{x:100}}">
+    <div class="toast toast-success mb-2" transition:fly|local="{{x:100}}">
         <button
             class="btn btn-clear float-right"
             on:click="{() => remove(i)}"
