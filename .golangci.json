@@ -9,7 +9,7 @@
             "disable": ["shadow"]
         },
         "gocognit": {
-            "min-complexity": 20
+            "min-complexity": 30
         },
         "gocritic": {
             "enabled-tags": [
