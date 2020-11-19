@@ -91,6 +91,16 @@ func (c *Client) rawSend(cmd string, payload interface{}) (io.ReadCloser, error)
 		return nil, errors.Wrap(err, "telegram/"+cmd)
 	}
 
+	if resp.StatusCode == 429 {
+		defer resp.Body.Close()
+		err429 := new(ErrTooManyRequests)
+		if err := json.NewDecoder(resp.Body).Decode(err429); err != nil {
+			return nil, errors.Wrap(err, "telegram/"+cmd)
+		} else {
+			return nil, err429
+		}
+	}
+
 	return resp.Body, nil
 }
 

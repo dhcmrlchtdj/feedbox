@@ -87,6 +87,19 @@ func (r *Response) Check() error {
 
 ///
 
+type ErrTooManyRequests struct {
+	Response
+	Parameters struct {
+		RetryAfter int `json:"retry_after"`
+	} `json:"parameters"`
+}
+
+func (e *ErrTooManyRequests) Error() string {
+	return e.Description
+}
+
+///
+
 type GetChatMemberPayload struct {
 	ChatID int64 `json:"chat_id"`
 	UserID int64 `json:"user_id"`

@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"github.com/mmcdole/gofeed"
+	"github.com/pkg/errors"
 
 	"github.com/dhcmrlchtdj/feedbox/internal/database"
 	"github.com/dhcmrlchtdj/feedbox/internal/email"
@@ -244,14 +245,28 @@ func sendTelegram(done *sync.WaitGroup, qTelegram <-chan *telegramItem) {
 		content := text.String()
 
 		for _, user := range x.users {
-			rateLimiter.Wait()
-
-			err := telegram.C.SendMessage(&telegram.SendMessagePayload{
+			payload := &telegram.SendMessagePayload{
 				ChatID: user,
 				Text:   content,
-			})
-			if err != nil {
-				monitor.C.Error(err)
+			}
+
+			retry := 3
+			for {
+				rateLimiter.Wait()
+				err := telegram.C.SendMessage(payload)
+				if err != nil {
+					var err429 *telegram.ErrTooManyRequests
+					if errors.As(err, &err429) {
+						time.Sleep(time.Second * time.Duration(err429.Parameters.RetryAfter))
+						if retry > 0 {
+							retry--
+							continue
+						}
+					} else {
+						monitor.C.Error(err)
+					}
+				}
+				break
 			}
 		}
 	}
