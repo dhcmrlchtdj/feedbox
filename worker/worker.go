@@ -59,56 +59,57 @@ func Start() {
 func fetchFeed(done *sync.WaitGroup, feeds []database.Feed) <-chan *feedItem {
 	qFeedItem := make(chan *feedItem)
 
-	go func() {
-		parallel(3, func() {
-			fp := feedparser.New()
-			for _, dbFeed := range feeds {
-				feed, err := fp.ParseURL(dbFeed.URL)
-				if err != nil {
-					monitor.C.Warn(err)
-					continue
-				}
-
-				oldLinks, err := database.C.GetLinks(dbFeed.ID)
-				if err != nil {
-					monitor.C.Error(err)
-					continue
-				}
-				oldLinkSet := map[string]bool{}
-				for _, link := range oldLinks {
-					oldLinkSet[link] = true
-				}
-
-				newLinks := []string{}
-				newItems := []gofeed.Item{}
-				for i := range feed.Items {
-					item := feed.Items[i]
-					link := item.Link
-					if _, present := oldLinkSet[link]; !present {
-						oldLinkSet[link] = true
-						newLinks = append(newLinks, link)
-						newItems = append(newItems, *item)
-					}
-				}
-
-				if len(newItems) == 0 {
-					continue
-				}
-
-				updated := newItems[0].PublishedParsed
-				if updated == nil {
-					updated = feed.UpdatedParsed
-				}
-				err = database.C.AddFeedLinks(dbFeed.ID, newLinks, updated)
-				if err != nil {
-					monitor.C.Error(err)
-					continue
-				}
-
-				qFeedItem <- &feedItem{feed: dbFeed, items: newItems}
+	worker := func() {
+		fp := feedparser.New()
+		for _, dbFeed := range feeds {
+			feed, err := fp.ParseURL(dbFeed.URL)
+			if err != nil {
+				monitor.C.Warn(err)
+				continue
 			}
-		})
 
+			oldLinks, err := database.C.GetLinks(dbFeed.ID)
+			if err != nil {
+				monitor.C.Error(err)
+				continue
+			}
+			oldLinkSet := map[string]bool{}
+			for _, link := range oldLinks {
+				oldLinkSet[link] = true
+			}
+
+			newLinks := []string{}
+			newItems := []gofeed.Item{}
+			for i := range feed.Items {
+				item := feed.Items[i]
+				link := item.Link
+				if _, present := oldLinkSet[link]; !present {
+					oldLinkSet[link] = true
+					newLinks = append(newLinks, link)
+					newItems = append(newItems, *item)
+				}
+			}
+
+			if len(newItems) == 0 {
+				continue
+			}
+
+			updated := newItems[0].PublishedParsed
+			if updated == nil {
+				updated = feed.UpdatedParsed
+			}
+			err = database.C.AddFeedLinks(dbFeed.ID, newLinks, updated)
+			if err != nil {
+				monitor.C.Error(err)
+				continue
+			}
+
+			qFeedItem <- &feedItem{feed: dbFeed, items: newItems}
+		}
+	}
+
+	go func() {
+		parallel(3, worker)
 		close(qFeedItem)
 		done.Done()
 	}()
@@ -120,35 +121,39 @@ func dispatchFeed(done *sync.WaitGroup, qFeedItem <-chan *feedItem) (<-chan *git
 	qGithub := make(chan *githubItem, 100)
 	qTelegram := make(chan *telegramItem, 100)
 
-	go func() {
-		for x := range qFeedItem {
-			feed := x.feed
-			users, err := database.C.GetSubscribers(feed.ID)
-			if err != nil {
-				monitor.C.Error(err)
-				continue
-			}
+	worker := func(item *feedItem) {
+		feed := item.feed
+		users, err := database.C.GetSubscribers(feed.ID)
+		if err != nil {
+			monitor.C.Error(err)
+			return
+		}
 
-			githubUsers := []string{}
-			telegramUsers := []int64{}
-			for _, user := range users {
-				switch user.Platform {
-				case "github":
-					githubUsers = append(githubUsers, user.Addition["email"])
-				case "telegram":
-					pid, err := strconv.ParseInt(user.PID, 10, 64)
-					if err != nil {
-						monitor.C.Error(err)
-					} else {
-						telegramUsers = append(telegramUsers, pid)
-					}
+		githubUsers := []string{}
+		telegramUsers := []int64{}
+		for _, user := range users {
+			switch user.Platform {
+			case "github":
+				githubUsers = append(githubUsers, user.Addition["email"])
+			case "telegram":
+				pid, err := strconv.ParseInt(user.PID, 10, 64)
+				if err != nil {
+					monitor.C.Error(err)
+				} else {
+					telegramUsers = append(telegramUsers, pid)
 				}
 			}
-			for i := range x.items {
-				item := &x.items[i]
-				qGithub <- &githubItem{feed, item, githubUsers}
-				qTelegram <- &telegramItem{item, telegramUsers}
-			}
+		}
+		for i := range item.items {
+			item := &item.items[i]
+			qGithub <- &githubItem{feed, item, githubUsers}
+			qTelegram <- &telegramItem{item, telegramUsers}
+		}
+	}
+
+	go func() {
+		for item := range qFeedItem {
+			worker(item)
 		}
 
 		close(qGithub)

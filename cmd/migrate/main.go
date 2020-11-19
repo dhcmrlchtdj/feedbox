@@ -15,6 +15,33 @@ import (
 	"github.com/dhcmrlchtdj/feedbox/internal/util"
 )
 
+func printVersion(m *migrate.Migrate) {
+	version, dirty, err := m.Version()
+	if err == nil {
+		fmt.Printf("version: %v\ndirty:   %v\n", version, dirty)
+	} else if errors.Is(err, migrate.ErrNilVersion) {
+		fmt.Print("version: nil\ndirty:   false\n")
+	} else {
+		panic(err)
+	}
+}
+
+func printUsage(m *migrate.Migrate) {
+	println("Usage: ./migrate [up | down | force VERSION | step N]")
+	printVersion(m)
+}
+
+func checkErr(err error, m *migrate.Migrate) {
+	if err == nil {
+		fmt.Println("done.")
+	} else if errors.Is(err, migrate.ErrNoChange) {
+		fmt.Println("no change.")
+	} else {
+		panic(err)
+	}
+	printVersion(m)
+}
+
 func main() {
 	if os.Getenv("ENV") != "prod" {
 		if err := godotenv.Load("./dotenv"); err != nil {
@@ -29,50 +56,25 @@ func main() {
 	}
 	defer m.Close()
 
-	printVersion := func() {
-		version, dirty, err := m.Version()
-		if err == nil {
-			fmt.Printf("version: %v\ndirty:   %v\n", version, dirty)
-		} else if errors.Is(err, migrate.ErrNilVersion) {
-			fmt.Print("version: nil\ndirty:   false\n")
-		} else {
-			panic(err)
-		}
-	}
-	printUsage := func() {
-		println("Usage: ./migrate [up | down | force VERSION | step N]")
-		printVersion()
-	}
-	checkErr := func(err error) {
-		if err == nil {
-			fmt.Println("done.")
-		} else if errors.Is(err, migrate.ErrNoChange) {
-			fmt.Println("no change.")
-		} else {
-			panic(err)
-		}
-		printVersion()
-	}
-
 	flag.Parse()
 	switch flag.Arg(0) {
 	case "u", "up":
-		checkErr(m.Up())
+		checkErr(m.Up(), m)
 	case "d", "down":
-		checkErr(m.Down())
+		checkErr(m.Down(), m)
 	case "f", "force":
 		if version, err := strconv.Atoi(flag.Arg(1)); err == nil {
-			checkErr(m.Force(version))
+			checkErr(m.Force(version), m)
 		} else {
-			printUsage()
+			printUsage(m)
 		}
 	case "s", "step":
 		if n, err := strconv.Atoi(flag.Arg(1)); err == nil {
-			checkErr(m.Steps(n))
+			checkErr(m.Steps(n), m)
 		} else {
-			printUsage()
+			printUsage(m)
 		}
 	default:
-		printUsage()
+		printUsage(m)
 	}
 }
