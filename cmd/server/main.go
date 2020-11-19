@@ -45,7 +45,7 @@ func main() {
 
 	util.CheckEnvs("ROLLBAR_TOKEN")
 	monitor.C = monitor.New(os.Getenv("ROLLBAR_TOKEN"))
-	defer monitor.C.Wait()
+	defer monitor.C.Flush()
 
 	util.CheckEnvs("SERVER")
 	util.CheckEnvs("TELEGRAM_BOT_NAME", "TELEGRAM_BOT_TOKEN")

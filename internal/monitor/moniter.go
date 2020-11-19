@@ -21,6 +21,10 @@ func New(token string) *Client {
 	return &Client{}
 }
 
+func (*Client) Flush() {
+	rollbar.Wait()
+}
+
 func (*Client) Error(err error) {
 	log.Error().Str("module", "monitor").Err(err).Send()
 	rollbar.Error(err)
@@ -29,8 +33,4 @@ func (*Client) Error(err error) {
 func (*Client) Warn(err error) {
 	log.Warn().Str("module", "monitor").Err(err).Send()
 	rollbar.Warning(err)
-}
-
-func (*Client) Wait() {
-	rollbar.Wait()
 }
