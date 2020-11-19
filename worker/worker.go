@@ -5,6 +5,7 @@ import (
 	"strconv"
 	"strings"
 	"sync"
+	"time"
 
 	"github.com/mmcdole/gofeed"
 
@@ -165,38 +166,42 @@ func dispatchFeed(done *sync.WaitGroup, qFeedItem <-chan *feedItem) (<-chan *git
 }
 
 func sendEmail(done *sync.WaitGroup, qGithub <-chan *githubItem) {
+	worker := func(x *githubItem) {
+		item := x.item
+
+		site := util.ExtractSiteName(x.feed.URL)
+		subject := fmt.Sprintf(`"%s" from "%s"`, item.Title, site)
+
+		var text strings.Builder
+		text.WriteString(item.Link)
+		if len(item.Categories) > 0 {
+			text.WriteString("<br><br>")
+			for _, tag := range item.Categories {
+				text.WriteByte('#')
+				text.WriteString(strings.TrimSpace(tag))
+				text.WriteByte(' ')
+			}
+		}
+		if item.Content != "" {
+			text.WriteString("<br><br>")
+			text.WriteString(item.Content)
+		} else if item.Description != "" {
+			text.WriteString("<br><br>")
+			text.WriteString(item.Description)
+		}
+		content := text.String()
+
+		for _, user := range x.users {
+			err := email.C.Send(user, subject, content)
+			if err != nil {
+				monitor.C.Error(err)
+			}
+		}
+	}
+
 	go func() {
-		for x := range qGithub {
-			item := x.item
-
-			site := util.ExtractSiteName(x.feed.URL)
-			subject := fmt.Sprintf(`"%s" from "%s"`, item.Title, site)
-
-			var text strings.Builder
-			text.WriteString(item.Link)
-			if len(item.Categories) > 0 {
-				text.WriteString("<br><br>")
-				for _, tag := range item.Categories {
-					text.WriteByte('#')
-					text.WriteString(strings.TrimSpace(tag))
-					text.WriteByte(' ')
-				}
-			}
-			if item.Content != "" {
-				text.WriteString("<br><br>")
-				text.WriteString(item.Content)
-			} else if item.Description != "" {
-				text.WriteString("<br><br>")
-				text.WriteString(item.Description)
-			}
-			content := text.String()
-
-			for _, user := range x.users {
-				err := email.C.Send(user, subject, content)
-				if err != nil {
-					monitor.C.Error(err)
-				}
-			}
+		for item := range qGithub {
+			worker(item)
 		}
 
 		done.Done()
@@ -204,35 +209,44 @@ func sendEmail(done *sync.WaitGroup, qGithub <-chan *githubItem) {
 }
 
 func sendTelegram(done *sync.WaitGroup, qTelegram <-chan *telegramItem) {
-	go func() {
-		for x := range qTelegram {
-			item := x.item
-			var text strings.Builder
-			text.WriteString(item.Link)
-			if len(item.Categories) > 0 {
-				text.WriteString("\n\n")
-				for _, tag := range item.Categories {
-					text.WriteByte('#')
-					text.WriteString(strings.TrimSpace(tag))
-					text.WriteByte(' ')
-				}
-			}
-			if comment, ok := item.Custom["comments"]; ok {
-				text.WriteString("\n\n")
-				text.WriteString("comment: ")
-				text.WriteString(comment)
-			}
-			content := text.String()
+	// https://core.telegram.org/bots/faq#my-bot-is-hitting-limits-how-do-i-avoid-this
+	rateLimiter := NewRateLimiter(20, time.Second)
 
-			for _, user := range x.users {
-				err := telegram.C.SendMessage(&telegram.SendMessagePayload{
-					ChatID: user,
-					Text:   content,
-				})
-				if err != nil {
-					monitor.C.Error(err)
-				}
+	worker := func(x *telegramItem) {
+		item := x.item
+		var text strings.Builder
+		text.WriteString(item.Link)
+		if len(item.Categories) > 0 {
+			text.WriteString("\n\n")
+			for _, tag := range item.Categories {
+				text.WriteByte('#')
+				text.WriteString(strings.TrimSpace(tag))
+				text.WriteByte(' ')
 			}
+		}
+		if comment, ok := item.Custom["comments"]; ok {
+			text.WriteString("\n\n")
+			text.WriteString("comment: ")
+			text.WriteString(comment)
+		}
+		content := text.String()
+
+		for _, user := range x.users {
+			rateLimiter.Wait()
+
+			err := telegram.C.SendMessage(&telegram.SendMessagePayload{
+				ChatID: user,
+				Text:   content,
+			})
+			if err != nil {
+				monitor.C.Error(err)
+			}
+		}
+	}
+
+	go func() {
+		for item := range qTelegram {
+			worker(item)
 		}
 
 		done.Done()
