@@ -17,7 +17,7 @@ type FeedParser struct {
 func New() *FeedParser {
 	parser := gofeed.NewParser()
 	parser.RSSTranslator = newCustomRSSTranslator()
-	return &FeedParser{parser, &http.Client{}}
+	return &FeedParser{parser, new(http.Client)}
 }
 
 func (p *FeedParser) ParseURL(url string) (*gofeed.Feed, error) {

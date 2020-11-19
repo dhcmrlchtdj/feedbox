@@ -60,57 +60,58 @@ func Start() {
 func fetchFeed(done *sync.WaitGroup, feeds []database.Feed) <-chan *feedItem {
 	qFeedItem := make(chan *feedItem)
 
-	worker := func() {
-		fp := feedparser.New()
-		for _, dbFeed := range feeds {
-			feed, err := fp.ParseURL(dbFeed.URL)
-			if err != nil {
-				monitor.C.Warn(err)
-				continue
-			}
-
-			oldLinks, err := database.C.GetLinks(dbFeed.ID)
-			if err != nil {
-				monitor.C.Error(err)
-				continue
-			}
-			oldLinkSet := map[string]bool{}
-			for _, link := range oldLinks {
-				oldLinkSet[link] = true
-			}
-
-			newLinks := []string{}
-			newItems := []gofeed.Item{}
-			for i := range feed.Items {
-				item := feed.Items[i]
-				link := item.Link
-				if _, present := oldLinkSet[link]; !present {
-					oldLinkSet[link] = true
-					newLinks = append(newLinks, link)
-					newItems = append(newItems, *item)
-				}
-			}
-
-			if len(newItems) == 0 {
-				continue
-			}
-
-			updated := newItems[0].PublishedParsed
-			if updated == nil {
-				updated = feed.UpdatedParsed
-			}
-			err = database.C.AddFeedLinks(dbFeed.ID, newLinks, updated)
-			if err != nil {
-				monitor.C.Error(err)
-				continue
-			}
-
-			qFeedItem <- &feedItem{feed: dbFeed, items: newItems}
+	fp := feedparser.New()
+	worker := func(dbFeed database.Feed) {
+		feed, err := fp.ParseURL(dbFeed.URL)
+		if err != nil {
+			monitor.C.Warn(err)
+			return
 		}
+
+		oldLinks, err := database.C.GetLinks(dbFeed.ID)
+		if err != nil {
+			monitor.C.Error(err)
+			return
+		}
+		oldLinkSet := map[string]bool{}
+		for _, link := range oldLinks {
+			oldLinkSet[link] = true
+		}
+
+		newLinks := []string{}
+		newItems := []gofeed.Item{}
+		for i := range feed.Items {
+			item := feed.Items[i]
+			link := item.Link
+			if _, present := oldLinkSet[link]; !present {
+				oldLinkSet[link] = true
+				newLinks = append(newLinks, link)
+				newItems = append(newItems, *item)
+			}
+		}
+
+		if len(newItems) == 0 {
+			return
+		}
+
+		updated := newItems[0].PublishedParsed
+		if updated == nil {
+			updated = feed.UpdatedParsed
+		}
+		err = database.C.AddFeedLinks(dbFeed.ID, newLinks, updated)
+		if err != nil {
+			monitor.C.Error(err)
+			return
+		}
+
+		qFeedItem <- &feedItem{feed: dbFeed, items: newItems}
 	}
 
 	go func() {
-		parallel(3, worker)
+		for i := range feeds {
+			worker(feeds[i])
+		}
+
 		close(qFeedItem)
 		done.Done()
 	}()

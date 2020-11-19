@@ -8,6 +8,9 @@
             "enable-all": true,
             "disable": ["shadow"]
         },
+        "gocognit": {
+            "min-complexity": 20
+        },
         "gocritic": {
             "enabled-tags": [
                 "diagnostic",
