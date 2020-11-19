@@ -25,10 +25,12 @@ func RegisterWebhook() error {
 		&telegram.SetMyCommandsPayload{
 			Commands: []telegram.BotCommand{
 				{Command: "list", Description: "list all feeds"},
-				{Command: "add", Description: "[url] subscribe url"},
-				{Command: "remove", Description: "[url] unsubscribe url"},
+				{Command: "add", Description: "[url] subscribe feed"},
+				{Command: "twitter", Description: "[username] subscribe twitter via RSSHub"},
+				{Command: "remove", Description: "[url] unsubscribe feed"},
 				{Command: "remove_all", Description: "unsubscribe all"},
 				{Command: "export", Description: "export feed list as OPML"},
+				{Command: "import", Description: "import OPML (reply to OPML file)"},
 			},
 		})
 	if err != nil {

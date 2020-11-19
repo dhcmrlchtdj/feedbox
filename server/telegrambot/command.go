@@ -31,39 +31,44 @@ func executeCommand(cmd string, arg string, msg *telegram.Message) {
 		err = list(msg)
 	case "/add":
 		err = add(arg, msg)
+	case "/twitter":
+		err = add_twitter(arg, msg)
 	case "/remove":
 		err = remove(arg, msg)
 	case "/remove_all":
 		err = removeAll(msg)
 	case "/export":
 		err = export(msg)
+	case "/import":
+		err = import_OPML(msg)
 	default:
-		err = ErrCmdUnknown
+		err = errors.Wrap(ErrCmdUnknown, cmd)
 	}
 
-	if err != nil {
-		if errors.Is(err, database.ErrInvalidURL) ||
-			errors.Is(err, ErrCmdUnknown) ||
-			errors.Is(err, ErrCmdEmptyList) {
-			text := err.Error()
-			err = telegram.C.SendMessage(&telegram.SendMessagePayload{
-				ChatID:           msg.Chat.ID,
-				Text:             text,
-				ReplyToMessageID: msg.MessageID,
-			})
-		}
-		if err != nil {
+	if err == nil {
+		return
+	} else if errors.Is(err, ErrCmdUnknown) {
+		monitor.C.Warn(err)
+	} else if errors.Is(err, database.ErrInvalidURL) || errors.Is(err, ErrCmdEmptyList) {
+		text := err.Error()
+		if err := telegram.C.SendMessage(&telegram.SendMessagePayload{
+			ChatID: msg.Chat.ID,
+			Text:   text,
+		}); err != nil {
 			monitor.C.Error(err)
 		}
+	} else {
+		monitor.C.Error(err)
 	}
 }
 
+///
+
 func start(msg *telegram.Message) error {
 	return telegram.C.SendMessage(&telegram.SendMessagePayload{
-		ChatID:           msg.Chat.ID,
-		Text:             "<code>hello, world</code>",
-		ParseMode:        telegram.ParseModeHTML,
-		ReplyToMessageID: msg.MessageID,
+		ChatID:    msg.Chat.ID,
+		Text:      "<code>hello, world</code>",
+		ParseMode: telegram.ParseModeHTML,
 	})
 }
 
@@ -91,9 +96,8 @@ func list(msg *telegram.Message) error {
 	text := builder.String()
 
 	return telegram.C.SendMessage(&telegram.SendMessagePayload{
-		ChatID:           msg.Chat.ID,
-		Text:             text,
-		ReplyToMessageID: msg.MessageID,
+		ChatID: msg.Chat.ID,
+		Text:   text,
 	})
 }
 
@@ -112,10 +116,14 @@ func add(arg string, msg *telegram.Message) error {
 	}
 
 	return telegram.C.SendMessage(&telegram.SendMessagePayload{
-		ChatID:           msg.Chat.ID,
-		Text:             "added",
-		ReplyToMessageID: msg.MessageID,
+		ChatID: msg.Chat.ID,
+		Text:   "added",
 	})
+}
+
+func add_twitter(arg string, msg *telegram.Message) error {
+	url := "https://rsshub.app/twitter/user/" + arg
+	return add(url, msg)
 }
 
 func remove(arg string, msg *telegram.Message) error {
@@ -133,9 +141,8 @@ func remove(arg string, msg *telegram.Message) error {
 	}
 
 	return telegram.C.SendMessage(&telegram.SendMessagePayload{
-		ChatID:           msg.Chat.ID,
-		Text:             "removed",
-		ReplyToMessageID: msg.MessageID,
+		ChatID: msg.Chat.ID,
+		Text:   "removed",
 	})
 }
 
@@ -158,9 +165,8 @@ func removeAll(msg *telegram.Message) error {
 
 	opml := util.BuildOPMLFromFeed(feeds)
 	return telegram.C.SendDocument(&telegram.SendDocumentPayload{
-		ChatID:           msg.Chat.ID,
-		ReplyToMessageID: msg.MessageID,
-		Caption:          "done",
+		ChatID:  msg.Chat.ID,
+		Caption: "removed",
 		Document: telegram.InputFile{
 			Name:    "feeds.opml",
 			Content: bytes.NewReader(opml),
@@ -184,9 +190,7 @@ func export(msg *telegram.Message) error {
 
 	opml := util.BuildOPMLFromFeed(feeds)
 	return telegram.C.SendDocument(&telegram.SendDocumentPayload{
-		ChatID:           msg.Chat.ID,
-		ReplyToMessageID: msg.MessageID,
-		Caption:          "done",
+		ChatID: msg.Chat.ID,
 		Document: telegram.InputFile{
 			Name:    "feeds.opml",
 			Content: bytes.NewReader(opml),
@@ -194,20 +198,7 @@ func export(msg *telegram.Message) error {
 	})
 }
 
-///
-
-func isAdmin(msg *telegram.Message) bool {
-	chatType := msg.Chat.Type
-	if chatType == "group" || chatType == "supergroup" {
-		member, err := telegram.C.GetChatMember(
-			&telegram.GetChatMemberPayload{
-				ChatID: msg.Chat.ID,
-				UserID: msg.From.ID,
-			})
-		if err != nil {
-			return false
-		}
-		return member.Status == "creator" || member.Status == "administrator"
-	}
-	return true
+func import_OPML(msg *telegram.Message) error {
+	// TODO
+	return nil
 }
