@@ -34,108 +34,93 @@ type telegramItem struct {
 
 func Start() {
 	var wg sync.WaitGroup
-	qFeed := make(chan database.Feed)
-	qFeedItem := make(chan *feedItem)
-	qGithub := make(chan *githubItem)
-	qTelegram := make(chan *telegramItem)
 
 	feeds, err := database.C.GetActiveFeeds()
 	if err != nil {
 		monitor.C.Error(err)
 		return
 	}
-	if len(feeds) == 0 {
-		return
-	}
 
 	wg.Add(1)
+	qFeedItem := fetchFeed(&wg, feeds)
+
+	wg.Add(1)
+	qGithub, qTelegram := dispatchFeed(&wg, qFeedItem)
+
+	wg.Add(1)
+	sendEmail(&wg, qGithub)
+
+	wg.Add(1)
+	sendTelegram(&wg, qTelegram)
+
+	wg.Wait()
+}
+
+func fetchFeed(done *sync.WaitGroup, feeds []database.Feed) <-chan *feedItem {
+	qFeedItem := make(chan *feedItem)
+
 	go func() {
-		for _, feed := range feeds {
-			qFeed <- feed
-		}
-		close(qFeed)
-		wg.Done()
+		parallel(3, func() {
+			fp := feedparser.New()
+			for _, dbFeed := range feeds {
+				feed, err := fp.ParseURL(dbFeed.URL)
+				if err != nil {
+					monitor.C.Warn(err)
+					continue
+				}
+
+				oldLinks, err := database.C.GetLinks(dbFeed.ID)
+				if err != nil {
+					monitor.C.Error(err)
+					continue
+				}
+				oldLinkSet := map[string]bool{}
+				for _, link := range oldLinks {
+					oldLinkSet[link] = true
+				}
+
+				newLinks := []string{}
+				newItems := []gofeed.Item{}
+				for i := range feed.Items {
+					item := feed.Items[i]
+					link := item.Link
+					if _, present := oldLinkSet[link]; !present {
+						oldLinkSet[link] = true
+						newLinks = append(newLinks, link)
+						newItems = append(newItems, *item)
+					}
+				}
+
+				if len(newItems) == 0 {
+					continue
+				}
+
+				updated := newItems[0].PublishedParsed
+				if updated == nil {
+					updated = feed.UpdatedParsed
+				}
+				err = database.C.AddFeedLinks(dbFeed.ID, newLinks, updated)
+				if err != nil {
+					monitor.C.Error(err)
+					continue
+				}
+
+				qFeedItem <- &feedItem{feed: dbFeed, items: newItems}
+			}
+		})
+
+		close(qFeedItem)
+		done.Done()
 	}()
 
-	wg.Add(1)
-	go fetchFeed(&wg, qFeed, qFeedItem)
-
-	wg.Add(1)
-	go dispatchFeed(&wg, qFeedItem, qGithub, qTelegram)
-
-	wg.Add(1)
-	go sendEmail(&wg, qGithub)
-
-	wg.Add(1)
-	go sendTelegram(&wg, qTelegram)
-
-	wg.Wait()
+	return qFeedItem
 }
 
-func fetchFeed(done *sync.WaitGroup, qFeed <-chan database.Feed, qFeedItem chan<- *feedItem) {
-	work := func(wg *sync.WaitGroup) {
-		defer wg.Done()
-		fp := feedparser.New()
-		for dbFeed := range qFeed {
-			feed, err := fp.ParseURL(dbFeed.URL)
-			if err != nil {
-				monitor.C.Warn(err)
-				continue
-			}
+func dispatchFeed(done *sync.WaitGroup, qFeedItem <-chan *feedItem) (<-chan *githubItem, <-chan *telegramItem) {
+	qGithub := make(chan *githubItem, 100)
+	qTelegram := make(chan *telegramItem, 100)
 
-			oldLinks, err := database.C.GetLinks(dbFeed.ID)
-			if err != nil {
-				monitor.C.Error(err)
-				continue
-			}
-			oldLinkSet := map[string]bool{}
-			for _, link := range oldLinks {
-				oldLinkSet[link] = true
-			}
-
-			newLinks := []string{}
-			newItems := []gofeed.Item{}
-			for i := range feed.Items {
-				item := feed.Items[i]
-				link := item.Link
-				if _, present := oldLinkSet[link]; !present {
-					oldLinkSet[link] = true
-					newLinks = append(newLinks, link)
-					newItems = append(newItems, *item)
-				}
-			}
-
-			if len(newItems) == 0 {
-				continue
-			}
-
-			updated := newItems[0].PublishedParsed
-			if updated == nil {
-				updated = feed.UpdatedParsed
-			}
-			err = database.C.AddFeedLinks(dbFeed.ID, newLinks, updated)
-			if err != nil {
-				monitor.C.Error(err)
-				continue
-			}
-
-			qFeedItem <- &feedItem{feed: dbFeed, items: newItems}
-		}
-	}
-
-	var wg sync.WaitGroup
-	for i := 0; i < 10; i++ {
-		wg.Add(1)
-		go work(&wg)
-	}
-	wg.Wait()
-	close(qFeedItem)
-	done.Done()
-}
-
-func dispatchFeed(done *sync.WaitGroup, qFeedItem <-chan *feedItem, qGithub chan<- *githubItem, qTelegram chan<- *telegramItem) {
-	work := func(wg *sync.WaitGroup) {
-		defer wg.Done()
+	go func() {
 		for x := range qFeedItem {
 			feed := x.feed
 			users, err := database.C.GetSubscribers(feed.ID)
@@ -165,22 +150,17 @@ func dispatchFeed(done *sync.WaitGroup, qFeedItem <-chan *feedItem, qGithub chan
 				qTelegram <- &telegramItem{item, telegramUsers}
 			}
 		}
-	}
 
-	var wg sync.WaitGroup
-	for i := 0; i < 10; i++ {
-		wg.Add(1)
-		go work(&wg)
-	}
-	wg.Wait()
-	close(qGithub)
-	close(qTelegram)
-	done.Done()
+		close(qGithub)
+		close(qTelegram)
+		done.Done()
+	}()
+
+	return qGithub, qTelegram
 }
 
 func sendEmail(done *sync.WaitGroup, qGithub <-chan *githubItem) {
-	work := func(wg *sync.WaitGroup) {
-		defer wg.Done()
+	go func() {
 		for x := range qGithub {
 			item := x.item
 
@@ -210,24 +190,16 @@ func sendEmail(done *sync.WaitGroup, qGithub <-chan *githubItem) {
 				err := email.C.Send(user, subject, content)
 				if err != nil {
 					monitor.C.Error(err)
-					continue
 				}
 			}
 		}
-	}
 
-	var wg sync.WaitGroup
-	for i := 0; i < 3; i++ {
-		wg.Add(1)
-		go work(&wg)
-	}
-	wg.Wait()
-	done.Done()
+		done.Done()
+	}()
 }
 
 func sendTelegram(done *sync.WaitGroup, qTelegram <-chan *telegramItem) {
-	work := func(wg *sync.WaitGroup) {
-		defer wg.Done()
+	go func() {
 		for x := range qTelegram {
 			item := x.item
 			var text strings.Builder
@@ -254,17 +226,10 @@ func sendTelegram(done *sync.WaitGroup, qTelegram <-chan *telegramItem) {
 				})
 				if err != nil {
 					monitor.C.Error(err)
-					return
 				}
 			}
 		}
-	}
 
-	var wg sync.WaitGroup
-	for i := 0; i < 3; i++ {
-		wg.Add(1)
-		go work(&wg)
-	}
-	wg.Wait()
-	done.Done()
+		done.Done()
+	}()
 }
