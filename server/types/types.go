@@ -1,4 +1,4 @@
-package typing
+package types
 
 type Credential struct {
 	UserID    int64

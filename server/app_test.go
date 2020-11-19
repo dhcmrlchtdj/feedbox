@@ -24,7 +24,7 @@ import (
 	"github.com/dhcmrlchtdj/feedbox/server/middleware/auth/github"
 	"github.com/dhcmrlchtdj/feedbox/server/middleware/auth/mock"
 	"github.com/dhcmrlchtdj/feedbox/server/middleware/validate"
-	"github.com/dhcmrlchtdj/feedbox/server/typing"
+	"github.com/dhcmrlchtdj/feedbox/server/types"
 )
 
 var app *fiber.App
@@ -85,7 +85,7 @@ func setupApp() {
 	})
 
 	// route
-	credential := typing.Credential{UserID: 1, ExpiresAt: time.Now().Add(time.Hour).Unix()}
+	credential := types.Credential{UserID: 1, ExpiresAt: time.Now().Add(time.Hour).Unix()}
 	api := app.Group("/api/v1", mock.Set(credential))
 	api.Get("/user", handler.UserInfo)
 	api.Get("/feeds", handler.FeedList)

@@ -11,7 +11,7 @@ import (
 	"github.com/dhcmrlchtdj/feedbox/internal/sign"
 	"github.com/dhcmrlchtdj/feedbox/server/middleware/auth/cookie"
 	"github.com/dhcmrlchtdj/feedbox/server/middleware/auth/github"
-	"github.com/dhcmrlchtdj/feedbox/server/typing"
+	"github.com/dhcmrlchtdj/feedbox/server/types"
 )
 
 func Logout(c *fiber.Ctx) error {
@@ -26,7 +26,7 @@ func ConnectGithub(c *fiber.Ctx) error {
 	if err != nil {
 		return err
 	}
-	token := typing.Credential{
+	token := types.Credential{
 		UserID:    user.ID,
 		ExpiresAt: time.Now().Add(time.Hour * 24 * 3).Unix(),
 	}

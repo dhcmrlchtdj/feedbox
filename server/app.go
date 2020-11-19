@@ -21,7 +21,7 @@ import (
 	"github.com/dhcmrlchtdj/feedbox/server/middleware/logger"
 	"github.com/dhcmrlchtdj/feedbox/server/middleware/secure"
 	"github.com/dhcmrlchtdj/feedbox/server/middleware/validate"
-	"github.com/dhcmrlchtdj/feedbox/server/typing"
+	"github.com/dhcmrlchtdj/feedbox/server/types"
 )
 
 func Create() *fiber.App {
@@ -110,7 +110,7 @@ func cookieValidator(tokenStr string) ( /* Credential */ interface{}, error) {
 	if err != nil {
 		return nil, errors.Wrap(err, "invalid token")
 	}
-	var credential typing.Credential
+	var credential types.Credential
 	if err := json.Unmarshal(plaintext, &credential); err != nil {
 		return nil, errors.Wrap(err, "invalid token")
 	}

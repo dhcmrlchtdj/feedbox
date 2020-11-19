@@ -4,7 +4,7 @@ import (
 	"github.com/gofiber/fiber/v2"
 
 	"github.com/dhcmrlchtdj/feedbox/internal/telegram"
-	"github.com/dhcmrlchtdj/feedbox/internal/telegrambot"
+	"github.com/dhcmrlchtdj/feedbox/server/telegrambot"
 )
 
 func TelegramWebhook(c *fiber.Ctx) error {
