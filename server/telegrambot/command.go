@@ -14,8 +14,9 @@ import (
 )
 
 var (
-	ErrCmdUnknown   = errors.New("unknown command")
-	ErrCmdEmptyList = errors.New("feed list is empty")
+	ErrUnknownCommand = errors.New("unknown command")
+	ErrEmptyList      = errors.New("feed list is empty")
+	ErrInvalidTwitter = errors.New("invalid twitter username")
 )
 
 func executeCommand(cmd string, arg string, msg *telegram.Message) {
@@ -42,14 +43,16 @@ func executeCommand(cmd string, arg string, msg *telegram.Message) {
 	case "/import":
 		err = import_OPML(msg)
 	default:
-		err = errors.Wrap(ErrCmdUnknown, cmd)
+		err = errors.Wrap(ErrUnknownCommand, cmd)
 	}
 
 	if err == nil {
 		return
-	} else if errors.Is(err, ErrCmdUnknown) {
+	} else if errors.Is(err, ErrUnknownCommand) {
 		monitor.C.Warn(err)
-	} else if errors.Is(err, database.ErrInvalidURL) || errors.Is(err, ErrCmdEmptyList) {
+	} else if errors.Is(err, database.ErrInvalidURL) ||
+		errors.Is(err, ErrEmptyList) ||
+		errors.Is(err, ErrInvalidTwitter) {
 		text := err.Error()
 		if err := telegram.C.SendMessage(&telegram.SendMessagePayload{
 			ChatID: msg.Chat.ID,
@@ -83,7 +86,7 @@ func list(msg *telegram.Message) error {
 		return err
 	}
 	if len(feeds) == 0 {
-		return ErrCmdEmptyList
+		return ErrEmptyList
 	}
 
 	var builder strings.Builder
@@ -122,6 +125,9 @@ func add(arg string, msg *telegram.Message) error {
 }
 
 func add_twitter(arg string, msg *telegram.Message) error {
+	if len(arg) == 0 {
+		return ErrInvalidTwitter
+	}
 	url := "https://rsshub.app/twitter/user/" + arg
 	return add(url, msg)
 }
@@ -157,7 +163,7 @@ func removeAll(msg *telegram.Message) error {
 		return err
 	}
 	if len(feeds) == 0 {
-		return ErrCmdEmptyList
+		return ErrEmptyList
 	}
 	if err := database.C.UnsubscribeAll(user.ID); err != nil {
 		return err
@@ -185,7 +191,7 @@ func export(msg *telegram.Message) error {
 		return err
 	}
 	if len(feeds) == 0 {
-		return ErrCmdEmptyList
+		return ErrEmptyList
 	}
 
 	opml := util.BuildOPMLFromFeed(feeds)
