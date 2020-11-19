@@ -5,16 +5,13 @@ import (
 	"strconv"
 	"strings"
 	"sync"
-	"time"
 
 	"github.com/mmcdole/gofeed"
-	"github.com/pkg/errors"
 
 	"github.com/dhcmrlchtdj/feedbox/internal/database"
 	"github.com/dhcmrlchtdj/feedbox/internal/email"
 	"github.com/dhcmrlchtdj/feedbox/internal/feedparser"
 	"github.com/dhcmrlchtdj/feedbox/internal/monitor"
-	"github.com/dhcmrlchtdj/feedbox/internal/telegram"
 	"github.com/dhcmrlchtdj/feedbox/internal/util"
 )
 
@@ -131,9 +128,9 @@ func fetchFeed(done *sync.WaitGroup, qFeed <-chan database.Feed) <-chan *feedIte
 	return qFeedItem
 }
 
-func dispatchFeed(done *sync.WaitGroup, qFeedItem <-chan *feedItem) (<-chan *githubItem, <-chan *telegramItem) {
-	qGithub := make(chan *githubItem, 100)
-	qTelegram := make(chan *telegramItem, 100)
+func dispatchFeed(done *sync.WaitGroup, qFeedItem <-chan *feedItem) (<-chan githubItem, <-chan telegramItem) {
+	qGithub := make(chan githubItem, 100)
+	qTelegram := make(chan telegramItem, 100)
 
 	worker := func(item *feedItem) {
 		feed := item.feed
@@ -160,8 +157,8 @@ func dispatchFeed(done *sync.WaitGroup, qFeedItem <-chan *feedItem) (<-chan *git
 		}
 		for i := range item.items {
 			item := &item.items[i]
-			qGithub <- &githubItem{feed, item, githubUsers}
-			qTelegram <- &telegramItem{item, telegramUsers}
+			qGithub <- githubItem{feed, item, githubUsers}
+			qTelegram <- telegramItem{item, telegramUsers}
 		}
 	}
 
@@ -178,8 +175,8 @@ func dispatchFeed(done *sync.WaitGroup, qFeedItem <-chan *feedItem) (<-chan *git
 	return qGithub, qTelegram
 }
 
-func sendEmail(done *sync.WaitGroup, qGithub <-chan *githubItem) {
-	worker := func(x *githubItem) {
+func sendEmail(done *sync.WaitGroup, qGithub <-chan githubItem) {
+	worker := func(x githubItem) {
 		item := x.item
 
 		site := util.ExtractSiteName(x.feed.URL)
@@ -214,65 +211,6 @@ func sendEmail(done *sync.WaitGroup, qGithub <-chan *githubItem) {
 
 	go func() {
 		for item := range qGithub {
-			worker(item)
-		}
-
-		done.Done()
-	}()
-}
-
-func sendTelegram(done *sync.WaitGroup, qTelegram <-chan *telegramItem) {
-	// https://core.telegram.org/bots/faq#my-bot-is-hitting-limits-how-do-i-avoid-this
-	rateLimiter := NewRateLimiter(20, time.Second)
-
-	worker := func(x *telegramItem) {
-		item := x.item
-		var text strings.Builder
-		text.WriteString(item.Link)
-		if len(item.Categories) > 0 {
-			text.WriteString("\n\n")
-			for _, tag := range item.Categories {
-				text.WriteByte('#')
-				text.WriteString(strings.TrimSpace(tag))
-				text.WriteByte(' ')
-			}
-		}
-		if comment, ok := item.Custom["comments"]; ok {
-			text.WriteString("\n\n")
-			text.WriteString("comment: ")
-			text.WriteString(comment)
-		}
-		content := text.String()
-
-		for _, user := range x.users {
-			payload := &telegram.SendMessagePayload{
-				ChatID: user,
-				Text:   content,
-			}
-
-			retry := 3
-			for {
-				rateLimiter.Wait()
-				err := telegram.C.SendMessage(payload)
-				if err != nil {
-					var err429 *telegram.ErrTooManyRequests
-					if errors.As(err, &err429) {
-						time.Sleep(time.Second * time.Duration(err429.Parameters.RetryAfter))
-						if retry > 0 {
-							retry--
-							continue
-						}
-					} else {
-						monitor.C.Error(err)
-					}
-				}
-				break
-			}
-		}
-	}
-
-	go func() {
-		for item := range qTelegram {
 			worker(item)
 		}
 
