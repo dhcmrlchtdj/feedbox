@@ -41,15 +41,7 @@ func Start() {
 	}
 
 	wg.Add(1)
-	qFeed := make(chan database.Feed)
-	go func() {
-		for i := range feeds {
-			qFeed <- feeds[i]
-		}
-
-		close(qFeed)
-		wg.Done()
-	}()
+	qFeed := slice2chan(&wg, feeds)
 
 	wg.Add(1)
 	qFeedItem := fetchFeed(&wg, qFeed)
@@ -64,6 +56,21 @@ func Start() {
 	sendTelegram(&wg, qTelegram)
 
 	wg.Wait()
+}
+
+func slice2chan(done *sync.WaitGroup, feeds []database.Feed) <-chan database.Feed {
+	qFeed := make(chan database.Feed)
+
+	go func() {
+		defer done.Done()
+
+		for i := range feeds {
+			qFeed <- feeds[i]
+		}
+		close(qFeed)
+	}()
+
+	return qFeed
 }
 
 func fetchFeed(done *sync.WaitGroup, qFeed <-chan database.Feed) <-chan *feedItem {
@@ -119,10 +126,10 @@ func fetchFeed(done *sync.WaitGroup, qFeed <-chan database.Feed) <-chan *feedIte
 	}
 
 	go func() {
-		parallel(5, worker)
+		defer done.Done()
 
+		parallel(5, worker)
 		close(qFeedItem)
-		done.Done()
 	}()
 
 	return qFeedItem
@@ -163,13 +170,13 @@ func dispatchFeed(done *sync.WaitGroup, qFeedItem <-chan *feedItem) (<-chan gith
 	}
 
 	go func() {
+		defer done.Done()
+
 		for item := range qFeedItem {
 			worker(item)
 		}
-
 		close(qGithub)
 		close(qTelegram)
-		done.Done()
 	}()
 
 	return qGithub, qTelegram
@@ -210,10 +217,10 @@ func sendEmail(done *sync.WaitGroup, qGithub <-chan githubItem) {
 	}
 
 	go func() {
+		defer done.Done()
+
 		for item := range qGithub {
 			worker(item)
 		}
-
-		done.Done()
 	}()
 }

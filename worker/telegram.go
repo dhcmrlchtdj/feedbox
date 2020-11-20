@@ -44,16 +44,17 @@ func telegramGenMsg(wg *sync.WaitGroup, qTelegram <-chan telegramItem) <-chan te
 
 	go func() {
 		defer wg.Done()
+
 		for item := range qTelegram {
 			genMsg(item)
 		}
+		close(msgs)
 	}()
+
 	return msgs
 }
 
-func telegramSendMsg(wg *sync.WaitGroup, msgs <-chan telegram.SendMessagePayload) {
-	defer wg.Done()
-
+func telegramSendMsg(msgs <-chan telegram.SendMessagePayload) {
 	// https://core.telegram.org/bots/faq#my-bot-is-hitting-limits-how-do-i-avoid-this
 	rateLimiter := NewRateLimiter(20, time.Second)
 
@@ -86,8 +87,7 @@ func sendTelegram(done *sync.WaitGroup, qTelegram <-chan telegramItem) {
 		var wg sync.WaitGroup
 		wg.Add(1)
 		msgs := telegramGenMsg(&wg, qTelegram)
-		wg.Add(1)
-		telegramSendMsg(&wg, msgs)
+		telegramSendMsg(msgs)
 		wg.Wait()
 	}()
 }
