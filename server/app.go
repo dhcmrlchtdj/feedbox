@@ -79,6 +79,10 @@ func setupRoute(app *fiber.App) {
 		}),
 		handler.ConnectGithub)
 
+	if os.Getenv("ENV") == "dev" {
+		app.Get("/api/v1/helper/preview/*", handler.HelperParseFeed)
+	}
+
 	app.Post(
 		"/webhook/telegram/"+os.Getenv("TELEGRAM_WEBHOOK_PATH"),
 		validate.ContentType("application/json"),
@@ -90,10 +94,6 @@ func setupRoute(app *fiber.App) {
 	app.Get("/robots.txt", handler.StaticRobots)
 	app.Get("/favicon.ico", handler.StaticFavicon)
 	app.Get("/:filename", handler.StaticWithCache("./frontend/_build/"))
-
-	if os.Getenv("ENV") == "dev" {
-		app.Get("/parse/*", handler.HelperParseFeed)
-	}
 }
 
 func errorHandler(c *fiber.Ctx, err error) error {
