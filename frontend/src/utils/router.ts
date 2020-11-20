@@ -24,9 +24,12 @@ class BaseRouter<T> {
         if (segments.length === 0) {
             route.handler = handler
         } else {
-            const seg = segments[0]
+            const seg = segments[0]!
             if (seg === '*') {
                 route.wildcard = handler
+                if (segments.length > 1) {
+                    throw new Error('"*" must be the last segment')
+                }
             } else if (seg[0] === ':') {
                 const param = seg.slice(1)
                 const r = route.parameter.get(param) ?? this._newRoute()
@@ -53,7 +56,7 @@ class BaseRouter<T> {
                 return { handler: route.handler, params }
             }
         } else {
-            const seg = segments[0]
+            const seg = segments[0]!
             const subSeg = segments.slice(1)
 
             const staticRoute = route.static.get(seg)
@@ -108,13 +111,10 @@ export class WorkerRouter {
         return this
     }
 
-    add(method: string, pathname: string, handler: Handler): this {
+    private add(method: string, pathname: string, handler: Handler): this {
         const segments = [method.toUpperCase(), ...pathname.split('/')]
         this._router.add(segments, handler)
         return this
-    }
-    all(pathname: string, handler: Handler): this {
-        return this.add(':METHOD', pathname, handler)
     }
     head(pathname: string, handler: Handler): this {
         return this.add('HEAD', pathname, handler)

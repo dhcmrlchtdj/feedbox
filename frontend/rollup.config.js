@@ -13,7 +13,7 @@ export default [
     {
         input: './src/app.ts',
         output: {
-            dir: './_build',
+            dir: './_build/',
             entryFileNames: '[name].[hash].js',
             format: 'esm',
             sourcemap: true,
@@ -39,7 +39,7 @@ export default [
     {
         input: './src/sw/index.ts',
         output: {
-            dir: './_build',
+            dir: './_build/',
             entryFileNames: 'sw.js',
             format: 'esm',
             sourcemap: true,
