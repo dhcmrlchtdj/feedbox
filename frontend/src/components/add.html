@@ -1,5 +1,5 @@
 <div class="column col-12">
-    <div class="input-group">
+    <form class="input-group" on:submit|preventDefault="{add}">
         <input
             class="form-input"
             type="text"
@@ -7,15 +7,15 @@
             bind:value="{url}"
         />
         <button
-            type="button"
+            type="submit"
             class="btn btn-primary input-group-btn"
             class:loading="{loading}"
             class:disabled="{loading}"
-            on:click="{add}"
+            disabled="{loading}"
         >
             add
         </button>
-    </div>
+    </form>
 </div>
 <div class="column col-12"><div class="divider"></div></div>
 
@@ -31,6 +31,7 @@
             window.alert('processing')
             return
         }
+        if (url === '') return
         loading = true
 
         agent

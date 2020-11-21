@@ -1,6 +1,8 @@
 package handler
 
 import (
+	"strings"
+
 	"github.com/gofiber/fiber/v2"
 	"github.com/pkg/errors"
 
@@ -30,7 +32,7 @@ func FeedAdd(c *fiber.Ctx) error {
 
 	credential := c.Locals("credential").(types.Credential)
 
-	feedID, err := database.C.GetFeedIDByURL(b.URL)
+	feedID, err := database.C.GetFeedIDByURL(strings.TrimSpace(b.URL))
 	if err != nil {
 		if errors.Is(err, database.ErrInvalidURL) {
 			return fiber.NewError(fiber.StatusBadRequest, err.Error())
