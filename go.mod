@@ -12,7 +12,7 @@ require (
 	github.com/bradleyjkemp/cupaloy/v2 v2.6.0
 	github.com/cespare/xxhash/v2 v2.1.1
 	github.com/gofiber/fiber/v2 v2.2.0
-	github.com/golang-migrate/migrate/v4 v4.13.0
+	github.com/golang-migrate/migrate/v4 v4.14.1
 	github.com/golang/protobuf v1.4.3 // indirect
 	github.com/hashicorp/errwrap v1.1.0 // indirect
 	github.com/jackc/pgx/v4 v4.9.2
