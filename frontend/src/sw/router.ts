@@ -47,13 +47,10 @@ export const router = new WorkerRouter()
                 }
                 const tpl = await resp.clone().text()
                 const app = App.render(state)
+                const __STATE__ = JSON.stringify(state)
                 const html = tpl.replace(
                     '<div id="app"></div>',
-                    `<div id="app">${
-                        app.html
-                    }</div><script>window.__STATE__=${JSON.stringify(
-                        state,
-                    )}</script>`,
+                    `<div id="app">${app.html}</div><script>window.__STATE__=${__STATE__}</script>`,
                 )
                 return new Response(html, resp)
             })
