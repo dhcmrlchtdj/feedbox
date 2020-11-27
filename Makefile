@@ -15,7 +15,7 @@ fmt:
 	gofumports -w .
 
 lint:
-	golangci-lint run -p 'bugs,complexity,performance,unused' -D 'noctx'
+	golangci-lint run -p 'bugs,complexity,performance,unused' -E 'gocritic' -D 'noctx'
 
 dev:
 	go run ./cmd/server
@@ -40,5 +40,5 @@ migrate:
 # outdated:
 #     go list -u -m -f '{{if not .Indirect}}{{.}}{{end}}' all
 upgrade_dep:
-	go get -t -u ./...
-	go mod tidy
+	go get -v -t -u ./...
+	go mod tidy -v

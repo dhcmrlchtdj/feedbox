@@ -54,7 +54,7 @@ func executeCommand(cmd string, arg string, msg *telegram.Message) {
 		errors.Is(err, ErrEmptyList) ||
 		errors.Is(err, ErrInvalidTwitter) {
 		text := err.Error()
-		if err := telegram.C.SendMessage(&telegram.SendMessagePayload{
+		if err := telegram.C.SendMessage(telegram.SendMessagePayload{
 			ChatID: msg.Chat.ID,
 			Text:   text,
 		}); err != nil {
@@ -68,7 +68,7 @@ func executeCommand(cmd string, arg string, msg *telegram.Message) {
 ///
 
 func start(msg *telegram.Message) error {
-	return telegram.C.SendMessage(&telegram.SendMessagePayload{
+	return telegram.C.SendMessage(telegram.SendMessagePayload{
 		ChatID:    msg.Chat.ID,
 		Text:      "<code>hello, world</code>",
 		ParseMode: telegram.ParseModeHTML,
@@ -98,7 +98,7 @@ func list(msg *telegram.Message) error {
 	}
 	text := builder.String()
 
-	return telegram.C.SendMessage(&telegram.SendMessagePayload{
+	return telegram.C.SendMessage(telegram.SendMessagePayload{
 		ChatID: msg.Chat.ID,
 		Text:   text,
 	})
@@ -118,14 +118,14 @@ func add(arg string, msg *telegram.Message) error {
 		return err
 	}
 
-	return telegram.C.SendMessage(&telegram.SendMessagePayload{
+	return telegram.C.SendMessage(telegram.SendMessagePayload{
 		ChatID: msg.Chat.ID,
 		Text:   "added",
 	})
 }
 
 func add_twitter(arg string, msg *telegram.Message) error {
-	if len(arg) == 0 {
+	if arg == "" {
 		return ErrInvalidTwitter
 	}
 	url := "https://rsshub.app/twitter/user/" + arg
@@ -146,7 +146,7 @@ func remove(arg string, msg *telegram.Message) error {
 		return err
 	}
 
-	return telegram.C.SendMessage(&telegram.SendMessagePayload{
+	return telegram.C.SendMessage(telegram.SendMessagePayload{
 		ChatID: msg.Chat.ID,
 		Text:   "removed",
 	})
@@ -170,7 +170,7 @@ func removeAll(msg *telegram.Message) error {
 	}
 
 	opml := util.BuildOPMLFromFeed(feeds)
-	return telegram.C.SendDocument(&telegram.SendDocumentPayload{
+	return telegram.C.SendDocument(telegram.SendDocumentPayload{
 		ChatID:  msg.Chat.ID,
 		Caption: "removed",
 		Document: telegram.InputFile{
@@ -195,7 +195,7 @@ func export(msg *telegram.Message) error {
 	}
 
 	opml := util.BuildOPMLFromFeed(feeds)
-	return telegram.C.SendDocument(&telegram.SendDocumentPayload{
+	return telegram.C.SendDocument(telegram.SendDocumentPayload{
 		ChatID: msg.Chat.ID,
 		Document: telegram.InputFile{
 			Name:    "feeds.opml",

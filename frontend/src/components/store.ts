@@ -1,11 +1,12 @@
 import { writable } from 'svelte/store'
+import type { Writable } from 'svelte/store'
 
 export const email = writable('')
 
-export const feeds = writable([])
+export const feeds: Writable<string[]> = writable([])
 
-export const notify = writable([])
-export const newNotify = (msg) => {
+export const notify: Writable<{ key: number; msg: string }[]> = writable([])
+export const newNotify = (msg: string) => {
     const key = Date.now()
     notify.update((prev) => [...prev, { msg, key }])
     setTimeout(() => {

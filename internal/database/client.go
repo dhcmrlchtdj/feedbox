@@ -40,14 +40,14 @@ func WithMaxConns(maxConns int32) func(*pgxpool.Config) {
 	}
 }
 
-func WithLogger(level string, logger zerolog.Logger) func(*pgxpool.Config) {
+func WithLogger(level string, logger *zerolog.Logger) func(*pgxpool.Config) {
 	return func(config *pgxpool.Config) {
 		level, err := pgx.LogLevelFromString(level)
 		if err != nil {
 			panic(err)
 		}
 		config.ConnConfig.LogLevel = level
-		config.ConnConfig.Logger = zerologadapter.NewLogger(logger)
+		config.ConnConfig.Logger = zerologadapter.NewLogger(*logger)
 	}
 }
 

@@ -36,7 +36,7 @@ func main() {
 	db, err := database.New(
 		os.Getenv("DATABASE_URL"),
 		database.WithMaxConns(10),
-		database.WithLogger("info", log.Logger))
+		database.WithLogger("info", &log.Logger))
 	if err != nil {
 		panic(err)
 	}

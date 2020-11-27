@@ -1,5 +1,3 @@
-/// <reference lib="webworker" />
-
 type Route<T> = {
     handler: T | null
     static: Map<string, Route<T>>
@@ -91,6 +89,7 @@ export type Handler = (
     event: FetchEvent,
     params: Map<string, string>,
 ) => Promise<Response>
+
 export class WorkerRouter {
     private _router: BaseRouter<Handler>
     constructor() {

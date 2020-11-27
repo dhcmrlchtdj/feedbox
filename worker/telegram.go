@@ -59,11 +59,10 @@ func telegramSendMsg(msgs <-chan telegram.SendMessagePayload) {
 	rateLimiter := NewRateLimiter(20, time.Second)
 
 	for msg := range msgs {
-		msg := msg // XXX: make linter happy
 		retry := 1
 		for {
 			rateLimiter.Wait()
-			err := telegram.C.SendMessage(&msg)
+			err := telegram.C.SendMessage(msg)
 			if err != nil {
 				var err429 *telegram.ErrTooManyRequests
 				if errors.As(err, &err429) {

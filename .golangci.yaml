@@ -1,0 +1,29 @@
+{
+    'linters-settings':
+        {
+            'errcheck': { 'check-type-assertions': false, 'check-blank': true },
+            'govet': { 'enable-all': true, 'disable': ['shadow'] },
+            'gocognit': { 'min-complexity': 30 },
+            'gocritic':
+                {
+                    'settings': { 'hugeParam': { 'sizeThreshold': 100 } },
+                    'enabled-tags':
+                        [
+                            'diagnostic',
+                            'performance',
+                            'style',
+                            'experimental',
+                            'opinionated',
+                        ],
+                    'disabled-checks':
+                        [
+                            'commentedOutCode',
+                            'ifElseChain',
+                            'paramTypeCombine',
+                            'unnamedResult',
+                            'whyNoLint',
+                        ],
+                },
+            'maligned': { 'suggest-new': true },
+        },
+}

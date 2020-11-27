@@ -103,17 +103,17 @@ func newCustomRSSTranslator() *customRSSTranslator {
 }
 
 func (ct *customRSSTranslator) Translate(feed interface{}) (*gofeed.Feed, error) {
-	rss, ok := feed.(*rss.Feed)
+	rssFeed, ok := feed.(*rss.Feed)
 	if !ok {
 		return nil, errors.New("Feed did not match expected type of *rss.Feed")
 	}
 
-	f, err := ct.defaultTranslator.Translate(rss)
+	f, err := ct.defaultTranslator.Translate(rssFeed)
 	if err != nil {
 		return nil, err
 	}
 
-	for i, item := range rss.Items {
+	for i, item := range rssFeed.Items {
 		comments := item.Comments
 		if len(comments) > 0 {
 			f.Items[i].Custom = map[string]string{"comments": comments}

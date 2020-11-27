@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"io"
 	"net/http"
-	"strings"
 
 	"github.com/pkg/errors"
 
@@ -20,12 +19,12 @@ type Client struct {
 }
 
 func New(name string, token string) *Client {
-	return &Client{Name: strings.ToLower(name), token: token}
+	return &Client{Name: name, token: token}
 }
 
 ///
 
-func (c *Client) GetChatMember(payload *GetChatMemberPayload) (*ChatMember, error) {
+func (c *Client) GetChatMember(payload GetChatMemberPayload) (*ChatMember, error) {
 	body, err := c.rawSend("getChatMember", payload)
 	if err != nil {
 		return nil, err
@@ -43,23 +42,19 @@ func (c *Client) GetChatMember(payload *GetChatMemberPayload) (*ChatMember, erro
 	return resp.Result, nil
 }
 
-func (c *Client) SetWebhook(payload *SetWebhookPayload) error {
+func (c *Client) SetWebhook(payload SetWebhookPayload) error {
 	return c.rawSendSimple("setWebhook", payload)
 }
 
-func (c *Client) SetMyCommands(payload *SetMyCommandsPayload) error {
+func (c *Client) SetMyCommands(payload SetMyCommandsPayload) error {
 	return c.rawSendSimple("setMyCommands", payload)
 }
 
-func (c *Client) SendMessage(payload *SendMessagePayload) error {
+func (c *Client) SendMessage(payload SendMessagePayload) error {
 	return c.rawSendSimple("sendMessage", payload)
 }
 
-func (c *Client) SendAudio(payload *SendAudioPayload) error {
-	return c.rawSendSimple("sendAudio", payload)
-}
-
-func (c *Client) SendDocument(payload *SendDocumentPayload) error {
+func (c *Client) SendDocument(payload SendDocumentPayload) error {
 	r, w := io.Pipe()
 	m := multipart.New(w)
 	go func() {

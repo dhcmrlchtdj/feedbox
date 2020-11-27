@@ -1,19 +1,25 @@
 {
+    "include": ["src/**/*.ts"],
     "compilerOptions": {
+        "outDir": "node_modules/",
+        "noEmit": true,
+
         "module": "ES6",
-        "target": "ES2017",
-        "lib": ["ES2017"],
+        "target": "ESNext",
+        "lib": ["ESNext"],
 
         "sourceMap": false,
-        "inlineSourceMap": true,
-        "inlineSources": true,
+        "inlineSourceMap": false,
+        "inlineSources": false,
         "removeComments": true,
-        "importHelpers": true,
+        "importHelpers": false,
         "declaration": false,
+        "incremental": true,
 
         "moduleResolution": "node",
-        "esModuleInterop": false,
+        "isolatedModules": true,
         "resolveJsonModule": true,
+        "esModuleInterop": false,
 
         "noFallthroughCasesInSwitch": true,
         "noImplicitReturns": true,

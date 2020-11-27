@@ -3,10 +3,7 @@ PATH := ./node_modules/.bin:$(PATH)
 
 build: node_modules
 	rm -rf ./_build
-	NODE_ENV=production rollup -c
-
-dev: node_modules
-	rollup -c -w
+	NODE_ENV=production node ./script/build.js
 
 fmt:
 	prettier --write .

@@ -1,6 +1,6 @@
 // @ts-ignore
 import App from '../components/app.html'
-import { WorkerRouter } from '../utils/router'
+import { WorkerRouter } from './worker_router'
 import * as strategy from './strategy'
 import * as version from './version'
 
