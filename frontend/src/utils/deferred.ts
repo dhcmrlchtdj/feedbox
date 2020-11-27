@@ -1,4 +1,4 @@
-export class Deferred<T = void> {
+export class Deferred<T = unknown> {
     promise: Promise<T>
     // @ts-ignore
     resolve: (payload: T) => void

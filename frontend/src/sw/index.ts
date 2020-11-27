@@ -1,5 +1,3 @@
-/// <reference lib="webworker" />
-
 import { router } from './router'
 import * as version from './version'
 

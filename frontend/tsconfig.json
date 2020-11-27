@@ -6,7 +6,8 @@
 
         "module": "ES6",
         "target": "ESNext",
-        "lib": ["ESNext"],
+        "lib": ["ESNext", "DOM", "WebWorker"],
+        "skipLibCheck": true,
 
         "sourceMap": false,
         "inlineSourceMap": false,
