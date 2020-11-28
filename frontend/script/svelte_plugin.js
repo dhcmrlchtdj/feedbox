@@ -6,40 +6,23 @@ const path = require('path')
 
 exports.sveltePlugin = sveltePlugin
 
-const prod = process.env.NODE_ENV === 'production'
-
-const convertMessage = (source, filename) => ({ message, start, end }) => {
-    let location
-    if (start && end) {
-        const lineText = source.split(/\r\n|\r|\n/g)[start.line - 1]
-        const lineEnd = start.line === end.line ? end.column : lineText.length
-        location = {
-            file: filename,
-            line: start.line,
-            column: start.column,
-            length: lineEnd - start.column,
-            lineText,
-        }
-    }
-    return { text: message, location }
+const defaultOpts = {
+    dev: false,
+    generate: 'dom',
+    hydratable: false,
+    immutable: true,
+    css: false,
+    format: 'esm',
 }
 
-function sveltePlugin(generate) {
+function sveltePlugin(opts) {
     return {
         name: 'svelte',
         setup(build) {
             build.onLoad({ filter: /\.html$/ }, async (args) => {
                 const source = await fs.readFile(args.path, 'utf8')
                 const filename = path.resolve(process.cwd(), args.path)
-                const svelteOpts = {
-                    generate,
-                    filename,
-                    css: false,
-                    format: 'esm',
-                    immutable: true,
-                    hydratable: generate === 'dom',
-                    dev: !prod,
-                }
+                const svelteOpts = { ...defaultOpts, ...opts, filename }
 
                 const convert = convertMessage(source, filename)
                 try {
@@ -57,5 +40,24 @@ function sveltePlugin(generate) {
                 }
             })
         },
+    }
+}
+
+function convertMessage(source, filename) {
+    return ({ message, start, end }) => {
+        let location
+        if (start && end) {
+            const lineText = source.split(/\r\n|\r|\n/g)[start.line - 1]
+            const lineEnd =
+                start.line === end.line ? end.column : lineText.length
+            location = {
+                file: filename,
+                line: start.line,
+                column: start.column,
+                length: lineEnd - start.column,
+                lineText,
+            }
+        }
+        return { text: message, location }
     }
 }

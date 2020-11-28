@@ -15,7 +15,5 @@ async function template(input, output, pattern) {
     await fs.mkdir(path.dirname(output), { recursive: true })
     await fs.writeFile(output, content)
 
-    const f = path.relative(process.cwd(), input)
-    const t = path.relative(process.cwd(), output)
-    console.log(`${f} => ${t}`)
+    console.log(`${input} => ${output}`)
 }

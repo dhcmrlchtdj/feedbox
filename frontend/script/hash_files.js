@@ -1,50 +1,54 @@
-const fs = require('fs')
+const fs = require('fs').promises
 const path = require('path')
 const crypto = require('crypto')
 
 exports.hashFiles = hashFiles
 
-function hashFiles(...entries) {
+async function hashFiles(...entries) {
     const files = []
 
-    const next = []
-    entries.forEach((entry) => {
-        const stat = fs.statSync(entry)
-        if (stat.isFile()) {
-            files.push(entry)
-        } else if (stat.isDirectory()) {
-            next.push([entry, fs.readdirSync(entry, { withFileTypes: true })])
-        }
-    })
+    await Promise.all(
+        entries.map(async (filepath) => {
+            const stat = await fs.stat(filepath)
+            await addEntry(stat, filepath)
+        }),
+    )
 
-    while (next.length > 0) {
-        const [parent, curr] = next.pop()
-        curr.forEach((f) => {
-            const name = f.name
-            if (
-                name.startsWith('.') ||
-                name.startsWith('_') ||
-                name.startsWith('node_modules')
+    async function addEntry(entry, filepath) {
+        if (entry.isFile()) {
+            files.push(filepath)
+        } else if (entry.isDirectory()) {
+            const subEntries = await fs.readdir(filepath, {
+                withFileTypes: true,
+            })
+            await Promise.all(
+                subEntries.map(async (subEntry) => {
+                    const name = subEntry.name
+                    if (
+                        name.startsWith('.') ||
+                        name.startsWith('_') ||
+                        name.startsWith('node_modules')
+                    ) {
+                        return
+                    }
+                    const subFilepath = path.join(filepath, name)
+                    await addEntry(subEntry, subFilepath)
+                }),
             )
-                return
-            const filepath = path.join(parent, name)
-            if (f.isFile()) {
-                files.push(filepath)
-            } else if (f.isDirectory()) {
-                next.push([
-                    filepath,
-                    fs.readdirSync(filepath, { withFileTypes: true }),
-                ])
-            }
-        })
+        }
     }
 
-    const hash = crypto.createHash('sha256')
-    files.sort().forEach((file) => {
-        const data = fs.readFileSync(file)
-        hash.update(data)
-    })
-    const digest = hash.digest('hex')
+    const digest = await files
+        .sort()
+        .map((file) => fs.readFile(file))
+        .reduce(async (acc, file) => {
+            const hash = await acc
+            const data = await file
+            hash.update(data)
+            return hash
+        }, crypto.createHash('sha256'))
+        .then((hash) => hash.digest('hex'))
+        .then((digest) => digest.slice(0, 8))
 
-    return digest.slice(0, 8)
+    return digest
 }
