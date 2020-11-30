@@ -11,6 +11,10 @@ const r = (p) => path.relative(process.cwd(), path.resolve(__dirname, p))
 main()
 
 async function main() {
+    const env = Object.entries(process.env).reduce((acc, [k, v]) => {
+        acc['process.env.' + k] = JSON.stringify(v)
+        return acc
+    }, {})
     const prod = process.env.NODE_ENV === 'production'
 
     const hash = await hashFiles(r('.'), r('../src'), r('../pnpm-lock.yaml'))
@@ -19,7 +23,7 @@ async function main() {
         build(
             r('../src/app.ts'),
             r(`../_build/app.${hash}.js`),
-            { minify: prod },
+            { minify: prod, define: env },
             { generate: 'dom', hydratable: true, dev: !prod },
         ),
         build(
@@ -27,7 +31,7 @@ async function main() {
             r('../_build/sw.js'),
             {
                 minify: prod,
-                define: { __STATIC_VERSION__: JSON.stringify(hash) },
+                define: { ...env, __STATIC_VERSION__: JSON.stringify(hash) },
             },
             { generate: 'ssr', dev: !prod },
         ),
@@ -51,7 +55,5 @@ function build(input, output, esbuildOpts, svelteOpts) {
             entryPoints: [input],
             outfile: output,
         })
-        .then(() => {
-            console.log(`${input} => ${output}`)
-        })
+        .then(() => console.log(`${input} => ${output}`))
 }

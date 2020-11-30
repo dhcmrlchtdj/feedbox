@@ -1,42 +1,16 @@
 const fs = require('fs').promises
 const path = require('path')
 const crypto = require('crypto')
+const pMap = (arr, fn) => Promise.all(arr.map(fn))
 
 exports.hashFiles = hashFiles
 
 async function hashFiles(...entries) {
     const files = []
-
-    await Promise.all(
-        entries.map(async (filepath) => {
-            const stat = await fs.stat(filepath)
-            await addEntry(stat, filepath)
-        }),
-    )
-
-    async function addEntry(entry, filepath) {
-        if (entry.isFile()) {
-            files.push(filepath)
-        } else if (entry.isDirectory()) {
-            const subEntries = await fs.readdir(filepath, {
-                withFileTypes: true,
-            })
-            await Promise.all(
-                subEntries.map(async (subEntry) => {
-                    const name = subEntry.name
-                    if (
-                        name.startsWith('.') ||
-                        name.startsWith('_') ||
-                        name.startsWith('node_modules')
-                    ) {
-                        return
-                    }
-                    const subFilepath = path.join(filepath, name)
-                    await addEntry(subEntry, subFilepath)
-                }),
-            )
-        }
-    }
+    await pMap(entries, async (filepath) => {
+        const stat = await fs.stat(filepath)
+        return addEntry(files, stat, filepath)
+    })
 
     const digest = await files
         .sort()
@@ -51,4 +25,26 @@ async function hashFiles(...entries) {
         .then((digest) => digest.slice(0, 8))
 
     return digest
+}
+
+async function addEntry(output, entry, filepath) {
+    if (entry.isFile()) {
+        output.push(filepath)
+    } else if (entry.isDirectory()) {
+        const subEntries = await fs.readdir(filepath, {
+            withFileTypes: true,
+        })
+        return pMap(subEntries, (subEntry) => {
+            const name = subEntry.name
+            if (
+                name.startsWith('.') ||
+                name.startsWith('_') ||
+                name.startsWith('node_modules')
+            ) {
+                return
+            }
+            const subFilepath = path.join(filepath, name)
+            return addEntry(output, subEntry, subFilepath)
+        })
+    }
 }

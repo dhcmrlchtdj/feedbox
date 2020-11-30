@@ -1,17 +1,23 @@
 SHELL := bash
+.SHELLFLAGS = -O globstar -c
 PATH := ./node_modules/.bin:$(PATH)
 
-all: build check
-
-build:
+build: node_modules/tsconfig.tsbuildinfo
 	NODE_ENV=production node ./script/build.js
 
 check:
 	tsc --noEmit
+	@touch -cm node_modules/tsconfig.tsbuildinfo # force update mtime
+
+force: check build
 
 fmt:
 	prettier --write .
 
-upgrade_dep:
-	pnpm upgrade --latest --interactive
-	@# pnpm store prune
+node_modules:
+	pnpm install
+
+node_modules/tsconfig.tsbuildinfo: node_modules $(shell ls src/**/*.ts)
+	@$(MAKE) --no-print-directory check
+
+.PHONY: build check force fmt
