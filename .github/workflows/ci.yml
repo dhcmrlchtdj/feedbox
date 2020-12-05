@@ -73,7 +73,7 @@ jobs:
                 npm i -g pnpm@5
                 pnpm install
                 pnpm store prune
-                make -j all
+                make -j build
                 echo '!/_build' > .gitignore
                 git config user.name "$GITHUB_ACTOR"
                 git config user.email "$GITHUB_ACTOR@github.action"
