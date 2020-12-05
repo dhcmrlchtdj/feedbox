@@ -3,7 +3,7 @@
         {
             'errcheck': { 'check-type-assertions': false, 'check-blank': true },
             'govet': { 'enable-all': true, 'disable': ['shadow'] },
-            'gocognit': { 'min-complexity': 30 },
+            'gocognit': { 'min-complexity': 35 },
             'gocritic':
                 {
                     'settings': { 'hugeParam': { 'sizeThreshold': 100 } },
