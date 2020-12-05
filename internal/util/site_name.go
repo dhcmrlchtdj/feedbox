@@ -22,6 +22,8 @@ func ExtractSiteName(link string) string {
 		return "dev.to/" + path.Base(u.EscapedPath())
 	case "rsshub.app":
 		return "rsshub" + u.EscapedPath()
+	case "buttondown.email":
+		return "buttondown" + path.Dir(u.EscapedPath())
 	case "feed43.com":
 		p := u.EscapedPath()
 		ext := path.Ext(p)

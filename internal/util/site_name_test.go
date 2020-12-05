@@ -16,6 +16,7 @@ func TestExtractSiteName(t *testing.T) {
 		"https://rsshub.app/example/example",
 		"https://feed43.com/example.xml",
 		"https://example.com/rss",
+		"https://buttondown.email/example/rss",
 	}
 	for i := range cases {
 		url := cases[i]
