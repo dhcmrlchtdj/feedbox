@@ -5,8 +5,10 @@ import (
 	"strconv"
 	"strings"
 	"sync"
+	"time"
 
 	"github.com/mmcdole/gofeed"
+	"github.com/pkg/errors"
 
 	"github.com/dhcmrlchtdj/feedbox/internal/database"
 	"github.com/dhcmrlchtdj/feedbox/internal/email"
@@ -113,7 +115,13 @@ func fetchFeed(done *sync.WaitGroup, qFeed <-chan database.Feed) <-chan *feedIte
 
 			updated := newItems[0].PublishedParsed
 			if updated == nil {
-				updated = feed.UpdatedParsed
+				monitor.C.Warn(errors.Errorf("can not parse date field: %s", dbFeed.URL))
+				if feed.UpdatedParsed != nil {
+					updated = feed.UpdatedParsed
+				} else {
+					now := time.Now()
+					updated = &now
+				}
 			}
 			err = database.C.AddFeedLinks(dbFeed.ID, newLinks, updated)
 			if err != nil {
