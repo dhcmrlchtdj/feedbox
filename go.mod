@@ -18,7 +18,7 @@ require (
 	github.com/joho/godotenv v1.3.0
 	github.com/klauspost/compress v1.11.3 // indirect
 	github.com/lib/pq v1.9.0 // indirect
-	github.com/mmcdole/gofeed v1.1.1-0.20201005053009-96998c2d6be5
+	github.com/mmcdole/gofeed v1.1.0
 	github.com/mmcdole/goxpp v0.0.0-20200921145534-2f3784f67354 // indirect
 	github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd // indirect
 	github.com/modern-go/reflect2 v1.0.1 // indirect
@@ -32,3 +32,5 @@ require (
 	golang.org/x/text v0.3.4 // indirect
 	google.golang.org/appengine v1.6.7 // indirect
 )
+
+replace github.com/mmcdole/gofeed v1.1.0 => github.com/dhcmrlchtdj/gofeed v1.1.1-0.20201206234710-f0de7bc88afd
