@@ -6,17 +6,18 @@ module github.com/dhcmrlchtdj/feedbox
 go 1.15
 
 require (
-	github.com/PuerkitoBio/goquery v1.6.0 // indirect
+	github.com/PuerkitoBio/goquery v1.6.1 // indirect
 	github.com/andybalholm/brotli v1.0.1 // indirect
 	github.com/andybalholm/cascadia v1.2.0 // indirect
 	github.com/bradleyjkemp/cupaloy/v2 v2.6.0
 	github.com/cespare/xxhash/v2 v2.1.1
-	github.com/gofiber/fiber/v2 v2.2.3
+	github.com/gofiber/fiber/v2 v2.3.3
 	github.com/golang-migrate/migrate/v4 v4.14.1
 	github.com/hashicorp/errwrap v1.1.0 // indirect
-	github.com/jackc/pgx/v4 v4.10.0
+	github.com/jackc/pgproto3/v2 v2.0.7 // indirect
+	github.com/jackc/pgx/v4 v4.10.1
 	github.com/joho/godotenv v1.3.0
-	github.com/klauspost/compress v1.11.3 // indirect
+	github.com/klauspost/compress v1.11.7 // indirect
 	github.com/lib/pq v1.9.0 // indirect
 	github.com/mmcdole/gofeed v1.1.0
 	github.com/mmcdole/goxpp v0.0.0-20200921145534-2f3784f67354 // indirect
@@ -25,11 +26,12 @@ require (
 	github.com/pkg/errors v0.9.1
 	github.com/rollbar/rollbar-go v1.2.0
 	github.com/rs/zerolog v1.20.0
-	golang.org/x/crypto v0.0.0-20201203163018-be400aefbc4c
-	golang.org/x/net v0.0.0-20201202161906-c7110b5ffcbb // indirect
-	golang.org/x/oauth2 v0.0.0-20201203001011-0b49973bad19
-	golang.org/x/sys v0.0.0-20201204225414-ed752295db88 // indirect
-	golang.org/x/text v0.3.4 // indirect
+	github.com/valyala/fasthttp v1.19.0 // indirect
+	golang.org/x/crypto v0.0.0-20201221181555-eec23a3978ad
+	golang.org/x/net v0.0.0-20201224014010-6772e930b67b // indirect
+	golang.org/x/oauth2 v0.0.0-20210113205817-d3ed898aa8a3
+	golang.org/x/sys v0.0.0-20210113181707-4bcb84eeeb78 // indirect
+	golang.org/x/text v0.3.5 // indirect
 	google.golang.org/appengine v1.6.7 // indirect
 )
 
