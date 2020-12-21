@@ -14,7 +14,7 @@ require (
 	github.com/gofiber/fiber/v2 v2.2.3
 	github.com/golang-migrate/migrate/v4 v4.14.1
 	github.com/hashicorp/errwrap v1.1.0 // indirect
-	github.com/jackc/pgx/v4 v4.10.0
+	github.com/jackc/pgx/v4 v4.10.1
 	github.com/joho/godotenv v1.3.0
 	github.com/klauspost/compress v1.11.3 // indirect
 	github.com/lib/pq v1.9.0 // indirect
