@@ -11,7 +11,7 @@ require (
 	github.com/andybalholm/cascadia v1.2.0 // indirect
 	github.com/bradleyjkemp/cupaloy/v2 v2.6.0
 	github.com/cespare/xxhash/v2 v2.1.1
-	github.com/gofiber/fiber/v2 v2.3.3
+	github.com/gofiber/fiber/v2 v2.5.0
 	github.com/golang-migrate/migrate/v4 v4.14.1
 	github.com/hashicorp/errwrap v1.1.0 // indirect
 	github.com/jackc/pgproto3/v2 v2.0.7 // indirect
@@ -26,11 +26,11 @@ require (
 	github.com/pkg/errors v0.9.1
 	github.com/rollbar/rollbar-go v1.2.0
 	github.com/rs/zerolog v1.20.0
-	github.com/valyala/fasthttp v1.19.0 // indirect
-	golang.org/x/crypto v0.0.0-20201221181555-eec23a3978ad
-	golang.org/x/net v0.0.0-20201224014010-6772e930b67b // indirect
-	golang.org/x/oauth2 v0.0.0-20210113205817-d3ed898aa8a3
-	golang.org/x/sys v0.0.0-20210113181707-4bcb84eeeb78 // indirect
+	github.com/valyala/fasthttp v1.21.0 // indirect
+	golang.org/x/crypto v0.0.0-20210218145215-b8e89b74b9df
+	golang.org/x/net v0.0.0-20210119194325-5f4716e94777 // indirect
+	golang.org/x/oauth2 v0.0.0-20210218202405-ba52d332ba99
+	golang.org/x/sys v0.0.0-20210218155724-8ebf48af031b // indirect
 	golang.org/x/text v0.3.5 // indirect
 	google.golang.org/appengine v1.6.7 // indirect
 )
