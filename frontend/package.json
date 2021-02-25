@@ -6,7 +6,7 @@
         "esbuild": "0.8.49",
         "prettier": "2.2.1",
         "svelte": "3.32.3",
-        "typescript": "4.1.5"
+        "typescript": "4.2.2"
     },
     "prettier": {
         "printWidth": 80,
