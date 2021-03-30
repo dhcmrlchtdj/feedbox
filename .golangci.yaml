@@ -2,8 +2,7 @@
     'linters-settings':
         {
             'errcheck': { 'check-type-assertions': false, 'check-blank': true },
-            'govet': { 'enable-all': true, 'disable': ['shadow'] },
-            'gocognit': { 'min-complexity': 35 },
+            'govet': { 'enable-all': true, 'disable': ['shadow', 'fieldalignment'] },
             'gocritic':
                 {
                     'settings': { 'hugeParam': { 'sizeThreshold': 100 } },
@@ -24,6 +23,5 @@
                             'whyNoLint',
                         ],
                 },
-            'maligned': { 'suggest-new': true },
         },
 }
