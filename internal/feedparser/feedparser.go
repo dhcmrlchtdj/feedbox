@@ -1,7 +1,6 @@
 package feedparser
 
 import (
-	"bytes"
 	"io"
 	"net/http"
 	neturl "net/url"
@@ -9,6 +8,8 @@ import (
 
 	"github.com/mmcdole/gofeed"
 	"github.com/pkg/errors"
+	"golang.org/x/text/runes"
+	"golang.org/x/text/transform"
 )
 
 type FeedParser struct {
@@ -94,18 +95,10 @@ func restoreFeedburnerLink(feed *gofeed.Feed) {
 	}
 }
 
-func removeNonPrintable(xml io.Reader) (io.Reader, error) {
+func removeNonPrintable(xml io.Reader) io.Reader {
 	// https://blog.zikes.me/post/cleaning-xml-files-before-unmarshaling-in-go/
-	original, err := io.ReadAll(xml)
-	if err != nil {
-		return nil, errors.Wrap(err, "read xml")
-	}
-	cleaned := bytes.Map(func(r rune) rune {
-		if unicode.IsPrint(r) {
-			return r
-		} else {
-			return -1
-		}
-	}, original)
-	return bytes.NewBuffer(cleaned), nil
+	t := runes.Remove(runes.Predicate(func(r rune) bool {
+		return !unicode.IsPrint(r)
+	}))
+	return transform.NewReader(xml, t)
 }
