@@ -1,11 +1,13 @@
 package feedparser
 
 import (
+	"bytes"
+	"io"
 	"net/http"
 	neturl "net/url"
+	"unicode"
 
 	"github.com/mmcdole/gofeed"
-	"github.com/mmcdole/gofeed/rss"
 	"github.com/pkg/errors"
 )
 
@@ -36,6 +38,7 @@ func (p *FeedParser) ParseURL(url string) (*gofeed.Feed, error) {
 	if resp.StatusCode != 200 {
 		return nil, errors.Errorf("'%v' return '%v'", url, resp.Status)
 	}
+
 	feed, err := p.parser.Parse(resp.Body)
 	if err != nil {
 		return nil, errors.Wrap(err, url)
@@ -91,34 +94,18 @@ func restoreFeedburnerLink(feed *gofeed.Feed) {
 	}
 }
 
-type customRSSTranslator struct {
-	defaultTranslator *gofeed.DefaultRSSTranslator
-}
-
-func newCustomRSSTranslator() *customRSSTranslator {
-	t := &customRSSTranslator{
-		defaultTranslator: new(gofeed.DefaultRSSTranslator),
-	}
-	return t
-}
-
-func (ct *customRSSTranslator) Translate(feed interface{}) (*gofeed.Feed, error) {
-	rssFeed, ok := feed.(*rss.Feed)
-	if !ok {
-		return nil, errors.New("Feed did not match expected type of *rss.Feed")
-	}
-
-	f, err := ct.defaultTranslator.Translate(rssFeed)
+func removeNonPrintable(xml io.Reader) (io.Reader, error) {
+	// https://blog.zikes.me/post/cleaning-xml-files-before-unmarshaling-in-go/
+	original, err := io.ReadAll(xml)
 	if err != nil {
-		return nil, err
+		return nil, errors.Wrap(err, "read xml")
 	}
-
-	for i, item := range rssFeed.Items {
-		comments := item.Comments
-		if len(comments) > 0 {
-			f.Items[i].Custom = map[string]string{"comments": comments}
+	cleaned := bytes.Map(func(r rune) rune {
+		if unicode.IsPrint(r) {
+			return r
+		} else {
+			return -1
 		}
-	}
-
-	return f, nil
+	}, original)
+	return bytes.NewBuffer(cleaned), nil
 }
