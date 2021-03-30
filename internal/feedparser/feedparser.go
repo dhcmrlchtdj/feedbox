@@ -40,7 +40,8 @@ func (p *FeedParser) ParseURL(url string) (*gofeed.Feed, error) {
 		return nil, errors.Errorf("'%v' return '%v'", url, resp.Status)
 	}
 
-	feed, err := p.parser.Parse(resp.Body)
+	printableBody := removeNonPrintable(resp.Body)
+	feed, err := p.parser.Parse(printableBody)
 	if err != nil {
 		return nil, errors.Wrap(err, url)
 	}
