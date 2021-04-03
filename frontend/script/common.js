@@ -85,7 +85,7 @@ function buildHtml(pattern) {
 }
 
 function logResult(r) {
-    const result = Object.entries(r.metafile?.outputs ?? {})
+    const result = Object.entries(r?.metafile?.outputs ?? {})
         .filter(([out, meta]) => Boolean(meta.entryPoint))
         .map(([out, meta]) => [meta.entryPoint, out])
     result.forEach(([i, o]) => console.log(`${i} => ${o}`))
