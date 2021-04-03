@@ -6,7 +6,7 @@ build: node_modules/tsconfig.tsbuildinfo
 	NODE_ENV=production node ./script/build.js
 
 dev:
-	fswatch -0 -or src | xargs -0 -I {} make build
+	chokidar 'src' --command='make --no-print-directory build' --initial
 
 check:
 	tsc --noEmit
