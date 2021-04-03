@@ -7,9 +7,9 @@ const { sveltePlugin } = require('./util/svelte_plugin')
 const { template } = require('./util/template')
 const r = (p) => path.relative(process.cwd(), path.resolve(__dirname, p))
 
-exports.build = main
+exports.build = build
 
-async function main(enableWatch = false) {
+async function build(enableWatch = false) {
     const env = Object.entries(process.env).reduce((acc, [k, v]) => {
         acc['process.env.' + k] = JSON.stringify(v)
         return acc
