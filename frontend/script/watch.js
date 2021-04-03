@@ -1,3 +1,3 @@
 const { build } = require('./common')
 
-build()
+build(true)

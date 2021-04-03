@@ -1,3 +1,4 @@
+// https://esbuild.github.io/plugins/#svelte-plugin
 // https://svelte.dev/docs#svelte_compile
 
 const svelte = require('svelte/compiler')
