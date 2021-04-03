@@ -1,9 +1,7 @@
-const fs = require('fs').promises
-const path = require('path')
+import fs from 'fs/promises'
+import path from 'path'
 
-exports.template = template
-
-async function template(input, output, pattern) {
+export async function template(input, output, pattern) {
     const replace = (tmpl) => {
         return pattern.reduce((content, [fromPattern, toPattern]) => {
             return content.replace(fromPattern, toPattern)

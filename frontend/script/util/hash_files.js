@@ -1,11 +1,10 @@
-const fs = require('fs').promises
-const path = require('path')
-const crypto = require('crypto')
+import crypto from 'crypto'
+import fs from 'fs/promises'
+import path from 'path'
+
 const pMap = (arr, fn) => Promise.all(arr.map(fn))
 
-exports.hashFiles = hashFiles
-
-async function hashFiles(...entries) {
+export async function hashFiles(...entries) {
     const files = []
     await pMap(entries, async (filepath) => {
         const stat = await fs.stat(filepath)

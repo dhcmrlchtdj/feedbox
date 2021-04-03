@@ -2,6 +2,7 @@
     "private": true,
     "name": "feedbox",
     "version": "0.0.0",
+    "type": "module",
     "devDependencies": {
         "esbuild": "0.11.4",
         "prettier": "2.2.1",

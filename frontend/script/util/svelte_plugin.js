@@ -1,11 +1,9 @@
 // https://esbuild.github.io/plugins/#svelte-plugin
 // https://svelte.dev/docs#svelte_compile
 
-const svelte = require('svelte/compiler')
-const fs = require('fs').promises
-const path = require('path')
-
-exports.sveltePlugin = sveltePlugin
+import fs from 'fs/promises'
+import path from 'path'
+import * as svelte from 'svelte/compiler'
 
 const defaultOpts = {
     dev: false,
@@ -16,7 +14,7 @@ const defaultOpts = {
     format: 'esm',
 }
 
-function sveltePlugin(opts) {
+export function sveltePlugin(opts) {
     return {
         name: 'svelte',
         setup(build) {

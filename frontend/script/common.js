@@ -1,15 +1,15 @@
 // https://esbuild.github.io/api/#build-api
 
-const path = require('path')
-const esbuild = require('esbuild')
-const { hashFiles } = require('./util/hash_files')
-const { sveltePlugin } = require('./util/svelte_plugin')
-const { template } = require('./util/template')
-const r = (p) => path.relative(process.cwd(), path.resolve(__dirname, p))
+import path from 'path'
+import esbuild from 'esbuild'
+import { hashFiles } from './util/hash_files.js'
+import { sveltePlugin } from './util/svelte_plugin.js'
+import { template } from './util/template.js'
 
-exports.build = build
+const r = (p) =>
+    path.relative(process.cwd(), new URL(p, import.meta.url).pathname)
 
-async function build(enableWatch = false) {
+export async function build(enableWatch = false) {
     const env = Object.entries(process.env).reduce((acc, [k, v]) => {
         acc['process.env.' + k] = JSON.stringify(v)
         return acc
