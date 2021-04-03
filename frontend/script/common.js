@@ -28,13 +28,6 @@ async function build(enableWatch = false) {
         minify: prod,
         define: env,
         outdir: r(`../_build/`),
-        watch: enableWatch && {
-            onRebuild(error, result) {
-                if (error) console.error('watch build failed:', error)
-                const r = normalizeResult(result)
-                r.forEach(([i, o]) => console.log(`${i} => ${o}`))
-            },
-        },
     }
 
     await Promise.all([
@@ -80,11 +73,14 @@ async function build(enableWatch = false) {
     ])
 }
 
-function buildHtml(meta) {
+function buildHtml(pattern) {
     return template(
         r('../src/template.html'),
         r('../_build/index.html'),
-        meta.map(([i, o]) => [i.replace('src', '.'), o.replace('_build', '.')]),
+        pattern.map(([input, output]) => [
+            input.replace('src', '.'),
+            output.replace('_build', '.'),
+        ]),
     )
 }
 
