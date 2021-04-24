@@ -38,7 +38,8 @@ async function addEntry(output, entry, filepath) {
             if (
                 name.startsWith('.') ||
                 name.startsWith('_') ||
-                name.startsWith('node_modules')
+                name.startsWith('node_modules') ||
+                name.endsWith('_test.go')
             ) {
                 return
             }

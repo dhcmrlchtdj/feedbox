@@ -18,48 +18,86 @@ async function main() {
     }, {})
     const prod = process.env.NODE_ENV === 'production'
 
-    const hashStatic = await hashFiles(r('.'), r('../src'), r('../pnpm-lock.yaml'))
-    const hashAPI = await hashFiles(r('../../server', '../../internal', '../../go.sum'))
+    const esbuildOpts = {
+        metafile: true,
+        bundle: true,
+        format: 'esm',
+        target: 'es2020',
+        platform: 'browser',
+        sourcemap: true,
+        minify: prod,
+        outdir: r(`../_build/`),
+    }
 
-    await Promise.all([
-        build(
-            r('../src/app.ts'),
-            r(`../_build/app.${hashStatic}.js`),
-            { minify: prod, define: env },
-            { generate: 'dom', hydratable: true, dev: !prod },
-        ),
-        build(
-            r('../src/sw/index.ts'),
-            r('../_build/sw.js'),
-            {
-                minify: prod,
+    const buildApp = async () => {
+        return esbuild
+            .build({
+                ...esbuildOpts,
+                define: env,
+                plugins: [
+                    sveltePlugin({
+                        generate: 'dom',
+                        hydratable: true,
+                        dev: !prod,
+                    }),
+                ],
+                entryPoints: [r('../src/app.ts')],
+                entryNames: '[name]-[hash]',
+            })
+            .then(normalizeResult)
+    }
+    const buildServiceWorker = async () => {
+        const hashStatic = await hashFiles(
+            r('./'),
+            r('../src/'),
+            r('../pnpm-lock.yaml'),
+        )
+        const hashAPI = await hashFiles(
+            r('../../server/'),
+            r('../../internal/'),
+            r('../../go.sum'),
+        )
+
+        return esbuild
+            .build({
+                ...esbuildOpts,
                 define: {
                     ...env,
-                    __API_VERSION__: JSON.stringify(hashAPI),
                     __STATIC_VERSION__: JSON.stringify(hashStatic),
+                    __API_VERSION__: JSON.stringify(hashAPI),
                 },
-            },
-            { generate: 'ssr', dev: !prod },
-        ),
-        template(r('../src/template.html'), r('../_build/index.html'), [
-            ['./app.ts', `./app.${hashStatic}.js`],
-        ]),
+                plugins: [sveltePlugin({ generate: 'ssr', dev: !prod })],
+                entryPoints: [r('../src/sw/index.ts')],
+                entryNames: 'sw',
+            })
+            .then(normalizeResult)
+    }
+
+    await Promise.all([
+        buildApp().then(logResult).then(buildHtml),
+        buildServiceWorker().then(logResult),
     ])
 }
 
-function build(input, output, esbuildOpts, svelteOpts) {
-    return esbuild
-        .build({
-            bundle: true,
-            format: 'esm',
-            target: 'es2020',
-            platform: 'browser',
-            minify: true,
-            sourcemap: true,
-            ...esbuildOpts,
-            plugins: [sveltePlugin(svelteOpts)],
-            entryPoints: [input],
-            outfile: output,
-        })
-        .then(() => console.log(`${input} => ${output}`))
+function normalizeResult(r) {
+    const result = Object.entries(r?.metafile?.outputs ?? {})
+        .filter(([out, meta]) => Boolean(meta.entryPoint))
+        .map(([out, meta]) => [meta.entryPoint, out])
+    return result
+}
+
+function logResult(result) {
+    result.forEach(([i, o]) => console.log(`${i} => ${o}`))
+    return result
+}
+
+function buildHtml(pattern) {
+    return template(
+        r('../src/template.html'),
+        r('../_build/index.html'),
+        pattern.map(([input, output]) => [
+            input.replace('src', '.'),
+            output.replace('_build', '.'),
+        ]),
+    )
 }
