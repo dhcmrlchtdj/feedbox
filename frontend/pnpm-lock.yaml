@@ -1,21 +1,21 @@
 lockfileVersion: 5.3
 
 specifiers:
-  esbuild: 0.11.4
+  esbuild: 0.11.13
   prettier: 2.2.1
   svelte: 3.37.0
-  typescript: 4.2.3
+  typescript: 4.2.4
 
 devDependencies:
-  esbuild: 0.11.4
+  esbuild: 0.11.13
   prettier: 2.2.1
   svelte: 3.37.0
-  typescript: 4.2.3
+  typescript: 4.2.4
 
 packages:
 
-  /esbuild/0.11.4:
-    resolution: {integrity: sha512-qWGlOOTwyTn4f846LoR47Mif4Aek4rY9ChdXN7q7G15HpDYq3pxwnPFWe2os/jOq8naFh2Z+FqWfkq8ZP6kATw==}
+  /esbuild/0.11.13:
+    resolution: {integrity: sha512-d5coY4dd4rVWle0WzrR8+32ukKtZroVJ/wJzOwbBEmoSFB/H3QME0l+3IAN5Sf3LtuoUSivdv1/b5rD7OykXeg==}
     hasBin: true
     requiresBuild: true
     dev: true
@@ -31,8 +31,8 @@ packages:
     engines: {node: '>= 8'}
     dev: true
 
-  /typescript/4.2.3:
-    resolution: {integrity: sha512-qOcYwxaByStAWrBf4x0fibwZvMRG+r4cQoTjbPtUlrWjBHbmCAww1i448U0GJ+3cNNEtebDteo/cHOR3xJ4wEw==}
+  /typescript/4.2.4:
+    resolution: {integrity: sha512-V+evlYHZnQkaz8TRBuxTA92yZBPotr5H+WhQ7bD3hZUndx5tGOa1fuCgeSjxAzM1RiN5IzvadIXTVefuuwZCRg==}
     engines: {node: '>=4.2.0'}
     hasBin: true
     dev: true
