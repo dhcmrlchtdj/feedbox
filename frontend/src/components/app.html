@@ -49,7 +49,12 @@
             })
             .catch((err) => {
                 store.initialized.set(true)
-                if (loaded.reject) loaded.reject(err.message)
+                if (loaded.reject) {
+                    loaded.reject(err.message)
+                } else {
+                    window.alert(err.message)
+                    location.reload()
+                }
             })
     })
 </script>
