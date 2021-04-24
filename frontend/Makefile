@@ -5,9 +5,6 @@ PATH := ./node_modules/.bin:$(PATH)
 build: node_modules/tsconfig.tsbuildinfo
 	NODE_ENV=production node ./script/build.js
 
-dev:
-	node ./script/watch.js
-
 check:
 	tsc --noEmit
 	@touch -cm node_modules/tsconfig.tsbuildinfo # force update mtime
