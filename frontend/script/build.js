@@ -18,12 +18,13 @@ async function main() {
     }, {})
     const prod = process.env.NODE_ENV === 'production'
 
-    const hash = await hashFiles(r('.'), r('../src'), r('../pnpm-lock.yaml'))
+    const hashStatic = await hashFiles(r('.'), r('../src'), r('../pnpm-lock.yaml'))
+    const hashAPI = await hashFiles(r('../../server', '../../internal', '../../go.sum'))
 
     await Promise.all([
         build(
             r('../src/app.ts'),
-            r(`../_build/app.${hash}.js`),
+            r(`../_build/app.${hashStatic}.js`),
             { minify: prod, define: env },
             { generate: 'dom', hydratable: true, dev: !prod },
         ),
@@ -32,12 +33,16 @@ async function main() {
             r('../_build/sw.js'),
             {
                 minify: prod,
-                define: { ...env, __STATIC_VERSION__: JSON.stringify(hash) },
+                define: {
+                    ...env,
+                    __API_VERSION__: JSON.stringify(hashAPI),
+                    __STATIC_VERSION__: JSON.stringify(hashStatic),
+                },
             },
             { generate: 'ssr', dev: !prod },
         ),
         template(r('../src/template.html'), r('../_build/index.html'), [
-            ['./app.ts', `./app.${hash}.js`],
+            ['./app.ts', `./app.${hashStatic}.js`],
         ]),
     ])
 }
