@@ -13,5 +13,5 @@ export async function template(input, output, pattern) {
     await fs.mkdir(path.dirname(output), { recursive: true })
     await fs.writeFile(output, content)
 
-    console.log(`${input} => ${output}`)
+    return [[input, output]]
 }

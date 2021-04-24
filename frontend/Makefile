@@ -3,7 +3,10 @@ SHELL := bash
 PATH := ./node_modules/.bin:$(PATH)
 
 build: node_modules/tsconfig.tsbuildinfo
-	NODE_ENV=production node ./script/build.js
+	NODE_ENV=production node ./script/build_dist.js
+
+dev: node_modules/tsconfig.tsbuildinfo
+	NODE_ENV=production node ./script/build_watch.js
 
 check:
 	tsc --noEmit
