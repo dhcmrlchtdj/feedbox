@@ -2,7 +2,6 @@ package feedparser
 
 import (
 	"net/http"
-	neturl "net/url"
 
 	"github.com/mmcdole/gofeed"
 	"github.com/pkg/errors"
@@ -36,57 +35,21 @@ func (p *FeedParser) ParseURL(url string) (*gofeed.Feed, error) {
 		return nil, errors.Errorf("'%v' return '%v'", url, resp.Status)
 	}
 
-	feed, err := p.parser.Parse(resp.Body)
+	// sanitize body
+	body, err := sanitize(resp.Body, resp.Header.Get("content-type"))
+	if err != nil {
+		return nil, errors.Wrap(err, url)
+	}
+
+	feed, err := p.parser.Parse(body)
 	if err != nil {
 		return nil, errors.Wrap(err, url)
 	}
 
 	// fix item
-	if err := normalizeItemURL(url, feed); err != nil {
-		return nil, errors.Wrap(err, url)
+	if err := fixFeed(url, feed); err != nil {
+		return nil, err
 	}
-	restoreFeedburnerLink(feed)
 
 	return feed, nil
-}
-
-func normalizeItemURL(url string, feed *gofeed.Feed) error {
-	base, err := neturl.Parse(url)
-	if err != nil {
-		return err
-	}
-	for _, item := range feed.Items {
-		absLink, err := base.Parse(item.Link)
-		if err != nil {
-			return err
-		}
-		link, err := absLink.MarshalBinary()
-		if err != nil {
-			return err
-		}
-		item.Link = string(link)
-	}
-	return nil
-}
-
-func restoreFeedburnerLink(feed *gofeed.Feed) {
-	if _, found := feed.Extensions["feedburner"]; !found {
-		return
-	}
-
-	for _, item := range feed.Items {
-		feedburner, found := item.Extensions["feedburner"]
-		if !found {
-			continue
-		}
-		origLinks, found := feedburner["origLink"]
-		if !found {
-			continue
-		}
-		if len(origLinks) == 0 {
-			continue
-		}
-		origLink := origLinks[0]
-		item.Link = origLink.Value
-	}
 }

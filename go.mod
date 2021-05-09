@@ -33,5 +33,6 @@ require (
 	golang.org/x/net v0.0.0-20210508051633-16afe75a6701 // indirect
 	golang.org/x/oauth2 v0.0.0-20210427180440-81ed05c6b58c
 	golang.org/x/sys v0.0.0-20210507161434-a76c4d0a0096 // indirect
+	golang.org/x/text v0.3.6
 	google.golang.org/appengine v1.6.7 // indirect
 )
