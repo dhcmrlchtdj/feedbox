@@ -39,6 +39,6 @@ migrate:
 
 # outdated:
 #     go list -u -m -f '{{if not .Indirect}}{{.}}{{end}}' all
-upgrade_dep:
+upgrade:
 	go get -v -t -u ./...
 	go mod tidy -v
