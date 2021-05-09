@@ -2,6 +2,7 @@ package worker
 
 import (
 	"fmt"
+	"sort"
 	"strconv"
 	"strings"
 	"sync"
@@ -86,6 +87,20 @@ func fetchFeed(done *sync.WaitGroup, qFeed <-chan database.Feed) <-chan *feedIte
 				monitor.C.Warn(err)
 				continue
 			}
+			if feed.Len() == 0 {
+				continue
+			}
+
+			// order the Items by oldest to newest publish time
+			sort.Sort(feed)
+
+			updated := feed.Items[feed.Len()-1].PublishedParsed
+			if updated == nil {
+				updated = feed.UpdatedParsed
+			}
+			if updated == nil {
+				monitor.C.Warn(errors.Errorf("can not parse date field: %s", dbFeed.URL))
+			}
 
 			oldLinks, err := database.C.GetLinks(dbFeed.ID)
 			if err != nil {
@@ -113,11 +128,6 @@ func fetchFeed(done *sync.WaitGroup, qFeed <-chan database.Feed) <-chan *feedIte
 				continue
 			}
 
-			updated := newItems[0].PublishedParsed
-			if updated == nil {
-				monitor.C.Warn(errors.Errorf("can not parse date field: %s", dbFeed.URL))
-				updated = feed.UpdatedParsed
-			}
 			err = database.C.AddFeedLinks(dbFeed.ID, newLinks, updated)
 			if err != nil {
 				monitor.C.Error(err)
