@@ -7,8 +7,8 @@ import (
 )
 
 type Config struct {
-	Name      string
 	Validator func(token string) (interface{}, error)
+	Name      string
 }
 
 func New(cfg Config) fiber.Handler {

@@ -10,8 +10,8 @@ import (
 )
 
 type Profile struct {
-	ID    int64  `json:"id"`
 	Email string `json:"email,omitempty"`
+	ID    int64  `json:"id"`
 }
 
 type Config struct {

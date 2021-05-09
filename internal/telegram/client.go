@@ -11,7 +11,7 @@ import (
 	"github.com/dhcmrlchtdj/feedbox/internal/multipart"
 )
 
-var C *Client = nil
+var C *Client
 
 type Client struct {
 	Name  string
@@ -81,7 +81,7 @@ func (c *Client) rawSend(cmd string, payload interface{}) (io.ReadCloser, error)
 		return nil, errors.Wrap(err, "telegram/"+cmd)
 	}
 
-	resp, err := http.Post(url, "application/json", &buf) //nolint:bodyclose,gosec
+	resp, err := http.Post(url, "application/json", &buf) //nolint:gosec
 	if err != nil {
 		return nil, errors.Wrap(err, "telegram/"+cmd)
 	}

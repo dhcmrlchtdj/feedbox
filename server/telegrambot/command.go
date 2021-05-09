@@ -33,7 +33,7 @@ func executeCommand(cmd string, arg string, msg *telegram.Message) {
 	case "/add":
 		err = add(arg, msg)
 	case "/twitter":
-		err = add_twitter(arg, msg)
+		err = addTwitter(arg, msg)
 	case "/remove":
 		err = remove(arg, msg)
 	case "/remove_all":
@@ -41,7 +41,7 @@ func executeCommand(cmd string, arg string, msg *telegram.Message) {
 	case "/export":
 		err = export(msg)
 	case "/import":
-		err = import_OPML(msg)
+		err = importOPML(msg)
 	default:
 		err = errors.Wrap(ErrUnknownCommand, cmd)
 	}
@@ -124,7 +124,7 @@ func add(arg string, msg *telegram.Message) error {
 	})
 }
 
-func add_twitter(arg string, msg *telegram.Message) error {
+func addTwitter(arg string, msg *telegram.Message) error {
 	if arg == "" {
 		return ErrInvalidTwitter
 	}
@@ -204,7 +204,7 @@ func export(msg *telegram.Message) error {
 	})
 }
 
-func import_OPML(msg *telegram.Message) error {
+func importOPML(msg *telegram.Message) error {
 	// TODO
 	return nil
 }

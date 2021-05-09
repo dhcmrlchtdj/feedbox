@@ -6,10 +6,10 @@ import "time"
 // https://github.com/vitessio/vitess/blob/v8.0.0/go/ratelimiter/ratelimiter.go
 
 type RateLimiter struct {
-	interval time.Duration
+	lastTime time.Time
 	maxCount int
 	curCount int
-	lastTime time.Time
+	interval time.Duration
 }
 
 // The effective rate limit is equal to maxCount/interval.

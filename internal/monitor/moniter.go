@@ -7,7 +7,7 @@ import (
 	"github.com/rs/zerolog/log"
 )
 
-var C *Client = nil
+var C *Client
 
 type Client struct{}
 

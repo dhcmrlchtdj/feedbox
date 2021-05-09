@@ -10,7 +10,7 @@ import (
 	"github.com/rs/zerolog"
 )
 
-var C *Database = nil
+var C *Database
 
 type Database struct {
 	pool  *pgxpool.Pool

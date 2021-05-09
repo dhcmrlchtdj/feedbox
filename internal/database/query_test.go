@@ -112,8 +112,8 @@ func TestAddFeedLinks(t *testing.T) {
 	type feedAll struct {
 		ID      int64
 		URL     string
-		Updated *time.Time
 		Link    []string
+		Updated *time.Time
 	}
 	t.Run("time1", func(t *testing.T) {
 		time1 := time.Date(2000, time.January, 1, 0, 0, 0, 0, time.UTC)

@@ -1,0 +1,41 @@
+# https://github.com/golangci/golangci-lint/blob/master/.golangci.example.yml
+
+output:
+    sort-results: true
+
+linters:
+    presets:
+        - bugs
+        - error
+        - metalinter
+        - performance
+        - unused
+    disable:
+        - wrapcheck
+        - noctx
+
+linters-settings:
+    govet:
+        enable-all: true
+        disable:
+            - shadow
+            - fieldalignment
+    errcheck:
+        check-type-assertions: false
+        check-blank: true
+    gocritic:
+        settings:
+            hugeParam:
+                sizeThreshold: 100
+        enabled-tags:
+            - diagnostic
+            - style
+            - performance
+            - experimental
+            - opinionated
+        disabled-checks:
+            - ifElseChain
+            - paramTypeCombine
+            - whyNoLint
+            - unnamedResult
+            - commentedOutCode

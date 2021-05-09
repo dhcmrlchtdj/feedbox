@@ -31,10 +31,9 @@ jobs:
             - uses: actions/setup-go@v2.1.3
               with:
                   go-version: '1.x'
-            - uses: golangci/golangci-lint-action@v2.5.1
+            - uses: golangci/golangci-lint-action@v2.5.2
               with:
                   version: v1.39.0
-                  args: -p 'bugs,performance,unused' -E 'gocritic' -D 'noctx'
             - run: make test
               env:
                   ENV: 'test'

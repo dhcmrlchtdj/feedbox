@@ -10,21 +10,21 @@ import (
 	"github.com/dhcmrlchtdj/feedbox/internal/multipart"
 )
 
-var C *Client = nil
+var C *Client
 
 type Client struct {
+	client    *http.Client
 	urlPrefix string
 	from      string
 	apiKey    string
-	client    *http.Client
 }
 
 func New(domain string, apiKey string, from string) *Client {
 	return &Client{
+		client:    new(http.Client),
 		urlPrefix: "https://api.mailgun.net/v3/" + domain,
 		from:      from,
 		apiKey:    apiKey,
-		client:    &http.Client{},
 	}
 }
 

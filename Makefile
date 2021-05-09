@@ -16,7 +16,7 @@ fmt:
 	goimports -w .
 
 lint:
-	golangci-lint run -p 'bugs,performance,unused' -E 'gocritic' -D 'noctx'
+	golangci-lint run
 
 dev:
 	go run ./cmd/server
