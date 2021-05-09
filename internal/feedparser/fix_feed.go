@@ -2,8 +2,8 @@ package feedparser
 
 import (
 	"net/url"
-	"github.com/mmcdole/gofeed"
 
+	"github.com/mmcdole/gofeed"
 	"github.com/pkg/errors"
 )
 
