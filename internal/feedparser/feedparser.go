@@ -1,6 +1,7 @@
 package feedparser
 
 import (
+	"net/http"
 	neturl "net/url"
 
 	"github.com/mmcdole/gofeed"
@@ -9,17 +10,33 @@ import (
 
 type FeedParser struct {
 	parser *gofeed.Parser
+	client *http.Client
 }
 
 func New() *FeedParser {
 	parser := gofeed.NewParser()
-	parser.UserAgent = "FeedBox (+https://feedbox.h11.io)"
 	parser.RSSTranslator = newCustomRSSTranslator()
-	return &FeedParser{parser}
+	return &FeedParser{parser, new(http.Client)}
 }
 
 func (p *FeedParser) ParseURL(url string) (*gofeed.Feed, error) {
-	feed, err := p.parser.ParseURL(url)
+	req, err := http.NewRequest("GET", url, nil)
+	if err != nil {
+		return nil, err
+	}
+	req.Header.Set("User-Agent", "FeedBox (+https://feedbox.h11.io)")
+
+	resp, err := p.client.Do(req)
+	if err != nil {
+		return nil, err
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode != 200 {
+		return nil, errors.Errorf("'%v' return '%v'", url, resp.Status)
+	}
+
+	feed, err := p.parser.Parse(resp.Body)
 	if err != nil {
 		return nil, errors.Wrap(err, url)
 	}
