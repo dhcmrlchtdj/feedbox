@@ -1,10 +1,10 @@
 (database_test.feedAll) {
   ID: (int64) 1,
   URL: (string) (len=22) "http://rss.example.com",
-  Updated: (*time.Time)(2000-01-01 00:00:00 +0000 UTC),
   Link: ([]string) (len=3) {
     (string) (len=24) "http://rss.example.com/1",
     (string) (len=24) "http://rss.example.com/2",
     (string) (len=24) "http://rss.example.com/3"
-  }
+  },
+  Updated: (*time.Time)(2000-01-01 00:00:00 +0000 UTC)
 }
