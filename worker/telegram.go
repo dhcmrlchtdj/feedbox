@@ -11,6 +11,12 @@ import (
 	"github.com/dhcmrlchtdj/feedbox/internal/telegram"
 )
 
+// we should support template for different source
+// but I'm too lazy to implement it
+func isLobsters(tgItem telegramItem) bool {
+	return tgItem.feed.URL == "https://lobste.rs/rss"
+}
+
 func telegramGenMsg(wg *sync.WaitGroup, qTelegram <-chan telegramItem) <-chan telegram.SendMessagePayload {
 	msgs := make(chan telegram.SendMessagePayload)
 
@@ -26,10 +32,12 @@ func telegramGenMsg(wg *sync.WaitGroup, qTelegram <-chan telegramItem) <-chan te
 				text.WriteByte(' ')
 			}
 		}
-		if comment, ok := item.Custom["comments"]; ok {
-			text.WriteString("\n\n")
-			text.WriteString("comment: ")
-			text.WriteString(comment)
+		if isLobsters(tgItem) {
+			if comment, ok := item.Custom["comments"]; ok {
+				text.WriteString("\n\n")
+				text.WriteString("comment: ")
+				text.WriteString(comment)
+			}
 		}
 		content := text.String()
 

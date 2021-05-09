@@ -28,6 +28,7 @@ type githubItem struct {
 }
 
 type telegramItem struct {
+	feed  database.Feed
 	item  *gofeed.Item
 	users []int64
 }
@@ -167,7 +168,7 @@ func dispatchFeed(done *sync.WaitGroup, qFeedItem <-chan *feedItem) (<-chan gith
 		for i := range item.items {
 			item := &item.items[i]
 			qGithub <- githubItem{feed, item, githubUsers}
-			qTelegram <- telegramItem{item, telegramUsers}
+			qTelegram <- telegramItem{feed, item, telegramUsers}
 		}
 	}
 
