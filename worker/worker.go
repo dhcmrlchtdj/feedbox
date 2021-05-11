@@ -2,10 +2,10 @@ package worker
 
 import (
 	"fmt"
-	"sort"
 	"strconv"
 	"strings"
 	"sync"
+	"time"
 
 	"github.com/mmcdole/gofeed"
 	"github.com/pkg/errors"
@@ -91,13 +91,7 @@ func fetchFeed(done *sync.WaitGroup, qFeed <-chan database.Feed) <-chan *feedIte
 				continue
 			}
 
-			// order the Items by oldest to newest publish time
-			sort.Sort(feed)
-
-			updated := feed.Items[feed.Len()-1].PublishedParsed
-			if updated == nil {
-				updated = feed.UpdatedParsed
-			}
+			updated := getLatestUpdated(feed)
 			if updated == nil {
 				monitor.C.Warn(errors.Errorf("can not parse date field: %s", dbFeed.URL))
 			}
@@ -146,6 +140,25 @@ func fetchFeed(done *sync.WaitGroup, qFeed <-chan database.Feed) <-chan *feedIte
 	}()
 
 	return qFeedItem
+}
+
+func getLatestUpdated(feed *gofeed.Feed) *time.Time {
+	var latest *time.Time
+
+	for _, item := range feed.Items {
+		t := item.PublishedParsed
+		if t != nil {
+			if latest == nil || t.After(*latest) {
+				latest = t
+			}
+		}
+	}
+
+	if latest == nil {
+		latest = feed.UpdatedParsed
+	}
+
+	return latest
 }
 
 func dispatchFeed(done *sync.WaitGroup, qFeedItem <-chan *feedItem) (<-chan githubItem, <-chan telegramItem) {
