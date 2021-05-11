@@ -1,22 +1,32 @@
 package feedparser
 
 import (
+	"bytes"
 	"io"
 	"unicode"
 
-	"golang.org/x/net/html/charset"
 	"golang.org/x/text/runes"
 	"golang.org/x/text/transform"
 )
 
-func sanitize(source io.Reader, contentType string) (io.Reader, error) {
-	r, err := charset.NewReader(source, contentType)
-	if err != nil {
+func sanitize(source io.Reader) (io.Reader, error) {
+	preview := make([]byte, 64)
+	n, err := io.ReadFull(source, preview)
+	switch {
+	case err == io.ErrUnexpectedEOF:
+		preview = preview[:n]
+		source = bytes.NewReader(preview)
+	case err != nil:
 		return nil, err
+	default:
+		source = io.MultiReader(bytes.NewReader(preview), source)
 	}
 
-	r = removeNonPrintable(r)
-	return r, nil
+	if bytes.Contains(preview, []byte("UTF-8")) {
+		source = removeNonPrintable(source)
+	}
+
+	return source, nil
 }
 
 func removeNonPrintable(xml io.Reader) io.Reader {
