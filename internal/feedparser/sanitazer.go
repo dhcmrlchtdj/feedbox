@@ -5,6 +5,7 @@ import (
 	"io"
 	"unicode"
 
+	"github.com/pkg/errors"
 	"golang.org/x/text/runes"
 	"golang.org/x/text/transform"
 )
@@ -13,7 +14,7 @@ func sanitize(source io.Reader) (io.Reader, error) {
 	preview := make([]byte, 64)
 	n, err := io.ReadFull(source, preview)
 	switch {
-	case err == io.ErrUnexpectedEOF:
+	case errors.Is(err, io.ErrUnexpectedEOF):
 		preview = preview[:n]
 		source = bytes.NewReader(preview)
 	case err != nil:
