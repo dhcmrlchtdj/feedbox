@@ -80,7 +80,7 @@ func setupRoute(app *fiber.App) {
 		handler.ConnectGithub)
 
 	if os.Getenv("ENV") == "dev" {
-		app.Get("/api/v1/helper/preview/*", handler.HelperParseFeed)
+		app.Get("/helper/preview/*", handler.HelperParseFeed)
 	}
 
 	app.Post(

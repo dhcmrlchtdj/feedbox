@@ -36,10 +36,11 @@ func (p *FeedParser) ParseURL(url string) (*gofeed.Feed, error) {
 	}
 
 	// sanitize body
-	body, err := sanitize(resp.Body, resp.Header.Get("content-type"))
-	if err != nil {
-		return nil, errors.Wrap(err, url)
-	}
+	// body, err := sanitize(resp.Body, resp.Header.Get("content-type"))
+	// if err != nil {
+	//     return nil, errors.Wrap(err, url)
+	// }
+	body := resp.Body
 
 	feed, err := p.parser.Parse(body)
 	if err != nil {
