@@ -13,6 +13,7 @@ linters:
     disable:
         - wrapcheck
         - noctx
+        - revive
 
 linters-settings:
     govet:
