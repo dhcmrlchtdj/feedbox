@@ -4,14 +4,20 @@ import { WorkerRouter } from './worker_router'
 import * as strategy from './strategy'
 import * as version from './version'
 
-const just = (
-    cacheName: string,
-    strategyName: 'cacheOnly' | 'cacheFirst' | 'networkOnly' | 'networkFirst',
-) => async (event: FetchEvent) => {
-    const cache = await caches.open(cacheName)
-    const resp = await strategy[strategyName](cache, event.request)
-    return resp
-}
+const just =
+    (
+        cacheName: string,
+        strategyName:
+            | 'cacheOnly'
+            | 'cacheFirst'
+            | 'networkOnly'
+            | 'networkFirst',
+    ) =>
+    async (event: FetchEvent) => {
+        const cache = await caches.open(cacheName)
+        const resp = await strategy[strategyName](cache, event.request)
+        return resp
+    }
 
 const getThenUpdate = async (event: FetchEvent) => {
     const cache = await caches.open(version.API)
