@@ -17,6 +17,7 @@ const env = Object.entries(process.env).reduce((acc, [k, v]) => {
 }, {})
 
 const esbuildOpts = {
+    legalComments: 'linked',
     metafile: true,
     bundle: true,
     format: 'esm',
