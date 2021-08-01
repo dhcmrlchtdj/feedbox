@@ -35,7 +35,7 @@ func ConnectGithub(c *fiber.Ctx) error {
 	if err != nil {
 		return err
 	}
-	tokenStr, err := sign.S.EncodeToBase64(plaintext)
+	tokenStr, err := sign.S.EncodeToHex(plaintext)
 	if err != nil {
 		return err
 	}
