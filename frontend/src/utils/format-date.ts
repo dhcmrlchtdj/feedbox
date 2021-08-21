@@ -1,16 +1,12 @@
 const pad = (value: number) => `0${value}`.slice(-2)
 
-export const format = (
-    date: Date | number | string,
-    fmt: string = 'YYYY-MM-DD hh:mm:ss',
-) => {
-    const d = new Date(date)
-    const _year = d.getFullYear()
-    const _month = d.getMonth() + 1
-    const _date = d.getDate()
-    const _hour = d.getHours()
-    const _minute = d.getMinutes()
-    const _second = d.getSeconds()
+export const format = (date: Date, fmt: string = 'YYYY-MM-DD hh:mm:ss') => {
+    const _year = date.getFullYear()
+    const _month = date.getMonth() + 1
+    const _date = date.getDate()
+    const _hour = date.getHours()
+    const _minute = date.getMinutes()
+    const _second = date.getSeconds()
     const pairs = {
         YYYY: _year,
         M: _month,

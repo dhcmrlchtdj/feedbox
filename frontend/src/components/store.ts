@@ -3,7 +3,12 @@ import type { Writable } from 'svelte/store'
 
 export const email = writable('')
 
-export const feeds: Writable<string[]> = writable([])
+type Feed = {
+    id: number
+    updated: string
+    url: string
+}
+export const feeds: Writable<Feed[]> = writable([])
 
 export const notify: Writable<{ key: number; msg: string }[]> = writable([])
 export const newNotify = (msg: string) => {
