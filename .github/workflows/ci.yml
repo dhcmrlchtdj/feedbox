@@ -33,7 +33,7 @@ jobs:
                   go-version: '1.x'
             - uses: golangci/golangci-lint-action@v2.5.2
               with:
-                  version: v1.39.0
+                  version: v1.42.0
             - run: make test
               env:
                   ENV: 'test'
@@ -60,7 +60,7 @@ jobs:
                   fetch-depth: 0
             - uses: actions/setup-node@v2.1.2
               with:
-                  node-version: '14.x'
+                  node-version: '16.x'
             - uses: actions/cache@v2.1.2
               with:
                   path: |
@@ -69,7 +69,7 @@ jobs:
                   key: ${{ runner.os }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}
                   restore-keys: ${{ runner.os }}-pnpm-
             - run: |
-                npm i -g pnpm@5
+                npm i -g pnpm@6
                 pnpm install
                 pnpm store prune
                 make -j build
