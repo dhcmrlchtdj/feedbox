@@ -26,29 +26,29 @@
     import List from './list.html'
     import Notify from './notify.html'
 
-    import * as store from './store'
+    import * as state from '../state'
 
     import * as agent from '../utils/agent'
     import { Deferred } from '../utils/deferred'
 
     // self -> Window | ServiceWorkerGlobalScope
-    const state = self.__STATE__ || {}
-    export let loaded = state.loaded || new Deferred()
-    export let email = state.email || ''
-    export let feeds = state.feeds || []
+    const workerState = self.__STATE__ || {}
+    export let loaded = workerState.loaded || new Deferred()
+    export let email = workerState.email || ''
+    export let feeds = workerState.feeds || []
 
-    if (email) store.email.set(email)
-    if (feeds.length) store.feeds.set(feeds)
+    if (email) state.email.set(email)
+    if (feeds.length) state.feeds.set(feeds)
     onMount(() => {
         Promise.all([agent.get(`/api/v1/user`), agent.get(`/api/v1/feeds`)])
             .then(([user, resp]) => {
-                store.email.set(user.addition.email)
-                store.feeds.set(resp)
-                store.initialized.set(true)
+                state.email.set(user.addition.email)
+                state.feeds.set(resp)
+                state.initialized.set(true)
                 if (loaded.resolve) loaded.resolve(true)
             })
             .catch((err) => {
-                store.initialized.set(true)
+                state.initialized.set(true)
                 if (loaded.reject) {
                     loaded.reject(err.message)
                 } else {
