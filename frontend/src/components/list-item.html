@@ -7,7 +7,7 @@
                 </a>
             </div>
             <div class="tile-subtitle text-gray">
-                <span>updated @ {formatDate(new Date(feed.updated))}</span>
+                <span>updated @ {formatDate(feed.updated)}</span>
             </div>
         </div>
         <div class="tile-action">
@@ -39,7 +39,7 @@
 
     const formatDate = (date) => {
         if (!date) return 'never'
-        return format(date)
+        return format(new Date(date))
     }
 
     const remove = async () => {
