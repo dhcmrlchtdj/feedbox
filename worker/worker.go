@@ -90,6 +90,8 @@ func fetchFeed(done *sync.WaitGroup, qFeed <-chan database.Feed) <-chan *feedIte
 			updated := getLatestUpdated(feed)
 			if updated == nil {
 				monitor.C.Warn(errors.Errorf("can not parse date field: %s", dbFeed.URL))
+				now := time.Now()
+				updated = &now
 			}
 
 			oldLinks, err := database.C.GetLinks(dbFeed.ID)
