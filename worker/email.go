@@ -16,6 +16,10 @@ func isTelegramChannel(ghItem githubItem) bool {
 
 func sendEmail(done *sync.WaitGroup, qGithub <-chan githubItem) {
 	worker := func(x githubItem) {
+		if len(x.users) == 0 {
+			return
+		}
+
 		item := x.item
 
 		site := util.ExtractSiteName(x.feed.URL)

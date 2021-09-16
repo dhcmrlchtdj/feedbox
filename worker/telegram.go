@@ -17,11 +17,36 @@ func isLobsters(tgItem telegramItem) bool {
 	return tgItem.feed.URL == "https://lobste.rs/rss"
 }
 
-func telegramGenMsg(wg *sync.WaitGroup, qTelegram <-chan telegramItem) <-chan telegram.SendMessagePayload {
-	msgs := make(chan telegram.SendMessagePayload)
+func telegramSendMsg(msg telegram.SendMessagePayload, rl *RateLimiter) {
+	retry := 1
+	for {
+		rl.Wait()
+		err := telegram.C.SendMessage(msg)
+		if err != nil {
+			var err429 *telegram.ErrTooManyRequests
+			if errors.As(err, &err429) {
+				time.Sleep(time.Second * time.Duration(err429.Parameters.RetryAfter))
+				if retry > 0 {
+					retry--
+					continue
+				}
+			}
+			monitor.C.Error(err)
+		}
+		return
+	}
+}
 
-	genMsg := func(tgItem telegramItem) {
-		item := tgItem.item
+func sendTelegram(done *sync.WaitGroup, qTelegram <-chan telegramItem) {
+	// https://core.telegram.org/bots/faq#my-bot-is-hitting-limits-how-do-i-avoid-this
+	rateLimiter := NewRateLimiter(20, time.Second)
+
+	worker := func(x telegramItem) {
+		if len(x.users) == 0 {
+			return
+		}
+
+		item := x.item
 		var text strings.Builder
 		text.WriteString(item.Link)
 		if len(item.Categories) > 0 {
@@ -32,7 +57,7 @@ func telegramGenMsg(wg *sync.WaitGroup, qTelegram <-chan telegramItem) <-chan te
 				text.WriteByte(' ')
 			}
 		}
-		if isLobsters(tgItem) {
+		if isLobsters(x) {
 			if comment, ok := item.Custom["comments"]; ok {
 				text.WriteString("\n\n")
 				text.WriteString("comment: ")
@@ -41,60 +66,20 @@ func telegramGenMsg(wg *sync.WaitGroup, qTelegram <-chan telegramItem) <-chan te
 		}
 		content := text.String()
 
-		for _, user := range tgItem.users {
+		for _, user := range x.users {
 			payload := telegram.SendMessagePayload{
 				ChatID: user,
 				Text:   content,
 			}
-			msgs <- payload
+			telegramSendMsg(payload, rateLimiter)
 		}
 	}
 
-	go func() {
-		defer wg.Done()
-
-		for item := range qTelegram {
-			genMsg(item)
-		}
-		close(msgs)
-	}()
-
-	return msgs
-}
-
-func telegramSendMsg(msgs <-chan telegram.SendMessagePayload) {
-	// https://core.telegram.org/bots/faq#my-bot-is-hitting-limits-how-do-i-avoid-this
-	rateLimiter := NewRateLimiter(20, time.Second)
-
-	for msg := range msgs {
-		retry := 1
-		for {
-			rateLimiter.Wait()
-			err := telegram.C.SendMessage(msg)
-			if err != nil {
-				var err429 *telegram.ErrTooManyRequests
-				if errors.As(err, &err429) {
-					time.Sleep(time.Second * time.Duration(err429.Parameters.RetryAfter))
-					if retry > 0 {
-						retry--
-						continue
-					}
-				}
-				monitor.C.Error(err)
-			}
-			break
-		}
-	}
-}
-
-func sendTelegram(done *sync.WaitGroup, qTelegram <-chan telegramItem) {
 	go func() {
 		defer done.Done()
 
-		var wg sync.WaitGroup
-		wg.Add(1)
-		msgs := telegramGenMsg(&wg, qTelegram)
-		telegramSendMsg(msgs)
-		wg.Wait()
+		for item := range qTelegram {
+			worker(item)
+		}
 	}()
 }

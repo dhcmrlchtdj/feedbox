@@ -160,8 +160,8 @@ func getLatestUpdated(feed *gofeed.Feed) *time.Time {
 }
 
 func dispatchFeed(done *sync.WaitGroup, qFeedItem <-chan *feedItem) (<-chan githubItem, <-chan telegramItem) {
-	qGithub := make(chan githubItem, 100)
-	qTelegram := make(chan telegramItem, 100)
+	qGithub := make(chan githubItem)
+	qTelegram := make(chan telegramItem)
 
 	worker := func(item *feedItem) {
 		feed := item.feed
