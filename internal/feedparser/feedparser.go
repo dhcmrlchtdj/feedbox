@@ -19,7 +19,7 @@ func New() *FeedParser {
 }
 
 func (p *FeedParser) ParseURL(url string) (*gofeed.Feed, error) {
-	req, err := http.NewRequest("GET", url, nil)
+	req, err := http.NewRequest("GET", url, http.NoBody)
 	if err != nil {
 		return nil, err
 	}

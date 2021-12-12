@@ -35,8 +35,9 @@ linters-settings:
             - experimental
             - opinionated
         disabled-checks:
+            - commentedOutCode
             - ifElseChain
             - paramTypeCombine
-            - whyNoLint
+            - sprintfQuotedString
             - unnamedResult
-            - commentedOutCode
+            - whyNoLint

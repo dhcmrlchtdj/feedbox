@@ -45,7 +45,7 @@ func BuildOPML(urls []string) []byte {
 	for _, url := range urls {
 		text := html.EscapeString(ExtractSiteName(url))
 		xmlURL := html.EscapeString(url)
-		outline := fmt.Sprintf("<outline type=\"rss\" text=\"%s\" xmlUrl=\"%s\"/>\n", text, xmlURL)
+		outline := fmt.Sprintf(`<outline type="rss" text="%s" xmlUrl="%s"/>\n`, text, xmlURL)
 		b.WriteString(outline)
 	}
 
