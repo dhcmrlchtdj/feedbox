@@ -1,10 +1,6 @@
 package telegram
 
-import (
-	"io"
-
-	"github.com/pkg/errors"
-)
+import "io"
 
 ///
 
@@ -80,9 +76,13 @@ type Response struct {
 
 func (r *Response) Check() error {
 	if !r.Ok {
-		return errors.New(r.Description)
+		return r
 	}
 	return nil
+}
+
+func (e *Response) Error() string {
+	return e.Description
 }
 
 ///
