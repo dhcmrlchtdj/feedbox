@@ -35,7 +35,8 @@ func telegramSendMsg(msg telegram.SendMessagePayload, rl *RateLimiter) {
 			var errResp *telegram.Response
 			if errors.As(err, &errResp) {
 				if *errResp.ErrorCode == 403 {
-					continue
+					monitor.C.Warn(err)
+					return
 				}
 			}
 
