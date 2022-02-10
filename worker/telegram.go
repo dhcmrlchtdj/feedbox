@@ -19,17 +19,16 @@ func isLobsters(tgItem telegramItem) bool {
 
 func telegramSendMsg(msg telegram.SendMessagePayload, rl *RateLimiter) {
 	retry := 1
-	for {
+	for retry > 0 {
+		retry--
+
 		rl.Wait()
 		err := telegram.C.SendMessage(msg)
 		if err != nil {
 			var err429 *telegram.ErrTooManyRequests
 			if errors.As(err, &err429) {
 				time.Sleep(time.Second * time.Duration(err429.Parameters.RetryAfter))
-				if retry > 0 {
-					retry--
-					continue
-				}
+				continue
 			}
 
 			var errResp *telegram.Response
