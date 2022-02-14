@@ -31,7 +31,7 @@ func New() fiber.Handler {
 		clientETags := c.Get("if-none-match")
 
 		sum := xxhash.Sum64(body)
-		serverETag := fmt.Sprintf("W/\"%d-%016x\"", len(body), sum)
+		serverETag := fmt.Sprintf(`W/"%d-%016x"`, len(body), sum)
 		c.Set("etag", serverETag)
 
 		if strings.Contains(clientETags, serverETag) {
