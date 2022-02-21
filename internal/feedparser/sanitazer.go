@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"io"
 	"unicode"
-	"unicode/utf8"
 
 	"github.com/pkg/errors"
 	"golang.org/x/text/runes"
@@ -24,7 +23,9 @@ func sanitize(source io.Reader) (io.Reader, error) {
 		source = io.MultiReader(bytes.NewReader(preview), source)
 	}
 
-	if bytes.Contains(preview, []byte("UTF-8")) {
+	isUtf8 := bytes.Contains(preview, []byte("utf-8")) || bytes.Contains(preview, []byte("UTF-8"))
+	noEnc := !bytes.Contains(preview, []byte("encoding"))
+	if isUtf8 || noEnc {
 		source = removeNonPrintable(source)
 	}
 
@@ -34,9 +35,7 @@ func sanitize(source io.Reader) (io.Reader, error) {
 func removeNonPrintable(xml io.Reader) io.Reader {
 	// https://blog.zikes.me/post/cleaning-xml-files-before-unmarshaling-in-go/
 	t := runes.Remove(runes.Predicate(func(r rune) bool {
-		notPrintable := !unicode.IsPrint(r)
-		isError := r == utf8.RuneError
-		return (notPrintable || isError)
+		return !unicode.IsPrint(r)
 	}))
 	return transform.NewReader(xml, t)
 }
