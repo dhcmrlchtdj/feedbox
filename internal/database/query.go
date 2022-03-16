@@ -250,7 +250,7 @@ func (db *Database) SubscribeURLs(userID int64, urls []string) error {
 	return nil
 }
 
-func (db *Database) QueryRow(sql string, args ...interface{}) pgx.Row {
+func (db *Database) QueryRow(sql string, args ...any) pgx.Row {
 	return db.pool.QueryRow(context.Background(), sql, args...)
 }
 

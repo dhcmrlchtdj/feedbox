@@ -11,7 +11,7 @@ type JSONConsoleWriter struct {
 }
 
 func (w JSONConsoleWriter) Write(data []byte) (int, error) {
-	var evt map[string]interface{}
+	var evt map[string]any
 
 	decoder := json.NewDecoder(bytes.NewReader(data))
 	decoder.UseNumber()

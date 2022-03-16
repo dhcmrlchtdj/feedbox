@@ -73,7 +73,7 @@ func (c *Client) SendDocument(payload SendDocumentPayload) error {
 ///
 
 // caller MUST close response.Body
-func (c *Client) rawSend(cmd string, payload interface{}) (io.ReadCloser, error) {
+func (c *Client) rawSend(cmd string, payload any) (io.ReadCloser, error) {
 	url := "https://api.telegram.org/bot" + c.token + "/" + cmd
 
 	var buf bytes.Buffer
@@ -99,7 +99,7 @@ func (c *Client) rawSend(cmd string, payload interface{}) (io.ReadCloser, error)
 	return resp.Body, nil
 }
 
-func (c *Client) rawSendSimple(cmd string, payload interface{}) error {
+func (c *Client) rawSendSimple(cmd string, payload any) error {
 	body, err := c.rawSend(cmd, payload)
 	if err != nil {
 		return err

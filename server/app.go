@@ -105,7 +105,7 @@ func errorHandler(c *fiber.Ctx, err error) error {
 	return notCare
 }
 
-func cookieValidator(tokenStr string) ( /* Credential */ interface{}, error) {
+func cookieValidator(tokenStr string) ( /* Credential */ any, error) {
 	plaintext, err := sign.S.DecodeFromHex(tokenStr)
 	if err != nil {
 		return nil, errors.Wrap(err, "invalid token")

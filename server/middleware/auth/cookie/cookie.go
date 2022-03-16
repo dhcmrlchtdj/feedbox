@@ -7,7 +7,7 @@ import (
 )
 
 type Config struct {
-	Validator func(token string) (interface{}, error)
+	Validator func(token string) (any, error)
 	Name      string
 }
 
