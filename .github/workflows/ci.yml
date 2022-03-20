@@ -27,13 +27,16 @@ jobs:
                     --health-timeout 5s
                     --health-retries 5
         steps:
-            - uses: actions/checkout@v2.3.4
-            - uses: actions/setup-go@v2.1.3
+            # https://github.com/marketplace/actions/checkout
+            - uses: actions/checkout@v3.0.0
+            # https://github.com/marketplace/actions/setup-go-environment
+            - uses: actions/setup-go@v3.0.0
               with:
-                  go-version: '1.x'
-            - uses: golangci/golangci-lint-action@v2.5.2
+                  go-version: '1.18'
+            # https://github.com/marketplace/actions/run-golangci-lint
+            - uses: golangci/golangci-lint-action@v3.1.0
               with:
-                  version: v1.43.0
+                  version: v1.45.0
             - run: make test
               env:
                   ENV: 'test'
@@ -55,13 +58,16 @@ jobs:
         needs: test
         runs-on: ubuntu-20.04
         steps:
-            - uses: actions/checkout@v2.3.4
+            # https://github.com/marketplace/actions/checkout
+            - uses: actions/checkout@v3.0.0
               with:
                   fetch-depth: 0
-            - uses: actions/setup-node@v2.1.2
+            # https://github.com/marketplace/actions/setup-node-js-environment
+            - uses: actions/setup-node@v3.0.0
               with:
                   node-version: '16.x'
-            - uses: actions/cache@v2.1.2
+            # https://github.com/marketplace/actions/cache
+            - uses: actions/cache@v2.1.7
               with:
                   path: |
                       ~/.npm
