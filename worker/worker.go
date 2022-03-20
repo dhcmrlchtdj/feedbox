@@ -1,6 +1,7 @@
 package worker
 
 import (
+	"sort"
 	"strconv"
 	"sync"
 	"time"
@@ -87,6 +88,9 @@ func fetchFeed(done *sync.WaitGroup, qFeed <-chan database.Feed) <-chan *feedIte
 				continue
 			}
 
+			// Sorting with sort.Sort will order the Items by oldest to newest publish time.
+			sort.Sort(feed)
+
 			updated := getLatestUpdated(feed)
 			if updated == nil {
 				monitor.C.Warn(errors.Errorf("can not parse date field: %s", dbFeed.URL))
@@ -141,21 +145,11 @@ func fetchFeed(done *sync.WaitGroup, qFeed <-chan database.Feed) <-chan *feedIte
 }
 
 func getLatestUpdated(feed *gofeed.Feed) *time.Time {
-	var latest *time.Time
-
-	for _, item := range feed.Items {
-		t := item.PublishedParsed
-		if t != nil {
-			if latest == nil || t.After(*latest) {
-				latest = t
-			}
-		}
-	}
-
+	// the feed must be sorted
+	latest := feed.Items[len(feed.Items)-1].PublishedParsed
 	if latest == nil {
 		latest = feed.UpdatedParsed
 	}
-
 	return latest
 }
 
