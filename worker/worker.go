@@ -1,6 +1,7 @@
 package worker
 
 import (
+	"sort"
 	"strconv"
 	"sync"
 	"time"
@@ -164,6 +165,8 @@ func dispatchFeed(done *sync.WaitGroup, qFeedItem <-chan *feedItem) (<-chan gith
 	qTelegram := make(chan telegramItem)
 
 	worker := func(item *feedItem) {
+		sort.Sort(item)
+
 		feed := item.feed
 		users, err := database.C.GetSubscribers(feed.ID)
 		if err != nil {
@@ -204,4 +207,22 @@ func dispatchFeed(done *sync.WaitGroup, qFeedItem <-chan *feedItem) (<-chan gith
 	}()
 
 	return qGithub, qTelegram
+}
+
+func (f *feedItem) Len() int {
+	return len(f.items)
+}
+
+func (f *feedItem) Less(i int, k int) bool {
+	x := f.items[i].PublishedParsed
+	y := f.items[k].PublishedParsed
+	if x != nil && y != nil {
+		return x.Before(*y)
+	} else {
+		return false
+	}
+}
+
+func (f *feedItem) Swap(i int, k int) {
+	f.items[i], f.items[k] = f.items[k], f.items[i]
 }
