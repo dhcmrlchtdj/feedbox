@@ -34,6 +34,8 @@ func executeCommand(cmd string, arg string, msg *telegram.Message) {
 		err = add(arg, msg)
 	case "/twitter":
 		err = addTwitter(arg, msg)
+	case "/twitter_media":
+		err = addTwitterMedia(arg, msg)
 	case "/remove":
 		err = remove(arg, msg)
 	case "/remove_all":
@@ -128,7 +130,15 @@ func addTwitter(arg string, msg *telegram.Message) error {
 	if arg == "" {
 		return ErrInvalidTwitter
 	}
-	url := "https://rsshub.app/twitter/user/" + arg
+	url := "https://nitter.net/" + arg + "/with_replies/rss"
+	return add(url, msg)
+}
+
+func addTwitterMedia(arg string, msg *telegram.Message) error {
+	if arg == "" {
+		return ErrInvalidTwitter
+	}
+	url := "https://nitter.net/" + arg + "/media/rss"
 	return add(url, msg)
 }
 
