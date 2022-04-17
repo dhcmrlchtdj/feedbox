@@ -1,6 +1,7 @@
 package worker
 
 import (
+	"math"
 	"strings"
 	"sync"
 	"time"
@@ -27,7 +28,8 @@ func telegramSendMsg(msg telegram.SendMessagePayload, rl *RateLimiter) {
 		if err != nil {
 			var err429 *telegram.ErrTooManyRequests
 			if errors.As(err, &err429) {
-				time.Sleep(time.Second * time.Duration(err429.Parameters.RetryAfter))
+				maxSleep := math.Min(err429.Parameters.RetryAfter, 120)
+				time.Sleep(time.Second * time.Duration(maxSleep))
 				continue
 			}
 
