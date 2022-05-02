@@ -12,6 +12,7 @@ on:
 
 jobs:
     test:
+        # https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#choosing-github-hosted-runners
         runs-on: ubuntu-20.04
         services:
             postgres:
@@ -28,7 +29,7 @@ jobs:
                     --health-retries 5
         steps:
             # https://github.com/marketplace/actions/checkout
-            - uses: actions/checkout@v3.0.0
+            - uses: actions/checkout@v3.0.2
             # https://github.com/marketplace/actions/setup-go-environment
             - uses: actions/setup-go@v3.0.0
               with:
@@ -59,15 +60,15 @@ jobs:
         runs-on: ubuntu-20.04
         steps:
             # https://github.com/marketplace/actions/checkout
-            - uses: actions/checkout@v3.0.0
+            - uses: actions/checkout@v3.0.2
               with:
                   fetch-depth: 0
             # https://github.com/marketplace/actions/setup-node-js-environment
-            - uses: actions/setup-node@v3.0.0
+            - uses: actions/setup-node@v3.1.1
               with:
-                  node-version: '16.x'
+                  node-version: 18
             # https://github.com/marketplace/actions/cache
-            - uses: actions/cache@v2.1.7
+            - uses: actions/cache@v3.0.2
               with:
                   path: |
                       ~/.npm
@@ -75,7 +76,7 @@ jobs:
                   key: ${{ runner.os }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}
                   restore-keys: ${{ runner.os }}-pnpm-
             - run: |
-                npm i -g pnpm@6
+                npm i -g pnpm@7
                 pnpm install
                 pnpm store prune
                 make -j build
