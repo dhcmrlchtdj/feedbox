@@ -1,28 +1,22 @@
-import { createStore } from 'solid-js/store'
+import { writable } from 'svelte/store'
+import type { Writable } from 'svelte/store'
 
-export type Feed = {
+export const email = writable('')
+
+type Feed = {
     id: number
     updated: string
     url: string
 }
+export const feeds: Writable<Feed[]> = writable([])
 
-export type Notify = {
-    key: number
-    msg: string
-}
-
-export const [state, setState] = createStore({
-    email: '',
-    initialized: false,
-    feeds: [] as Feed[],
-    notify: [] as Notify[],
-})
-
-let notifyCount = 0
+export const notify: Writable<{ key: number; msg: string }[]> = writable([])
 export const newNotify = (msg: string) => {
-    const key = notifyCount++
-    setState('notify', (prev) => [...prev, { msg, key }])
+    const key = Date.now()
+    notify.update((prev) => [...prev, { msg, key }])
     setTimeout(() => {
-        setState('notify', (prev) => prev.filter((x) => x.key !== key))
+        notify.update((prev) => [...prev.filter((x) => x.key !== key)])
     }, 5 * 1000)
 }
+
+export const initialized = writable(false)

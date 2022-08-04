@@ -1,0 +1,8 @@
+{#each $feeds as feed (feed.id)}
+<ListItem {feed}></ListItem>
+{/each}
+
+<script>
+    import { feeds } from '../state'
+    import ListItem from './list-item.html'
+</script>

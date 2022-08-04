@@ -1,16 +1,13 @@
 {
-    "include": ["src/**/*.ts", "src/**/*.tsx"],
+    "include": ["src/**/*.ts"],
     "compilerOptions": {
         "outDir": "node_modules/",
         "noEmit": true,
 
-        "module": "NodeNext",
+        "module": "ES6",
         "target": "ESNext",
         "lib": ["ESNext", "DOM", "WebWorker"],
         "skipLibCheck": true,
-
-        "jsx": "preserve",
-        "jsxImportSource": "solid-js",
 
         "sourceMap": false,
         "inlineSourceMap": false,

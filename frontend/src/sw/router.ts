@@ -1,5 +1,5 @@
-import { renderToStringAsync } from 'solid-js/web'
-import { App } from '../components/app'
+// @ts-ignore
+import App from '../components/app.html'
 import { WorkerRouter } from './worker_router'
 import * as strategy from './strategy'
 import * as version from './version'
@@ -47,15 +47,16 @@ export const router = new WorkerRouter()
             })
             .then(async ([user, feeds]) => {
                 const state = {
+                    loaded: { promise: true },
                     email: user.addition.email,
                     feeds: feeds,
                 }
                 const tpl = await resp.clone().text()
-                const app = renderToStringAsync(() => App(state))
+                const app = App.render(state)
                 const __STATE__ = JSON.stringify(state)
                 const html = tpl.replace(
                     '<div id="app"></div>',
-                    `<div id="app">${app}</div><script>window.__STATE__=${__STATE__}</script>`,
+                    `<div id="app">${app.html}</div><script>window.__STATE__=${__STATE__}</script>`,
                 )
                 return new Response(html, resp)
             })

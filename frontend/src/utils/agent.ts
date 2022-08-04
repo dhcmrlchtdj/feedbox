@@ -30,11 +30,11 @@ const req = async (
     }).then(auth)
 }
 
-export const get = async (url: string, headers?: headers) =>
+export const get = async (url: string, headers: headers) =>
     req('GET', url, null, headers)
-export const post = async (url: string, data: data, headers?: headers) =>
+export const post = async (url: string, data: data, headers: headers) =>
     req('POST', url, data, headers)
-export const put = async (url: string, data: data, headers?: headers) =>
+export const put = async (url: string, data: data, headers: headers) =>
     req('PUT', url, data, headers)
-export const del = async (url: string, data: data, headers?: headers) =>
+export const del = async (url: string, data: data, headers: headers) =>
     req('DELETE', url, data, headers)
