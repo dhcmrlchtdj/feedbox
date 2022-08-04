@@ -3,7 +3,7 @@
 import path from 'path'
 import esbuild from 'esbuild'
 import { hashFiles } from './hash_files.js'
-import { sveltePlugin } from './svelte_plugin.js'
+import { solidPlugin } from './solid_plugin.js'
 import { template } from './template.js'
 
 const r = (p) =>
@@ -34,10 +34,9 @@ export async function buildApp(enableWatch = false) {
             ...esbuildOpts,
             define: env,
             plugins: [
-                sveltePlugin({
-                    generate: 'dom',
+                solidPlugin({
                     hydratable: true,
-                    dev: !prod,
+                    generate: 'dom',
                 }),
             ],
             entryPoints: [r('../src/app.ts')],
@@ -76,7 +75,12 @@ export async function buildServiceWorker(enableWatch = false) {
                 __STATIC_VERSION__: JSON.stringify(hashStatic),
                 __API_VERSION__: JSON.stringify(hashAPI),
             },
-            plugins: [sveltePlugin({ generate: 'ssr', dev: !prod })],
+            plugins: [
+                solidPlugin({
+                    hydratable: true,
+                    generate: 'ssr',
+                }),
+            ],
             entryPoints: [r('../src/sw/index.ts')],
             entryNames: 'sw',
             watch: enableWatch && {
