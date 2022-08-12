@@ -121,7 +121,7 @@ func fetchFeed(done *sync.WaitGroup, qFeed <-chan database.Feed) <-chan *feedIte
 				continue
 			}
 
-			err = database.C.AddFeedLinks(dbFeed.ID, newLinks, updated)
+			err = database.C.AddFeedLinks(dbFeed.ID, newLinks, updated.UnixMilli())
 			if err != nil {
 				monitor.C.Error(err)
 				continue

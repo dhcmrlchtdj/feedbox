@@ -22,6 +22,7 @@ dev:
 	go run ./cmd/server
 
 test:
+	@mkdir ./_build
 	ENV=test TZ=UTC go test -race ./internal/util
 	ENV=test TZ=UTC go test -race ./internal/database
 	ENV=test TZ=UTC go test -race ./server

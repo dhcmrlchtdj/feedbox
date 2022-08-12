@@ -7,7 +7,7 @@ import (
 	"strconv"
 
 	"github.com/golang-migrate/migrate/v4"
-	_ "github.com/golang-migrate/migrate/v4/database/postgres"
+	_ "github.com/golang-migrate/migrate/v4/database/sqlite"
 	_ "github.com/golang-migrate/migrate/v4/source/file"
 	"github.com/joho/godotenv"
 	"github.com/pkg/errors"
@@ -50,7 +50,8 @@ func main() {
 	}
 
 	util.CheckEnvs("DATABASE_URL")
-	m, err := migrate.New("file://./migration", os.Getenv("DATABASE_URL"))
+	dbUrl := fmt.Sprintf("sqlite://%s?x-no-tx-wrap=true", os.Getenv("DATABASE_URL"))
+	m, err := migrate.New("file://./migration", dbUrl)
 	if err != nil {
 		panic(err)
 	}

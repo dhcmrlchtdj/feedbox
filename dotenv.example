@@ -18,4 +18,4 @@ TELEGRAM_WEBHOOK_PATH="openssl rand -hex 16"
 
 ROLLBAR_TOKEN="https://rollbar.com/team/project/settings/access_tokens/ post_server_item"
 
-DATABASE_URL="postgres://user:password@localhost:5432/feedbox?sslmode=disable"
+DATABASE_URL="/path/to/sqlite.db"
