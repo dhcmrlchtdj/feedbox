@@ -1,7 +1,0 @@
-([]database.Feed) (len=1) {
-  (database.Feed) {
-    ID: (int64) 1,
-    URL: (string) (len=22) "http://rss.example.com",
-    Updated: (*int64)(1577836800000)
-  }
-}

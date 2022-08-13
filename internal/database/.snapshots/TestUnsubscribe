@@ -1,7 +1,7 @@
 ([]database.Feed) (len=1) {
   (database.Feed) {
-    ID: (int64) 4,
+    ID: (int64) 2,
     URL: (string) (len=23) "http://atom.example.com",
-    Updated: (*int64)(<nil>)
+    Updated: (*time.Time)(<nil>)
   }
 }

@@ -2,7 +2,6 @@ package server_test
 
 import (
 	"bytes"
-	"fmt"
 	"io"
 	"net/http/httptest"
 	"os"
@@ -13,7 +12,7 @@ import (
 	"github.com/bradleyjkemp/cupaloy/v2"
 	"github.com/gofiber/fiber/v2"
 	"github.com/golang-migrate/migrate/v4"
-	_ "github.com/golang-migrate/migrate/v4/database/sqlite"
+	_ "github.com/golang-migrate/migrate/v4/database/postgres"
 	_ "github.com/golang-migrate/migrate/v4/source/file"
 	"github.com/joho/godotenv"
 	"github.com/pkg/errors"
@@ -40,7 +39,7 @@ func TestMain(m *testing.M) {
 
 		var err error
 
-		database.C, err = database.New(os.Getenv("DATABASE_URL"), nil)
+		database.C, err = database.New(os.Getenv("DATABASE_URL"))
 		if err != nil {
 			panic(err)
 		}
@@ -60,8 +59,7 @@ func TestMain(m *testing.M) {
 }
 
 func setupDatabase() {
-	dbUrl := fmt.Sprintf("sqlite://%s?x-no-tx-wrap=true", os.Getenv("DATABASE_URL"))
-	m, err := migrate.New("file://../migration", dbUrl)
+	m, err := migrate.New("file://../migration", os.Getenv("DATABASE_URL"))
 	if err != nil {
 		panic(err)
 	}

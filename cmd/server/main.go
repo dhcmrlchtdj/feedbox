@@ -33,7 +33,10 @@ func main() {
 	}
 
 	util.CheckEnvs("DATABASE_URL")
-	db, err := database.New(os.Getenv("DATABASE_URL"), &log.Logger)
+	db, err := database.New(
+		os.Getenv("DATABASE_URL"),
+		database.WithMaxConns(10),
+		database.WithLogger("info", &log.Logger))
 	if err != nil {
 		panic(err)
 	}

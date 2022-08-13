@@ -195,6 +195,6 @@ func export(msg *telegram.Message) error {
 }
 
 func importOPML(msg *telegram.Message) error {
-	// TODO: unused
+	// TODO
 	return nil
 }

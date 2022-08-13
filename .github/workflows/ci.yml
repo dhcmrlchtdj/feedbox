@@ -8,83 +8,85 @@ on:
         branches:
             - master
         paths-ignore:
-            - "frontend/**"
+            - 'frontend/**'
 
 jobs:
     test:
         # https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#choosing-github-hosted-runners
-        runs-on: ubuntu-22.04
+        runs-on: ubuntu-20.04
+        services:
+            postgres:
+                image: postgres
+                env:
+                    POSTGRES_USER: user
+                    POSTGRES_PASSWORD: password
+                    POSTGRES_DB: feedbox
+                ports: ['5432:5432']
+                options: >-
+                    --health-cmd pg_isready
+                    --health-interval 10s
+                    --health-timeout 5s
+                    --health-retries 5
         steps:
             # https://github.com/marketplace/actions/checkout
             - uses: actions/checkout@v3.0.2
-              with:
-                  fetch-depth: 0
             # https://github.com/marketplace/actions/setup-go-environment
-            - uses: actions/setup-go@v3.2.1
+            - uses: actions/setup-go@v3.0.0
               with:
-                  go-version: "1.19"
-            - run: go version
+                  go-version: '1.18'
             # https://github.com/marketplace/actions/run-golangci-lint
-            - uses: golangci/golangci-lint-action@v3.2.0
+            - uses: golangci/golangci-lint-action@v3.1.0
               with:
-                  version: v1.48.0
+                  version: v1.45.0
             - run: make test
               env:
-                  ENV: "test"
-                  SERVER: "http://localhost:8000"
-                  PORT: "8000"
-                  COOKIE_SECRET: "970a02fee5412b41db5c6efc4fe2e0e41bd682778cb1206bcbf295125622507f"
-                  GITHUB_CLIENT_ID: "https://github.com/settings/developers"
-                  GITHUB_CLIENT_SECRET: "https://github.com/settings/developers"
-                  MAILGUN_API_KEY: "key-example"
-                  MAILGUN_DOMAIN: "feedbox.example.com"
-                  MAILGUN_FROM: "feedbox <feedbox@example.com>"
-                  TELEGRAM_BOT_TOKEN: "123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11"
-                  TELEGRAM_BOT_NAME: "bot_name"
-                  TELEGRAM_WEBHOOK_PATH: "131cd9868e9cf396a807c265a3c97e72"
-                  ROLLBAR_TOKEN: "post_server_item"
-                  DATABASE_URL: "./feedbox.db"
+                  ENV: 'test'
+                  SERVER: 'http://localhost:8000'
+                  PORT: '8000'
+                  COOKIE_SECRET: '970a02fee5412b41db5c6efc4fe2e0e41bd682778cb1206bcbf295125622507f'
+                  GITHUB_CLIENT_ID: 'https://github.com/settings/developers'
+                  GITHUB_CLIENT_SECRET: 'https://github.com/settings/developers'
+                  MAILGUN_API_KEY: 'key-example'
+                  MAILGUN_DOMAIN: 'feedbox.example.com'
+                  MAILGUN_FROM: 'feedbox <feedbox@example.com>'
+                  TELEGRAM_BOT_TOKEN: '123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11'
+                  TELEGRAM_BOT_NAME: 'bot_name'
+                  TELEGRAM_WEBHOOK_PATH: '131cd9868e9cf396a807c265a3c97e72'
+                  ROLLBAR_TOKEN: 'post_server_item'
+                  DATABASE_URL: 'postgres://user:password@localhost:5432/feedbox?sslmode=disable'
     deploy:
         if: github.event_name == 'push' && github.ref == 'refs/heads/master'
         needs: test
-        runs-on: ubuntu-22.04
+        runs-on: ubuntu-20.04
         steps:
             # https://github.com/marketplace/actions/checkout
             - uses: actions/checkout@v3.0.2
               with:
                   fetch-depth: 0
             # https://github.com/marketplace/actions/setup-node-js-environment
-            - uses: actions/setup-node@v3.4.1
+            - uses: actions/setup-node@v3.1.1
               with:
                   node-version: 18
-            - run: node --version
             # https://github.com/marketplace/actions/cache
-            - uses: actions/cache@v3.0.7
+            - uses: actions/cache@v3.0.2
               with:
-                  path: ~/.local/share/pnpm/store
+                  path: |
+                      ~/.npm
+                      ~/.pnpm-store
                   key: ${{ runner.os }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}
                   restore-keys: ${{ runner.os }}-pnpm-
             - run: |
-                  corepack enable pnpm
-                  pnpm install
-                  # https://www.npmjs.com/package/wrangler
-                  pnpm store prune
-              env:
-                  PNPM_HOME: /home/runner/.local/bin
+                npm i -g pnpm@7
+                pnpm install
+                pnpm store prune
+                make -j build
+                echo '!/_build' > .gitignore
+                git config user.name "$GITHUB_ACTOR"
+                git config user.email "$GITHUB_ACTOR@github.action"
+                git add .
+                git commit -m 'generated by github action'
               working-directory: ./frontend
-            - run: make -j build
-              working-directory: ./frontend
-            # https://github.com/marketplace/actions/github-action-for-flyctl
-            - uses: superfly/flyctl-actions/setup-flyctl@master
-            # - run: |
-            #       flyctl secrets set --stage COOKIE_SECRET=${{ secrets.COOKIE_SECRET }}
-            #       flyctl secrets set --stage GITHUB_CLIENT_ID=${{ secrets.GH_CLIENT_ID }}
-            #       flyctl secrets set --stage GITHUB_CLIENT_SECRET=${{ secrets.GH_CLIENT_SECRET }}
-            #       flyctl secrets set --stage MAILGUN_API_KEY=${{ secrets.MAILGUN_API_KEY }}
-            #       flyctl secrets set --stage TELEGRAM_BOT_TOKEN=${{ secrets.TELEGRAM_BOT_TOKEN }}
-            #       flyctl secrets set --stage TELEGRAM_WEBHOOK_PATH=${{ secrets.TELEGRAM_WEBHOOK_PATH }}
-            #   env:
-            #       FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
-            - run: flyctl deploy --remote-only
+            - name: deploy heroku
+              run: git push --force https://heroku:$HEROKU_AUTH_TOKEN@git.heroku.com/fbox.git
               env:
-                  FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
+                  HEROKU_AUTH_TOKEN: ${{ secrets.HEROKU_AUTH_TOKEN }}
