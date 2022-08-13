@@ -7,8 +7,13 @@ new App({
 })
 
 if (navigator.serviceWorker) {
-    navigator.serviceWorker.register('/sw.js')
-    // navigator.serviceWorker
-    //     .getRegistrations()
-    //     .then((workers) => workers.map((worker) => worker.unregister()))
+    const query = new URLSearchParams(location.search)
+    const sw = query.get('sw')
+    if (sw === '0') {
+        navigator.serviceWorker
+            .getRegistrations()
+            .then((workers) => workers.map((worker) => worker.unregister()))
+    } else {
+        navigator.serviceWorker.register('/sw.js')
+    }
 }
