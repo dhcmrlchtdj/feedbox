@@ -30,8 +30,6 @@ jobs:
         steps:
             # https://github.com/marketplace/actions/checkout
             - uses: actions/checkout@v3.0.2
-              with:
-                  fetch-depth: 0
             # https://github.com/marketplace/actions/setup-go-environment
             - uses: actions/setup-go@v3.2.1
               with:
@@ -63,8 +61,6 @@ jobs:
         steps:
             # https://github.com/marketplace/actions/checkout
             - uses: actions/checkout@v3.0.2
-              with:
-                  fetch-depth: 0
             # https://github.com/marketplace/actions/setup-node-js-environment
             - uses: actions/setup-node@v3.4.1
               with:
