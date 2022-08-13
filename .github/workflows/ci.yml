@@ -36,7 +36,6 @@ jobs:
             - uses: actions/setup-go@v3.2.1
               with:
                   go-version: "1.19"
-            - run: go version
             # https://github.com/marketplace/actions/run-golangci-lint
             - uses: golangci/golangci-lint-action@v3.2.0
               with:
@@ -70,7 +69,6 @@ jobs:
             - uses: actions/setup-node@v3.4.1
               with:
                   node-version: 18
-            - run: node --version
             # https://github.com/marketplace/actions/cache
             - uses: actions/cache@v3.0.7
               with:
