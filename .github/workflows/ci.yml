@@ -17,6 +17,8 @@ jobs:
         steps:
             # https://github.com/marketplace/actions/checkout
             - uses: actions/checkout@v3.0.2
+              with:
+                  fetch-depth: 0
             # https://github.com/marketplace/actions/setup-go-environment
             - uses: actions/setup-go@v3.2.1
               with:
@@ -73,7 +75,7 @@ jobs:
             - run: make -j build
               working-directory: ./frontend
             # https://github.com/marketplace/actions/github-action-for-flyctl
-            - uses: superfly/flyctl-actions@1.1
+            - uses: superfly/flyctl-actions/setup-flyctl@master
             - run: |
                   flyctl secrets set COOKIE_SECRET=${{ secrets.COOKIE_SECRET }}
                   flyctl secrets set GITHUB_CLIENT_ID=${{ secrets.GH_CLIENT_ID }}
