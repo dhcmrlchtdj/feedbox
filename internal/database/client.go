@@ -49,7 +49,7 @@ func (db *Database) Exec(query string, args ...any) (sql.Result, error) {
 			latency := time.Since(start)
 			db.logger.Trace().
 				Str("query", query).
-				Str("args", jsonify(args)).
+				Str("args", jsonify(args...)).
 				Dur("latency", latency).
 				Msg("exec")
 		}()
@@ -64,7 +64,7 @@ func (db *Database) Query(query string, args ...any) (*sql.Rows, error) {
 			latency := time.Since(start)
 			db.logger.Trace().
 				Str("query", query).
-				Str("args", jsonify(args)).
+				Str("args", jsonify(args...)).
 				Dur("latency", latency).
 				Msg("exec")
 		}()
@@ -79,7 +79,7 @@ func (db *Database) QueryRow(query string, args ...any) *sql.Row {
 			latency := time.Since(start)
 			db.logger.Trace().
 				Str("query", query).
-				Str("args", jsonify(args)).
+				Str("args", jsonify(args...)).
 				Dur("latency", latency).
 				Msg("exec")
 		}()
