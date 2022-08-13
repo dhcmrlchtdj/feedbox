@@ -69,6 +69,7 @@ jobs:
                   pnpm store prune
               env:
                   PNPM_HOME: /home/runner/.local/bin
+              working-directory: ./frontend
             - run: make -j build
               working-directory: ./frontend
             # https://github.com/marketplace/actions/github-action-for-flyctl
