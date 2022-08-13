@@ -12,7 +12,6 @@ release_command = "migrate up"
 
 [processes]
 web = "server"
-worker = "worker"
 
 [env]
 ENV = "prod"
