@@ -28,9 +28,9 @@ source = "sqlite"
 destination = "/data/database"
 
 [[services]]
+processes = ["web"]
 internal_port = 8000
 protocol = "tcp"
-
 [[services.ports]]
 handlers = ["http"]
 port = "80"
