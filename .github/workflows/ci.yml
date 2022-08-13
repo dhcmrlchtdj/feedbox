@@ -77,13 +77,14 @@ jobs:
             # https://github.com/marketplace/actions/github-action-for-flyctl
             - uses: superfly/flyctl-actions/setup-flyctl@master
             - run: |
-                  flyctl secrets set COOKIE_SECRET=${{ secrets.COOKIE_SECRET }}
-                  flyctl secrets set GITHUB_CLIENT_ID=${{ secrets.GH_CLIENT_ID }}
-                  flyctl secrets set GITHUB_CLIENT_SECRET=${{ secrets.GH_CLIENT_SECRET }}
-                  flyctl secrets set MAILGUN_API_KEY=${{ secrets.MAILGUN_API_KEY }}
-                  flyctl secrets set TELEGRAM_BOT_TOKEN=${{ secrets.TELEGRAM_BOT_TOKEN }}
-                  flyctl secrets set TELEGRAM_WEBHOOK_PATH=${{ secrets.TELEGRAM_WEBHOOK_PATH }}
-                  flyctl deploy --remote-only
-                  flyctl status
+                  flyctl secrets set --stage COOKIE_SECRET=${{ secrets.COOKIE_SECRET }}
+                  flyctl secrets set --stage GITHUB_CLIENT_ID=${{ secrets.GH_CLIENT_ID }}
+                  flyctl secrets set --stage GITHUB_CLIENT_SECRET=${{ secrets.GH_CLIENT_SECRET }}
+                  flyctl secrets set --stage MAILGUN_API_KEY=${{ secrets.MAILGUN_API_KEY }}
+                  flyctl secrets set --stage TELEGRAM_BOT_TOKEN=${{ secrets.TELEGRAM_BOT_TOKEN }}
+                  flyctl secrets set --stage TELEGRAM_WEBHOOK_PATH=${{ secrets.TELEGRAM_WEBHOOK_PATH }}
+              env:
+                  FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
+            - run: flyctl deploy --remote-only
               env:
                   FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
