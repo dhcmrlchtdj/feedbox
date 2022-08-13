@@ -41,7 +41,7 @@ jobs:
                   TELEGRAM_BOT_NAME: "bot_name"
                   TELEGRAM_WEBHOOK_PATH: "131cd9868e9cf396a807c265a3c97e72"
                   ROLLBAR_TOKEN: "post_server_item"
-                  DATABASE_URL: ":memory:"
+                  DATABASE_URL: "./feedbox.db"
     deploy:
         if: github.event_name == 'push' && github.ref == 'refs/heads/master'
         needs: test
