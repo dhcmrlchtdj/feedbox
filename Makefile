@@ -1,10 +1,16 @@
 SHELL := bash
 # PATH := ./frontend/node_modules/.bin:$(PATH)
 
+GOFLAGS := \
+	-trimpath \
+	-buildmode=pie \
+	-buildvcs=false \
+	-mod=readonly
+
 build:
-	go build -o ./_build/migrate ./cmd/migrate
-	go build -o ./_build/server ./cmd/server
-	go build -o ./_build/worker ./cmd/worker
+	go build $(GOFLAGS) -o ./_build/migrate ./cmd/migrate
+	go build $(GOFLAGS) -o ./_build/server ./cmd/server
+	go build $(GOFLAGS) -o ./_build/worker ./cmd/worker
 
 clean:
 	# rm -rf ./**/.snapshots
