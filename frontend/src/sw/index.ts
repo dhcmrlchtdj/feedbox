@@ -37,14 +37,14 @@ self.addEventListener('message', (event) => {
     console.log('[SW] message |', event.data)
     if (event.data === 'logout') {
         const done = caches
-            .open(version.API)
-            .then((cache) =>
-                Promise.all([
-                    cache.delete(`/api/v1/user`),
-                    cache.delete(`/api/v1/feeds`),
-                ]),
-            )
+            .delete(version.API)
             .then(() => console.log('[SW] message | done', event.data))
+        event.waitUntil(done)
+    } else if (event.data === 'cleanup') {
+        const done = Promise.all([
+            caches.delete(version.API),
+            caches.delete(version.STATIC),
+        ]).then(() => console.log('[SW] message | done', event.data))
         event.waitUntil(done)
     }
 })

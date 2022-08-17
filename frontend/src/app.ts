@@ -6,13 +6,23 @@ new App({
     hydrate: true,
 })
 
+const unregisterServiceWorker = async () => {
+    const sw = navigator.serviceWorker
+    if (!sw) return
+
+    if (sw.controller) {
+        sw.controller.postMessage('cleanup')
+    }
+
+    const workers = await sw.getRegistrations()
+    workers.map((worker) => worker.unregister())
+}
+
 if (navigator.serviceWorker) {
     const query = new URLSearchParams(location.search)
     const sw = query.get('sw')
     if (sw === '0') {
-        navigator.serviceWorker
-            .getRegistrations()
-            .then((workers) => workers.map((worker) => worker.unregister()))
+        unregisterServiceWorker()
     } else {
         navigator.serviceWorker.register('/sw.js')
     }
