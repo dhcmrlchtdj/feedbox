@@ -7,15 +7,11 @@ new App({
 })
 
 const unregisterServiceWorker = async () => {
-    const sw = navigator.serviceWorker
-    if (!sw) return
+    const workers = await navigator.serviceWorker.getRegistrations()
+    await Promise.all(workers.map((worker) => worker.unregister()))
 
-    if (sw.controller) {
-        sw.controller.postMessage('cleanup')
-    }
-
-    const workers = await sw.getRegistrations()
-    workers.map((worker) => worker.unregister())
+    const cacheKeys = await caches.keys()
+    await Promise.all(cacheKeys.map((key) => caches.delete(key)))
 }
 
 if (navigator.serviceWorker) {

@@ -40,11 +40,5 @@ self.addEventListener('message', (event) => {
             .delete(version.API)
             .then(() => console.log('[SW] message | done', event.data))
         event.waitUntil(done)
-    } else if (event.data === 'cleanup') {
-        const done = Promise.all([
-            caches.delete(version.API),
-            caches.delete(version.STATIC),
-        ]).then(() => console.log('[SW] message | done', event.data))
-        event.waitUntil(done)
     }
 })
