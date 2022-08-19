@@ -27,7 +27,7 @@ func printVersion(m *migrate.Migrate) {
 }
 
 func printUsage(m *migrate.Migrate) {
-	println("Usage: ./migrate [up | down | force VERSION | step N]")
+	fmt.Println("Usage: ./migrate [up | down | force VERSION | step N]")
 	printVersion(m)
 }
 

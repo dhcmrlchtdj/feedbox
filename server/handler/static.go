@@ -1,7 +1,6 @@
 package handler
 
 import (
-	"path/filepath"
 	"strconv"
 
 	"github.com/gofiber/fiber/v2"
@@ -40,9 +39,6 @@ func StaticFile(filename string, handlers ...fiber.Handler) fiber.Handler {
 func StaticDir(dirname string, handlers ...fiber.Handler) fiber.Handler {
 	return func(c *fiber.Ctx) error {
 		filename := c.Params("filename")
-		if filepath.Clean(filename) != filename {
-			return nil
-		}
 		c.Request().Header.Del("If-Modified-Since")
 		// FIXME: should not concat filename
 		if err := c.SendFile(dirname + filename); err != nil {
