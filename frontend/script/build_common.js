@@ -109,6 +109,6 @@ function normalizeResult(r) {
 }
 
 function logResult(result) {
-    result.forEach(([i, o]) => console.log(`${i} => ${o}`))
+    result.forEach(([i, o]) => console.log(`${i} -> ${o}`))
     return result
 }

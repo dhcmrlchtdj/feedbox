@@ -3,9 +3,11 @@ SHELL := bash
 PATH := ./node_modules/.bin:$(PATH)
 
 build: node_modules/tsconfig.tsbuildinfo
-	NODE_ENV=production node ./script/build_dist.js
+	@cp -v src/static/* _build/
+	@NODE_ENV=production node ./script/build_dist.js
 
 dev: node_modules/tsconfig.tsbuildinfo
+	cp ./src/static/* ./_build/
 	NODE_ENV=development node ./script/build_watch.js
 
 check:

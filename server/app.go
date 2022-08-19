@@ -88,12 +88,12 @@ func setupRoute(app *fiber.App) {
 		validate.ContentType("application/json"),
 		handler.TelegramWebhook)
 
-	app.Get("/", handler.StaticWithoutCache("./frontend/_build/index.html"))
-	app.Get("/sw.js", handler.StaticWithoutCache("./frontend/_build/sw.js"))
-	app.Get("/sw.js.map", handler.StaticWithoutCache("./frontend/_build/sw.js.map"))
-	app.Get("/robots.txt", handler.StaticRobots)
-	app.Get("/favicon.ico", handler.StaticFavicon)
-	app.Get("/:filename", handler.StaticWithCache("./frontend/_build/"))
+	app.Get("/", handler.StaticFile("./frontend/_build/index.html", handler.StaticWithoutCache()))
+	app.Get("/sw.js", handler.StaticFile("./frontend/_build/sw.js", handler.StaticWithoutCache()))
+	app.Get("/sw.js.map", handler.StaticFile("./frontend/_build/sw.js.map", handler.StaticWithoutCache()))
+	app.Get("/robots.txt", handler.StaticFile("./frontend/_build/robots.txt", handler.StaticWithMaxAge(60*60*24*7)))
+	app.Get("/favicon.ico", handler.StaticFile("./frontend/_build/favicon.svg", handler.StaticWithMaxAge(60*60*24*7)))
+	app.Get("/:filename", handler.StaticDir("./frontend/_build/"), handler.StaticWithMaxAge(60*60*24*7))
 }
 
 func errorHandler(c *fiber.Ctx, err error) error {
