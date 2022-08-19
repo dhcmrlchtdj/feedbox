@@ -2,13 +2,15 @@ SHELL := bash
 .SHELLFLAGS = -O globstar -c
 PATH := ./node_modules/.bin:$(PATH)
 
-build: node_modules/tsconfig.tsbuildinfo
-	@cp -v src/static/* _build/
-	@NODE_ENV=production node ./script/build_dist.js
+build: node_modules/tsconfig.tsbuildinfo copy_static
+	NODE_ENV=production node ./script/build_dist.js
 
-dev: node_modules/tsconfig.tsbuildinfo
-	cp ./src/static/* ./_build/
+dev: node_modules/tsconfig.tsbuildinfo copy_static
 	NODE_ENV=development node ./script/build_watch.js
+
+copy_static:
+	@mkdir -p _build
+	cp -v src/static/* _build/
 
 check:
 	tsc --noEmit
@@ -30,4 +32,4 @@ outdated:
 upgrade:
 	pnpm update --latest # --interactive
 
-.PHONY: build check force fmt
+.PHONY: build check force fmt copy_static
