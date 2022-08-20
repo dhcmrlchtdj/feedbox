@@ -25,7 +25,7 @@ lint:
 	golangci-lint run
 
 dev:
-	go run ./cmd/server
+	go run $(GOFLAGS) ./cmd/server
 
 test:
 	ENV=test TZ=UTC go test -race ./internal/util
