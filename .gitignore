@@ -1,4 +1,1 @@
 /_build/
-/frontend/node_modules/
-!/frontend/_build/.gitkeep
-/frontend/_build/*
