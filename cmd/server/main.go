@@ -60,7 +60,11 @@ func main() {
 	util.CheckEnvs("GITHUB_CLIENT_ID", "GITHUB_CLIENT_SECRET")
 	util.CheckEnvs("PORT", "TELEGRAM_WEBHOOK_PATH")
 	app := server.Create()
-	if err := app.Listen(":" + os.Getenv("PORT")); err != nil {
+	host := ":" + os.Getenv("PORT")
+	if os.Getenv("ENV") != "prod" {
+		host = "127.0.0.1" + host
+	}
+	if err := app.Listen(host); err != nil {
 		panic(err)
 	}
 }

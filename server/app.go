@@ -26,13 +26,12 @@ import (
 
 func Create() *fiber.App {
 	appConfig := fiber.Config{
-		// Prefork:       true,
-		// Immutable:     true,
-		// BodyLimit:     4 * 1024 * 1024,
+		// BodyLimit: 4 * 1024 * 1024,
+		// Concurrency: 256 * 1024,
 		ErrorHandler:  errorHandler,
 		StrictRouting: true,
 		CaseSensitive: true,
-		// ProxyHeader:   "CF-Connecting-IP",
+		// ProxyHeader: "CF-Connecting-IP",
 	}
 	app := fiber.New(appConfig)
 
