@@ -82,7 +82,7 @@ jobs:
               working-directory: ./frontend
             - run: |
                   make -j build
-                  echo '!/_build' > .gitignore
+                  echo '!/frontend/_build/*' >> .gitignore
                   git config user.name "$GITHUB_ACTOR"
                   git config user.email "$GITHUB_ACTOR@github.action"
                   git add .
