@@ -37,7 +37,7 @@ func sendFile(c *fiber.Ctx, filename string, handlers ...fiber.Handler) error {
 
 	ext := filepath.Ext(filename)
 	contentType := mime.TypeByExtension(ext)
-	if len(contentType) == 0 {
+	if contentType == "" {
 		contentType = http.DetectContentType(content)
 	}
 	c.Set("content-type", contentType)
