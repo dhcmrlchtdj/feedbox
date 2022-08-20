@@ -53,12 +53,27 @@ export const router = new WorkerRouter()
                 }
                 const tpl = await resp.clone().text()
                 const app = App.render(state)
-                const __STATE__ = JSON.stringify(state)
+                const inlinedState = `window.__STATE__=${JSON.stringify(state)}`
+                const scriptNonce = crypto.randomUUID().slice(0, 8)
                 const html = tpl.replace(
                     '<div id="app"></div>',
-                    `<div id="app">${app.html}</div><script>window.__STATE__=${__STATE__}</script>`,
+                    `<div id="app">${app.html}</div>
+                    <script nonce="${scriptNonce}">${inlinedState}</script>`,
                 )
-                return new Response(html, resp)
+
+                const headers = resp.headers
+                const csp = headers.get('content-security-policy') ?? ''
+                const patchedCSP = csp.replace(
+                    "script-src 'self' 'unsafe-inline'",
+                    `script-src 'self' 'unsafe-inline' 'nonce-${scriptNonce}'`,
+                )
+                headers.set('content-security-policy', patchedCSP)
+
+                return new Response(html, {
+                    status: resp.status,
+                    statusText: resp.statusText,
+                    headers,
+                })
             })
             .catch((err) => {
                 console.error(err.stack)

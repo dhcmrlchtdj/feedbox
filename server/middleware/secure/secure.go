@@ -2,9 +2,13 @@ package secure
 
 import (
 	"bytes"
+	"strings"
 
 	"github.com/gofiber/fiber/v2"
 )
+
+// https://helmetjs.github.io/
+// https://csp-evaluator.withgoogle.com/
 
 func New() fiber.Handler {
 	return func(c *fiber.Ctx) error {
@@ -14,12 +18,20 @@ func New() fiber.Handler {
 
 		contentType := c.Response().Header.Peek("content-type")
 		if bytes.Contains(contentType, []byte("text/html")) {
-			c.Set("x-xss-protection", "1; mode=block")
-			c.Set("x-frame-options", "DENY")
 			c.Set("referrer-policy", "strict-origin-when-cross-origin")
-			// c.Set("Content-Security-Policy", "")
+			c.Set("content-security-policy", buildCSP(
+				"default-src 'self'",
+				"script-src 'self' 'unsafe-inline'",
+				"style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net",
+				"base-uri 'self'",
+				"object-src 'none'",
+			))
 		}
 
 		return err
 	}
+}
+
+func buildCSP(directives ...string) string {
+	return strings.Join(directives, "; ")
 }
