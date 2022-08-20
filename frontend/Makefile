@@ -9,7 +9,6 @@ dev: node_modules/tsconfig.tsbuildinfo copy_static
 	NODE_ENV=development node ./script/build_watch.js
 
 copy_static:
-	@mkdir -p _build
 	cp -v src/static/* _build/
 
 check:
