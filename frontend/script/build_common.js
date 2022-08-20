@@ -91,14 +91,24 @@ export async function buildServiceWorker(enableWatch = false) {
 }
 
 function buildHtml(pattern) {
-    return template(
-        r('../src/template.html'),
-        r('../_build/index.html'),
-        pattern.map(([input, output]) => [
-            input.replace('src', '.'),
-            output.replace('_build', '.'),
-        ]),
-    ).then(logResult)
+    return Promise.all([
+        template(
+            r('../src/template.html'),
+            r('../_build/index.html'),
+            pattern.map(([input, output]) => [
+                input.replace('src', '.'),
+                output.replace('_build', '.'),
+            ]),
+        ).then(logResult),
+        template(
+            r('../src/template.html.json'),
+            r('../_build/index.html.json'),
+            pattern.map(([input, output]) => [
+                input.replace('src', '.'),
+                output.replace('_build', '.'),
+            ]),
+        ).then(logResult),
+    ])
 }
 
 function normalizeResult(r) {

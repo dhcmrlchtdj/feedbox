@@ -87,9 +87,9 @@ func setupRoute(app *fiber.App) {
 		validate.ContentType("application/json"),
 		handler.TelegramWebhook)
 
-	app.Get("/", handler.StaticFile("_build/index.html", handler.StaticWithoutCache()))
-	app.Get("/sw.js", handler.StaticFile("_build/sw.js", handler.StaticWithoutCache()))
-	app.Get("/sw.js.map", handler.StaticFile("_build/sw.js.map", handler.StaticWithoutCache()))
+	app.Get("/", handler.StaticFile("_build/index.html", handler.StaticWithCustomHeader("_build/index.html.json")))
+	app.Get("/sw.js", handler.StaticFile("_build/sw.js"))
+	app.Get("/sw.js.map", handler.StaticFile("_build/sw.js.map"))
 	app.Get("/favicon.ico", handler.StaticFile("_build/favicon.svg", handler.StaticWithMaxAge(60*60*24*7)))
 	app.Get("/:filename", handler.StaticDir("_build/", handler.StaticWithMaxAge(60*60*24*7)))
 }
