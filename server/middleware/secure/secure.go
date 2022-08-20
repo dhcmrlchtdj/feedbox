@@ -21,9 +21,9 @@ func New() fiber.Handler {
 			c.Set("referrer-policy", "strict-origin-when-cross-origin")
 			c.Set("content-security-policy", buildCSP(
 				"default-src 'self'",
-				"script-src 'self' 'unsafe-inline'",
+				"script-src 'self'",
 				"style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net",
-				"base-uri 'self'",
+				"base-uri 'none'",
 				"object-src 'none'",
 			))
 		}

@@ -64,8 +64,8 @@ export const router = new WorkerRouter()
                 const headers = resp.headers
                 const csp = headers.get('content-security-policy') ?? ''
                 const patchedCSP = csp.replace(
-                    "script-src 'self' 'unsafe-inline'",
-                    `script-src 'self' 'unsafe-inline' 'nonce-${scriptNonce}'`,
+                    "script-src 'self';",
+                    `script-src 'self' 'unsafe-inline' 'nonce-${scriptNonce}';`,
                 )
                 headers.set('content-security-policy', patchedCSP)
 
