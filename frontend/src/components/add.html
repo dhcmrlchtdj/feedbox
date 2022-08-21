@@ -1,5 +1,8 @@
 <div class="column col-12">
-    <form class="input-group" on:submit|preventDefault="{add}">
+    <form
+        class="input-group"
+        on:submit|preventDefault="{add}"
+    >
         <input
             class="form-input"
             type="text"
@@ -20,30 +23,30 @@
 <div class="column col-12"><div class="divider"></div></div>
 
 <script>
-    import { feeds, newNotify } from '../state'
-    import * as agent from '../utils/agent'
+    import { feeds, newNotify } from "../state"
+    import * as agent from "../utils/agent"
 
     let loading = false
-    let url = ''
+    let url = ""
 
     const add = async () => {
         if (loading === true) {
-            window.alert('processing')
+            window.alert("processing")
             return
         }
-        if (url === '') return
+        if (url === "") return
         loading = true
 
         agent
             .put(`/api/v1/feeds/add`, { url })
             .then((resp) => feeds.set(resp))
-            .then(() => newNotify('added'))
+            .then(() => newNotify("added"))
             .catch((err) => {
                 window.alert(err.message)
                 location.reload()
             })
             .then(() => {
-                url = ''
+                url = ""
                 loading = false
             })
     }

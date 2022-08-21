@@ -1,17 +1,17 @@
 // @ts-ignore
-import App from '../components/app.html'
-import { WorkerRouter } from './worker_router'
-import * as strategy from './strategy'
-import * as version from './version'
+import App from "../components/app.html"
+import { WorkerRouter } from "./worker_router"
+import * as strategy from "./strategy"
+import * as version from "./version"
 
 const just =
     (
         cacheName: string,
         strategyName:
-            | 'cacheOnly'
-            | 'cacheFirst'
-            | 'networkOnly'
-            | 'networkFirst',
+            | "cacheOnly"
+            | "cacheFirst"
+            | "networkOnly"
+            | "networkFirst",
     ) =>
     async (event: FetchEvent) => {
         console.log(
@@ -28,14 +28,14 @@ const getThenUpdate = async (event: FetchEvent) => {
     )
     const cache = await caches.open(version.API)
     const resp = await strategy.networkOnly(cache, event.request)
-    if (resp.ok) cache.put('/api/v1/feeds', resp.clone())
+    if (resp.ok) cache.put("/api/v1/feeds", resp.clone())
     return resp
 }
 
 export const router = new WorkerRouter()
-    .fallback(just(version.API, 'networkOnly'))
+    .fallback(just(version.API, "networkOnly"))
     // homepage
-    .get('/', async (event) => {
+    .get("/", async (event) => {
         const apiCache = await caches.open(version.API)
         const staticCache = await caches.open(version.STATIC)
 
@@ -48,7 +48,7 @@ export const router = new WorkerRouter()
                 if (user && user.ok && feeds && feeds.ok) {
                     return Promise.all([user.json(), feeds.json()])
                 } else {
-                    throw new Error('cache missing')
+                    throw new Error("cache missing")
                 }
             })
             .then(async ([user, feeds]) => {
@@ -68,12 +68,12 @@ export const router = new WorkerRouter()
                 )
 
                 const headers = new Headers(resp.headers)
-                const csp = headers.get('content-security-policy') ?? ''
+                const csp = headers.get("content-security-policy") ?? ""
                 const patchedCSP = csp.replace(
                     "script-src 'self';",
                     `script-src 'self' 'unsafe-inline' 'nonce-${scriptNonce}';`,
                 )
-                headers.set('content-security-policy', patchedCSP)
+                headers.set("content-security-policy", patchedCSP)
 
                 return new Response(html, {
                     status: resp.status,
@@ -87,24 +87,24 @@ export const router = new WorkerRouter()
             })
     })
     // API
-    .get('/api/v1/feeds', just(version.API, 'networkFirst'))
-    .get('/api/v1/user', just(version.API, 'networkFirst'))
-    .put('/api/v1/feeds/add', getThenUpdate)
-    .delete('/api/v1/feeds/remove', getThenUpdate)
+    .get("/api/v1/feeds", just(version.API, "networkFirst"))
+    .get("/api/v1/user", just(version.API, "networkFirst"))
+    .put("/api/v1/feeds/add", getThenUpdate)
+    .delete("/api/v1/feeds/remove", getThenUpdate)
     // static
-    .get('/sw.js', just(version.STATIC, 'networkOnly'))
-    .get('/favicon.ico', just(version.STATIC, 'cacheFirst'))
-    .get('/npm/*', just(version.STATIC, 'cacheFirst'))
-    .get('/:file', (event, params) => {
-        const file = params.get('file')!
+    .get("/sw.js", just(version.STATIC, "networkOnly"))
+    .get("/favicon.ico", just(version.STATIC, "cacheFirst"))
+    .get("/npm/*", just(version.STATIC, "cacheFirst"))
+    .get("/:file", (event, params) => {
+        const file = params.get("file")!
         if (
-            file.endsWith('.js') ||
-            file.endsWith('.css') ||
-            file.endsWith('.map') ||
-            file.endsWith('.ico')
+            file.endsWith(".js") ||
+            file.endsWith(".css") ||
+            file.endsWith(".map") ||
+            file.endsWith(".ico")
         ) {
-            return just(version.STATIC, 'cacheFirst')(event)
+            return just(version.STATIC, "cacheFirst")(event)
         } else {
-            return just(version.STATIC, 'networkOnly')(event)
+            return just(version.STATIC, "networkOnly")(event)
         }
     })

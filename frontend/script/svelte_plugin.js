@@ -1,25 +1,25 @@
 // https://esbuild.github.io/plugins/#svelte-plugin
 // https://svelte.dev/docs#svelte_compile
 
-import fs from 'fs/promises'
-import path from 'path'
-import * as svelte from 'svelte/compiler'
+import fs from "fs/promises"
+import path from "path"
+import * as svelte from "svelte/compiler"
 
 const defaultOpts = {
     dev: false,
-    generate: 'dom',
+    generate: "dom",
     hydratable: false,
     immutable: true,
     css: false,
-    format: 'esm',
+    format: "esm",
 }
 
 export function sveltePlugin(opts) {
     return {
-        name: 'svelte',
+        name: "svelte",
         setup(build) {
             build.onLoad({ filter: /\.html$/ }, async (args) => {
-                const source = await fs.readFile(args.path, 'utf8')
+                const source = await fs.readFile(args.path, "utf8")
                 const filename = path.resolve(process.cwd(), args.path)
                 const svelteOpts = { ...defaultOpts, ...opts, filename }
 
@@ -31,7 +31,7 @@ export function sveltePlugin(opts) {
                     return {
                         contents,
                         warnings: warnings.map(convert),
-                        loader: 'js',
+                        loader: "js",
                         resolveDir: path.dirname(filename),
                     }
                 } catch (e) {

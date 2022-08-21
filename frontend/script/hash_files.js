@@ -1,6 +1,6 @@
-import crypto from 'crypto'
-import fs from 'fs/promises'
-import path from 'path'
+import crypto from "crypto"
+import fs from "fs/promises"
+import path from "path"
 
 const pMap = (arr, fn) => Promise.all(arr.map(fn))
 
@@ -19,8 +19,8 @@ export async function hashFiles(...entries) {
             const data = await file
             hash.update(data)
             return hash
-        }, crypto.createHash('sha256'))
-        .then((hash) => hash.digest('hex'))
+        }, crypto.createHash("sha256"))
+        .then((hash) => hash.digest("hex"))
         .then((digest) => digest.slice(0, 8))
 
     return digest
@@ -36,10 +36,10 @@ async function addEntry(output, entry, filepath) {
         return pMap(subEntries, (subEntry) => {
             const name = subEntry.name
             if (
-                name.startsWith('.') ||
-                name.startsWith('_') ||
-                name.startsWith('node_modules') ||
-                name.endsWith('_test.go')
+                name.startsWith(".") ||
+                name.startsWith("_") ||
+                name.startsWith("node_modules") ||
+                name.endsWith("_test.go")
             ) {
                 return
             }

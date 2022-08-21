@@ -18,23 +18,23 @@
 </div>
 
 <script>
-    import { onMount } from 'svelte'
+    import { onMount } from "svelte"
 
-    import Auth from './auth.html'
-    import Heading from './heading.html'
-    import Add from './add.html'
-    import List from './list.html'
-    import Notify from './notify.html'
+    import Auth from "./auth.html"
+    import Heading from "./heading.html"
+    import Add from "./add.html"
+    import List from "./list.html"
+    import Notify from "./notify.html"
 
-    import * as state from '../state'
+    import * as state from "../state"
 
-    import * as agent from '../utils/agent'
-    import { Deferred, sleep } from '../utils/deferred'
+    import * as agent from "../utils/agent"
+    import { Deferred, sleep } from "../utils/deferred"
 
     // self -> Window | ServiceWorkerGlobalScope
     const workerState = self.__STATE__ || {}
     export let loaded = workerState.loaded || new Deferred()
-    export let email = workerState.email || ''
+    export let email = workerState.email || ""
     export let feeds = workerState.feeds || []
 
     if (email) state.email.set(email)

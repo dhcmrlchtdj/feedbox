@@ -1,4 +1,4 @@
-import { buildApp, buildServiceWorker } from './build_common.js'
+import { buildApp, buildServiceWorker } from "./build_common.js"
 
 main()
 

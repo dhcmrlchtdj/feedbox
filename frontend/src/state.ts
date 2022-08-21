@@ -1,7 +1,7 @@
-import { writable } from 'svelte/store'
-import type { Writable } from 'svelte/store'
+import { writable } from "svelte/store"
+import type { Writable } from "svelte/store"
 
-export const email = writable('')
+export const email = writable("")
 
 type Feed = {
     id: number

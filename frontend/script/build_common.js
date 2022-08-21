@@ -1,28 +1,28 @@
 // https://esbuild.github.io/api/#build-api
 
-import path from 'path'
-import esbuild from 'esbuild'
-import { hashFiles } from './hash_files.js'
-import { sveltePlugin } from './svelte_plugin.js'
-import { template } from './template.js'
+import path from "path"
+import esbuild from "esbuild"
+import { hashFiles } from "./hash_files.js"
+import { sveltePlugin } from "./svelte_plugin.js"
+import { template } from "./template.js"
 
 const r = (p) =>
     path.relative(process.cwd(), new URL(p, import.meta.url).pathname)
 
-const prod = process.env.NODE_ENV === 'production'
+const prod = process.env.NODE_ENV === "production"
 
 const env = Object.entries(process.env).reduce((acc, [k, v]) => {
-    acc['process.env.' + k] = JSON.stringify(v)
+    acc["process.env." + k] = JSON.stringify(v)
     return acc
 }, {})
 
 const esbuildOpts = {
-    legalComments: 'linked',
+    legalComments: "linked",
     metafile: true,
     bundle: true,
-    format: 'esm',
-    target: 'es2020',
-    platform: 'browser',
+    format: "esm",
+    target: "es2020",
+    platform: "browser",
     sourcemap: true,
     minify: prod,
     outdir: r(`../_build/`),
@@ -35,16 +35,16 @@ export async function buildApp(enableWatch = false) {
             define: env,
             plugins: [
                 sveltePlugin({
-                    generate: 'dom',
+                    generate: "dom",
                     hydratable: true,
                     dev: !prod,
                 }),
             ],
-            entryPoints: [r('../src/app.ts')],
-            entryNames: '[name]-[hash]',
+            entryPoints: [r("../src/app.ts")],
+            entryNames: "[name]-[hash]",
             watch: enableWatch && {
                 onRebuild(error, result) {
-                    if (error) console.error('watch build failed:', error)
+                    if (error) console.error("watch build failed:", error)
                     const r = normalizeResult(result)
                     logResult(r)
                     buildHtml(r)
@@ -58,14 +58,14 @@ export async function buildApp(enableWatch = false) {
 
 export async function buildServiceWorker(enableWatch = false) {
     const hashStatic = await hashFiles(
-        r('./'),
-        r('../src/'),
-        r('../pnpm-lock.yaml'),
+        r("./"),
+        r("../src/"),
+        r("../pnpm-lock.yaml"),
     )
     const hashAPI = await hashFiles(
-        r('../../server/'),
-        r('../../internal/'),
-        r('../../go.sum'),
+        r("../../server/"),
+        r("../../internal/"),
+        r("../../go.sum"),
     )
 
     return esbuild
@@ -76,12 +76,12 @@ export async function buildServiceWorker(enableWatch = false) {
                 __STATIC_VERSION__: JSON.stringify(hashStatic),
                 __API_VERSION__: JSON.stringify(hashAPI),
             },
-            plugins: [sveltePlugin({ generate: 'ssr', dev: !prod })],
-            entryPoints: [r('../src/sw/index.ts')],
-            entryNames: 'sw',
+            plugins: [sveltePlugin({ generate: "ssr", dev: !prod })],
+            entryPoints: [r("../src/sw/index.ts")],
+            entryNames: "sw",
             watch: enableWatch && {
                 onRebuild(error, result) {
-                    if (error) console.error('watch build failed:', error)
+                    if (error) console.error("watch build failed:", error)
                     logResult(normalizeResult(result))
                 },
             },
@@ -93,19 +93,19 @@ export async function buildServiceWorker(enableWatch = false) {
 function buildHtml(pattern) {
     return Promise.all([
         template(
-            r('../src/template.html'),
-            r('../_build/index.html'),
+            r("../src/template.html"),
+            r("../_build/index.html"),
             pattern.map(([input, output]) => [
-                input.replace('src', '.'),
-                output.replace('_build', '.'),
+                input.replace("src", "."),
+                output.replace("_build", "."),
             ]),
         ).then(logResult),
         template(
-            r('../src/template.html.json'),
-            r('../_build/index.html.json'),
+            r("../src/template.html.json"),
+            r("../_build/index.html.json"),
             pattern.map(([input, output]) => [
-                input.replace('src', '.'),
-                output.replace('_build', '.'),
+                input.replace("src", "."),
+                output.replace("_build", "."),
             ]),
         ).then(logResult),
     ])

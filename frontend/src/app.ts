@@ -1,8 +1,8 @@
 // @ts-ignore
-import App from './components/app.html'
+import App from "./components/app.html"
 
 new App({
-    target: document.querySelector('#app'),
+    target: document.querySelector("#app"),
     hydrate: true,
 })
 
@@ -16,10 +16,10 @@ const unregisterServiceWorker = async () => {
 
 if (navigator.serviceWorker) {
     const query = new URLSearchParams(location.search)
-    const sw = query.get('sw')
-    if (sw === '0') {
+    const sw = query.get("sw")
+    if (sw === "0") {
         unregisterServiceWorker()
     } else {
-        navigator.serviceWorker.register('/sw.js')
+        navigator.serviceWorker.register("/sw.js")
     }
 }

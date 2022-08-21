@@ -9,7 +9,10 @@
     "
 >
     {#each $notify as n, i (n.key)}
-    <div class="toast toast-success mb-2" transition:fly|local="{{x:100}}">
+    <div
+        class="toast toast-success mb-2"
+        transition:fly|local="{{x:100}}"
+    >
         <button
             class="btn btn-clear float-right"
             on:click="{() => remove(i)}"
@@ -20,8 +23,8 @@
 </div>
 
 <script>
-    import { fly } from 'svelte/transition'
-    import { notify } from '../state'
+    import { fly } from "svelte/transition"
+    import { notify } from "../state"
 
     const remove = (idx) => {
         notify.update((ns) => {
