@@ -2,14 +2,17 @@ package handler
 
 import (
 	"encoding/json"
+	"io/fs"
 	"mime"
 	"net/http"
 	"path/filepath"
 	"strconv"
 
 	"github.com/gofiber/fiber/v2"
+	"github.com/pkg/errors"
 
 	"github.com/dhcmrlchtdj/feedbox/frontend"
+	"github.com/dhcmrlchtdj/feedbox/internal/monitor"
 )
 
 func StaticFile(filename string, handlers ...fiber.Handler) fiber.Handler {
@@ -60,7 +63,17 @@ func StaticWithCustomHeader(filename string) fiber.Handler {
 func sendFile(c *fiber.Ctx, filename string, handlers ...fiber.Handler) error {
 	content, err := frontend.Static.ReadFile(filename)
 	if err != nil {
-		return err
+		if errors.Is(err, fs.ErrNotExist) {
+			return fiber.ErrNotFound
+		} else {
+			inner := errors.Unwrap(err)
+			if inner != nil && inner.Error() == "is a directory" {
+				return fiber.ErrNotFound
+			} else {
+				monitor.C.Error(err)
+				return fiber.ErrNotFound
+			}
+		}
 	}
 	if err := c.Send(content); err != nil {
 		return err
