@@ -14,12 +14,18 @@ const just =
             | 'networkFirst',
     ) =>
     async (event: FetchEvent) => {
+        console.log(
+            `[SW] | just | ${cacheName} | ${strategyName} | ${event.request.url}`,
+        )
         const cache = await caches.open(cacheName)
         const resp = await strategy[strategyName](cache, event.request)
         return resp
     }
 
 const getThenUpdate = async (event: FetchEvent) => {
+    console.log(
+        `[SW] | getThenUpdate | ${version.API} | networkOnly | ${event.request.url}`,
+    )
     const cache = await caches.open(version.API)
     const resp = await strategy.networkOnly(cache, event.request)
     if (resp.ok) cache.put('/api/v1/feeds', resp.clone())
@@ -61,7 +67,7 @@ export const router = new WorkerRouter()
                     <script nonce="${scriptNonce}">${inlinedState}</script>`,
                 )
 
-                const headers = resp.headers
+                const headers = new Headers(resp.headers)
                 const csp = headers.get('content-security-policy') ?? ''
                 const patchedCSP = csp.replace(
                     "script-src 'self';",
@@ -91,7 +97,12 @@ export const router = new WorkerRouter()
     .get('/npm/*', just(version.STATIC, 'cacheFirst'))
     .get('/:file', (event, params) => {
         const file = params.get('file')!
-        if (file.endsWith('.js')) {
+        if (
+            file.endsWith('.js') ||
+            file.endsWith('.css') ||
+            file.endsWith('.map') ||
+            file.endsWith('.ico')
+        ) {
             return just(version.STATIC, 'cacheFirst')(event)
         } else {
             return just(version.STATIC, 'networkOnly')(event)
