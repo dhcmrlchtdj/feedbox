@@ -2,7 +2,7 @@
     "header": [
         {
             "key": "Link",
-            "value": "<./app.ts>; rel=prefetch; as=script; crossorigin=anonymous, <https://cdn.jsdelivr.net/npm/spectre.css@0.5.9/dist/spectre.min.css>; rel=prefetch; as=style; crossorigin=anonymous"
+            "value": "<./app.ts>; rel=preload; as=script; crossorigin=anonymous, <https://cdn.jsdelivr.net/npm/spectre.css@0.5.9/dist/spectre.min.css>; rel=preload; as=style; crossorigin=anonymous"
         }
     ]
 }

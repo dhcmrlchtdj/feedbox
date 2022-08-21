@@ -4,7 +4,7 @@ import path from 'path'
 export async function template(input, output, pattern) {
     const replace = (tmpl) => {
         return pattern.reduce((content, [fromPattern, toPattern]) => {
-            return content.replace(fromPattern, toPattern)
+            return content.replaceAll(fromPattern, toPattern)
         }, tmpl)
     }
 
