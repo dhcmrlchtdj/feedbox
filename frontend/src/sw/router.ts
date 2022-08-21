@@ -45,7 +45,7 @@ export const router = new WorkerRouter()
             strategy.cacheOnly(apiCache, `/api/v1/feeds`),
         ])
             .then(async ([user, feeds]) => {
-                if (user && feeds) {
+                if (user && user.ok && feeds && feeds.ok) {
                     return Promise.all([user.json(), feeds.json()])
                 } else {
                     throw new Error('cache missing')
