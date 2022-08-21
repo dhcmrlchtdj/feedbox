@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"encoding/json"
 	"mime"
 	"net/http"
 	"path/filepath"
@@ -26,6 +27,34 @@ func StaticDir(dirname string, handlers ...fiber.Handler) fiber.Handler {
 
 func StaticWithMaxAge(maxAge int) fiber.Handler {
 	return setHeader("cache-control", "must-revalidate, max-age="+strconv.Itoa(maxAge))
+}
+
+type customHeader struct {
+	Header []struct {
+		Key   string `json:"key"`
+		Value string `json:"value"`
+	} `json:"header"`
+}
+
+func StaticWithCustomHeader(filename string) fiber.Handler {
+	return func(c *fiber.Ctx) error {
+		content, err := frontend.Static.ReadFile(filename)
+		if err != nil {
+			return err
+		}
+
+		var h customHeader
+		err = json.Unmarshal(content, &h)
+		if err != nil {
+			return err
+		}
+
+		for _, kv := range h.Header {
+			c.Set(kv.Key, kv.Value)
+		}
+
+		return nil
+	}
 }
 
 func sendFile(c *fiber.Ctx, filename string, handlers ...fiber.Handler) error {
