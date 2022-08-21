@@ -25,6 +25,7 @@ lint:
 	golangci-lint run
 
 dev:
+	cd frontend && make
 	go run $(GOFLAGS) ./cmd/server
 
 test:

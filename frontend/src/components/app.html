@@ -29,7 +29,7 @@
     import * as state from '../state'
 
     import * as agent from '../utils/agent'
-    import { Deferred } from '../utils/deferred'
+    import { Deferred, sleep } from '../utils/deferred'
 
     // self -> Window | ServiceWorkerGlobalScope
     const workerState = self.__STATE__ || {}
@@ -40,18 +40,30 @@
     if (email) state.email.set(email)
     if (feeds.length) state.feeds.set(feeds)
     onMount(() => {
+        // keep the loading animation
+        const delayAnimation = sleep(1000)
         Promise.all([agent.get(`/api/v1/user`), agent.get(`/api/v1/feeds`)])
-            .then(([user, resp]) => {
+            .then(async ([user, resp]) => {
                 state.email.set(user.addition.email)
                 state.feeds.set(resp)
-                state.initialized.set(true)
-                if (loaded.resolve) loaded.resolve(true)
+                if (loaded.resolve) {
+                    // first time
+                    await delayAnimation
+                    state.initialized.set(true)
+                    loaded.resolve(true)
+                } else {
+                    // rendered by ServiceWorker
+                    await delayAnimation
+                    state.initialized.set(true)
+                }
             })
-            .catch((err) => {
-                state.initialized.set(true)
+            .catch(async (err) => {
                 if (loaded.reject) {
+                    // first time
+                    await delayAnimation
                     loaded.reject(err.message)
                 } else {
+                    // rendered by ServiceWorker
                     window.alert(err.message)
                     location.reload()
                 }
