@@ -1,4 +1,4 @@
-// +heroku goVersion go1.18
+// +heroku goVersion go1.19
 // +heroku install ./cmd/...
 
 module github.com/dhcmrlchtdj/feedbox
