@@ -28,8 +28,15 @@ func StaticDir(dirname string, handlers ...fiber.Handler) fiber.Handler {
 	}
 }
 
+func StaticWithHeader(key string, val string) fiber.Handler {
+	return func(c *fiber.Ctx) error {
+		c.Set(key, val)
+		return nil
+	}
+}
+
 func StaticWithMaxAge(maxAge int) fiber.Handler {
-	return setHeader("cache-control", "must-revalidate, max-age="+strconv.Itoa(maxAge))
+	return StaticWithHeader("cache-control", "must-revalidate, max-age="+strconv.Itoa(maxAge))
 }
 
 type customHeader struct {
@@ -97,11 +104,4 @@ func sendFile(c *fiber.Ctx, filename string, handlers ...fiber.Handler) error {
 	}
 
 	return nil
-}
-
-func setHeader(key string, val string) fiber.Handler {
-	return func(c *fiber.Ctx) error {
-		c.Set(key, val)
-		return nil
-	}
 }
