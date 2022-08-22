@@ -1,9 +1,10 @@
-ENV="dev"
-
-SERVER="http://localhost:8000"
+DATABASE_URL="postgres://user:password@localhost:5432/feedbox?sslmode=disable"
 PORT=8000
 
+ENV="dev"
+SERVER="http://localhost:8000"
 COOKIE_SECRET="openssl rand -hex 32"
+WORKER_TOKEN="openssl rand -hex 16"
 
 GITHUB_CLIENT_ID="https://github.com/settings/developers"
 GITHUB_CLIENT_SECRET="https://github.com/settings/developers"
@@ -16,8 +17,4 @@ TELEGRAM_BOT_TOKEN="123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11"
 TELEGRAM_BOT_NAME="bot_name"
 TELEGRAM_WEBHOOK_PATH="openssl rand -hex 16"
 
-WORKER_TOKEN="openssl rand -hex 16"
-
 ROLLBAR_TOKEN="https://rollbar.com/team/project/settings/access_tokens/ post_server_item"
-
-DATABASE_URL="postgres://user:password@localhost:5432/feedbox?sslmode=disable"

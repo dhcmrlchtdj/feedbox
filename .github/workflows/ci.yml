@@ -40,10 +40,12 @@ jobs:
                   version: v1.48.0
             - run: make test
               env:
+                  DATABASE_URL: "postgres://user:password@localhost:5432/feedbox?sslmode=disable"
+                  PORT: "8000"
                   ENV: "test"
                   SERVER: "http://localhost:8000"
-                  PORT: "8000"
                   COOKIE_SECRET: "970a02fee5412b41db5c6efc4fe2e0e41bd682778cb1206bcbf295125622507f"
+                  WORKER_TOKEN: "2e963311b1396757f9a1d199768555c3"
                   GITHUB_CLIENT_ID: "https://github.com/settings/developers"
                   GITHUB_CLIENT_SECRET: "https://github.com/settings/developers"
                   MAILGUN_API_KEY: "key-example"
@@ -53,7 +55,6 @@ jobs:
                   TELEGRAM_BOT_NAME: "bot_name"
                   TELEGRAM_WEBHOOK_PATH: "131cd9868e9cf396a807c265a3c97e72"
                   ROLLBAR_TOKEN: "post_server_item"
-                  DATABASE_URL: "postgres://user:password@localhost:5432/feedbox?sslmode=disable"
     deploy:
         if: github.event_name == 'push' && github.ref == 'refs/heads/master'
         needs: test
