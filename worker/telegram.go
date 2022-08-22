@@ -2,6 +2,7 @@ package worker
 
 import (
 	"math"
+	"os"
 	"strings"
 	"sync"
 	"time"
@@ -52,6 +53,10 @@ func sendTelegram(done *sync.WaitGroup, qTelegram <-chan telegramItem) {
 	rateLimiter := NewRateLimiter(20, time.Second)
 
 	worker := func(x telegramItem) {
+		if os.Getenv("ENV") != "prod" {
+			return
+		}
+
 		if len(x.users) == 0 {
 			return
 		}

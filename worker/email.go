@@ -2,6 +2,7 @@ package worker
 
 import (
 	"fmt"
+	"os"
 	"strings"
 	"sync"
 
@@ -16,6 +17,10 @@ func isTelegramChannel(ghItem githubItem) bool {
 
 func sendEmail(done *sync.WaitGroup, qGithub <-chan githubItem) {
 	worker := func(x githubItem) {
+		if os.Getenv("ENV") != "prod" {
+			return
+		}
+
 		if len(x.users) == 0 {
 			return
 		}

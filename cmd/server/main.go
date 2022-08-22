@@ -62,7 +62,7 @@ func main() {
 	}
 
 	util.CheckEnvs("GITHUB_CLIENT_ID", "GITHUB_CLIENT_SECRET")
-	util.CheckEnvs("PORT", "TELEGRAM_WEBHOOK_PATH")
+	util.CheckEnvs("PORT", "TELEGRAM_WEBHOOK_PATH", "WORKER_TOKEN")
 	app := server.Create()
 	host := ":" + os.Getenv("PORT")
 	if os.Getenv("ENV") != "prod" {

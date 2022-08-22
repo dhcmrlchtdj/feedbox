@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/middleware/basicauth"
 	"github.com/gofiber/fiber/v2/middleware/expvar"
 	"github.com/gofiber/fiber/v2/middleware/pprof"
 	"github.com/gofiber/fiber/v2/middleware/recover"
@@ -92,7 +93,13 @@ func setupRoute(app *fiber.App) {
 	)
 
 	// worker
-	app.Post("/worker", handler.WorkerStart)
+	app.Post(
+		"/worker/start",
+		basicauth.New(basicauth.Config{
+			Users: map[string]string{"token": os.Getenv("WORKER_TOKEN")},
+		}),
+		handler.WorkerStart,
+	)
 
 	// static
 	app.Get("/", handler.StaticFile("_build/index.html", handler.StaticWithCustomHeader("_build/index.html.json")))
