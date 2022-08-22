@@ -56,6 +56,7 @@ func setupMiddleware(app *fiber.App) {
 }
 
 func setupRoute(app *fiber.App) {
+	// API
 	app.Use("/api/v1", cookie.New(cookie.Config{
 		Name:      "token",
 		Validator: cookieValidator,
@@ -67,6 +68,7 @@ func setupRoute(app *fiber.App) {
 	app.Get("/api/v1/feeds/export", handler.FeedExport)
 	app.Post("/api/v1/feeds/import", validate.ContentType("multipart/form-data"), handler.FeedImport)
 
+	// Auth
 	app.Get("/api/logout", handler.Logout)
 	app.Get(
 		"/api/connect/github",
@@ -77,16 +79,22 @@ func setupRoute(app *fiber.App) {
 		handler.ConnectGithub,
 	)
 
+	// debug
 	if os.Getenv("ENV") == "dev" {
 		app.Get("/helper/preview/*", handler.HelperParseFeed)
 	}
 
+	// telegram
 	app.Post(
 		"/webhook/telegram/"+os.Getenv("TELEGRAM_WEBHOOK_PATH"),
 		validate.ContentType("application/json"),
 		handler.TelegramWebhook,
 	)
 
+	// worker
+	app.Post("/worker", handler.WorkerStart)
+
+	// static
 	app.Get("/", handler.StaticFile("_build/index.html", handler.StaticWithCustomHeader("_build/index.html.json")))
 	app.Get("/sw.js", handler.StaticFile("_build/sw.js"))
 	app.Get("/sw.js.map", handler.StaticFile("_build/sw.js.map"))
