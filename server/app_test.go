@@ -36,6 +36,7 @@ func TestMain(m *testing.M) {
 
 	code := func() int {
 		setupDatabase()
+		defer cleanupDatabase()
 
 		var err error
 
@@ -67,6 +68,23 @@ func setupDatabase() {
 		panic(err)
 	}
 	if err := m.Up(); err != nil && !errors.Is(err, migrate.ErrNoChange) {
+		panic(err)
+	}
+	err1, err2 := m.Close()
+	if err1 != nil {
+		panic(err1)
+	}
+	if err2 != nil {
+		panic(err2)
+	}
+}
+
+func cleanupDatabase() {
+	m, err := migrate.New("file://../migration", os.Getenv("DATABASE_URL"))
+	if err != nil {
+		panic(err)
+	}
+	if err := m.Down(); err != nil && !errors.Is(err, migrate.ErrNoChange) {
 		panic(err)
 	}
 	err1, err2 := m.Close()
