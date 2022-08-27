@@ -1,56 +1,109 @@
 package database
 
 import (
-	"context"
-	"sync"
+	"database/sql"
+	"encoding/json"
+	"strings"
+	"time"
 
-	"github.com/jackc/pgx/v4"
-	"github.com/jackc/pgx/v4/log/zerologadapter"
-	"github.com/jackc/pgx/v4/pgxpool"
+	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
+	_ "modernc.org/sqlite"
 )
 
 var C *Database
 
 type Database struct {
-	pool  *pgxpool.Pool
-	cache *sync.Map
+	db     *sql.DB
+	logger *zerolog.Logger
 }
 
-func New(configURL string, opts ...func(*pgxpool.Config)) (*Database, error) {
-	config, err := pgxpool.ParseConfig(configURL)
+func New(uri string, logger *zerolog.Logger) (*Database, error) {
+	if !strings.HasPrefix(uri, "sqlite://") {
+		return nil, errors.Errorf("invalid DATABASE_URL: %s", uri)
+	}
+	dbUri := uri[9:]
+	db, err := sql.Open("sqlite", dbUri)
 	if err != nil {
 		return nil, err
 	}
 
-	for _, opt := range opts {
-		opt(config)
+	if logger != nil {
+		customizedLogger := logger.With().Str("module", "database").Logger()
+		logger = &customizedLogger
+
+		logger.Debug().
+			Str("uri", uri).
+			Msg("connected to database")
 	}
 
-	pool, err := pgxpool.ConnectConfig(context.Background(), config)
+	_, err = db.Exec(
+		`PRAGMA journal_mode = WAL;
+		PRAGMA synchronous = NORMAL;
+		`)
 	if err != nil {
-		return nil, err
+		panic(err)
 	}
-	return &Database{pool, new(sync.Map)}, nil
+
+	return &Database{db, logger}, nil
 }
 
-func WithMaxConns(maxConns int32) func(*pgxpool.Config) {
-	return func(config *pgxpool.Config) {
-		config.MaxConns = maxConns
+func (db *Database) Exec(query string, args ...any) (sql.Result, error) {
+	if db.logger != nil {
+		start := time.Now()
+		defer func() {
+			latency := time.Since(start)
+			db.logger.Trace().
+				Str("query", query).
+				Str("args", jsonify(args...)).
+				Dur("latency", latency).
+				Msg("exec")
+		}()
 	}
+	return db.db.Exec(query, args...)
 }
 
-func WithLogger(level string, logger *zerolog.Logger) func(*pgxpool.Config) {
-	return func(config *pgxpool.Config) {
-		level, err := pgx.LogLevelFromString(level)
-		if err != nil {
-			panic(err)
-		}
-		config.ConnConfig.LogLevel = level
-		config.ConnConfig.Logger = zerologadapter.NewLogger(*logger)
+func (db *Database) Query(query string, args ...any) (*sql.Rows, error) {
+	if db.logger != nil {
+		start := time.Now()
+		defer func() {
+			latency := time.Since(start)
+			db.logger.Trace().
+				Str("query", query).
+				Str("args", jsonify(args...)).
+				Dur("latency", latency).
+				Msg("exec")
+		}()
 	}
+	return db.db.Query(query, args...)
+}
+
+func (db *Database) QueryRow(query string, args ...any) *sql.Row {
+	if db.logger != nil {
+		start := time.Now()
+		defer func() {
+			latency := time.Since(start)
+			db.logger.Trace().
+				Str("query", query).
+				Str("args", jsonify(args...)).
+				Dur("latency", latency).
+				Msg("exec")
+		}()
+	}
+	return db.db.QueryRow(query, args...)
 }
 
 func (db *Database) Close() {
-	db.pool.Close()
+	err := db.db.Close()
+	if err != nil {
+		panic(err)
+	}
+}
+
+func jsonify(args ...any) string {
+	b, err := json.Marshal(args)
+	if err != nil {
+		return err.Error()
+	}
+	return string(b)
 }

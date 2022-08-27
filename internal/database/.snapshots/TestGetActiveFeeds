@@ -2,11 +2,11 @@
   (database.Feed) {
     ID: (int64) 1,
     URL: (string) (len=22) "http://rss.example.com",
-    Updated: (*time.Time)(2020-01-01 00:00:00 +0000 UTC)
+    Updated: (*int64)(1577836800000)
   },
   (database.Feed) {
-    ID: (int64) 2,
+    ID: (int64) 4,
     URL: (string) (len=23) "http://atom.example.com",
-    Updated: (*time.Time)(<nil>)
+    Updated: (*int64)(<nil>)
   }
 }
