@@ -11,7 +11,7 @@ on:
             - "frontend/**"
 
 jobs:
-    test:
+    build:
         # https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#choosing-github-hosted-runners
         runs-on: ubuntu-22.04
         steps:
@@ -42,13 +42,6 @@ jobs:
                   TELEGRAM_BOT_NAME: "bot_name"
                   TELEGRAM_WEBHOOK_PATH: "131cd9868e9cf396a807c265a3c97e72"
                   ROLLBAR_TOKEN: "post_server_item"
-    deploy:
-        if: github.event_name == 'push' && github.ref == 'refs/heads/master'
-        needs: test
-        runs-on: ubuntu-22.04
-        steps:
-            # https://github.com/marketplace/actions/checkout
-            - uses: actions/checkout@v3.0.2
             # https://github.com/marketplace/actions/setup-node-js-environment
             - uses: actions/setup-node@v3.4.1
               with:
@@ -66,6 +59,6 @@ jobs:
               env:
                   PNPM_HOME: /home/runner/.local/bin
               working-directory: ./frontend
-            - run: |
-                  make -j build
+            - run: make -j build
               working-directory: ./frontend
+            - run: make build
