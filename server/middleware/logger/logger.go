@@ -45,13 +45,21 @@ func New() fiber.Handler {
 
 		logger.
 			Info().
-			Str("method", c.Method()).
-			Str("path", c.Path()).
-			Int("status", resp.StatusCode()).
-			Int("bytes", len(resp.Body())).
-			Dict("request", reqHeader).
-			Dict("response", respHeader).
+			Str("id", c.Locals("requestid").(string)).
+			Str("remote", c.IP()).
 			Dur("latency", latency).
+			Dict("request", zerolog.Dict().
+				Str("protocol", c.Protocol()).
+				Str("method", c.Method()).
+				Str("host", c.Hostname()).
+				Str("pathname", c.Path()).
+				Dict("header", reqHeader),
+			).
+			Dict("response", zerolog.Dict().
+				Int("status", resp.StatusCode()).
+				Int("size", len(resp.Body())).
+				Dict("header", respHeader),
+			).
 			Send()
 
 		return nil

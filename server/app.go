@@ -10,6 +10,7 @@ import (
 	"github.com/gofiber/fiber/v2/middleware/expvar"
 	"github.com/gofiber/fiber/v2/middleware/pprof"
 	"github.com/gofiber/fiber/v2/middleware/recover"
+	"github.com/gofiber/fiber/v2/middleware/requestid"
 	"github.com/pkg/errors"
 
 	"github.com/dhcmrlchtdj/feedbox/internal/database"
@@ -32,7 +33,7 @@ func Create() *fiber.App {
 		ErrorHandler:  errorHandler,
 		StrictRouting: true,
 		CaseSensitive: true,
-		// ProxyHeader: "CF-Connecting-IP",
+		// ProxyHeader: "X-Forwarded-For"
 	}
 	app := fiber.New(appConfig)
 
@@ -49,6 +50,7 @@ func setupMiddleware(app *fiber.App) {
 	app.Use(logger.New())
 	app.Use(etag.New())
 	app.Use(secure.New())
+	app.Use(requestid.New())
 
 	if !prod {
 		app.Use(pprof.New())
