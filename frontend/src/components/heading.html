@@ -1,33 +1,33 @@
 <div class="column col-12">
-    <h1 class="d-inline-block mb-0">FeedBox</h1>
-    <span
-        class="loading d-inline-block"
-        style="width: 0.8rem; vertical-align: text-top"
-        class:d-invisible="{$initialized}"
-    ></span>
-    <span>{$email}</span>
-    <a
-        href="/api/v1/feeds/export"
-        target="_blank"
-    >
-        export
-    </a>
-    <a
-        href="/api/logout"
-        on:click="{logout}"
-    >
-        logout
-    </a>
+	<h1 class="d-inline-block mb-0">FeedBox</h1>
+	<span
+		class="loading d-inline-block"
+		style="width: 0.8rem; vertical-align: text-top"
+		class:d-invisible="{$initialized}"
+	></span>
+	<span>{$email}</span>
+	<a
+		href="/api/v1/feeds/export"
+		target="_blank"
+	>
+		export
+	</a>
+	<a
+		href="/api/logout"
+		on:click="{logout}"
+	>
+		logout
+	</a>
 </div>
 <div class="column col-12"><div class="divider"></div></div>
 
 <script>
-    import { email, initialized } from "../state"
+	import { email, initialized } from "../state"
 
-    const logout = () => {
-        const sw = navigator.serviceWorker
-        if (sw && sw.controller) {
-            sw.controller.postMessage("logout")
-        }
-    }
+	const logout = () => {
+		const sw = navigator.serviceWorker
+		if (sw && sw.controller) {
+			sw.controller.postMessage("logout")
+		}
+	}
 </script>
