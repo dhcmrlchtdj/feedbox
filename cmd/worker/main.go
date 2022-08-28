@@ -4,7 +4,6 @@ import (
 	"os"
 
 	"github.com/joho/godotenv"
-	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
 
 	"github.com/dhcmrlchtdj/feedbox/internal/database"
@@ -22,10 +21,6 @@ func main() {
 		}
 	}
 	util.CheckEnvs("ENV")
-
-	zerolog.TimestampFieldName = "t"
-	zerolog.LevelFieldName = "l"
-	zerolog.TimeFieldFormat = zerolog.TimeFormatUnix
 
 	util.CheckEnvs("DATABASE_URL")
 	db, err := database.New(os.Getenv("DATABASE_URL"), &log.Logger)

@@ -28,6 +28,7 @@ import (
 
 func Create() *fiber.App {
 	appConfig := fiber.Config{
+		DisableStartupMessage: true,
 		// BodyLimit: 4 * 1024 * 1024,
 		// Concurrency: 256 * 1024,
 		ErrorHandler:  errorHandler,

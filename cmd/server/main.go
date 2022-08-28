@@ -2,10 +2,8 @@ package main
 
 import (
 	"os"
-	"time"
 
 	"github.com/joho/godotenv"
-	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
 
 	"github.com/dhcmrlchtdj/feedbox/internal/database"
@@ -25,11 +23,7 @@ func main() {
 	}
 	util.CheckEnvs("ENV")
 
-	zerolog.TimestampFieldName = "t"
-	zerolog.LevelFieldName = "l"
-	zerolog.TimeFieldFormat = zerolog.TimeFormatUnix
 	if os.Getenv("ENV") == "dev" {
-		zerolog.TimeFieldFormat = time.RFC3339
 		log.Logger = log.Output(util.JSONConsoleWriter{Out: os.Stderr})
 	}
 
@@ -65,6 +59,7 @@ func main() {
 	if os.Getenv("ENV") != "prod" {
 		host = "127.0.0.1" + host
 	}
+	log.Logger.Info().Str("module", "app").Str("host", "http://"+host).Msg("app started")
 	if err := app.Listen(host); err != nil {
 		panic(err)
 	}
