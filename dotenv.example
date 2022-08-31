@@ -3,6 +3,7 @@ PORT=8000
 
 ENV="dev"
 SERVER="http://localhost:8000"
+SERVER_SUB_DIR="/"
 COOKIE_SECRET="openssl rand -hex 32"
 WORKER_TOKEN="openssl rand -hex 16"
 

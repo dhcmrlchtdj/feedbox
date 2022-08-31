@@ -39,7 +39,13 @@ func Create() *fiber.App {
 	app := fiber.New(appConfig)
 
 	setupMiddleware(app)
-	setupRoute(app)
+
+	subDir := os.Getenv("SERVER_SUB_DIR")
+	if subDir == "" {
+		subDir = "/"
+	}
+	appRouter := app.Group(subDir)
+	setupRoute(appRouter)
 
 	return app
 }
@@ -59,7 +65,7 @@ func setupMiddleware(app *fiber.App) {
 	}
 }
 
-func setupRoute(app *fiber.App) {
+func setupRoute(app fiber.Router) {
 	// API
 	app.Use("/api/v1", cookie.New(cookie.Config{
 		Name:      "token",

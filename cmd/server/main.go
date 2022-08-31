@@ -59,7 +59,8 @@ func main() {
 	if os.Getenv("ENV") != "prod" {
 		host = "127.0.0.1" + host
 	}
-	log.Logger.Info().Str("module", "app").Str("host", "http://"+host).Msg("app started")
+	url := "http://" + host + os.Getenv("SERVER_SUB_DIR")
+	log.Logger.Info().Str("module", "app").Str("url", url).Msg("app started")
 	if err := app.Listen(host); err != nil {
 		panic(err)
 	}
