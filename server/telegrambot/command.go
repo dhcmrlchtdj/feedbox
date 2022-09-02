@@ -6,9 +6,9 @@ import (
 	"strings"
 
 	"github.com/pkg/errors"
+	"github.com/rs/zerolog/log"
 
 	"github.com/dhcmrlchtdj/feedbox/internal/database"
-	"github.com/dhcmrlchtdj/feedbox/internal/monitor"
 	"github.com/dhcmrlchtdj/feedbox/internal/telegram"
 	"github.com/dhcmrlchtdj/feedbox/internal/util"
 )
@@ -47,7 +47,7 @@ func executeCommand(cmd string, arg string, msg *telegram.Message) {
 	if err == nil {
 		return
 	} else if errors.Is(err, ErrUnknownCommand) {
-		monitor.C.Warn(err)
+		log.Warn().Str("module", "telegrambot").Stack().Err(err).Send()
 	} else if errors.Is(err, database.ErrInvalidURL) ||
 		errors.Is(err, ErrEmptyList) ||
 		errors.Is(err, ErrInvalidTwitter) {
@@ -56,10 +56,10 @@ func executeCommand(cmd string, arg string, msg *telegram.Message) {
 			ChatID: msg.Chat.ID,
 			Text:   text,
 		}); err != nil {
-			monitor.C.Error(err)
+			log.Error().Str("module", "telegrambot").Stack().Err(err).Send()
 		}
 	} else {
-		monitor.C.Error(err)
+		log.Error().Str("module", "telegrambot").Stack().Err(err).Send()
 	}
 }
 

@@ -10,9 +10,9 @@ import (
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/pkg/errors"
+	"github.com/rs/zerolog/log"
 
 	"github.com/dhcmrlchtdj/feedbox/frontend"
-	"github.com/dhcmrlchtdj/feedbox/internal/monitor"
 )
 
 func StaticFile(filename string, handlers ...fiber.Handler) fiber.Handler {
@@ -77,7 +77,7 @@ func sendFile(c *fiber.Ctx, filename string, handlers ...fiber.Handler) error {
 			if inner != nil && inner.Error() == "is a directory" {
 				return fiber.ErrNotFound
 			} else {
-				monitor.C.Error(err)
+				log.Error().Str("module", "server").Stack().Err(err).Send()
 				return fiber.ErrNotFound
 			}
 		}

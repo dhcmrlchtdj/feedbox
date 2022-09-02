@@ -8,8 +8,8 @@ import (
 	"time"
 
 	"github.com/pkg/errors"
+	"github.com/rs/zerolog/log"
 
-	"github.com/dhcmrlchtdj/feedbox/internal/monitor"
 	"github.com/dhcmrlchtdj/feedbox/internal/telegram"
 )
 
@@ -37,12 +37,12 @@ func telegramSendMsg(msg telegram.SendMessagePayload, rl *RateLimiter) {
 			var errResp *telegram.Response
 			if errors.As(err, &errResp) {
 				if *errResp.ErrorCode == 403 {
-					monitor.C.Warn(err)
+					log.Warn().Str("module", "worker").Stack().Err(err).Send()
 					return
 				}
 			}
 
-			monitor.C.Error(err)
+			log.Error().Str("module", "worker").Stack().Err(err).Send()
 		}
 		return
 	}

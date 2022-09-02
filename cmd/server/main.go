@@ -8,7 +8,6 @@ import (
 
 	"github.com/dhcmrlchtdj/feedbox/internal/database"
 	"github.com/dhcmrlchtdj/feedbox/internal/email"
-	"github.com/dhcmrlchtdj/feedbox/internal/monitor"
 	"github.com/dhcmrlchtdj/feedbox/internal/sign"
 	"github.com/dhcmrlchtdj/feedbox/internal/telegram"
 	"github.com/dhcmrlchtdj/feedbox/internal/util"
@@ -34,10 +33,6 @@ func main() {
 	}
 	database.C = db
 	defer db.Close()
-
-	util.CheckEnvs("ROLLBAR_TOKEN")
-	monitor.C = monitor.New(os.Getenv("ROLLBAR_TOKEN"))
-	defer monitor.C.Flush()
 
 	util.CheckEnvs("MAILGUN_DOMAIN", "MAILGUN_API_KEY", "MAILGUN_FROM")
 	email.C = email.New(os.Getenv("MAILGUN_DOMAIN"), os.Getenv("MAILGUN_API_KEY"), os.Getenv("MAILGUN_FROM"))

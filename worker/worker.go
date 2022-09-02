@@ -8,10 +8,10 @@ import (
 
 	"github.com/mmcdole/gofeed"
 	"github.com/pkg/errors"
+	"github.com/rs/zerolog/log"
 
 	"github.com/dhcmrlchtdj/feedbox/internal/database"
 	"github.com/dhcmrlchtdj/feedbox/internal/feedparser"
-	"github.com/dhcmrlchtdj/feedbox/internal/monitor"
 )
 
 type feedItem struct {
@@ -36,7 +36,7 @@ func Start() {
 
 	feeds, err := database.C.GetActiveFeeds()
 	if err != nil {
-		monitor.C.Error(err)
+		log.Error().Str("module", "worker").Stack().Err(err).Send()
 		return
 	}
 
@@ -81,7 +81,7 @@ func fetchFeed(done *sync.WaitGroup, qFeed <-chan database.Feed) <-chan *feedIte
 		for dbFeed := range qFeed {
 			feed, err := fp.ParseURL(dbFeed.URL)
 			if err != nil {
-				monitor.C.Warn(err)
+				log.Warn().Str("module", "worker").Stack().Err(err).Send()
 				continue
 			}
 			if feed.Len() == 0 {
@@ -90,14 +90,15 @@ func fetchFeed(done *sync.WaitGroup, qFeed <-chan database.Feed) <-chan *feedIte
 
 			updated := getLatestUpdated(feed)
 			if updated == nil {
-				monitor.C.Warn(errors.Errorf("can not parse date field: %s", dbFeed.URL))
+				err := errors.Errorf("can not parse date field: %s", dbFeed.URL)
+				log.Warn().Str("module", "worker").Stack().Err(err).Send()
 				now := time.Now()
 				updated = &now
 			}
 
 			oldLinks, err := database.C.GetLinks(dbFeed.ID)
 			if err != nil {
-				monitor.C.Error(err)
+				log.Error().Str("module", "worker").Stack().Err(err).Send()
 				continue
 			}
 			oldLinkSet := map[string]bool{}
@@ -123,7 +124,7 @@ func fetchFeed(done *sync.WaitGroup, qFeed <-chan database.Feed) <-chan *feedIte
 
 			err = database.C.AddFeedLinks(dbFeed.ID, newLinks, updated.UnixMilli())
 			if err != nil {
-				monitor.C.Error(err)
+				log.Error().Str("module", "worker").Stack().Err(err).Send()
 				continue
 			}
 
@@ -170,7 +171,7 @@ func dispatchFeed(done *sync.WaitGroup, qFeedItem <-chan *feedItem) (<-chan gith
 		feed := item.feed
 		users, err := database.C.GetSubscribers(feed.ID)
 		if err != nil {
-			monitor.C.Error(err)
+			log.Error().Str("module", "worker").Stack().Err(err).Send()
 			return
 		}
 
@@ -183,7 +184,7 @@ func dispatchFeed(done *sync.WaitGroup, qFeedItem <-chan *feedItem) (<-chan gith
 			case "telegram":
 				pid, err := strconv.ParseInt(user.PID, 10, 64)
 				if err != nil {
-					monitor.C.Error(err)
+					log.Error().Str("module", "worker").Stack().Err(err).Send()
 				} else {
 					telegramUsers = append(telegramUsers, pid)
 				}

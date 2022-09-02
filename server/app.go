@@ -12,9 +12,9 @@ import (
 	"github.com/gofiber/fiber/v2/middleware/recover"
 	"github.com/gofiber/fiber/v2/middleware/requestid"
 	"github.com/pkg/errors"
+	"github.com/rs/zerolog/log"
 
 	"github.com/dhcmrlchtdj/feedbox/internal/database"
-	"github.com/dhcmrlchtdj/feedbox/internal/monitor"
 	"github.com/dhcmrlchtdj/feedbox/internal/sign"
 	"github.com/dhcmrlchtdj/feedbox/server/handler"
 	"github.com/dhcmrlchtdj/feedbox/server/middleware/auth/cookie"
@@ -122,7 +122,7 @@ func errorHandler(c *fiber.Ctx, err error) error {
 	notCare := fiber.DefaultErrorHandler(c, err)
 	code := c.Response().StatusCode()
 	if code >= 500 {
-		monitor.C.Error(err)
+		log.Error().Str("module", "app").Stack().Err(err).Send()
 	}
 	return notCare
 }

@@ -7,8 +7,8 @@ import (
 	"sync"
 
 	"github.com/dhcmrlchtdj/feedbox/internal/email"
-	"github.com/dhcmrlchtdj/feedbox/internal/monitor"
 	"github.com/dhcmrlchtdj/feedbox/internal/util"
+	"github.com/rs/zerolog/log"
 )
 
 func isTelegramChannel(ghItem githubItem) bool {
@@ -55,7 +55,7 @@ func sendEmail(done *sync.WaitGroup, qGithub <-chan githubItem) {
 		for _, user := range x.users {
 			err := email.C.Send(user, subject, content)
 			if err != nil {
-				monitor.C.Error(err)
+				log.Error().Str("module", "worker").Stack().Err(err).Send()
 			}
 		}
 	}
