@@ -8,14 +8,13 @@ go 1.19
 require (
 	github.com/bradleyjkemp/cupaloy/v2 v2.7.0
 	github.com/cespare/xxhash/v2 v2.1.2
-	github.com/gofiber/fiber/v2 v2.36.0
+	github.com/gofiber/fiber/v2 v2.37.0
 	github.com/golang-migrate/migrate/v4 v4.15.2
 	github.com/joho/godotenv v1.4.0
 	github.com/mmcdole/gofeed v1.1.3
 	github.com/pkg/errors v0.9.1
-	github.com/rollbar/rollbar-go v1.4.4
-	github.com/rs/zerolog v1.27.0
-	golang.org/x/crypto v0.0.0-20220826181053-bd7e27e6170d
+	github.com/rs/zerolog v1.28.0
+	golang.org/x/crypto v0.0.0-20220829220503-c86fa9a7ed90
 	golang.org/x/oauth2 v0.0.0-20220822191816-0ebed06d0094
 	golang.org/x/text v0.3.7
 	modernc.org/sqlite v1.18.1
@@ -48,7 +47,7 @@ require (
 	go.uber.org/atomic v1.10.0 // indirect
 	golang.org/x/mod v0.6.0-dev.0.20220818022119-ed83ed61efb9 // indirect
 	golang.org/x/net v0.0.0-20220826154423-83b083e8dc8b // indirect
-	golang.org/x/sys v0.0.0-20220825204002-c680a09ffe64 // indirect
+	golang.org/x/sys v0.0.0-20220829200755-d48e67d00261 // indirect
 	golang.org/x/tools v0.1.12 // indirect
 	google.golang.org/appengine v1.6.7 // indirect
 	google.golang.org/protobuf v1.28.1 // indirect
