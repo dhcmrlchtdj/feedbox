@@ -80,7 +80,7 @@ func cleanupDatabase() {
 	if err := m.Down(); err != nil && !errors.Is(err, migrate.ErrNoChange) {
 		panic(err)
 	}
-	defer m.Close()
+	m.Close()
 }
 
 func setupApp() {
