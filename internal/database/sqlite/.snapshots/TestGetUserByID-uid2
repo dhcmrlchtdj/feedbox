@@ -1,4 +1,4 @@
-(*database.User)({
+(*common.User)({
   ID: (int64) 2,
   Platform: (string) (len=8) "telegram",
   PID: (string) (len=3) "321",

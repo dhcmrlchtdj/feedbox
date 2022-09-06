@@ -1,4 +1,4 @@
-package database_test
+package sqlite_test
 
 import (
 	"database/sql"
@@ -12,14 +12,14 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
 
-	"github.com/dhcmrlchtdj/feedbox/internal/database"
+	"github.com/dhcmrlchtdj/feedbox/internal/database/sqlite"
 	"github.com/dhcmrlchtdj/feedbox/migration"
 )
 
-var db *database.Database
+var db *sqlite.Database
 
 func TestMain(m *testing.M) {
-	if err := godotenv.Load("../../dotenv"); err != nil {
+	if err := godotenv.Load("../../../dotenv"); err != nil {
 		panic(err)
 	}
 
@@ -27,7 +27,7 @@ func TestMain(m *testing.M) {
 		setupDatabase()
 
 		var err error
-		db, err = database.New(os.Getenv("DATABASE_URL"), &log.Logger)
+		db, err = sqlite.New(os.Getenv("DATABASE_URL"), &log.Logger)
 		if err != nil {
 			panic(err)
 		}

@@ -1,10 +1,10 @@
-([]database.Feed) (len=2) {
-  (database.Feed) {
+([]common.Feed) (len=2) {
+  (common.Feed) {
     ID: (int64) 4,
     URL: (string) (len=23) "http://atom.example.com",
     Updated: (*int64)(<nil>)
   },
-  (database.Feed) {
+  (common.Feed) {
     ID: (int64) 1,
     URL: (string) (len=22) "http://rss.example.com",
     Updated: (*int64)(1577836800000)

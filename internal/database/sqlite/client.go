@@ -1,4 +1,4 @@
-package database
+package sqlite
 
 import (
 	"database/sql"
@@ -10,8 +10,6 @@ import (
 	"github.com/rs/zerolog"
 	_ "modernc.org/sqlite"
 )
-
-var C *Database
 
 type Database struct {
 	db     *sql.DB

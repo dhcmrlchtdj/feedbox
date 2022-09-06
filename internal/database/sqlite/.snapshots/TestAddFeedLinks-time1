@@ -1,17 +1,17 @@
-([]database_test.feedAll) (len=3) {
-  (database_test.feedAll) {
+([]sqlite_test.feedAll) (len=3) {
+  (sqlite_test.feedAll) {
     ID: (int64) 1,
     URL: (string) (len=22) "http://rss.example.com",
     Updated: (int64) 946684800000,
     Link: (string) (len=24) "http://rss.example.com/1"
   },
-  (database_test.feedAll) {
+  (sqlite_test.feedAll) {
     ID: (int64) 1,
     URL: (string) (len=22) "http://rss.example.com",
     Updated: (int64) 946684800000,
     Link: (string) (len=24) "http://rss.example.com/2"
   },
-  (database_test.feedAll) {
+  (sqlite_test.feedAll) {
     ID: (int64) 1,
     URL: (string) (len=22) "http://rss.example.com",
     Updated: (int64) 946684800000,

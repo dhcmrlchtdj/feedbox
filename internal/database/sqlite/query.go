@@ -1,4 +1,4 @@
-package database
+package sqlite
 
 import (
 	"database/sql"
@@ -6,29 +6,19 @@ import (
 
 	"github.com/pkg/errors"
 	_ "modernc.org/sqlite"
+
+	"github.com/dhcmrlchtdj/feedbox/internal/database/common"
 )
 
-///
+type (
+	User = common.User
+	Feed = common.Feed
+)
 
 var (
-	ErrEmptyRow   = errors.New("empty row")
-	ErrInvalidURL = errors.New("invalid url")
+	ErrEmptyRow   = common.ErrEmptyRow
+	ErrInvalidURL = common.ErrInvalidURL
 )
-
-///
-
-type User struct {
-	ID       int64             `json:"id"`
-	Platform string            `json:"platform"`
-	PID      string            `json:"pid"`
-	Addition map[string]string `json:"addition"`
-}
-
-type Feed struct {
-	ID      int64  `json:"id"`
-	URL     string `json:"url"`
-	Updated *int64 `json:"updated"`
-}
 
 ///
 
@@ -87,7 +77,7 @@ func (db *Database) GetOrCreateUserByTelegram(chatID string) (*User, error) {
 }
 
 func (db *Database) GetFeedIDByURL(url string) (int64, error) {
-	if !isValidURL(url) {
+	if !common.IsValidURL(url) {
 		return 0, ErrInvalidURL
 	}
 
@@ -225,7 +215,7 @@ func (db *Database) UnsubscribeAll(userID int64) error {
 }
 
 func (db *Database) SubscribeURL(userID int64, url string) error {
-	if !isValidURL(url) {
+	if !common.IsValidURL(url) {
 		return errors.Wrap(ErrInvalidURL, url)
 	}
 

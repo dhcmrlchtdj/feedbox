@@ -30,12 +30,12 @@ dev:
 
 test:
 	ENV=test TZ=UTC go test -race ./internal/util
-	ENV=test TZ=UTC go test -race ./internal/database
+	ENV=test TZ=UTC go test -race ./internal/database/sqlite
 	ENV=test TZ=UTC go test -race ./server
 
 test_update:
 	-ENV=test TZ=UTC UPDATE_SNAPSHOTS=true go test ./internal/util
-	-ENV=test TZ=UTC UPDATE_SNAPSHOTS=true go test ./internal/database
+	-ENV=test TZ=UTC UPDATE_SNAPSHOTS=true go test ./internal/database/sqlite
 	-ENV=test TZ=UTC UPDATE_SNAPSHOTS=true go test ./server
 
 # coverage:

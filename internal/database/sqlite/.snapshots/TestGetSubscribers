@@ -1,5 +1,5 @@
-([]database.User) (len=1) {
-  (database.User) {
+([]common.User) (len=1) {
+  (common.User) {
     ID: (int64) 1,
     Platform: (string) (len=6) "github",
     PID: (string) (len=3) "123",

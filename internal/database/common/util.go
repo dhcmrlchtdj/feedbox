@@ -1,8 +1,8 @@
-package database
+package common
 
 import "net/url"
 
-func isValidURL(link string) bool {
+func IsValidURL(link string) bool {
 	u, err := url.Parse(link)
 	if err != nil || u.Scheme == "" || u.Host == "" {
 		return false
