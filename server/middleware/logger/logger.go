@@ -13,7 +13,7 @@ func New() fiber.Handler {
 	var once sync.Once
 	var errHandler fiber.ErrorHandler
 
-	logger := log.Logger.With().Str("module", "server").Logger()
+	logger := log.With().Str("module", "server").Logger()
 
 	return func(c *fiber.Ctx) error {
 		once.Do(func() {

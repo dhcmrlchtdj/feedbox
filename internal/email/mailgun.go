@@ -10,17 +10,17 @@ import (
 	"github.com/dhcmrlchtdj/feedbox/internal/multipart"
 )
 
-var C *Client
+var _ client = (*mailgun)(nil)
 
-type Client struct {
+type mailgun struct {
 	client    *http.Client
 	urlPrefix string
 	from      string
 	apiKey    string
 }
 
-func New(domain string, apiKey string, from string) *Client {
-	return &Client{
+func NewMailgun(domain string, apiKey string, from string) *mailgun {
+	return &mailgun{
 		client:    new(http.Client),
 		urlPrefix: "https://api.mailgun.net/v3/" + domain,
 		from:      from,
@@ -28,7 +28,7 @@ func New(domain string, apiKey string, from string) *Client {
 	}
 }
 
-func (c *Client) Send(addr string, subject string, text string) error {
+func (c *mailgun) Send(addr string, subject string, text string) error {
 	var payload bytes.Buffer
 	m := multipart.New(&payload).
 		Str("from", c.from).

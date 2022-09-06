@@ -22,7 +22,7 @@ func main() {
 	}
 	util.CheckEnvs("ENV")
 
-	if os.Getenv("ENV") == "dev" {
+	if os.Getenv("ENV") != "prod" {
 		log.Logger = log.Output(util.JSONConsoleWriter{Out: os.Stderr})
 	}
 
@@ -35,11 +35,19 @@ func main() {
 	defer db.Close()
 
 	util.CheckEnvs("MAILGUN_DOMAIN", "MAILGUN_API_KEY", "MAILGUN_FROM")
-	email.C = email.New(os.Getenv("MAILGUN_DOMAIN"), os.Getenv("MAILGUN_API_KEY"), os.Getenv("MAILGUN_FROM"))
+	if os.Getenv("ENV") == "prod" {
+		email.C = email.NewMailgun(os.Getenv("MAILGUN_DOMAIN"), os.Getenv("MAILGUN_API_KEY"), os.Getenv("MAILGUN_FROM"))
+	} else {
+		email.C = email.NewDryRun(os.Getenv("MAILGUN_DOMAIN"), os.Getenv("MAILGUN_API_KEY"), os.Getenv("MAILGUN_FROM"))
+	}
 
 	util.CheckEnvs("SERVER")
 	util.CheckEnvs("TELEGRAM_BOT_NAME", "TELEGRAM_BOT_TOKEN")
-	telegram.C = telegram.New(os.Getenv("TELEGRAM_BOT_NAME"), os.Getenv("TELEGRAM_BOT_TOKEN"))
+	if os.Getenv("ENV") == "prod" {
+		telegram.C = telegram.NewHttpClient(os.Getenv("TELEGRAM_BOT_NAME"), os.Getenv("TELEGRAM_BOT_TOKEN"))
+	} else {
+		telegram.C = telegram.NewDryRun(os.Getenv("TELEGRAM_BOT_NAME"), os.Getenv("TELEGRAM_BOT_TOKEN"))
+	}
 
 	util.CheckEnvs("COOKIE_PASSWORD")
 	sign.S, err = sign.New(os.Getenv("COOKIE_PASSWORD"))
@@ -55,7 +63,7 @@ func main() {
 		host = "127.0.0.1" + host
 	}
 	url := "http://" + host + os.Getenv("SERVER_SUB_DIR")
-	log.Logger.Info().Str("module", "app").Str("url", url).Msg("app started")
+	log.Info().Str("module", "app").Str("url", url).Msg("app started")
 	if err := app.Listen(host); err != nil {
 		panic(err)
 	}

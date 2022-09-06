@@ -11,20 +11,24 @@ import (
 	"github.com/dhcmrlchtdj/feedbox/internal/multipart"
 )
 
-var C *Client
+var _ client = (*httpClient)(nil)
 
-type Client struct {
-	Name  string
+type httpClient struct {
+	name  string
 	token string
 }
 
-func New(name string, token string) *Client {
-	return &Client{Name: name, token: token}
+func NewHttpClient(name string, token string) *httpClient {
+	return &httpClient{name: name, token: token}
 }
 
 ///
 
-func (c *Client) GetChatMember(payload GetChatMemberPayload) (*ChatMember, error) {
+func (c *httpClient) GetBotName() string {
+	return c.name
+}
+
+func (c *httpClient) GetChatMember(payload GetChatMemberPayload) (*ChatMember, error) {
 	body, err := c.rawSend("getChatMember", payload)
 	if err != nil {
 		return nil, err
@@ -42,19 +46,19 @@ func (c *Client) GetChatMember(payload GetChatMemberPayload) (*ChatMember, error
 	return resp.Result, nil
 }
 
-func (c *Client) SetWebhook(payload SetWebhookPayload) error {
+func (c *httpClient) SetWebhook(payload SetWebhookPayload) error {
 	return c.rawSendSimple("setWebhook", payload)
 }
 
-func (c *Client) SetMyCommands(payload SetMyCommandsPayload) error {
+func (c *httpClient) SetMyCommands(payload SetMyCommandsPayload) error {
 	return c.rawSendSimple("setMyCommands", payload)
 }
 
-func (c *Client) SendMessage(payload SendMessagePayload) error {
+func (c *httpClient) SendMessage(payload SendMessagePayload) error {
 	return c.rawSendSimple("sendMessage", payload)
 }
 
-func (c *Client) SendDocument(payload SendDocumentPayload) error {
+func (c *httpClient) SendDocument(payload SendDocumentPayload) error {
 	r, w := io.Pipe()
 	m := multipart.New(w)
 	go func() {
@@ -73,7 +77,7 @@ func (c *Client) SendDocument(payload SendDocumentPayload) error {
 ///
 
 // caller MUST close response.Body
-func (c *Client) rawSend(cmd string, payload any) (io.ReadCloser, error) {
+func (c *httpClient) rawSend(cmd string, payload any) (io.ReadCloser, error) {
 	url := "https://api.telegram.org/bot" + c.token + "/" + cmd
 
 	var buf bytes.Buffer
@@ -99,7 +103,7 @@ func (c *Client) rawSend(cmd string, payload any) (io.ReadCloser, error) {
 	return resp.Body, nil
 }
 
-func (c *Client) rawSendSimple(cmd string, payload any) error {
+func (c *httpClient) rawSendSimple(cmd string, payload any) error {
 	body, err := c.rawSend(cmd, payload)
 	if err != nil {
 		return err
@@ -113,7 +117,7 @@ func (c *Client) rawSendSimple(cmd string, payload any) error {
 	return nil
 }
 
-func (c *Client) rawSendFileSimple(cmd string, contentType string, payload io.Reader) error {
+func (c *httpClient) rawSendFileSimple(cmd string, contentType string, payload io.Reader) error {
 	url := "https://api.telegram.org/bot" + c.token + "/" + cmd
 	resp, err := http.Post(url, contentType, payload) //nolint:gosec
 	if err != nil {

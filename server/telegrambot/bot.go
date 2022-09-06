@@ -61,7 +61,7 @@ func handleMessage(message *telegram.Message) {
 		if i := strings.Index(cmd, "@"); i != -1 {
 			name := cmd[i+1:]
 			cmd = cmd[:i]
-			if !strings.EqualFold(name, telegram.C.Name) {
+			if !strings.EqualFold(name, telegram.C.GetBotName()) {
 				break
 			}
 		}

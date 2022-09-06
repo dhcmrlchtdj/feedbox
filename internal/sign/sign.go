@@ -9,7 +9,12 @@ import (
 	"golang.org/x/crypto/chacha20poly1305"
 )
 
-var S *Sign
+var S interface {
+	Encode(plaintext []byte) ([]byte, error)
+	Decode(data []byte) ([]byte, error)
+	DecodeFromHex(hex_data string) ([]byte, error)
+	EncodeToHex(plaintext []byte) (string, error)
+}
 
 type Sign struct {
 	aead cipher.AEAD

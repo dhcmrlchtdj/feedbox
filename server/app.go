@@ -90,7 +90,7 @@ func setupRoute(app fiber.Router) {
 	)
 
 	// debug
-	if os.Getenv("ENV") == "dev" {
+	if os.Getenv("ENV") != "prod" {
 		app.Get("/helper/preview/*", handler.HelperParseFeed)
 	}
 
