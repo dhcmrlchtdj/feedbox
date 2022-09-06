@@ -5,6 +5,7 @@ import (
 	"crypto/rand"
 	"encoding/hex"
 
+	"golang.org/x/crypto/argon2"
 	"golang.org/x/crypto/chacha20poly1305"
 )
 
@@ -14,11 +15,15 @@ type Sign struct {
 	aead cipher.AEAD
 }
 
-func New(secret string) (*Sign, error) {
-	key, err := hex.DecodeString(secret)
-	if err != nil {
+func New(password string) (*Sign, error) {
+	salt := make([]byte, 16)
+	if _, err := rand.Read(salt); err != nil {
 		return nil, err
 	}
+	// https://datatracker.ietf.org/doc/rfc9106/
+	// salt, 16 bytes is RECOMMENDED for password hashing
+	// The Argon2id variant with t=3 and 64 MiB memory is the SECOND RECOMMENDED option
+	key := argon2.IDKey([]byte(password), salt, 3, 64*1024, 1, 32)
 	aead, err := chacha20poly1305.NewX(key)
 	if err != nil {
 		return nil, err

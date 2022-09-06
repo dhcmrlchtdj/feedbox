@@ -4,7 +4,7 @@ PORT=8000
 ENV="dev"
 SERVER="http://localhost:8000"
 SERVER_SUB_DIR="/"
-COOKIE_SECRET="openssl rand -hex 32"
+COOKIE_PASSWORD="password for key derivation"
 WORKER_TOKEN="openssl rand -hex 16"
 
 GITHUB_CLIENT_ID="https://github.com/settings/developers"

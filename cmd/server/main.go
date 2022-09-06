@@ -41,8 +41,8 @@ func main() {
 	util.CheckEnvs("TELEGRAM_BOT_NAME", "TELEGRAM_BOT_TOKEN")
 	telegram.C = telegram.New(os.Getenv("TELEGRAM_BOT_NAME"), os.Getenv("TELEGRAM_BOT_TOKEN"))
 
-	util.CheckEnvs("COOKIE_SECRET")
-	sign.S, err = sign.New(os.Getenv("COOKIE_SECRET"))
+	util.CheckEnvs("COOKIE_PASSWORD")
+	sign.S, err = sign.New(os.Getenv("COOKIE_PASSWORD"))
 	if err != nil {
 		panic(err)
 	}
