@@ -8,13 +8,12 @@ import (
 
 	"github.com/bradleyjkemp/cupaloy/v2"
 	"github.com/golang-migrate/migrate/v4"
-	_ "github.com/golang-migrate/migrate/v4/database/sqlite"
-	_ "github.com/golang-migrate/migrate/v4/source/file"
 	"github.com/joho/godotenv"
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
 
 	"github.com/dhcmrlchtdj/feedbox/internal/database"
+	"github.com/dhcmrlchtdj/feedbox/migration"
 )
 
 var db *database.Database
@@ -41,22 +40,16 @@ func TestMain(m *testing.M) {
 }
 
 func setupDatabase() {
-	m, err := migrate.New("file://../../migration", os.Getenv("DATABASE_URL"))
+	m, err := migration.InitMigration(os.Getenv("DATABASE_URL"))
 	if err != nil {
 		panic(err)
 	}
+	defer m.Close()
 	if err := m.Down(); err != nil && !errors.Is(err, migrate.ErrNoChange) {
 		panic(err)
 	}
 	if err := m.Up(); err != nil && !errors.Is(err, migrate.ErrNoChange) {
 		panic(err)
-	}
-	err1, err2 := m.Close()
-	if err1 != nil {
-		panic(err1)
-	}
-	if err2 != nil {
-		panic(err2)
 	}
 }
 

@@ -7,12 +7,11 @@ import (
 	"strconv"
 
 	"github.com/golang-migrate/migrate/v4"
-	_ "github.com/golang-migrate/migrate/v4/database/sqlite"
-	_ "github.com/golang-migrate/migrate/v4/source/file"
 	"github.com/joho/godotenv"
 	"github.com/pkg/errors"
 
 	"github.com/dhcmrlchtdj/feedbox/internal/util"
+	"github.com/dhcmrlchtdj/feedbox/migration"
 )
 
 func printVersion(m *migrate.Migrate) {
@@ -48,9 +47,8 @@ func main() {
 			panic(err)
 		}
 	}
-
 	util.CheckEnvs("DATABASE_URL")
-	m, err := migrate.New("file://./migration", os.Getenv("DATABASE_URL"))
+	m, err := migration.InitMigration(os.Getenv("DATABASE_URL"))
 	if err != nil {
 		panic(err)
 	}
