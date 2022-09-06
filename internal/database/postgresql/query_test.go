@@ -1,7 +1,6 @@
-package sqlite_test
+package postgresql_test
 
 import (
-	"database/sql"
 	"os"
 	"strings"
 	"testing"
@@ -13,17 +12,17 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
 
-	"github.com/dhcmrlchtdj/feedbox/internal/database/sqlite"
+	"github.com/dhcmrlchtdj/feedbox/internal/database/postgresql"
 	"github.com/dhcmrlchtdj/feedbox/migration"
 )
 
-var db *sqlite.Database
+var db *postgresql.Database
 
 func TestMain(m *testing.M) {
 	if err := godotenv.Load("../../../dotenv"); err != nil {
 		panic(err)
 	}
-	if !strings.HasPrefix(os.Getenv("DATABASE_URL"), "sqlite://") {
+	if !strings.HasPrefix(os.Getenv("DATABASE_URL"), "postgres://") {
 		return
 	}
 
@@ -31,7 +30,7 @@ func TestMain(m *testing.M) {
 		setupDatabase()
 
 		var err error
-		db, err = sqlite.New(os.Getenv("DATABASE_URL"), &log.Logger)
+		db, err = postgresql.New(os.Getenv("DATABASE_URL"), &log.Logger)
 		if err != nil {
 			panic(err)
 		}
@@ -112,23 +111,9 @@ func TestAddFeedLinks(t *testing.T) {
 	type feedAll struct {
 		ID      int64
 		URL     string
-		Updated int64
-		Link    string
+		Link    []string
+		Updated *time.Time
 	}
-
-	readFeedAll := func(rows *sql.Rows) ([]feedAll, error) {
-		feeds := []feedAll{}
-		for rows.Next() {
-			var feed feedAll
-			err := rows.Scan(&feed.ID, &feed.URL, &feed.Updated, &feed.Link)
-			if err != nil {
-				return nil, err
-			}
-			feeds = append(feeds, feed)
-		}
-		return feeds, nil
-	}
-
 	t.Run("time1", func(t *testing.T) {
 		time1 := time.Date(2000, time.January, 1, 0, 0, 0, 0, time.UTC)
 		err := db.AddFeedLinks(
@@ -138,19 +123,9 @@ func TestAddFeedLinks(t *testing.T) {
 		if err != nil {
 			t.Fatal(err)
 		}
-
-		rows, err := db.Query(
-			`SELECT f.id, f.url, f.updated, l.url
-			FROM feeds f
-			JOIN r_feed_link r ON r.feed_id=f.id
-			JOIN links l ON l.id = r.link_id
-			WHERE f.id=$1`,
-			1)
-		if err != nil {
-			t.Fatal(err)
-		}
-
-		r, err := readFeedAll(rows)
+		r := feedAll{}
+		row := db.QueryRow("select id, url, updated, link from feeds where id=$1", 1)
+		err = row.Scan(&r.ID, &r.URL, &r.Updated, &r.Link)
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -165,19 +140,9 @@ func TestAddFeedLinks(t *testing.T) {
 		if err != nil {
 			t.Fatal(err)
 		}
-
-		rows, err := db.Query(
-			`SELECT f.id, f.url, f.updated, l.url
-			FROM feeds f
-			JOIN r_feed_link r ON r.feed_id=f.id
-			JOIN links l ON l.id = r.link_id
-			WHERE f.id=$1`,
-			1)
-		if err != nil {
-			t.Fatal(err)
-		}
-
-		r, err := readFeedAll(rows)
+		r := feedAll{}
+		row := db.QueryRow("select id, url, updated, link from feeds where id=$1", 1)
+		err = row.Scan(&r.ID, &r.URL, &r.Updated, &r.Link)
 		if err != nil {
 			t.Fatal(err)
 		}

@@ -7,7 +7,7 @@ import (
 	"html"
 	"io"
 
-	"github.com/dhcmrlchtdj/feedbox/internal/database"
+	"github.com/dhcmrlchtdj/feedbox/internal/database/common"
 )
 
 type opml struct {
@@ -56,7 +56,7 @@ func BuildOPML(urls []string) []byte {
 	return b.Bytes()
 }
 
-func BuildOPMLFromFeed(feeds []database.Feed) []byte {
+func BuildOPMLFromFeed(feeds []common.Feed) []byte {
 	urls := []string{}
 	for _, feed := range feeds {
 		urls = append(urls, feed.URL)

@@ -1,27 +1,23 @@
-package sqlite
+package postgresql
 
 import (
-	"database/sql"
-	"strings"
+	"context"
 	"time"
 
 	"github.com/dhcmrlchtdj/feedbox/internal/util"
-	"github.com/pkg/errors"
+	"github.com/jackc/pgconn"
+	"github.com/jackc/pgx/v4"
+	"github.com/jackc/pgx/v4/pgxpool"
 	"github.com/rs/zerolog"
-	_ "modernc.org/sqlite"
 )
 
 type Database struct {
-	db     *sql.DB
+	pool   *pgxpool.Pool
 	logger *zerolog.Logger
 }
 
 func New(uri string, logger *zerolog.Logger) (*Database, error) {
-	if !strings.HasPrefix(uri, "sqlite://") {
-		return nil, errors.Errorf("invalid DATABASE_URL: %s", uri)
-	}
-	dbUri := uri[9:]
-	db, err := sql.Open("sqlite", dbUri)
+	config, err := pgxpool.ParseConfig(uri)
 	if err != nil {
 		return nil, err
 	}
@@ -35,25 +31,19 @@ func New(uri string, logger *zerolog.Logger) (*Database, error) {
 			Msg("connecting to database")
 	}
 
-	_, err = db.Exec(
-		`PRAGMA journal_mode = WAL;
-		PRAGMA synchronous = NORMAL;
-		`)
+	pool, err := pgxpool.ConnectConfig(context.Background(), config)
 	if err != nil {
 		return nil, err
 	}
 
-	return &Database{db, logger}, nil
+	return &Database{pool, logger}, nil
 }
 
 func (db *Database) Close() {
-	err := db.db.Close()
-	if err != nil {
-		panic(err)
-	}
+	db.pool.Close()
 }
 
-func (db *Database) Exec(query string, args ...any) (sql.Result, error) {
+func (db *Database) Exec(query string, args ...any) (pgconn.CommandTag, error) {
 	if db.logger != nil {
 		start := time.Now()
 		defer func() {
@@ -65,10 +55,10 @@ func (db *Database) Exec(query string, args ...any) (sql.Result, error) {
 				Msg("exec")
 		}()
 	}
-	return db.db.Exec(query, args...)
+	return db.pool.Exec(context.Background(), query, args...)
 }
 
-func (db *Database) Query(query string, args ...any) (*sql.Rows, error) {
+func (db *Database) Query(query string, args ...any) (pgx.Rows, error) {
 	if db.logger != nil {
 		start := time.Now()
 		defer func() {
@@ -80,10 +70,10 @@ func (db *Database) Query(query string, args ...any) (*sql.Rows, error) {
 				Msg("exec")
 		}()
 	}
-	return db.db.Query(query, args...)
+	return db.pool.Query(context.Background(), query, args...)
 }
 
-func (db *Database) QueryRow(query string, args ...any) *sql.Row {
+func (db *Database) QueryRow(query string, args ...any) pgx.Row {
 	if db.logger != nil {
 		start := time.Now()
 		defer func() {
@@ -95,5 +85,5 @@ func (db *Database) QueryRow(query string, args ...any) *sql.Row {
 				Msg("exec")
 		}()
 	}
-	return db.db.QueryRow(query, args...)
+	return db.pool.QueryRow(context.Background(), query, args...)
 }

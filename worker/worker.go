@@ -122,7 +122,7 @@ func fetchFeed(done *sync.WaitGroup, qFeed <-chan database.Feed) <-chan *feedIte
 				continue
 			}
 
-			err = database.C.AddFeedLinks(dbFeed.ID, newLinks, updated.UnixMilli())
+			err = database.C.AddFeedLinks(dbFeed.ID, newLinks, updated)
 			if err != nil {
 				log.Error().Str("module", "worker").Stack().Err(err).Send()
 				continue

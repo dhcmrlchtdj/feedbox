@@ -1,0 +1,8 @@
+([]string) (len=6) {
+  (string) (len=24) "http://rss.example.com/x",
+  (string) (len=24) "http://rss.example.com/y",
+  (string) (len=24) "http://rss.example.com/3",
+  (string) (len=24) "http://rss.example.com/1",
+  (string) (len=24) "http://rss.example.com/2",
+  (string) (len=24) "http://rss.example.com/3"
+}

@@ -1,6 +1,6 @@
 ([]common.Feed) (len=2) {
   (common.Feed) {
-    ID: (int64) 4,
+    ID: (int64) 3,
     URL: (string) (len=23) "http://atom.example.com",
     Updated: (*time.Time)(<nil>)
   },

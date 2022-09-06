@@ -1,6 +1,10 @@
 package common
 
-import "github.com/pkg/errors"
+import (
+	"time"
+
+	"github.com/pkg/errors"
+)
 
 type User struct {
 	ID       int64             `json:"id"`
@@ -10,9 +14,9 @@ type User struct {
 }
 
 type Feed struct {
-	ID      int64  `json:"id"`
-	URL     string `json:"url"`
-	Updated *int64 `json:"updated"`
+	ID      int64      `json:"id"`
+	URL     string     `json:"url"`
+	Updated *time.Time `json:"updated"`
 }
 
 var ErrEmptyRow = errors.New("empty row")

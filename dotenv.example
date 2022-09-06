@@ -1,3 +1,4 @@
+DATABASE_URL="postgres://username:password@127.0.0.1:5432/feedbox?sslmode=disable"
 DATABASE_URL="sqlite:///path/to/feedbox.db"
 PORT=8000
 

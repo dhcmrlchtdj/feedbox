@@ -2,11 +2,13 @@ package database
 
 import (
 	"strings"
+	"time"
 
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	"github.com/dhcmrlchtdj/feedbox/internal/database/common"
+	"github.com/dhcmrlchtdj/feedbox/internal/database/postgresql"
 	"github.com/dhcmrlchtdj/feedbox/internal/database/sqlite"
 )
 
@@ -20,7 +22,7 @@ type Database interface {
 	GetFeedIDByURL(url string) (int64, error)
 	GetFeedByUser(userID int64, orderBy string) ([]Feed, error)
 	GetActiveFeeds() ([]Feed, error)
-	AddFeedLinks(id int64, links []string, updated int64) error
+	AddFeedLinks(id int64, links []string, updated *time.Time) error
 	GetLinks(feedID int64) ([]string, error)
 	GetSubscribers(feedID int64) ([]User, error)
 	Subscribe(userID int64, feedID int64) error
@@ -46,12 +48,12 @@ var (
 
 func New(uri string, logger *zerolog.Logger) (Database, error) {
 	if strings.HasPrefix(uri, "postgres://") {
-		return nil, nil
+		return postgresql.New(uri, logger)
 	}
 
 	if strings.HasPrefix(uri, "sqlite://") {
 		return sqlite.New(uri, logger)
 	}
 
-	return nil, errors.New("unknown")
+	return nil, errors.New("unknown database url")
 }

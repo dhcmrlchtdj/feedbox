@@ -14,6 +14,7 @@ import (
 	"github.com/golang-migrate/migrate/v4"
 	"github.com/joho/godotenv"
 	"github.com/pkg/errors"
+	"github.com/rs/zerolog/log"
 
 	"github.com/dhcmrlchtdj/feedbox/internal/database"
 	"github.com/dhcmrlchtdj/feedbox/internal/multipart"
@@ -39,7 +40,7 @@ func TestMain(m *testing.M) {
 
 		var err error
 
-		database.C, err = database.New(os.Getenv("DATABASE_URL"), nil)
+		database.C, err = database.New(os.Getenv("DATABASE_URL"), &log.Logger)
 		if err != nil {
 			panic(err)
 		}
