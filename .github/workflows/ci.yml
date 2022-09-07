@@ -27,11 +27,13 @@ jobs:
                   version: v1.48.0
             - run: make test
               env:
-                  DATABASE_URL: "postgres://feedbox.db"
+                  DATABASE_URL: "sqlite://feedbox.db"
                   PORT: "8000"
                   ENV: "test"
                   SERVER: "http://localhost:8000"
-                  COOKIE_SECRET: "970a02fee5412b41db5c6efc4fe2e0e41bd682778cb1206bcbf295125622507f"
+                  SERVER_SUB_DIR: "/"
+                  COOKIE_PASSWORD: "970a02fee5412b41db5c6efc4fe2e0e4"
+                  TELEGRAM_WEBHOOK_PATH: "131cd9868e9cf396a807c265a3c97e72"
                   WORKER_TOKEN: "2e963311b1396757f9a1d199768555c3"
                   GITHUB_CLIENT_ID: "https://github.com/settings/developers"
                   GITHUB_CLIENT_SECRET: "https://github.com/settings/developers"
@@ -40,8 +42,6 @@ jobs:
                   MAILGUN_FROM: "feedbox <feedbox@example.com>"
                   TELEGRAM_BOT_TOKEN: "123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11"
                   TELEGRAM_BOT_NAME: "bot_name"
-                  TELEGRAM_WEBHOOK_PATH: "131cd9868e9cf396a807c265a3c97e72"
-                  ROLLBAR_TOKEN: "post_server_item"
             # https://github.com/marketplace/actions/setup-node-js-environment
             - uses: actions/setup-node@v3.4.1
               with:
