@@ -8,9 +8,7 @@ GOFLAGS := \
 	-mod=readonly
 
 build:
-	go build $(GOFLAGS) -o ./_build/migrate ./cmd/migrate
-	go build $(GOFLAGS) -o ./_build/server ./cmd/server
-	go build $(GOFLAGS) -o ./_build/worker ./cmd/worker
+	go build $(GOFLAGS) -o ./_build/app
 
 clean:
 	# rm -rf ./**/.snapshots
@@ -26,7 +24,7 @@ lint:
 
 dev:
 	cd frontend && make
-	go run $(GOFLAGS) ./cmd/server
+	go run $(GOFLAGS) ./main.go server
 
 test:
 	ENV=test TZ=UTC go test -race ./internal/util
@@ -48,7 +46,7 @@ test_update:
 #     go tool cover -html=./_build/cover.out
 
 migrate:
-	./_build/migrate up
+	./_build/app migrate up
 
 # outdated:
 #     go list -u -m -f '{{if not .Indirect}}{{.}}{{end}}' all

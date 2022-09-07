@@ -32,6 +32,8 @@ type telegramItem struct {
 }
 
 func Start() {
+	log.Info().Str("module", "worker").Msg("start")
+
 	var wg sync.WaitGroup
 
 	feeds, err := database.C.GetActiveFeeds()
@@ -56,6 +58,8 @@ func Start() {
 	sendTelegram(&wg, qTelegram)
 
 	wg.Wait()
+
+	log.Info().Str("module", "worker").Msg("completed")
 }
 
 func slice2chan(done *sync.WaitGroup, feeds []database.Feed) <-chan database.Feed {

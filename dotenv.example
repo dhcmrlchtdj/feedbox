@@ -6,6 +6,7 @@ ENV="dev"
 SERVER="http://localhost:8000"
 SERVER_SUB_DIR="/"
 COOKIE_PASSWORD="password for key derivation"
+TELEGRAM_WEBHOOK_PATH="openssl rand -hex 16"
 WORKER_TOKEN="openssl rand -hex 16"
 
 GITHUB_CLIENT_ID="https://github.com/settings/developers"
@@ -15,8 +16,5 @@ MAILGUN_API_KEY="key-example"
 MAILGUN_DOMAIN="feedbox.example.com"
 MAILGUN_FROM="feedbox <feedbox@example.com>"
 
-TELEGRAM_BOT_TOKEN="123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11"
 TELEGRAM_BOT_NAME="bot_name"
-TELEGRAM_WEBHOOK_PATH="openssl rand -hex 16"
-
-ROLLBAR_TOKEN="https://rollbar.com/team/project/settings/access_tokens/ post_server_item"
+TELEGRAM_BOT_TOKEN="123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11"

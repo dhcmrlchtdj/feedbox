@@ -6,7 +6,7 @@ var _ client = (*dryRun)(nil)
 
 type dryRun struct{}
 
-func NewDryRun(domain string, apiKey string, from string) *dryRun {
+func NewDryRun() *dryRun {
 	return &dryRun{}
 }
 
