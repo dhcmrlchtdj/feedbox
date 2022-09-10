@@ -26,8 +26,11 @@ var (
 
 func (db *Database) GetUserByID(id int64) (*User, error) {
 	row := db.QueryRow(
-		"SELECT id, platform, pid, addition FROM users WHERE id=$1",
-		id)
+		`SELECT id, platform, pid, addition
+		FROM users
+		WHERE id=$1`,
+		id,
+	)
 	user, err := readUser(row)
 	if err != nil {
 		return nil, err
@@ -45,10 +48,13 @@ func (db *Database) GetOrCreateUserByGithub(githubID string, email string) (*Use
 		return nil, err
 	}
 	row := db.QueryRow(
-		`INSERT INTO users(platform, pid, addition) VALUES ('github', $1, $2)
+		`INSERT INTO users(platform, pid, addition)
+		VALUES ('github', $1, $2)
 		ON CONFLICT(platform, pid) DO UPDATE SET addition=EXCLUDED.addition
 		RETURNING id, platform, pid, addition`,
-		githubID, addition)
+		githubID,
+		addition,
+	)
 	user, err := readUser(row)
 	if err != nil {
 		return nil, err
@@ -59,14 +65,17 @@ func (db *Database) GetOrCreateUserByGithub(githubID string, email string) (*Use
 
 func (db *Database) GetOrCreateUserByTelegram(chatID string) (*User, error) {
 	_, err := db.Exec(
-		`INSERT OR IGNORE INTO users(platform, pid) VALUES ('telegram', $1)`,
-		chatID)
+		`INSERT OR IGNORE INTO users(platform, pid)
+		VALUES ('telegram', $1)`,
+		chatID,
+	)
 	if err != nil {
 		return nil, err
 	}
 
 	row := db.QueryRow(
-		`SELECT id, platform, pid, addition FROM users
+		`SELECT id, platform, pid, addition
+		FROM users
 		WHERE platform='telegram' AND pid=$1`,
 		chatID,
 	)
@@ -167,7 +176,9 @@ func (db *Database) AddFeedLinks(id int64, links []string, updated *time.Time) e
 	}
 	_, err = db.Exec(
 		`UPDATE feeds SET updated=$2 WHERE id=$1`,
-		id, ts)
+		id,
+		ts,
+	)
 	if err != nil {
 		return err
 	}
@@ -180,7 +191,8 @@ func (db *Database) GetLinks(feedID int64) ([]string, error) {
 		`SELECT url as url FROM links
 		JOIN r_feed_link r ON r.link_id=links.id
 		WHERE r.feed_id=$1`,
-		feedID)
+		feedID,
+	)
 	if err != nil {
 		return nil, err
 	}
@@ -197,7 +209,8 @@ func (db *Database) GetSubscribers(feedID int64) ([]User, error) {
 		FROM users
 		WHERE EXISTS
 		(SELECT 1 FROM r_user_feed WHERE feed_id=$1 AND user_id=users.id)`,
-		feedID)
+		feedID,
+	)
 	if err != nil {
 		return nil, err
 	}
@@ -208,14 +221,19 @@ func (db *Database) GetSubscribers(feedID int64) ([]User, error) {
 func (db *Database) Subscribe(userID int64, feedID int64) error {
 	_, err := db.Exec(
 		"INSERT OR IGNORE INTO r_user_feed(user_id, feed_id) VALUES ($1, $2)",
-		userID, feedID)
+		userID,
+		feedID,
+	)
 	return err
 }
 
 func (db *Database) Unsubscribe(userID int64, feedID int64) error {
 	_, err := db.Exec(
-		"DELETE FROM r_user_feed WHERE user_id=$1 AND feed_id=$2",
-		userID, feedID)
+		`DELETE FROM r_user_feed
+		WHERE user_id=$1 AND feed_id=$2`,
+		userID,
+		feedID,
+	)
 	return err
 }
 

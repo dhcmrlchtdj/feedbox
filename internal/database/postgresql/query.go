@@ -24,8 +24,11 @@ var (
 
 func (db *Database) GetUserByID(id int64) (*User, error) {
 	row := db.QueryRow(
-		"SELECT id, platform, pid, addition FROM users WHERE id=$1",
-		id)
+		`SELECT id, platform, pid, addition
+		FROM users
+		WHERE id=$1`,
+		id,
+	)
 	user, err := readUser(row)
 	if err != nil {
 		return nil, err
@@ -40,10 +43,13 @@ func (db *Database) GetUserByID(id int64) (*User, error) {
 func (db *Database) GetOrCreateUserByGithub(githubID string, email string) (*User, error) {
 	addition := map[string]string{"email": email}
 	row := db.QueryRow(
-		`INSERT INTO users(platform, pid, addition) VALUES ('github', $1, $2)
+		`INSERT INTO users(platform, pid, addition)
+		VALUES ('github', $1, $2)
 		ON CONFLICT(platform, pid) DO UPDATE SET addition=EXCLUDED.addition
 		RETURNING id, platform, pid, addition`,
-		githubID, addition)
+		githubID,
+		addition,
+	)
 	user, err := readUser(row)
 	if err != nil {
 		return nil, err
@@ -55,10 +61,13 @@ func (db *Database) GetOrCreateUserByGithub(githubID string, email string) (*Use
 func (db *Database) GetOrCreateUserByTelegram(chatID string) (*User, error) {
 	row := db.QueryRow(
 		`WITH new_user AS (
-			INSERT INTO users(platform, pid) VALUES ('telegram', $1)
+			INSERT INTO users(platform, pid)
+			VALUES ('telegram', $1)
 			ON CONFLICT DO NOTHING
-			RETURNING id, platform, pid, addition)
-		SELECT id, platform, pid, addition FROM users WHERE platform='telegram' AND pid=$1
+			RETURNING id, platform, pid, addition
+		)
+		SELECT id, platform, pid, addition
+		FROM users WHERE platform='telegram' AND pid=$1
 		UNION ALL
 		SELECT id, platform, pid, addition FROM new_user`,
 		chatID,
@@ -78,7 +87,8 @@ func (db *Database) GetFeedIDByURL(url string) (int64, error) {
 	}
 
 	row := db.QueryRow(
-		`WITH new_id AS (
+		`WITH
+		new_id AS (
 			INSERT INTO feeds(url) VALUES ($1)
 			ON CONFLICT DO NOTHING
 			RETURNING id
@@ -100,9 +110,9 @@ func (db *Database) GetFeedIDByURL(url string) (int64, error) {
 
 func (db *Database) GetFeedByUser(userID int64, orderBy string) ([]Feed, error) {
 	query := `SELECT id, url, updated
-	FROM feeds
-	WHERE EXISTS
-	(SELECT 1 FROM r_user_feed WHERE uid=$1 AND fid=feeds.id)`
+		FROM feeds
+		WHERE EXISTS
+		(SELECT 1 FROM r_user_feed WHERE uid=$1 AND fid=feeds.id)`
 
 	switch orderBy {
 	case "updated":
@@ -135,8 +145,13 @@ func (db *Database) GetActiveFeeds() ([]Feed, error) {
 
 func (db *Database) AddFeedLinks(id int64, links []string, updated *time.Time) error {
 	_, err := db.Exec(
-		"UPDATE feeds SET link=array_cat($1::TEXT[], link), updated=$2 WHERE id=$3",
-		links, updated, id)
+		`UPDATE feeds
+		SET link=array_cat($1::TEXT[], link), updated=$2
+		WHERE id=$3`,
+		links,
+		updated,
+		id,
+	)
 	return err
 }
 
@@ -156,7 +171,8 @@ func (db *Database) GetSubscribers(feedID int64) ([]User, error) {
 		FROM users
 		WHERE EXISTS
 		(SELECT 1 FROM r_user_feed WHERE fid=$1 AND uid=users.id)`,
-		feedID)
+		feedID,
+	)
 	if err != nil {
 		return nil, err
 	}
@@ -166,15 +182,22 @@ func (db *Database) GetSubscribers(feedID int64) ([]User, error) {
 
 func (db *Database) Subscribe(userID int64, feedID int64) error {
 	_, err := db.Exec(
-		"INSERT INTO r_user_feed(uid, fid) VALUES ($1, $2) ON CONFLICT DO NOTHING",
-		userID, feedID)
+		`INSERT INTO r_user_feed(uid, fid)
+		VALUES ($1, $2)
+		ON CONFLICT DO NOTHING`,
+		userID,
+		feedID,
+	)
 	return err
 }
 
 func (db *Database) Unsubscribe(userID int64, feedID int64) error {
 	_, err := db.Exec(
-		"DELETE FROM r_user_feed WHERE uid=$1 AND fid=$2",
-		userID, feedID)
+		`DELETE FROM r_user_feed
+		WHERE uid=$1 AND fid=$2`,
+		userID,
+		feedID,
+	)
 	return err
 }
 
@@ -205,17 +228,26 @@ func (db *Database) SubscribeURLs(userID int64, urls []string) error {
 
 	_, err := db.Exec(
 		`INSERT INTO feeds(url)
-		SELECT unnest.unnest FROM unnest($1::TEXT[])
-		LEFT JOIN feeds ON feeds.url=unnest.unnest WHERE feeds.id IS NULL`,
-		urls)
+		SELECT unnest($1::TEXT[])
+		ON CONFLICT DO NOTHING`,
+		urls,
+	)
 	if err != nil {
 		return err
 	}
 
 	_, err = db.Exec(
-		`WITH fids AS (SELECT id AS fid FROM feeds WHERE url=ANY($1::TEXT[]))
-		INSERT INTO r_user_feed(uid, fid) SELECT $2 AS uid, fid FROM fids ON CONFLICT DO NOTHING`,
-		urls, userID)
+		`WITH fids AS (
+			SELECT id AS fid
+			FROM feeds
+			WHERE url=ANY($1::TEXT[])
+		)
+		INSERT INTO r_user_feed(uid, fid)
+		SELECT $2 AS uid, fid FROM fids
+		ON CONFLICT DO NOTHING`,
+		urls,
+		userID,
+	)
 	if err != nil {
 		return err
 	}
