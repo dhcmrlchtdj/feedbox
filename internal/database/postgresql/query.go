@@ -204,7 +204,9 @@ func (db *Database) SubscribeURLs(userID int64, urls []string) error {
 	}
 
 	_, err := db.Exec(
-		"INSERT INTO feeds(url) SELECT unnest($1::TEXT[]) EXCEPT SELECT url FROM feeds",
+		`INSERT INTO feeds(url)
+		SELECT unnest.unnest FROM unnest($1::TEXT[])
+		LEFT JOIN feeds ON feeds.url=unnest.unnest WHERE feeds.id IS NULL`,
 		urls)
 	if err != nil {
 		return err
