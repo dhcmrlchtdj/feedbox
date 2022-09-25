@@ -45,12 +45,9 @@ func startServer() {
 	initSign()
 
 	util.CheckEnvs("GITHUB_CLIENT_ID", "GITHUB_CLIENT_SECRET")
-	util.CheckEnvs("PORT", "TELEGRAM_WEBHOOK_PATH", "WORKER_TOKEN")
+	util.CheckEnvs("HOST", "PORT", "TELEGRAM_WEBHOOK_PATH", "WORKER_TOKEN")
 	app := server.Create()
-	host := ":" + os.Getenv("PORT")
-	if os.Getenv("ENV") != "prod" {
-		host = "127.0.0.1" + host
-	}
+	host := os.Getenv("HOST") + ":" + os.Getenv("PORT")
 	url := "http://" + host + os.Getenv("SERVER_SUB_DIR")
 	log.Info().Str("module", "app").Str("url", url).Msg("app started")
 	if err := app.Listen(host); err != nil {

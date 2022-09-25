@@ -30,6 +30,7 @@ jobs:
             - run: make test
               env:
                   DATABASE_URL: "sqlite://feedbox.db"
+                  HOST: "127.0.0.1"
                   PORT: "8000"
                   ENV: "test"
                   SERVER: "http://localhost:8000"
