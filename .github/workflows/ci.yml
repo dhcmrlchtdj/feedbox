@@ -71,7 +71,7 @@ jobs:
                   username: ${{ secrets.SSH_USERNAME }}
                   key: ${{ secrets.SSH_KEY }}
                   source: "_build/app"
-                  target: "~/app/feedbox/app"
+                  target: "~/app/feedbox"
             # https://github.com/marketplace/actions/ssh-remote-commands
             - uses: appleboy/ssh-action@v0.1.5
               with:
