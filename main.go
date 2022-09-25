@@ -128,9 +128,9 @@ func startMigration() {
 	printVersion := func(m *migrate.Migrate) {
 		version, dirty, err := m.Version()
 		if err == nil {
-			fmt.Printf("version: %v\ndirty:   %v\n", version, dirty)
+			log.Info().Uint("version", version).Bool("dirty", dirty).Send()
 		} else if errors.Is(err, migrate.ErrNilVersion) {
-			fmt.Print("version: nil\ndirty:   false\n")
+			log.Info().Str("version", "nil").Bool("dirty", false).Send()
 		} else {
 			panic(err)
 		}
@@ -143,9 +143,9 @@ func startMigration() {
 
 	checkErr := func(err error, m *migrate.Migrate) {
 		if err == nil {
-			fmt.Println("done.")
+			log.Info().Msg("done")
 		} else if errors.Is(err, migrate.ErrNoChange) {
-			fmt.Println("no change.")
+			log.Info().Msg("no change")
 		} else {
 			panic(err)
 		}
