@@ -4,11 +4,12 @@ import (
 	"context"
 	"time"
 
-	"github.com/dhcmrlchtdj/feedbox/internal/util"
 	"github.com/jackc/pgconn"
 	"github.com/jackc/pgx/v4"
 	"github.com/jackc/pgx/v4/pgxpool"
 	"github.com/rs/zerolog"
+
+	"github.com/dhcmrlchtdj/feedbox/internal/util"
 )
 
 type Database struct {
