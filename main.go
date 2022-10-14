@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"os"
 	"strconv"
-	"sync"
 	"time"
 
 	"github.com/golang-migrate/migrate/v4"
@@ -48,39 +47,17 @@ func startServerAndWorker() {
 	initTelegram()
 	initSign()
 
-	var quitWait sync.WaitGroup
-	quitSignal := make(chan struct{})
-	timeEvent := make(chan struct{}, 1)
-
-	// start timer
-	quitWait.Add(1)
+	// start worker
 	go func() {
-		defer quitWait.Done()
 		for {
 			time.Sleep(time.Minute * 10)
-			select {
-			case <-quitSignal:
-				return
-			case timeEvent <- struct{}{}:
-			}
-		}
-	}()
-	// start worker
-	quitWait.Add(1)
-	go func() {
-		defer quitWait.Done()
-		for {
-			select {
-			case <-quitSignal:
-				return
-			case <-timeEvent:
-				if time.Now().Minute() < 10 {
-					worker.Start()
-				}
+			if time.Now().Minute() < 10 {
+				worker.Start()
 			}
 		}
 	}()
 
+	// start server
 	util.CheckEnvs("GITHUB_CLIENT_ID", "GITHUB_CLIENT_SECRET")
 	util.CheckEnvs("HOST", "PORT", "TELEGRAM_WEBHOOK_PATH", "WORKER_TOKEN")
 	app := server.Create()
@@ -90,9 +67,6 @@ func startServerAndWorker() {
 	if err := app.Listen(host); err != nil {
 		panic(err)
 	}
-
-	close(quitSignal)
-	quitWait.Wait()
 }
 
 func startServer() {
