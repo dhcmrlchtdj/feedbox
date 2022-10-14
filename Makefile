@@ -24,7 +24,7 @@ lint:
 
 dev:
 	cd frontend && make
-	go run $(GOFLAGS) ./main.go server
+	go run $(GOFLAGS) ./main.go serverAndWorker
 
 test:
 	ENV=test TZ=UTC go test -race ./internal/util
