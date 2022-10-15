@@ -4,9 +4,9 @@ import (
 	"context"
 	"time"
 
-	"github.com/jackc/pgconn"
-	"github.com/jackc/pgx/v4"
-	"github.com/jackc/pgx/v4/pgxpool"
+	"github.com/jackc/pgx/v5"
+	"github.com/jackc/pgx/v5/pgconn"
+	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/rs/zerolog"
 
 	"github.com/dhcmrlchtdj/feedbox/internal/util"
@@ -18,11 +18,6 @@ type Database struct {
 }
 
 func New(uri string, logger *zerolog.Logger) (*Database, error) {
-	config, err := pgxpool.ParseConfig(uri)
-	if err != nil {
-		return nil, err
-	}
-
 	if logger != nil {
 		customizedLogger := logger.With().Str("module", "database").Logger()
 		logger = &customizedLogger
@@ -32,7 +27,7 @@ func New(uri string, logger *zerolog.Logger) (*Database, error) {
 			Msg("connecting to database")
 	}
 
-	pool, err := pgxpool.ConnectConfig(context.Background(), config)
+	pool, err := pgxpool.New(context.Background(), uri)
 	if err != nil {
 		return nil, err
 	}
