@@ -69,7 +69,7 @@ func (c *httpClient) SendDocument(payload SendDocumentPayload) error {
 			Str("parse_mode", payload.ParseMode).
 			Int64("reply_to_message_id", payload.ReplyToMessageID)
 		err := m.Close()
-		_ = w.CloseWithError(err)
+		w.CloseWithError(err) //nolint:errcheck
 	}()
 	return c.rawSendFileSimple("sendDocument", m.ContentType, r)
 }
