@@ -201,13 +201,13 @@ func startMigration() {
 	case "d", "down":
 		checkErr(m.Down(), m)
 	case "f", "force":
-		if version, err := strconv.Atoi(flag.Arg(1)); err == nil {
+		if version, err := strconv.Atoi(flag.Arg(2)); err == nil {
 			checkErr(m.Force(version), m)
 		} else {
 			printUsage(m)
 		}
 	case "s", "step":
-		if n, err := strconv.Atoi(flag.Arg(1)); err == nil {
+		if n, err := strconv.Atoi(flag.Arg(2)); err == nil {
 			checkErr(m.Steps(n), m)
 		} else {
 			printUsage(m)
