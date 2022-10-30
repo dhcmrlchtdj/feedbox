@@ -112,7 +112,7 @@ func (db *Database) GetFeedByUser(userID int64, orderBy string) ([]Feed, error) 
 	query := `SELECT id, url, updated
 		FROM feeds
 		WHERE EXISTS
-		(SELECT 1 FROM r_user_feed WHERE uid=$1 AND fid=feeds.id)`
+		(SELECT 1 FROM r_user_feed WHERE user_id=$1 AND feed_id=feeds.id)`
 
 	switch orderBy {
 	case "updated":
@@ -134,7 +134,7 @@ func (db *Database) GetActiveFeeds() ([]Feed, error) {
 		`SELECT id, url, updated
 		FROM feeds
 		WHERE EXISTS
-		(SELECT 1 FROM r_user_feed WHERE fid=feeds.id)`,
+		(SELECT 1 FROM r_user_feed WHERE feed_id=feeds.id)`,
 	)
 	if err != nil {
 		return nil, err
@@ -145,20 +145,45 @@ func (db *Database) GetActiveFeeds() ([]Feed, error) {
 
 func (db *Database) AddFeedLinks(id int64, links []string, updated *time.Time) error {
 	_, err := db.Exec(
-		`UPDATE feeds
-		SET link=array_cat($1::TEXT[], link), updated=$2
-		WHERE id=$3`,
+		`WITH
+		new_link_id AS (
+			INSERT INTO links(url)
+			SELECT unnest($2::TEXT[])
+			ON CONFLICT DO NOTHING
+			RETURNING id
+		),
+		all_link_id AS (
+			SELECT id FROM links WHERE url=ANY($2::TEXT[])
+			UNION ALL
+			SELECT id from new_link_id
+		),
+		relation AS (
+			INSERT INTO r_feed_link(feed_id, link_id)
+			SELECT $1, id from all_link_id
+			ON CONFLICT DO NOTHING
+		)
+		UPDATE feeds
+		SET updated=$3
+		WHERE id=$1
+		`,
+		id,
 		links,
 		updated,
-		id,
 	)
 	return err
 }
 
 func (db *Database) GetLinks(feedID int64) ([]string, error) {
-	var links []string
-	row := db.QueryRow("SELECT link FROM feeds WHERE id=$1", feedID)
-	err := row.Scan(&links)
+	rows, err := db.Query(
+		`SELECT url FROM links
+		JOIN r_feed_link r ON r.link_id=links.id
+		WHERE r.feed_id=$1`,
+		feedID,
+	)
+	if err != nil {
+		return nil, err
+	}
+	links, err := readLinks(rows)
 	if err != nil {
 		return nil, err
 	}
@@ -170,7 +195,7 @@ func (db *Database) GetSubscribers(feedID int64) ([]User, error) {
 		`SELECT id, platform, pid, addition
 		FROM users
 		WHERE EXISTS
-		(SELECT 1 FROM r_user_feed WHERE fid=$1 AND uid=users.id)`,
+		(SELECT 1 FROM r_user_feed WHERE feed_id=$1 AND user_id=users.id)`,
 		feedID,
 	)
 	if err != nil {
@@ -182,7 +207,7 @@ func (db *Database) GetSubscribers(feedID int64) ([]User, error) {
 
 func (db *Database) Subscribe(userID int64, feedID int64) error {
 	_, err := db.Exec(
-		`INSERT INTO r_user_feed(uid, fid)
+		`INSERT INTO r_user_feed(user_id, feed_id)
 		VALUES ($1, $2)
 		ON CONFLICT DO NOTHING`,
 		userID,
@@ -194,7 +219,7 @@ func (db *Database) Subscribe(userID int64, feedID int64) error {
 func (db *Database) Unsubscribe(userID int64, feedID int64) error {
 	_, err := db.Exec(
 		`DELETE FROM r_user_feed
-		WHERE uid=$1 AND fid=$2`,
+		WHERE user_id=$1 AND feed_id=$2`,
 		userID,
 		feedID,
 	)
@@ -202,7 +227,7 @@ func (db *Database) Unsubscribe(userID int64, feedID int64) error {
 }
 
 func (db *Database) UnsubscribeAll(userID int64) error {
-	_, err := db.Exec("DELETE FROM r_user_feed WHERE uid=$1", userID)
+	_, err := db.Exec("DELETE FROM r_user_feed WHERE user_id=$1", userID)
 	return err
 }
 
@@ -242,7 +267,7 @@ func (db *Database) SubscribeURLs(userID int64, urls []string) error {
 			FROM feeds
 			WHERE url=ANY($1::TEXT[])
 		)
-		INSERT INTO r_user_feed(uid, fid)
+		INSERT INTO r_user_feed(user_id, feed_id)
 		SELECT $2 AS uid, fid FROM fids
 		ON CONFLICT DO NOTHING`,
 		urls,
@@ -293,4 +318,17 @@ func readFeeds(rows pgx.Rows) ([]Feed, error) {
 		feeds = append(feeds, feed)
 	}
 	return feeds, nil
+}
+
+func readLinks(rows pgx.Rows) ([]string, error) {
+	links := []string{}
+	for rows.Next() {
+		var link string
+		err := rows.Scan(&link)
+		if err != nil {
+			return nil, err
+		}
+		links = append(links, link)
+	}
+	return links, nil
 }

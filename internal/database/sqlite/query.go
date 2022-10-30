@@ -163,7 +163,8 @@ func (db *Database) AddFeedLinks(id int64, links []string, updated *time.Time) e
 		_, err = db.Exec(
 			`INSERT OR IGNORE INTO r_feed_link(feed_id, link_id) VALUES ($1, $2)`,
 			id,
-			linkID)
+			linkID,
+		)
 		if err != nil {
 			return err
 		}
@@ -188,7 +189,7 @@ func (db *Database) AddFeedLinks(id int64, links []string, updated *time.Time) e
 
 func (db *Database) GetLinks(feedID int64) ([]string, error) {
 	rows, err := db.Query(
-		`SELECT url as url FROM links
+		`SELECT url FROM links
 		JOIN r_feed_link r ON r.link_id=links.id
 		WHERE r.feed_id=$1`,
 		feedID,
