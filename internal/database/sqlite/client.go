@@ -35,10 +35,12 @@ func New(uri string, logger *zerolog.Logger) (*Database, error) {
 			Msg("connecting to database")
 	}
 
-	_, err = db.Exec(
-		`PRAGMA journal_mode = WAL;
+	_, err = db.Exec(`
+		PRAGMA journal_mode = WAL;
 		PRAGMA synchronous = NORMAL;
-		`)
+		PRAGMA temp_store = memory;
+		PRAGMA busy_timeout = 5000;
+	`)
 	if err != nil {
 		return nil, err
 	}
