@@ -1,7 +1,6 @@
 package main
 
 import (
-	"errors"
 	"flag"
 	"fmt"
 	"os"
@@ -10,7 +9,10 @@ import (
 
 	"github.com/golang-migrate/migrate/v4"
 	"github.com/joho/godotenv"
+	"github.com/pkg/errors"
+	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
+	"github.com/rs/zerolog/pkgerrors"
 
 	"github.com/dhcmrlchtdj/feedbox/internal/database"
 	"github.com/dhcmrlchtdj/feedbox/internal/email"
@@ -109,6 +111,7 @@ func initEnv() {
 }
 
 func initLogger() {
+	zerolog.ErrorStackMarshaler = pkgerrors.MarshalStack
 	if os.Getenv("ENV") != "prod" {
 		log.Logger = log.Output(util.JSONConsoleWriter{Out: os.Stderr})
 	}
