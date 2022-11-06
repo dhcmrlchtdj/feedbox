@@ -23,7 +23,7 @@ func (p *FeedParser) ParseURL(url string) (*gofeed.Feed, error) {
 	if err != nil {
 		return nil, err
 	}
-	req.Header.Set("User-Agent", "FeedBox/2.0 (+https://feedbox.h11.io)")
+	req.Header.Set("User-Agent", "FeedBox/2.0 (+https://github.com/dhcmrlchtdj/feedbox)")
 
 	resp, err := p.client.Do(req)
 	if err != nil {
