@@ -111,7 +111,7 @@ func initEnv() {
 }
 
 func initLogger() {
-	zerolog.ErrorStackMarshaler = pkgerrors.MarshalStack
+	zerolog.ErrorStackMarshaler = pkgerrors.MarshalStack // nolint:reassign
 	if os.Getenv("ENV") != "prod" {
 		log.Logger = log.Output(util.JSONConsoleWriter{Out: os.Stderr})
 	}
@@ -143,7 +143,7 @@ func initTelegram() {
 	if os.Getenv("ENV") == "prod" {
 		util.CheckEnvs("SERVER")
 		util.CheckEnvs("TELEGRAM_BOT_NAME", "TELEGRAM_BOT_TOKEN")
-		telegram.C = telegram.NewHttpClient(
+		telegram.C = telegram.NewHTTPClient(
 			os.Getenv("TELEGRAM_BOT_NAME"),
 			os.Getenv("TELEGRAM_BOT_TOKEN"),
 		)

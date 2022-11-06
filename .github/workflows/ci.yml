@@ -26,7 +26,6 @@ jobs:
               with:
                   # https://github.com/golangci/golangci-lint/releases
                   version: v1.50.0
-                  args: --timeout 3m
             - run: make test
               env:
                   DATABASE_URL: "sqlite://feedbox.db"

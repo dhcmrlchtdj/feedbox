@@ -20,8 +20,8 @@ func New(uri string, logger *zerolog.Logger) (*Database, error) {
 	if !strings.HasPrefix(uri, "sqlite://") {
 		return nil, errors.Errorf("invalid DATABASE_URL: %s", uri)
 	}
-	dbUri := uri[9:]
-	db, err := sql.Open("sqlite", dbUri)
+	dbURI := uri[9:]
+	db, err := sql.Open("sqlite", dbURI)
 	if err != nil {
 		return nil, err
 	}

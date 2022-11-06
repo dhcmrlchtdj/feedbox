@@ -81,8 +81,8 @@ func (r *Response) Check() error {
 	return nil
 }
 
-func (e *Response) Error() string {
-	return e.Description
+func (r *Response) Error() string {
+	return r.Description
 }
 
 ///

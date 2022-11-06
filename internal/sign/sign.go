@@ -12,7 +12,7 @@ import (
 var S interface {
 	Encode(plaintext []byte) ([]byte, error)
 	Decode(data []byte) ([]byte, error)
-	DecodeFromHex(hex_data string) ([]byte, error)
+	DecodeFromHex(hexData string) ([]byte, error)
 	EncodeToHex(plaintext []byte) (string, error)
 }
 
@@ -54,8 +54,8 @@ func (s *Sign) Decode(data []byte) ([]byte, error) {
 	return plaintext, nil
 }
 
-func (s *Sign) DecodeFromHex(hex_data string) ([]byte, error) {
-	ciphertext, err := hex.DecodeString(hex_data)
+func (s *Sign) DecodeFromHex(hexData string) ([]byte, error) {
+	ciphertext, err := hex.DecodeString(hexData)
 	if err != nil {
 		return nil, err
 	}

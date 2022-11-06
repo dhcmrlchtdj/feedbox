@@ -18,7 +18,7 @@ type httpClient struct {
 	token string
 }
 
-func NewHttpClient(name string, token string) *httpClient {
+func NewHTTPClient(name string, token string) *httpClient {
 	return &httpClient{name: name, token: token}
 }
 
@@ -69,7 +69,7 @@ func (c *httpClient) SendDocument(payload SendDocumentPayload) error {
 			Str("parse_mode", payload.ParseMode).
 			Int64("reply_to_message_id", payload.ReplyToMessageID)
 		err := m.Close()
-		w.CloseWithError(err) //nolint:errcheck
+		_ = w.CloseWithError(err)
 	}()
 	return c.rawSendFileSimple("sendDocument", m.ContentType, r)
 }
@@ -85,7 +85,7 @@ func (c *httpClient) rawSend(cmd string, payload any) (io.ReadCloser, error) {
 		return nil, errors.Wrap(err, "telegram/"+cmd)
 	}
 
-	resp, err := http.Post(url, "application/json", &buf) //nolint:gosec
+	resp, err := http.Post(url, "application/json", &buf) // nolint:gosec
 	if err != nil {
 		return nil, errors.Wrap(err, "telegram/"+cmd)
 	}
@@ -119,7 +119,7 @@ func (c *httpClient) rawSendSimple(cmd string, payload any) error {
 
 func (c *httpClient) rawSendFileSimple(cmd string, contentType string, payload io.Reader) error {
 	url := "https://api.telegram.org/bot" + c.token + "/" + cmd
-	resp, err := http.Post(url, contentType, payload) //nolint:gosec
+	resp, err := http.Post(url, contentType, payload) // nolint:gosec
 	if err != nil {
 		return errors.Wrap(err, "telegram/"+cmd)
 	}

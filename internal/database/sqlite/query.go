@@ -170,7 +170,7 @@ func (db *Database) AddFeedLinks(id int64, links []string, updated *time.Time) e
 		}
 	}
 
-	var ts *int64 = nil
+	var ts *int64
 	if updated != nil {
 		t := updated.UnixMilli()
 		ts = &t
