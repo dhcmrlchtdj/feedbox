@@ -3,13 +3,14 @@
 ## systemd
 
 ```
-$ cat ~/.config/systemd/user/feedbox.service
+$ cat /usr/lib/systemd/system/feedbox.service
 [Unit]
 Description=Feedbox
 Wants=network-online.target
 After=network-online.target
 
 [Service]
+User=feedbox
 Type=exec
 Restart=on-abort
 WorkingDirectory=/path/to/feedbox
@@ -25,12 +26,9 @@ WantedBy=multi-user.target
 
 ```
 $ crontab -l
-20 * * * * /path/to/feedbox/backup.sh
+20 0 * * * /path/to/feedbox/backup.sh
 
 $ cat /path/to/feedbox/backup.sh
-
 #!/usr/bin/bash
-
-sqlite3 /path/to/feedbox/feedbox.db \
-	".backup '/path/to/feedbox/feedbox.backup.db'"
+sqlite3 /path/to/feedbox/feedbox.db ".backup '/path/to/feedbox/feedbox.backup.db'"
 ```
