@@ -170,15 +170,23 @@ func (db *Database) AddFeedLinks(id int64, links []string, updated *time.Time) e
 		}
 	}
 
-	var ts *int64
-	if updated != nil {
-		t := updated.UnixMilli()
-		ts = &t
+	err = db.SetFeedUpdated(id, updated)
+	if err != nil {
+		return err
 	}
-	_, err = db.Exec(
+
+	return nil
+}
+
+func (db *Database) SetFeedUpdated(id int64, updated *time.Time) error {
+	if updated == nil {
+		return nil
+	}
+
+	_, err := db.Exec(
 		`UPDATE feeds SET updated=$2 WHERE id=$1`,
 		id,
-		ts,
+		updated.UnixMilli(),
 	)
 	if err != nil {
 		return err

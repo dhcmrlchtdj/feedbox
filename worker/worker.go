@@ -100,6 +100,13 @@ func fetchFeed(done *sync.WaitGroup, qFeed <-chan database.Feed) <-chan *feedIte
 				updated = &now
 			}
 
+			if dbFeed.Updated == nil {
+				err := database.C.SetFeedUpdated(dbFeed.ID, updated)
+				if err != nil {
+					log.Warn().Str("module", "worker").Stack().Err(err).Send()
+				}
+			}
+
 			oldLinks, err := database.C.GetLinks(dbFeed.ID)
 			if err != nil {
 				log.Error().Str("module", "worker").Stack().Err(err).Send()

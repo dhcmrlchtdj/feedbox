@@ -173,6 +173,23 @@ func (db *Database) AddFeedLinks(id int64, links []string, updated *time.Time) e
 	return err
 }
 
+func (db *Database) SetFeedUpdated(id int64, updated *time.Time) error {
+	if updated == nil {
+		return nil
+	}
+
+	_, err := db.Exec(
+		`UPDATE feeds SET updated=$2 WHERE id=$1`,
+		id,
+		updated,
+	)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
 func (db *Database) GetLinks(feedID int64) ([]string, error) {
 	rows, err := db.Query(
 		`SELECT url FROM links
