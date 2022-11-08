@@ -130,11 +130,11 @@ func errorHandler(c *fiber.Ctx, err error) error {
 func cookieValidator(tokenStr string) ( /* Credential */ any, error) {
 	plaintext, err := sign.S.DecodeFromHex(tokenStr)
 	if err != nil {
-		return nil, errors.Wrap(err, "invalid token")
+		return nil, errors.New("invalid token")
 	}
 	var credential types.Credential
 	if err := json.Unmarshal(plaintext, &credential); err != nil {
-		return nil, errors.Wrap(err, "invalid token")
+		return nil, errors.New("broken token")
 	}
 	if time.Now().Unix() > credential.ExpiresAt {
 		return nil, errors.New("expired token")
