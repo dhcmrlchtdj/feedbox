@@ -46,7 +46,7 @@ func TestMain(m *testing.M) {
 		}
 		defer database.C.Close()
 
-		sign.S, err = sign.New(os.Getenv("COOKIE_PASSWORD"))
+		sign.S, err = sign.New(os.Getenv("COOKIE_SECRET"))
 		if err != nil {
 			panic(err)
 		}
