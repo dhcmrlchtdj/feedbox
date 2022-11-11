@@ -2,6 +2,7 @@
   (common.Feed) {
     ID: (int64) 4,
     URL: (string) (len=23) "http://atom.example.com",
-    Updated: (*time.Time)(<nil>)
+    Updated: (*time.Time)(<nil>),
+    ETag: (string) ""
   }
 }

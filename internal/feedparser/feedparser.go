@@ -18,38 +18,47 @@ func New() *FeedParser {
 	return &FeedParser{parser, new(http.Client)}
 }
 
-func (p *FeedParser) ParseURL(url string) (*gofeed.Feed, error) {
+func (p *FeedParser) ParseURL(url string, etag string) (*gofeed.Feed, string, error) {
 	req, err := http.NewRequest("GET", url, http.NoBody)
 	if err != nil {
-		return nil, err
+		return nil, "", err
+	}
+	if len(etag) > 0 {
+		req.Header.Set("If-None-Match", etag)
 	}
 	req.Header.Set("User-Agent", "FeedBox/2.0 (+https://github.com/dhcmrlchtdj/feedbox)")
 
 	resp, err := p.client.Do(req)
 	if err != nil {
-		return nil, err
+		return nil, "", err
 	}
 	defer resp.Body.Close()
 
+	if resp.StatusCode == 304 {
+		return nil, "", nil
+	}
+
 	if resp.StatusCode != 200 {
-		return nil, errors.Errorf("'%v' return '%v'", url, resp.Status)
+		return nil, "", errors.Errorf("'%v' return '%v'", url, resp.Status)
 	}
 
 	// sanitize body
 	body, err := sanitize(resp.Body)
 	if err != nil {
-		return nil, errors.Wrap(err, url)
+		return nil, "", errors.Wrap(err, url)
 	}
 
 	feed, err := p.parser.Parse(body)
 	if err != nil {
-		return nil, errors.Wrap(err, url)
+		return nil, "", errors.Wrap(err, url)
 	}
 
 	// fix item
 	if err := fixFeed(url, feed); err != nil {
-		return nil, err
+		return nil, "", err
 	}
 
-	return feed, nil
+	newEtag := resp.Header.Get("etag")
+
+	return feed, newEtag, nil
 }

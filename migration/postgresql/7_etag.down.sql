@@ -1,0 +1,5 @@
+BEGIN;
+
+ALTER TABLE feeds DROP COLUMN etag;
+
+COMMIT;

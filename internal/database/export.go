@@ -22,8 +22,8 @@ type Database interface {
 	GetFeedIDByURL(url string) (int64, error)
 	GetFeedByUser(userID int64, orderBy string) ([]Feed, error)
 	GetActiveFeeds() ([]Feed, error)
-	AddFeedLinks(id int64, links []string, updated *time.Time) error
-	SetFeedUpdated(id int64, updated *time.Time) error
+	AddFeedLinks(id int64, links []string, updated *time.Time, etag string) error
+	SetFeedUpdated(id int64, updated *time.Time, etag string) error
 	GetLinks(feedID int64) ([]string, error)
 	GetSubscribers(feedID int64) ([]User, error)
 	Subscribe(userID int64, feedID int64) error

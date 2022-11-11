@@ -17,6 +17,7 @@ type Feed struct {
 	ID      int64      `json:"id"`
 	URL     string     `json:"url"`
 	Updated *time.Time `json:"updated"`
+	ETag    string     `json:"etag"`
 }
 
 var ErrEmptyRow = errors.New("empty row")

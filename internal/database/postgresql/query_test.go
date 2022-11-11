@@ -113,6 +113,7 @@ func TestAddFeedLinks(t *testing.T) {
 		ID      int64
 		URL     string
 		Updated *time.Time
+		ETag    string
 		Link    string
 	}
 
@@ -120,7 +121,7 @@ func TestAddFeedLinks(t *testing.T) {
 		feeds := []feedAll{}
 		for rows.Next() {
 			var feed feedAll
-			err := rows.Scan(&feed.ID, &feed.URL, &feed.Updated, &feed.Link)
+			err := rows.Scan(&feed.ID, &feed.URL, &feed.Updated, &feed.ETag, &feed.Link)
 			if err != nil {
 				return nil, err
 			}
@@ -134,13 +135,14 @@ func TestAddFeedLinks(t *testing.T) {
 		err := db.AddFeedLinks(
 			1,
 			[]string{"http://rss.example.com/1", "http://rss.example.com/2", "http://rss.example.com/3"},
-			&time1)
+			&time1,
+			"etag1")
 		if err != nil {
 			t.Fatal(err)
 		}
 
 		rows, err := db.Query(
-			`SELECT f.id, f.url, f.updated, l.url
+			`SELECT f.id, f.url, f.updated, f.etag, l.url
 			FROM feeds f
 			JOIN r_feed_link r ON r.feed_id=f.id
 			JOIN links l ON l.id = r.link_id
@@ -161,13 +163,14 @@ func TestAddFeedLinks(t *testing.T) {
 		err := db.AddFeedLinks(
 			1,
 			[]string{"http://rss.example.com/x", "http://rss.example.com/y", "http://rss.example.com/3"},
-			&time2)
+			&time2,
+			"etag2")
 		if err != nil {
 			t.Fatal(err)
 		}
 
 		rows, err := db.Query(
-			`SELECT f.id, f.url, f.updated, l.url
+			`SELECT f.id, f.url, f.updated, f.etag, l.url
 			FROM feeds f
 			JOIN r_feed_link r ON r.feed_id=f.id
 			JOIN links l ON l.id = r.link_id

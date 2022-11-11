@@ -3,18 +3,21 @@
     ID: (int64) 1,
     URL: (string) (len=22) "http://rss.example.com",
     Updated: (int64) 946684800000,
+    ETag: (string) (len=5) "etag1",
     Link: (string) (len=24) "http://rss.example.com/1"
   },
   (sqlite_test.feedAll) {
     ID: (int64) 1,
     URL: (string) (len=22) "http://rss.example.com",
     Updated: (int64) 946684800000,
+    ETag: (string) (len=5) "etag1",
     Link: (string) (len=24) "http://rss.example.com/2"
   },
   (sqlite_test.feedAll) {
     ID: (int64) 1,
     URL: (string) (len=22) "http://rss.example.com",
     Updated: (int64) 946684800000,
+    ETag: (string) (len=5) "etag1",
     Link: (string) (len=24) "http://rss.example.com/3"
   }
 }

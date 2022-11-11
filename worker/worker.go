@@ -83,12 +83,13 @@ func fetchFeed(done *sync.WaitGroup, qFeed <-chan database.Feed) <-chan *feedIte
 	worker := func() {
 		fp := feedparser.New()
 		for dbFeed := range qFeed {
-			feed, err := fp.ParseURL(dbFeed.URL)
+			feed, etag, err := fp.ParseURL(dbFeed.URL, dbFeed.ETag)
 			if err != nil {
 				log.Warn().Str("module", "worker").Stack().Err(err).Send()
 				continue
 			}
-			if feed.Len() == 0 {
+
+			if feed == nil || feed.Len() == 0 {
 				continue
 			}
 
@@ -99,13 +100,6 @@ func fetchFeed(done *sync.WaitGroup, qFeed <-chan database.Feed) <-chan *feedIte
 				now := time.Now()
 				updated = &now
 			}
-
-			// if dbFeed.Updated == nil {
-			//     err := database.C.SetFeedUpdated(dbFeed.ID, updated)
-			//     if err != nil {
-			//         log.Warn().Str("module", "worker").Stack().Err(err).Send()
-			//     }
-			// }
 
 			oldLinks, err := database.C.GetLinks(dbFeed.ID)
 			if err != nil {
@@ -130,10 +124,16 @@ func fetchFeed(done *sync.WaitGroup, qFeed <-chan database.Feed) <-chan *feedIte
 			}
 
 			if len(newItems) == 0 {
+				if dbFeed.ETag != etag {
+					err := database.C.SetFeedUpdated(dbFeed.ID, updated, etag)
+					if err != nil {
+						log.Warn().Str("module", "worker").Stack().Err(err).Send()
+					}
+				}
 				continue
 			}
 
-			err = database.C.AddFeedLinks(dbFeed.ID, newLinks, updated)
+			err = database.C.AddFeedLinks(dbFeed.ID, newLinks, updated, etag)
 			if err != nil {
 				log.Error().Str("module", "worker").Stack().Err(err).Send()
 				continue

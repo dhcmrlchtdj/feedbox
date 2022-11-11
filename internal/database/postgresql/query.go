@@ -109,7 +109,7 @@ func (db *Database) GetFeedIDByURL(url string) (int64, error) {
 }
 
 func (db *Database) GetFeedByUser(userID int64, orderBy string) ([]Feed, error) {
-	query := `SELECT id, url, updated
+	query := `SELECT id, url, updated, etag
 		FROM feeds
 		WHERE EXISTS
 		(SELECT 1 FROM r_user_feed WHERE user_id=$1 AND feed_id=feeds.id)`
@@ -131,7 +131,7 @@ func (db *Database) GetFeedByUser(userID int64, orderBy string) ([]Feed, error) 
 
 func (db *Database) GetActiveFeeds() ([]Feed, error) {
 	rows, err := db.Query(
-		`SELECT id, url, updated
+		`SELECT id, url, updated, etag
 		FROM feeds
 		WHERE EXISTS
 		(SELECT 1 FROM r_user_feed WHERE feed_id=feeds.id)`,
@@ -143,7 +143,7 @@ func (db *Database) GetActiveFeeds() ([]Feed, error) {
 	return readFeeds(rows)
 }
 
-func (db *Database) AddFeedLinks(id int64, links []string, updated *time.Time) error {
+func (db *Database) AddFeedLinks(id int64, links []string, updated *time.Time, etag string) error {
 	_, err := db.Exec(
 		`WITH
 		new_link_id AS (
@@ -163,25 +163,27 @@ func (db *Database) AddFeedLinks(id int64, links []string, updated *time.Time) e
 			ON CONFLICT DO NOTHING
 		)
 		UPDATE feeds
-		SET updated=$3
+		SET updated=$3, etag=$4
 		WHERE id=$1
 		`,
 		id,
 		links,
 		updated,
+		etag,
 	)
 	return err
 }
 
-func (db *Database) SetFeedUpdated(id int64, updated *time.Time) error {
+func (db *Database) SetFeedUpdated(id int64, updated *time.Time, etag string) error {
 	if updated == nil {
 		return nil
 	}
 
 	_, err := db.Exec(
-		`UPDATE feeds SET updated=$2 WHERE id=$1`,
+		`UPDATE feeds SET updated=$2, etag=$3 WHERE id=$1`,
 		id,
 		updated,
+		etag,
 	)
 	if err != nil {
 		return err
@@ -328,7 +330,7 @@ func readFeeds(rows pgx.Rows) ([]Feed, error) {
 	feeds := []Feed{}
 	for rows.Next() {
 		var feed Feed
-		err := rows.Scan(&feed.ID, &feed.URL, &feed.Updated)
+		err := rows.Scan(&feed.ID, &feed.URL, &feed.Updated, &feed.ETag)
 		if err != nil {
 			return nil, err
 		}
