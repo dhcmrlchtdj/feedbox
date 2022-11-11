@@ -53,7 +53,7 @@ func startServerAndWorker() {
 	go func() {
 		for {
 			time.Sleep(time.Minute * 10)
-			if time.Now().Minute() < 10 {
+			if time.Now().Minute() >= 50 {
 				worker.Start()
 			}
 		}
