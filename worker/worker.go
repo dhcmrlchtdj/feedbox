@@ -89,7 +89,7 @@ func fetchFeed(done *sync.WaitGroup, qFeed <-chan database.Feed) <-chan *feedIte
 				continue
 			}
 
-			if feed == nil || feed.Len() == 0 {
+			if feed == nil {
 				continue
 			}
 
@@ -99,6 +99,14 @@ func fetchFeed(done *sync.WaitGroup, qFeed <-chan database.Feed) <-chan *feedIte
 				log.Warn().Str("module", "worker").Stack().Err(err).Send()
 				now := time.Now()
 				updated = &now
+			}
+
+			if feed.Len() == 0 {
+				err := updateFeedStatus(dbFeed, updated, etag)
+				if err != nil {
+					log.Warn().Str("module", "worker").Stack().Err(err).Send()
+				}
+				continue
 			}
 
 			oldLinks, err := database.C.GetLinks(dbFeed.ID)
@@ -124,11 +132,9 @@ func fetchFeed(done *sync.WaitGroup, qFeed <-chan database.Feed) <-chan *feedIte
 			}
 
 			if len(newItems) == 0 {
-				if dbFeed.ETag != etag {
-					err := database.C.SetFeedUpdated(dbFeed.ID, updated, etag)
-					if err != nil {
-						log.Warn().Str("module", "worker").Stack().Err(err).Send()
-					}
+				err := updateFeedStatus(dbFeed, updated, etag)
+				if err != nil {
+					log.Warn().Str("module", "worker").Stack().Err(err).Send()
 				}
 				continue
 			}
@@ -170,6 +176,13 @@ func getLatestUpdated(feed *gofeed.Feed) *time.Time {
 	}
 
 	return latest
+}
+
+func updateFeedStatus(dbFeed database.Feed, updated *time.Time, etag string) error {
+	if dbFeed.ETag != etag {
+		return database.C.SetFeedUpdated(dbFeed.ID, updated, etag)
+	}
+	return nil
 }
 
 func dispatchFeed(done *sync.WaitGroup, qFeedItem <-chan *feedItem) (<-chan githubItem, <-chan telegramItem) {

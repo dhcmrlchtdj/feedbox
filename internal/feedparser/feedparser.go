@@ -35,7 +35,7 @@ func (p *FeedParser) ParseURL(url string, etag string) (*gofeed.Feed, string, er
 	defer resp.Body.Close()
 
 	if resp.StatusCode == 304 {
-		return nil, "", nil
+		return nil, etag, nil
 	}
 
 	if resp.StatusCode != 200 {
