@@ -18,7 +18,8 @@ func New() fiber.Handler {
 
 		contentType := c.Response().Header.Peek("content-type")
 		if bytes.Contains(contentType, []byte("text/html")) {
-			c.Set("referrer-policy", "strict-origin-when-cross-origin")
+			// c.Set("referrer-policy", "strict-origin-when-cross-origin")
+			c.Set("referrer-policy", "no-referrer")
 			c.Set("content-security-policy", buildCSP(
 				"default-src 'self'",
 				"script-src 'self'",
