@@ -11,7 +11,7 @@ import (
 	"github.com/dhcmrlchtdj/feedbox/internal/multipart"
 )
 
-var _ client = (*httpClient)(nil)
+var _ Client = (*httpClient)(nil)
 
 type httpClient struct {
 	name  string

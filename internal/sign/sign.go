@@ -9,18 +9,13 @@ import (
 	"golang.org/x/crypto/chacha20poly1305"
 )
 
-var S interface {
-	Encode(plaintext []byte) ([]byte, error)
-	Decode(data []byte) ([]byte, error)
-	DecodeFromHex(hexData string) ([]byte, error)
-	EncodeToHex(plaintext []byte) (string, error)
-}
+var _ Client = (*sign)(nil)
 
-type Sign struct {
+type sign struct {
 	aead cipher.AEAD
 }
 
-func New(hexSecret string) (*Sign, error) {
+func New(hexSecret string) (*sign, error) {
 	key, err := hex.DecodeString(hexSecret)
 	if err != nil {
 		return nil, err
@@ -30,10 +25,10 @@ func New(hexSecret string) (*Sign, error) {
 	if err != nil {
 		return nil, err
 	}
-	return &Sign{aead}, nil
+	return &sign{aead}, nil
 }
 
-func (s *Sign) Encode(plaintext []byte) ([]byte, error) {
+func (s *sign) Encode(plaintext []byte) ([]byte, error) {
 	nonce := make([]byte, s.aead.NonceSize(), s.aead.NonceSize()+len(plaintext)+s.aead.Overhead())
 	if _, err := rand.Read(nonce); err != nil {
 		return nil, err
@@ -42,7 +37,7 @@ func (s *Sign) Encode(plaintext []byte) ([]byte, error) {
 	return ciphertext, nil
 }
 
-func (s *Sign) Decode(data []byte) ([]byte, error) {
+func (s *sign) Decode(data []byte) ([]byte, error) {
 	nonce, ciphertext := data[:s.aead.NonceSize()], data[s.aead.NonceSize():]
 	plaintext, err := s.aead.Open(nil, nonce, ciphertext, nil)
 	if err != nil {
@@ -51,7 +46,7 @@ func (s *Sign) Decode(data []byte) ([]byte, error) {
 	return plaintext, nil
 }
 
-func (s *Sign) DecodeFromHex(hexData string) ([]byte, error) {
+func (s *sign) DecodeFromHex(hexData string) ([]byte, error) {
 	ciphertext, err := hex.DecodeString(hexData)
 	if err != nil {
 		return nil, err
@@ -59,7 +54,7 @@ func (s *Sign) DecodeFromHex(hexData string) ([]byte, error) {
 	return s.Decode(ciphertext)
 }
 
-func (s *Sign) EncodeToHex(plaintext []byte) (string, error) {
+func (s *sign) EncodeToHex(plaintext []byte) (string, error) {
 	ciphertext, err := s.Encode(plaintext)
 	if err != nil {
 		return "", err
@@ -68,7 +63,7 @@ func (s *Sign) EncodeToHex(plaintext []byte) (string, error) {
 	return text, nil
 }
 
-func NewWithPassword(password string) (*Sign, error) {
+func NewWithPassword(password string) (*sign, error) {
 	salt := make([]byte, 16)
 	if _, err := rand.Read(salt); err != nil {
 		return nil, err
@@ -83,5 +78,5 @@ func NewWithPassword(password string) (*Sign, error) {
 	if err != nil {
 		return nil, err
 	}
-	return &Sign{aead}, nil
+	return &sign{aead}, nil
 }

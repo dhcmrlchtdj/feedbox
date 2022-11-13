@@ -10,7 +10,7 @@ import (
 	"github.com/dhcmrlchtdj/feedbox/internal/multipart"
 )
 
-var _ client = (*mailgun)(nil)
+var _ Client = (*mailgun)(nil)
 
 type mailgun struct {
 	client    *http.Client

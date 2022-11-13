@@ -9,6 +9,7 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
 
+	"github.com/dhcmrlchtdj/feedbox/internal/global"
 	"github.com/dhcmrlchtdj/feedbox/internal/telegram"
 )
 
@@ -24,7 +25,7 @@ func telegramSendMsg(msg telegram.SendMessagePayload, rl *RateLimiter) {
 		retry--
 
 		rl.Wait()
-		err := telegram.C.SendMessage(msg)
+		err := global.Telegram.SendMessage(msg)
 		if err != nil {
 			var err429 *telegram.ErrTooManyRequests
 			if errors.As(err, &err429) {

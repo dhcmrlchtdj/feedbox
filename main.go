@@ -16,6 +16,7 @@ import (
 
 	"github.com/dhcmrlchtdj/feedbox/internal/database"
 	"github.com/dhcmrlchtdj/feedbox/internal/email"
+	"github.com/dhcmrlchtdj/feedbox/internal/global"
 	"github.com/dhcmrlchtdj/feedbox/internal/sign"
 	"github.com/dhcmrlchtdj/feedbox/internal/telegram"
 	"github.com/dhcmrlchtdj/feedbox/internal/util"
@@ -44,7 +45,7 @@ func startServerAndWorker() {
 	initEnv()
 	initLogger()
 	initDatabase()
-	defer database.C.Close()
+	defer global.Database.Close()
 	initMailgun()
 	initTelegram()
 	initSign()
@@ -75,7 +76,7 @@ func startServer() {
 	initEnv()
 	initLogger()
 	initDatabase()
-	defer database.C.Close()
+	defer global.Database.Close()
 	initMailgun()
 	initTelegram()
 	initSign()
@@ -95,7 +96,7 @@ func startWorker() {
 	initEnv()
 	initLogger()
 	initDatabase()
-	defer database.C.Close()
+	defer global.Database.Close()
 	initTelegram()
 
 	worker.Start()
@@ -123,19 +124,19 @@ func initDatabase() {
 	if err != nil {
 		panic(err)
 	}
-	database.C = db
+	global.Database = db
 }
 
 func initMailgun() {
 	if os.Getenv("ENV") == "prod" {
 		util.CheckEnvs("MAILGUN_DOMAIN", "MAILGUN_API_KEY", "MAILGUN_FROM")
-		email.C = email.NewMailgun(
+		global.Email = email.NewMailgun(
 			os.Getenv("MAILGUN_DOMAIN"),
 			os.Getenv("MAILGUN_API_KEY"),
 			os.Getenv("MAILGUN_FROM"),
 		)
 	} else {
-		email.C = email.NewDryRun()
+		global.Email = email.NewDryRun()
 	}
 }
 
@@ -143,12 +144,12 @@ func initTelegram() {
 	if os.Getenv("ENV") == "prod" {
 		util.CheckEnvs("SERVER")
 		util.CheckEnvs("TELEGRAM_BOT_NAME", "TELEGRAM_BOT_TOKEN")
-		telegram.C = telegram.NewHTTPClient(
+		global.Telegram = telegram.NewHTTPClient(
 			os.Getenv("TELEGRAM_BOT_NAME"),
 			os.Getenv("TELEGRAM_BOT_TOKEN"),
 		)
 	} else {
-		telegram.C = telegram.NewDryRun()
+		global.Telegram = telegram.NewDryRun()
 	}
 }
 
@@ -158,7 +159,7 @@ func initSign() {
 	if err != nil {
 		panic(err)
 	}
-	sign.S = s
+	global.Sign = s
 }
 
 func startMigration() {

@@ -1,8 +1,6 @@
 package telegram
 
-var C client
-
-type client interface {
+type Client interface {
 	GetBotName() string
 	GetChatMember(payload GetChatMemberPayload) (*ChatMember, error)
 	SetWebhook(payload SetWebhookPayload) error

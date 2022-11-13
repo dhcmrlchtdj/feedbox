@@ -9,6 +9,7 @@ import (
 	"github.com/rs/zerolog/log"
 
 	"github.com/dhcmrlchtdj/feedbox/internal/database"
+	"github.com/dhcmrlchtdj/feedbox/internal/global"
 	"github.com/dhcmrlchtdj/feedbox/internal/telegram"
 	"github.com/dhcmrlchtdj/feedbox/internal/util"
 )
@@ -52,7 +53,7 @@ func executeCommand(cmd string, arg string, msg *telegram.Message) {
 		errors.Is(err, ErrEmptyList) ||
 		errors.Is(err, ErrInvalidTwitter) {
 		text := err.Error()
-		if err := telegram.C.SendMessage(telegram.SendMessagePayload{
+		if err := global.Telegram.SendMessage(telegram.SendMessagePayload{
 			ChatID: msg.Chat.ID,
 			Text:   text,
 		}); err != nil {
@@ -66,7 +67,7 @@ func executeCommand(cmd string, arg string, msg *telegram.Message) {
 ///
 
 func start(msg *telegram.Message) error {
-	return telegram.C.SendMessage(telegram.SendMessagePayload{
+	return global.Telegram.SendMessage(telegram.SendMessagePayload{
 		ChatID:    msg.Chat.ID,
 		Text:      "<code>hello, world</code>",
 		ParseMode: telegram.ParseModeHTML,
@@ -75,11 +76,11 @@ func start(msg *telegram.Message) error {
 
 func list(msg *telegram.Message) error {
 	chatID := strconv.FormatInt(msg.Chat.ID, 10)
-	user, err := database.C.GetOrCreateUserByTelegram(chatID)
+	user, err := global.Database.GetOrCreateUserByTelegram(chatID)
 	if err != nil {
 		return err
 	}
-	feeds, err := database.C.GetFeedByUser(user.ID, "url")
+	feeds, err := global.Database.GetFeedByUser(user.ID, "url")
 	if err != nil {
 		return err
 	}
@@ -96,7 +97,7 @@ func list(msg *telegram.Message) error {
 	}
 	text := builder.String()
 
-	return telegram.C.SendMessage(telegram.SendMessagePayload{
+	return global.Telegram.SendMessage(telegram.SendMessagePayload{
 		ChatID: msg.Chat.ID,
 		Text:   text,
 	})
@@ -104,19 +105,19 @@ func list(msg *telegram.Message) error {
 
 func add(arg string, msg *telegram.Message) error {
 	chatID := strconv.FormatInt(msg.Chat.ID, 10)
-	user, err := database.C.GetOrCreateUserByTelegram(chatID)
+	user, err := global.Database.GetOrCreateUserByTelegram(chatID)
 	if err != nil {
 		return err
 	}
-	feedID, err := database.C.GetFeedIDByURL(arg)
+	feedID, err := global.Database.GetFeedIDByURL(arg)
 	if err != nil {
 		return err
 	}
-	if err := database.C.Subscribe(user.ID, feedID); err != nil {
+	if err := global.Database.Subscribe(user.ID, feedID); err != nil {
 		return err
 	}
 
-	return telegram.C.SendMessage(telegram.SendMessagePayload{
+	return global.Telegram.SendMessage(telegram.SendMessagePayload{
 		ChatID: msg.Chat.ID,
 		Text:   "added",
 	})
@@ -124,19 +125,19 @@ func add(arg string, msg *telegram.Message) error {
 
 func remove(arg string, msg *telegram.Message) error {
 	chatID := strconv.FormatInt(msg.Chat.ID, 10)
-	user, err := database.C.GetOrCreateUserByTelegram(chatID)
+	user, err := global.Database.GetOrCreateUserByTelegram(chatID)
 	if err != nil {
 		return err
 	}
-	feedID, err := database.C.GetFeedIDByURL(arg)
+	feedID, err := global.Database.GetFeedIDByURL(arg)
 	if err != nil {
 		return err
 	}
-	if err := database.C.Unsubscribe(user.ID, feedID); err != nil {
+	if err := global.Database.Unsubscribe(user.ID, feedID); err != nil {
 		return err
 	}
 
-	return telegram.C.SendMessage(telegram.SendMessagePayload{
+	return global.Telegram.SendMessage(telegram.SendMessagePayload{
 		ChatID: msg.Chat.ID,
 		Text:   "removed",
 	})
@@ -144,23 +145,23 @@ func remove(arg string, msg *telegram.Message) error {
 
 func removeAll(msg *telegram.Message) error {
 	chatID := strconv.FormatInt(msg.Chat.ID, 10)
-	user, err := database.C.GetOrCreateUserByTelegram(chatID)
+	user, err := global.Database.GetOrCreateUserByTelegram(chatID)
 	if err != nil {
 		return err
 	}
-	feeds, err := database.C.GetFeedByUser(user.ID, "url")
+	feeds, err := global.Database.GetFeedByUser(user.ID, "url")
 	if err != nil {
 		return err
 	}
 	if len(feeds) == 0 {
 		return ErrEmptyList
 	}
-	if err := database.C.UnsubscribeAll(user.ID); err != nil {
+	if err := global.Database.UnsubscribeAll(user.ID); err != nil {
 		return err
 	}
 
 	opml := util.BuildOPMLFromFeed(feeds)
-	return telegram.C.SendDocument(telegram.SendDocumentPayload{
+	return global.Telegram.SendDocument(telegram.SendDocumentPayload{
 		ChatID:  msg.Chat.ID,
 		Caption: "removed",
 		Document: telegram.InputFile{
@@ -172,11 +173,11 @@ func removeAll(msg *telegram.Message) error {
 
 func export(msg *telegram.Message) error {
 	chatID := strconv.FormatInt(msg.Chat.ID, 10)
-	user, err := database.C.GetOrCreateUserByTelegram(chatID)
+	user, err := global.Database.GetOrCreateUserByTelegram(chatID)
 	if err != nil {
 		return err
 	}
-	feeds, err := database.C.GetFeedByUser(user.ID, "url")
+	feeds, err := global.Database.GetFeedByUser(user.ID, "url")
 	if err != nil {
 		return err
 	}
@@ -185,7 +186,7 @@ func export(msg *telegram.Message) error {
 	}
 
 	opml := util.BuildOPMLFromFeed(feeds)
-	return telegram.C.SendDocument(telegram.SendDocumentPayload{
+	return global.Telegram.SendDocument(telegram.SendDocumentPayload{
 		ChatID: msg.Chat.ID,
 		Document: telegram.InputFile{
 			Name:    "feeds.opml",

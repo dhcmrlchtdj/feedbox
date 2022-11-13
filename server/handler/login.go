@@ -7,8 +7,7 @@ import (
 
 	"github.com/gofiber/fiber/v2"
 
-	"github.com/dhcmrlchtdj/feedbox/internal/database"
-	"github.com/dhcmrlchtdj/feedbox/internal/sign"
+	"github.com/dhcmrlchtdj/feedbox/internal/global"
 	"github.com/dhcmrlchtdj/feedbox/server/middleware/auth/cookie"
 	"github.com/dhcmrlchtdj/feedbox/server/middleware/auth/github"
 	"github.com/dhcmrlchtdj/feedbox/server/types"
@@ -22,7 +21,7 @@ func Logout(c *fiber.Ctx) error {
 func ConnectGithub(c *fiber.Ctx) error {
 	credential := c.Locals("credential").(*github.Profile)
 	id := strconv.FormatInt(credential.ID, 10)
-	user, err := database.C.GetOrCreateUserByGithub(id, credential.Email)
+	user, err := global.Database.GetOrCreateUserByGithub(id, credential.Email)
 	if err != nil {
 		return err
 	}
@@ -35,7 +34,7 @@ func ConnectGithub(c *fiber.Ctx) error {
 	if err != nil {
 		return err
 	}
-	tokenStr, err := sign.S.EncodeToHex(plaintext)
+	tokenStr, err := global.Sign.EncodeToHex(plaintext)
 	if err != nil {
 		return err
 	}

@@ -5,7 +5,7 @@ import (
 	"strings"
 	"sync"
 
-	"github.com/dhcmrlchtdj/feedbox/internal/email"
+	"github.com/dhcmrlchtdj/feedbox/internal/global"
 	"github.com/dhcmrlchtdj/feedbox/internal/util"
 	"github.com/rs/zerolog/log"
 )
@@ -48,7 +48,7 @@ func sendEmail(done *sync.WaitGroup, qGithub <-chan githubItem) {
 		content := text.String()
 
 		for _, user := range x.users {
-			err := email.C.Send(user, subject, content)
+			err := global.Email.Send(user, subject, content)
 			if err != nil {
 				log.Error().Str("module", "worker").Stack().Err(err).Send()
 			}

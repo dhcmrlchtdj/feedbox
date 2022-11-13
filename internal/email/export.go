@@ -1,7 +1,5 @@
 package email
 
-var C client
-
-type client interface {
+type Client interface {
 	Send(addr string, subject string, text string) error
 }

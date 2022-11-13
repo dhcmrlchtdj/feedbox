@@ -12,8 +12,6 @@ import (
 	"github.com/dhcmrlchtdj/feedbox/internal/database/sqlite"
 )
 
-var C Database
-
 type Database interface {
 	Close()
 	GetUserByID(id int64) (*User, error)

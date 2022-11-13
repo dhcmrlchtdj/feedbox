@@ -2,7 +2,7 @@ package telegram
 
 import "github.com/rs/zerolog/log"
 
-var _ client = (*dryRun)(nil)
+var _ Client = (*dryRun)(nil)
 
 type dryRun struct{}
 

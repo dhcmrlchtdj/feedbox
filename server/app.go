@@ -15,7 +15,7 @@ import (
 	"github.com/rs/zerolog/log"
 
 	"github.com/dhcmrlchtdj/feedbox/internal/database"
-	"github.com/dhcmrlchtdj/feedbox/internal/sign"
+	"github.com/dhcmrlchtdj/feedbox/internal/global"
 	"github.com/dhcmrlchtdj/feedbox/server/handler"
 	"github.com/dhcmrlchtdj/feedbox/server/middleware/auth/cookie"
 	"github.com/dhcmrlchtdj/feedbox/server/middleware/auth/github"
@@ -128,7 +128,7 @@ func errorHandler(c *fiber.Ctx, err error) error {
 }
 
 func cookieValidator(tokenStr string) ( /* Credential */ any, error) {
-	plaintext, err := sign.S.DecodeFromHex(tokenStr)
+	plaintext, err := global.Sign.DecodeFromHex(tokenStr)
 	if err != nil {
 		return nil, errors.New("invalid token")
 	}
@@ -140,7 +140,7 @@ func cookieValidator(tokenStr string) ( /* Credential */ any, error) {
 		return nil, errors.New("expired token")
 	}
 
-	if _, err = database.C.GetUserByID(credential.UserID); err != nil {
+	if _, err = global.Database.GetUserByID(credential.UserID); err != nil {
 		if errors.Is(err, database.ErrEmptyRow) {
 			err = errors.New("invalid user")
 		}
