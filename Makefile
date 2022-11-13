@@ -24,7 +24,8 @@ lint:
 
 dev:
 	cd frontend && make
-	go run $(GOFLAGS) ./main.go serverAndWorker
+	# make dev | jq -c -R '. as $line | try fromjson catch $line'
+	go run $(GOFLAGS) ./main.go serverAndWorker 2>&1 | jq
 
 test:
 	ENV=test TZ=UTC go test -race ./internal/util

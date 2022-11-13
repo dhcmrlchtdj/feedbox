@@ -113,9 +113,7 @@ func initEnv() {
 
 func initLogger() {
 	zerolog.ErrorStackMarshaler = pkgerrors.MarshalStack // nolint:reassign
-	if os.Getenv("ENV") != "prod" {
-		log.Logger = log.Output(util.JSONConsoleWriter{Out: os.Stderr})
-	}
+	// log.Logger = log.Output(os.Stdout)
 }
 
 func initDatabase() {
