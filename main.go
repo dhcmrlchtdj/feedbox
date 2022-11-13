@@ -51,9 +51,10 @@ func startServerAndWorker() {
 
 	// start worker
 	go func() {
+		ticker := time.NewTicker(time.Minute * 10)
 		for {
-			time.Sleep(time.Minute * 10)
-			if time.Now().Minute() >= 50 {
+			curr := <-ticker.C
+			if curr.Minute() >= 50 {
 				worker.Start()
 			}
 		}
