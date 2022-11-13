@@ -49,12 +49,11 @@ func startServerAndWorker() {
 	initTelegram()
 	initSign()
 
-	// start worker
+	// start worker in background
+	ticker := time.NewTicker(time.Minute * 10)
 	go func() {
-		ticker := time.NewTicker(time.Minute * 10)
-		for {
-			curr := <-ticker.C
-			if curr.Minute() >= 50 {
+		for t := range ticker.C {
+			if t.Minute() >= 50 {
 				worker.Start()
 			}
 		}
