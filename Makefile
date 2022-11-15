@@ -5,7 +5,7 @@ GOFLAGS := \
 	-trimpath \
 	-buildmode=pie \
 	-buildvcs=false \
-	-mod=readonly
+	-ldflags='-s -w -linkmode=external'
 
 build:
 	go build $(GOFLAGS) -o ./_build/app
@@ -25,7 +25,7 @@ lint:
 dev:
 	cd frontend && make
 	# make dev | jq -c -R '. as $line | try fromjson catch $line'
-	go run $(GOFLAGS) ./main.go serverAndWorker 2>&1 | jq
+	go run -race ./main.go serverAndWorker 2>&1 | jq
 
 test:
 	ENV=test TZ=UTC go test -race ./internal/util
