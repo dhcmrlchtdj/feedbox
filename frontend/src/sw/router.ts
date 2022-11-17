@@ -3,6 +3,7 @@ import App from "../components/app.html"
 import { WorkerRouter } from "./worker_router"
 import * as strategy from "./strategy"
 import * as version from "./version"
+import { sanitize } from "../utils/sanitize"
 
 const just =
 	(
@@ -59,7 +60,9 @@ export const router = new WorkerRouter()
 				}
 				const tpl = await resp.clone().text()
 				const app = App.render(state)
-				const inlinedState = `window.__STATE__=${JSON.stringify(state)}`
+				const inlinedState = `window.__STATE__=${sanitize(
+					JSON.stringify(state),
+				)}`
 				const scriptNonce = crypto.randomUUID().slice(0, 8)
 				const html = tpl.replace(
 					'<div id="app"></div>',
