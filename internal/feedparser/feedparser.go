@@ -1,6 +1,7 @@
 package feedparser
 
 import (
+	"context"
 	"net/http"
 
 	"github.com/mmcdole/gofeed"
@@ -18,8 +19,8 @@ func New() *FeedParser {
 	return &FeedParser{parser, new(http.Client)}
 }
 
-func (p *FeedParser) ParseURL(url string, etag string) (*gofeed.Feed, string, error) {
-	req, err := http.NewRequest("GET", url, http.NoBody)
+func (p *FeedParser) ParseURL(ctx context.Context, url string, etag string) (*gofeed.Feed, string, error) {
+	req, err := http.NewRequestWithContext(ctx, "GET", url, http.NoBody)
 	if err != nil {
 		return nil, "", err
 	}

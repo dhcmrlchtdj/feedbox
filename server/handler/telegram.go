@@ -12,6 +12,6 @@ func TelegramWebhook(c *fiber.Ctx) error {
 	if err := c.BodyParser(&b); err != nil {
 		return err
 	}
-	go telegrambot.HandleWebhook(&b)
+	go telegrambot.HandleWebhook(c.UserContext(), &b)
 	return c.SendString("ok")
 }

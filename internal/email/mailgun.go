@@ -2,6 +2,7 @@ package email
 
 import (
 	"bytes"
+	"context"
 	"encoding/json"
 	"net/http"
 
@@ -28,7 +29,7 @@ func NewMailgun(domain string, apiKey string, from string) *mailgun {
 	}
 }
 
-func (c *mailgun) Send(addr string, subject string, text string) error {
+func (c *mailgun) Send(ctx context.Context, addr string, subject string, text string) error {
 	var payload bytes.Buffer
 	m := multipart.New(&payload).
 		Str("from", c.from).

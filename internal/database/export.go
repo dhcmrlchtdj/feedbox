@@ -1,11 +1,11 @@
 package database
 
 import (
+	"context"
 	"strings"
 	"time"
 
 	"github.com/pkg/errors"
-	"github.com/rs/zerolog"
 
 	"github.com/dhcmrlchtdj/feedbox/internal/database/common"
 	"github.com/dhcmrlchtdj/feedbox/internal/database/postgresql"
@@ -14,21 +14,21 @@ import (
 
 type Database interface {
 	Close()
-	GetUserByID(id int64) (*User, error)
-	GetOrCreateUserByGithub(githubID string, email string) (*User, error)
-	GetOrCreateUserByTelegram(chatID string) (*User, error)
-	GetFeedIDByURL(url string) (int64, error)
-	GetFeedByUser(userID int64, orderBy string) ([]Feed, error)
-	GetActiveFeeds() ([]Feed, error)
-	AddFeedLinks(id int64, links []string, updated *time.Time, etag string) error
-	SetFeedUpdated(id int64, updated *time.Time, etag string) error
-	GetLinks(feedID int64) ([]string, error)
-	GetSubscribers(feedID int64) ([]User, error)
-	Subscribe(userID int64, feedID int64) error
-	Unsubscribe(userID int64, feedID int64) error
-	UnsubscribeAll(userID int64) error
-	SubscribeURL(userID int64, url string) error
-	SubscribeURLs(userID int64, urls []string) error
+	GetUserByID(ctx context.Context, id int64) (*User, error)
+	GetOrCreateUserByGithub(ctx context.Context, githubID string, email string) (*User, error)
+	GetOrCreateUserByTelegram(ctx context.Context, chatID string) (*User, error)
+	GetFeedIDByURL(ctx context.Context, url string) (int64, error)
+	GetFeedByUser(ctx context.Context, userID int64, orderBy string) ([]Feed, error)
+	GetActiveFeeds(ctx context.Context) ([]Feed, error)
+	AddFeedLinks(ctx context.Context, id int64, links []string, updated *time.Time, etag string) error
+	SetFeedUpdated(ctx context.Context, id int64, updated *time.Time, etag string) error
+	GetLinks(ctx context.Context, feedID int64) ([]string, error)
+	GetSubscribers(ctx context.Context, feedID int64) ([]User, error)
+	Subscribe(ctx context.Context, userID int64, feedID int64) error
+	Unsubscribe(ctx context.Context, userID int64, feedID int64) error
+	UnsubscribeAll(ctx context.Context, userID int64) error
+	SubscribeURL(ctx context.Context, userID int64, url string) error
+	SubscribeURLs(ctx context.Context, userID int64, urls []string) error
 }
 
 ///
@@ -45,13 +45,13 @@ var (
 
 ///
 
-func New(uri string, logger *zerolog.Logger) (Database, error) {
+func New(ctx context.Context, uri string) (Database, error) {
 	if strings.HasPrefix(uri, "postgres://") {
-		return postgresql.New(uri, logger)
+		return postgresql.New(ctx, uri)
 	}
 
 	if strings.HasPrefix(uri, "sqlite://") {
-		return sqlite.New(uri, logger)
+		return sqlite.New(ctx, uri)
 	}
 
 	return nil, errors.New("unknown database url")

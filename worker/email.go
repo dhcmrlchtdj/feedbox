@@ -1,20 +1,23 @@
 package worker
 
 import (
+	"context"
 	"fmt"
 	"strings"
 	"sync"
 
 	"github.com/dhcmrlchtdj/feedbox/internal/global"
 	"github.com/dhcmrlchtdj/feedbox/internal/util"
-	"github.com/rs/zerolog/log"
+	"github.com/rs/zerolog"
 )
 
 func isTelegramChannel(ghItem githubItem) bool {
 	return strings.HasPrefix(ghItem.feed.URL, "https://rsshub.app/telegram/channel")
 }
 
-func sendEmail(done *sync.WaitGroup, qGithub <-chan githubItem) {
+func sendEmail(ctx context.Context, done *sync.WaitGroup, qGithub <-chan githubItem) {
+	logger := zerolog.Ctx(ctx)
+
 	worker := func(x githubItem) {
 		if len(x.users) == 0 {
 			return
@@ -48,9 +51,9 @@ func sendEmail(done *sync.WaitGroup, qGithub <-chan githubItem) {
 		content := text.String()
 
 		for _, user := range x.users {
-			err := global.Email.Send(user, subject, content)
+			err := global.Email.Send(ctx, user, subject, content)
 			if err != nil {
-				log.Error().Str("module", "worker").Stack().Err(err).Send()
+				logger.Error().Str("module", "worker").Stack().Err(err).Send()
 			}
 		}
 	}

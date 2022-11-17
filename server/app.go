@@ -1,6 +1,7 @@
 package server
 
 import (
+	"context"
 	"encoding/json"
 	"os"
 	"time"
@@ -12,7 +13,7 @@ import (
 	"github.com/gofiber/fiber/v2/middleware/recover"
 	"github.com/gofiber/fiber/v2/middleware/requestid"
 	"github.com/pkg/errors"
-	"github.com/rs/zerolog/log"
+	"github.com/rs/zerolog"
 
 	"github.com/dhcmrlchtdj/feedbox/internal/database"
 	"github.com/dhcmrlchtdj/feedbox/internal/global"
@@ -26,7 +27,7 @@ import (
 	"github.com/dhcmrlchtdj/feedbox/server/types"
 )
 
-func Create() *fiber.App {
+func Create(ctx context.Context) *fiber.App {
 	appConfig := fiber.Config{
 		DisableStartupMessage: true,
 		// BodyLimit: 4 * 1024 * 1024,
@@ -38,31 +39,26 @@ func Create() *fiber.App {
 	}
 	app := fiber.New(appConfig)
 
-	setupMiddleware(app)
+	// middleware
+	app.Use(recover.New())
+	app.Use(logger.New(ctx))
+	app.Use(etag.New())
+	app.Use(secure.New())
+	app.Use(requestid.New())
+	if os.Getenv("ENV") != "prod" {
+		app.Use(pprof.New())
+		app.Use(expvar.New())
+	}
 
+	// router
 	subDir := os.Getenv("SERVER_SUB_DIR")
 	if subDir == "" {
 		subDir = "/"
 	}
 	appRouter := app.Group(subDir)
-	setupRoute(appRouter)
+	setupRoute(appRouter) // nolint:contextcheck
 
 	return app
-}
-
-func setupMiddleware(app *fiber.App) {
-	prod := os.Getenv("ENV") == "prod"
-
-	app.Use(recover.New())
-	app.Use(logger.New())
-	app.Use(etag.New())
-	app.Use(secure.New())
-	app.Use(requestid.New())
-
-	if !prod {
-		app.Use(pprof.New())
-		app.Use(expvar.New())
-	}
 }
 
 func setupRoute(app fiber.Router) {
@@ -122,12 +118,12 @@ func errorHandler(c *fiber.Ctx, err error) error {
 	notCare := fiber.DefaultErrorHandler(c, err)
 	code := c.Response().StatusCode()
 	if code >= 500 {
-		log.Error().Str("module", "app").Stack().Err(err).Send()
+		zerolog.Ctx(c.UserContext()).Error().Str("module", "app").Stack().Err(err).Send()
 	}
 	return notCare
 }
 
-func cookieValidator(tokenStr string) ( /* Credential */ any, error) {
+func cookieValidator(ctx context.Context, tokenStr string) ( /* Credential */ any, error) {
 	plaintext, err := global.Sign.DecodeFromHex(tokenStr)
 	if err != nil {
 		return nil, errors.New("invalid token")
@@ -140,7 +136,7 @@ func cookieValidator(tokenStr string) ( /* Credential */ any, error) {
 		return nil, errors.New("expired token")
 	}
 
-	if _, err = global.Database.GetUserByID(credential.UserID); err != nil {
+	if _, err = global.Database.GetUserByID(ctx, credential.UserID); err != nil {
 		if errors.Is(err, database.ErrEmptyRow) {
 			err = errors.New("invalid user")
 		}

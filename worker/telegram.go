@@ -1,13 +1,14 @@
 package worker
 
 import (
+	"context"
 	"math"
 	"strings"
 	"sync"
 	"time"
 
 	"github.com/pkg/errors"
-	"github.com/rs/zerolog/log"
+	"github.com/rs/zerolog"
 
 	"github.com/dhcmrlchtdj/feedbox/internal/global"
 	"github.com/dhcmrlchtdj/feedbox/internal/telegram"
@@ -19,13 +20,15 @@ func isLobsters(tgItem telegramItem) bool {
 	return tgItem.feed.URL == "https://lobste.rs/rss"
 }
 
-func telegramSendMsg(msg telegram.SendMessagePayload, rl *RateLimiter) {
+func telegramSendMsg(ctx context.Context, msg telegram.SendMessagePayload, rl *RateLimiter) {
+	logger := zerolog.Ctx(ctx)
+
 	retry := 1
 	for retry > 0 {
 		retry--
 
 		rl.Wait()
-		err := global.Telegram.SendMessage(msg)
+		err := global.Telegram.SendMessage(ctx, msg)
 		if err != nil {
 			var err429 *telegram.ErrTooManyRequests
 			if errors.As(err, &err429) {
@@ -37,18 +40,18 @@ func telegramSendMsg(msg telegram.SendMessagePayload, rl *RateLimiter) {
 			var errResp *telegram.Response
 			if errors.As(err, &errResp) {
 				if *errResp.ErrorCode == 403 {
-					log.Warn().Str("module", "worker").Stack().Err(err).Send()
+					logger.Warn().Str("module", "worker").Stack().Err(err).Send()
 					return
 				}
 			}
 
-			log.Error().Str("module", "worker").Stack().Err(err).Send()
+			logger.Error().Str("module", "worker").Stack().Err(err).Send()
 		}
 		return
 	}
 }
 
-func sendTelegram(done *sync.WaitGroup, qTelegram <-chan telegramItem) {
+func sendTelegram(ctx context.Context, done *sync.WaitGroup, qTelegram <-chan telegramItem) {
 	// https://core.telegram.org/bots/faq#my-bot-is-hitting-limits-how-do-i-avoid-this
 	rateLimiter := NewRateLimiter(20, time.Second)
 
@@ -82,7 +85,7 @@ func sendTelegram(done *sync.WaitGroup, qTelegram <-chan telegramItem) {
 				ChatID: user,
 				Text:   content,
 			}
-			telegramSendMsg(payload, rateLimiter)
+			telegramSendMsg(ctx, payload, rateLimiter)
 		}
 	}
 

@@ -1,6 +1,7 @@
 package sqlite
 
 import (
+	"context"
 	"database/sql"
 	"encoding/json"
 	"time"
@@ -24,8 +25,9 @@ var (
 
 ///
 
-func (db *Database) GetUserByID(id int64) (*User, error) {
+func (db *Database) GetUserByID(ctx context.Context, id int64) (*User, error) {
 	row := db.QueryRow(
+		ctx,
 		`SELECT id, platform, pid, addition
 		FROM users
 		WHERE id=$1`,
@@ -42,12 +44,13 @@ func (db *Database) GetUserByID(id int64) (*User, error) {
 	return user, nil
 }
 
-func (db *Database) GetOrCreateUserByGithub(githubID string, email string) (*User, error) {
+func (db *Database) GetOrCreateUserByGithub(ctx context.Context, githubID string, email string) (*User, error) {
 	addition, err := json.Marshal(map[string]string{"email": email})
 	if err != nil {
 		return nil, err
 	}
 	row := db.QueryRow(
+		ctx,
 		`INSERT INTO users(platform, pid, addition)
 		VALUES ('github', $1, $2)
 		ON CONFLICT(platform, pid) DO UPDATE SET addition=EXCLUDED.addition
@@ -63,8 +66,9 @@ func (db *Database) GetOrCreateUserByGithub(githubID string, email string) (*Use
 	return user, nil
 }
 
-func (db *Database) GetOrCreateUserByTelegram(chatID string) (*User, error) {
+func (db *Database) GetOrCreateUserByTelegram(ctx context.Context, chatID string) (*User, error) {
 	_, err := db.Exec(
+		ctx,
 		`INSERT OR IGNORE INTO users(platform, pid)
 		VALUES ('telegram', $1)`,
 		chatID,
@@ -74,6 +78,7 @@ func (db *Database) GetOrCreateUserByTelegram(chatID string) (*User, error) {
 	}
 
 	row := db.QueryRow(
+		ctx,
 		`SELECT id, platform, pid, addition
 		FROM users
 		WHERE platform='telegram' AND pid=$1`,
@@ -88,17 +93,17 @@ func (db *Database) GetOrCreateUserByTelegram(chatID string) (*User, error) {
 	return user, nil
 }
 
-func (db *Database) GetFeedIDByURL(url string) (int64, error) {
+func (db *Database) GetFeedIDByURL(ctx context.Context, url string) (int64, error) {
 	if !util.IsValidURL(url) {
 		return 0, ErrInvalidURL
 	}
 
-	_, err := db.Exec(`INSERT OR IGNORE INTO feeds(url) VALUES ($1)`, url)
+	_, err := db.Exec(ctx, `INSERT OR IGNORE INTO feeds(url) VALUES ($1)`, url)
 	if err != nil {
 		return 0, err
 	}
 
-	row := db.QueryRow(`SELECT id FROM feeds WHERE url=$1`, url)
+	row := db.QueryRow(ctx, `SELECT id FROM feeds WHERE url=$1`, url)
 
 	var feedID int64
 	err = row.Scan(&feedID)
@@ -109,7 +114,7 @@ func (db *Database) GetFeedIDByURL(url string) (int64, error) {
 	return feedID, nil
 }
 
-func (db *Database) GetFeedByUser(userID int64, orderBy string) ([]Feed, error) {
+func (db *Database) GetFeedByUser(ctx context.Context, userID int64, orderBy string) ([]Feed, error) {
 	query := `SELECT id, url, updated, etag
 	FROM feeds
 	WHERE EXISTS
@@ -122,7 +127,7 @@ func (db *Database) GetFeedByUser(userID int64, orderBy string) ([]Feed, error) 
 		query += " ORDER BY url ASC"
 	}
 
-	rows, err := db.Query(query, userID)
+	rows, err := db.Query(ctx, query, userID)
 	if err != nil {
 		return nil, err
 	}
@@ -130,8 +135,9 @@ func (db *Database) GetFeedByUser(userID int64, orderBy string) ([]Feed, error) 
 	return readFeeds(rows)
 }
 
-func (db *Database) GetActiveFeeds() ([]Feed, error) {
+func (db *Database) GetActiveFeeds(ctx context.Context) ([]Feed, error) {
 	rows, err := db.Query(
+		ctx,
 		`SELECT id, url, updated, etag
 		FROM feeds
 		WHERE EXISTS
@@ -144,16 +150,16 @@ func (db *Database) GetActiveFeeds() ([]Feed, error) {
 	return readFeeds(rows)
 }
 
-func (db *Database) AddFeedLinks(id int64, links []string, updated *time.Time, etag string) error {
+func (db *Database) AddFeedLinks(ctx context.Context, id int64, links []string, updated *time.Time, etag string) error {
 	var err error
 
 	for _, url := range links {
-		_, err = db.Exec("INSERT OR IGNORE INTO links(url) VALUES ($1)", url)
+		_, err = db.Exec(ctx, "INSERT OR IGNORE INTO links(url) VALUES ($1)", url)
 		if err != nil {
 			return err
 		}
 
-		row := db.QueryRow(`SELECT id FROM links WHERE url=$1`, url)
+		row := db.QueryRow(ctx, `SELECT id FROM links WHERE url=$1`, url)
 		var linkID int64
 		err = row.Scan(&linkID)
 		if err != nil {
@@ -161,6 +167,7 @@ func (db *Database) AddFeedLinks(id int64, links []string, updated *time.Time, e
 		}
 
 		_, err = db.Exec(
+			ctx,
 			`INSERT OR IGNORE INTO r_feed_link(feed_id, link_id) VALUES ($1, $2)`,
 			id,
 			linkID,
@@ -170,7 +177,7 @@ func (db *Database) AddFeedLinks(id int64, links []string, updated *time.Time, e
 		}
 	}
 
-	err = db.SetFeedUpdated(id, updated, etag)
+	err = db.SetFeedUpdated(ctx, id, updated, etag)
 	if err != nil {
 		return err
 	}
@@ -178,12 +185,13 @@ func (db *Database) AddFeedLinks(id int64, links []string, updated *time.Time, e
 	return nil
 }
 
-func (db *Database) SetFeedUpdated(id int64, updated *time.Time, etag string) error {
+func (db *Database) SetFeedUpdated(ctx context.Context, id int64, updated *time.Time, etag string) error {
 	if updated == nil {
 		return nil
 	}
 
 	_, err := db.Exec(
+		ctx,
 		`UPDATE feeds SET updated=$2, etag=$3 WHERE id=$1`,
 		id,
 		updated.UnixMilli(),
@@ -196,8 +204,9 @@ func (db *Database) SetFeedUpdated(id int64, updated *time.Time, etag string) er
 	return nil
 }
 
-func (db *Database) GetLinks(feedID int64) ([]string, error) {
+func (db *Database) GetLinks(ctx context.Context, feedID int64) ([]string, error) {
 	rows, err := db.Query(
+		ctx,
 		`SELECT url FROM links
 		JOIN r_feed_link r ON r.link_id=links.id
 		WHERE r.feed_id=$1`,
@@ -213,8 +222,9 @@ func (db *Database) GetLinks(feedID int64) ([]string, error) {
 	return links, nil
 }
 
-func (db *Database) GetSubscribers(feedID int64) ([]User, error) {
+func (db *Database) GetSubscribers(ctx context.Context, feedID int64) ([]User, error) {
 	rows, err := db.Query(
+		ctx,
 		`SELECT id, platform, pid, addition
 		FROM users
 		WHERE EXISTS
@@ -228,8 +238,9 @@ func (db *Database) GetSubscribers(feedID int64) ([]User, error) {
 	return readUsers(rows)
 }
 
-func (db *Database) Subscribe(userID int64, feedID int64) error {
+func (db *Database) Subscribe(ctx context.Context, userID int64, feedID int64) error {
 	_, err := db.Exec(
+		ctx,
 		"INSERT OR IGNORE INTO r_user_feed(user_id, feed_id) VALUES ($1, $2)",
 		userID,
 		feedID,
@@ -237,8 +248,9 @@ func (db *Database) Subscribe(userID int64, feedID int64) error {
 	return err
 }
 
-func (db *Database) Unsubscribe(userID int64, feedID int64) error {
+func (db *Database) Unsubscribe(ctx context.Context, userID int64, feedID int64) error {
 	_, err := db.Exec(
+		ctx,
 		`DELETE FROM r_user_feed
 		WHERE user_id=$1 AND feed_id=$2`,
 		userID,
@@ -247,27 +259,27 @@ func (db *Database) Unsubscribe(userID int64, feedID int64) error {
 	return err
 }
 
-func (db *Database) UnsubscribeAll(userID int64) error {
-	_, err := db.Exec("DELETE FROM r_user_feed WHERE user_id=$1", userID)
+func (db *Database) UnsubscribeAll(ctx context.Context, userID int64) error {
+	_, err := db.Exec(ctx, "DELETE FROM r_user_feed WHERE user_id=$1", userID)
 	return err
 }
 
-func (db *Database) SubscribeURL(userID int64, url string) error {
-	feedID, err := db.GetFeedIDByURL(url)
+func (db *Database) SubscribeURL(ctx context.Context, userID int64, url string) error {
+	feedID, err := db.GetFeedIDByURL(ctx, url)
 	if err != nil {
 		return err
 	}
 
-	return db.Subscribe(userID, feedID)
+	return db.Subscribe(ctx, userID, feedID)
 }
 
-func (db *Database) SubscribeURLs(userID int64, urls []string) error {
+func (db *Database) SubscribeURLs(ctx context.Context, userID int64, urls []string) error {
 	if len(urls) == 0 {
 		return nil
 	}
 
 	for _, url := range urls {
-		err := db.SubscribeURL(userID, url)
+		err := db.SubscribeURL(ctx, userID, url)
 		if err != nil {
 			return err
 		}

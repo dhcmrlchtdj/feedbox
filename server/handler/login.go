@@ -19,9 +19,11 @@ func Logout(c *fiber.Ctx) error {
 }
 
 func ConnectGithub(c *fiber.Ctx) error {
+	ctx := c.UserContext()
 	credential := c.Locals("credential").(*github.Profile)
+
 	id := strconv.FormatInt(credential.ID, 10)
-	user, err := global.Database.GetOrCreateUserByGithub(id, credential.Email)
+	user, err := global.Database.GetOrCreateUserByGithub(ctx, id, credential.Email)
 	if err != nil {
 		return err
 	}

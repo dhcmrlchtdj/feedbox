@@ -1,6 +1,10 @@
 package email
 
-import "github.com/rs/zerolog/log"
+import (
+	"context"
+
+	"github.com/rs/zerolog"
+)
 
 var _ Client = (*dryRun)(nil)
 
@@ -10,8 +14,8 @@ func NewDryRun() *dryRun {
 	return &dryRun{}
 }
 
-func (*dryRun) Send(addr string, subject string, text string) error {
-	log.Debug().
+func (*dryRun) Send(ctx context.Context, addr string, subject string, text string) error {
+	zerolog.Ctx(ctx).Debug().
 		Str("module", "email").
 		Str("addr", addr).
 		Str("subject", subject).

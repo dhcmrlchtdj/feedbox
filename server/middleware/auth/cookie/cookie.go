@@ -1,13 +1,14 @@
 package cookie
 
 import (
+	"context"
 	"time"
 
 	"github.com/gofiber/fiber/v2"
 )
 
 type Config struct {
-	Validator func(token string) (any, error)
+	Validator func(ctx context.Context, token string) (any, error)
 	Name      string
 }
 
@@ -18,7 +19,7 @@ func New(cfg Config) fiber.Handler {
 			return fiber.ErrUnauthorized
 		}
 
-		credential, err := cfg.Validator(token)
+		credential, err := cfg.Validator(c.UserContext(), token)
 		if err != nil {
 			Clear(c)
 			return fiber.NewError(fiber.StatusUnauthorized, err.Error())

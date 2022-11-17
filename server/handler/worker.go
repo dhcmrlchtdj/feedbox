@@ -13,7 +13,7 @@ var workerIsRunning atomic.Bool
 func WorkerStart(c *fiber.Ctx) error {
 	if workerIsRunning.CompareAndSwap(false, true) {
 		go func() {
-			worker.Start()
+			worker.Start(c.UserContext())
 			workerIsRunning.Store(false)
 		}()
 		return c.SendStatus(201)

@@ -1,6 +1,7 @@
 package telegrambot
 
 import (
+	"context"
 	"fmt"
 	"os"
 	"strings"
@@ -10,9 +11,10 @@ import (
 	"github.com/dhcmrlchtdj/feedbox/internal/telegram"
 )
 
-func RegisterWebhook() error {
+func RegisterWebhook(ctx context.Context) error {
 	// curl -XPOST -v 'https://api.telegram.org/bot<<token>>/setWebhook' -H 'content-type: application/json' -d '{"url":"<<url>>"}'
 	err := global.Telegram.SetWebhook(
+		ctx,
 		telegram.SetWebhookPayload{
 			URL: fmt.Sprintf("%s/webhook/telegram/%s",
 				os.Getenv("SERVER"),
@@ -23,6 +25,7 @@ func RegisterWebhook() error {
 	}
 
 	err = global.Telegram.SetMyCommands(
+		ctx,
 		telegram.SetMyCommandsPayload{
 			Commands: []telegram.BotCommand{
 				{Command: "list", Description: "list all feeds"},
@@ -42,14 +45,14 @@ func RegisterWebhook() error {
 	return nil
 }
 
-func HandleWebhook(payload *telegram.Update) {
-	handleMessage(payload.Message)
-	handleMessage(payload.EditedMessage)
-	handleMessage(payload.ChannelPost)
-	handleMessage(payload.EditedChannelPost)
+func HandleWebhook(ctx context.Context, payload *telegram.Update) {
+	handleMessage(ctx, payload.Message)
+	handleMessage(ctx, payload.EditedMessage)
+	handleMessage(ctx, payload.ChannelPost)
+	handleMessage(ctx, payload.EditedChannelPost)
 }
 
-func handleMessage(message *telegram.Message) {
+func handleMessage(ctx context.Context, message *telegram.Message) {
 	if message == nil {
 		return
 	}
@@ -62,13 +65,13 @@ func handleMessage(message *telegram.Message) {
 		if i := strings.Index(cmd, "@"); i != -1 {
 			name := cmd[i+1:]
 			cmd = cmd[:i]
-			if !strings.EqualFold(name, global.Telegram.GetBotName()) {
+			if !strings.EqualFold(name, global.Telegram.GetBotName(ctx)) {
 				break
 			}
 		}
 		arg := string(utf16.Decode(text[entity.Offset+entity.Length:]))
 		arg = strings.TrimSpace(arg)
-		executeCommand(cmd, arg, message)
+		executeCommand(ctx, cmd, arg, message)
 		break
 	}
 }

@@ -1,21 +1,25 @@
 package logger
 
 import (
+	"context"
 	"sync"
 	"time"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/rs/zerolog"
-	"github.com/rs/zerolog/log"
 )
 
-func New() fiber.Handler {
+func New(ctx context.Context) fiber.Handler {
 	var once sync.Once
 	var errHandler fiber.ErrorHandler
 
-	logger := log.With().Str("module", "server").Logger()
-
 	return func(c *fiber.Ctx) error {
+		logger := zerolog.Ctx(ctx).
+			With().
+			Str("id", c.Locals("requestid").(string)).
+			Logger()
+		c.SetUserContext(logger.WithContext(ctx))
+
 		once.Do(func() {
 			errHandler = c.App().Config().ErrorHandler
 		})
@@ -45,6 +49,7 @@ func New() fiber.Handler {
 
 		logger.
 			Info().
+			Str("module", "server").
 			Str("id", c.Locals("requestid").(string)).
 			Str("remote", c.IP()).
 			Dur("latency", latency).

@@ -2,6 +2,7 @@ package server_test
 
 import (
 	"bytes"
+	"context"
 	"io"
 	"net/http/httptest"
 	"os"
@@ -14,7 +15,7 @@ import (
 	"github.com/golang-migrate/migrate/v4"
 	"github.com/joho/godotenv"
 	"github.com/pkg/errors"
-	"github.com/rs/zerolog/log"
+	"github.com/rs/zerolog"
 
 	"github.com/dhcmrlchtdj/feedbox/internal/database"
 	"github.com/dhcmrlchtdj/feedbox/internal/global"
@@ -28,7 +29,11 @@ import (
 	"github.com/dhcmrlchtdj/feedbox/server/types"
 )
 
-var app *fiber.App
+var (
+	app    *fiber.App
+	logger = zerolog.New(os.Stderr).With().Timestamp().Logger()
+	ctx    = logger.WithContext(context.Background())
+)
 
 func TestMain(m *testing.M) {
 	if err := godotenv.Load("../dotenv"); err != nil {
@@ -41,7 +46,7 @@ func TestMain(m *testing.M) {
 
 		var err error
 
-		global.Database, err = database.New(os.Getenv("DATABASE_URL"), &log.Logger)
+		global.Database, err = database.New(ctx, os.Getenv("DATABASE_URL"))
 		if err != nil {
 			panic(err)
 		}

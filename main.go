@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"flag"
 	"fmt"
 	"os"
@@ -14,7 +15,6 @@ import (
 	"github.com/joho/godotenv"
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
-	"github.com/rs/zerolog/log"
 	"github.com/rs/zerolog/pkgerrors"
 
 	"github.com/dhcmrlchtdj/feedbox/internal/database"
@@ -47,66 +47,80 @@ func main() {
 ///
 
 func startServerAndWorker() {
+	logger := zerolog.New(os.Stderr).With().Timestamp().Logger()
+	ctx, cancel := context.WithCancel(context.Background())
+	ctx = logger.WithContext(ctx)
+
+	// zerolog.Ctx(ctx)
 	initEnv()
 	initLogger()
-	initDatabase()
+	initDatabase(ctx)
 	defer global.Database.Close()
 	initEmail()
 	initTelegram()
 	initSign()
-
-	quit := quitSignal()
+	go initQuitSignal(ctx, cancel)
 
 	var wg sync.WaitGroup
 
 	wg.Add(1)
 	go func() {
 		defer wg.Done()
-		runWorker(quit)
+		runWorker(ctx)
 	}()
 
 	wg.Add(1)
 	go func() {
 		defer wg.Done()
-		runServer(quit)
+		runServer(ctx)
 	}()
 
 	wg.Wait()
 
-	log.Info().Str("module", "app").Msg("app stopped")
+	logger.Info().Str("module", "app").Msg("app stopped")
 }
 
 func startServer() {
+	logger := zerolog.New(os.Stderr).With().Timestamp().Logger()
+	ctx, cancel := context.WithCancel(context.Background())
+	ctx = logger.WithContext(ctx)
+
 	initEnv()
 	initLogger()
-	initDatabase()
+	initDatabase(ctx)
 	defer global.Database.Close()
 	initEmail()
 	initTelegram()
 	initSign()
+	go initQuitSignal(ctx, cancel)
 
-	quit := quitSignal()
-	runServer(quit)
-	log.Info().Str("module", "app").Msg("app stopped")
+	runServer(ctx)
+	logger.Info().Str("module", "app").Msg("app stopped")
 }
 
 func startWorker() {
+	logger := zerolog.New(os.Stderr).With().Timestamp().Logger()
+	ctx := logger.WithContext(context.Background())
+
 	initEnv()
 	initLogger()
-	initDatabase()
+	initDatabase(ctx)
 	initEmail()
 	initTelegram()
 
-	worker.Start()
+	worker.Start(ctx)
 }
 
 func startMigration() {
+	logger := zerolog.New(os.Stderr).With().Timestamp().Logger()
+	// ctx := logger.WithContext(context.Background())
+
 	printVersion := func(m *migrate.Migrate) {
 		version, dirty, err := m.Version()
 		if err == nil {
-			log.Info().Uint("version", version).Bool("dirty", dirty).Send()
+			logger.Info().Uint("version", version).Bool("dirty", dirty).Send()
 		} else if errors.Is(err, migrate.ErrNilVersion) {
-			log.Info().Str("version", "nil").Bool("dirty", false).Send()
+			logger.Info().Str("version", "nil").Bool("dirty", false).Send()
 		} else {
 			panic(err)
 		}
@@ -119,9 +133,9 @@ func startMigration() {
 
 	checkErr := func(err error, m *migrate.Migrate) {
 		if err == nil {
-			log.Info().Msg("done")
+			logger.Info().Msg("done")
 		} else if errors.Is(err, migrate.ErrNoChange) {
-			log.Info().Msg("no change")
+			logger.Info().Msg("no change")
 		} else {
 			panic(err)
 		}
@@ -161,13 +175,13 @@ func startMigration() {
 
 ///
 
-func runServer(quit <-chan struct{}) {
+func runServer(ctx context.Context) {
 	util.CheckEnvs("GITHUB_CLIENT_ID", "GITHUB_CLIENT_SECRET")
 	util.CheckEnvs("HOST", "PORT", "TELEGRAM_WEBHOOK_PATH", "WORKER_TOKEN")
 
-	app := server.Create()
+	app := server.Create(ctx)
 	go func() {
-		<-quit
+		<-ctx.Done()
 		err := app.Shutdown()
 		if err != nil {
 			panic(err)
@@ -176,22 +190,22 @@ func runServer(quit <-chan struct{}) {
 
 	host := os.Getenv("HOST") + ":" + os.Getenv("PORT")
 	url := "http://" + host + os.Getenv("SERVER_SUB_DIR")
-	log.Info().Str("module", "app").Str("url", url).Msg("app started")
+	zerolog.Ctx(ctx).Info().Str("module", "app").Str("url", url).Msg("app started")
 	err := app.Listen(host)
 	if err != nil {
 		panic(err)
 	}
 }
 
-func runWorker(quit <-chan struct{}) {
+func runWorker(ctx context.Context) {
 	ticker := time.NewTicker(time.Minute * 10)
 	for {
 		select {
 		case t := <-ticker.C:
 			if t.Minute() >= 50 {
-				worker.Start()
+				worker.Start(ctx)
 			}
-		case <-quit:
+		case <-ctx.Done():
 			ticker.Stop()
 			return
 		}
@@ -213,9 +227,9 @@ func initLogger() {
 	zerolog.ErrorStackMarshaler = pkgerrors.MarshalStack // nolint:reassign
 }
 
-func initDatabase() {
+func initDatabase(ctx context.Context) {
 	util.CheckEnvs("DATABASE_URL")
-	db, err := database.New(os.Getenv("DATABASE_URL"), &log.Logger)
+	db, err := database.New(ctx, os.Getenv("DATABASE_URL"))
 	if err != nil {
 		panic(err)
 	}
@@ -259,14 +273,10 @@ func initSign() {
 
 ///
 
-func quitSignal() <-chan struct{} {
-	quit := make(chan struct{})
-	go func() {
-		c := make(chan os.Signal, 1)
-		signal.Notify(c, syscall.SIGINT, syscall.SIGTERM)
-		sig := <-c
-		log.Info().Str("module", "app").Str("signal", sig.String()).Msg("app stopping")
-		close(quit)
-	}()
-	return quit
+func initQuitSignal(ctx context.Context, cancel context.CancelFunc) {
+	c := make(chan os.Signal, 1)
+	signal.Notify(c, syscall.SIGINT, syscall.SIGTERM)
+	sig := <-c
+	zerolog.Ctx(ctx).Info().Str("module", "app").Str("signal", sig.String()).Msg("app stopping")
+	cancel()
 }

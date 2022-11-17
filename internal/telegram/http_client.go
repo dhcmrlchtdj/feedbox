@@ -2,6 +2,7 @@ package telegram
 
 import (
 	"bytes"
+	"context"
 	"encoding/json"
 	"io"
 	"net/http"
@@ -24,12 +25,12 @@ func NewHTTPClient(name string, token string) *httpClient {
 
 ///
 
-func (c *httpClient) GetBotName() string {
+func (c *httpClient) GetBotName(ctx context.Context) string {
 	return c.name
 }
 
-func (c *httpClient) GetChatMember(payload GetChatMemberPayload) (*ChatMember, error) {
-	body, err := c.rawSend("getChatMember", payload)
+func (c *httpClient) GetChatMember(ctx context.Context, payload GetChatMemberPayload) (*ChatMember, error) {
+	body, err := c.rawSend(ctx, "getChatMember", payload)
 	if err != nil {
 		return nil, err
 	}
@@ -46,19 +47,19 @@ func (c *httpClient) GetChatMember(payload GetChatMemberPayload) (*ChatMember, e
 	return resp.Result, nil
 }
 
-func (c *httpClient) SetWebhook(payload SetWebhookPayload) error {
-	return c.rawSendSimple("setWebhook", payload)
+func (c *httpClient) SetWebhook(ctx context.Context, payload SetWebhookPayload) error {
+	return c.rawSendSimple(ctx, "setWebhook", payload)
 }
 
-func (c *httpClient) SetMyCommands(payload SetMyCommandsPayload) error {
-	return c.rawSendSimple("setMyCommands", payload)
+func (c *httpClient) SetMyCommands(ctx context.Context, payload SetMyCommandsPayload) error {
+	return c.rawSendSimple(ctx, "setMyCommands", payload)
 }
 
-func (c *httpClient) SendMessage(payload SendMessagePayload) error {
-	return c.rawSendSimple("sendMessage", payload)
+func (c *httpClient) SendMessage(ctx context.Context, payload SendMessagePayload) error {
+	return c.rawSendSimple(ctx, "sendMessage", payload)
 }
 
-func (c *httpClient) SendDocument(payload SendDocumentPayload) error {
+func (c *httpClient) SendDocument(ctx context.Context, payload SendDocumentPayload) error {
 	r, w := io.Pipe()
 	m := multipart.New(w)
 	go func() {
@@ -71,13 +72,13 @@ func (c *httpClient) SendDocument(payload SendDocumentPayload) error {
 		err := m.Close()
 		_ = w.CloseWithError(err)
 	}()
-	return c.rawSendFileSimple("sendDocument", m.ContentType, r)
+	return c.rawSendFileSimple(ctx, "sendDocument", m.ContentType, r)
 }
 
 ///
 
 // caller MUST close response.Body
-func (c *httpClient) rawSend(cmd string, payload any) (io.ReadCloser, error) {
+func (c *httpClient) rawSend(ctx context.Context, cmd string, payload any) (io.ReadCloser, error) {
 	url := "https://api.telegram.org/bot" + c.token + "/" + cmd
 
 	var buf bytes.Buffer
@@ -85,7 +86,13 @@ func (c *httpClient) rawSend(cmd string, payload any) (io.ReadCloser, error) {
 		return nil, errors.Wrap(err, "telegram/"+cmd)
 	}
 
-	resp, err := http.Post(url, "application/json", &buf) // nolint:gosec
+	req, err := http.NewRequestWithContext(ctx, "POST", url, &buf)
+	if err != nil {
+		return nil, errors.Wrap(err, "telegram/"+cmd)
+	}
+	req.Header.Set("Content-Type", "application/json")
+
+	resp, err := http.DefaultClient.Do(req)
 	if err != nil {
 		return nil, errors.Wrap(err, "telegram/"+cmd)
 	}
@@ -103,8 +110,8 @@ func (c *httpClient) rawSend(cmd string, payload any) (io.ReadCloser, error) {
 	return resp.Body, nil
 }
 
-func (c *httpClient) rawSendSimple(cmd string, payload any) error {
-	body, err := c.rawSend(cmd, payload)
+func (c *httpClient) rawSendSimple(ctx context.Context, cmd string, payload any) error {
+	body, err := c.rawSend(ctx, cmd, payload)
 	if err != nil {
 		return err
 	}
@@ -117,9 +124,16 @@ func (c *httpClient) rawSendSimple(cmd string, payload any) error {
 	return nil
 }
 
-func (c *httpClient) rawSendFileSimple(cmd string, contentType string, payload io.Reader) error {
+func (c *httpClient) rawSendFileSimple(ctx context.Context, cmd string, contentType string, payload io.Reader) error {
 	url := "https://api.telegram.org/bot" + c.token + "/" + cmd
-	resp, err := http.Post(url, contentType, payload) // nolint:gosec
+
+	req, err := http.NewRequestWithContext(ctx, "POST", url, payload)
+	if err != nil {
+		return errors.Wrap(err, "telegram/"+cmd)
+	}
+	req.Header.Set("Content-Type", contentType)
+
+	resp, err := http.DefaultClient.Do(req)
 	if err != nil {
 		return errors.Wrap(err, "telegram/"+cmd)
 	}
