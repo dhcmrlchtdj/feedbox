@@ -41,10 +41,10 @@ func Create(ctx context.Context) *fiber.App {
 
 	// middleware
 	app.Use(recover.New())
+	app.Use(requestid.New())
 	app.Use(logger.New(ctx))
 	app.Use(etag.New())
 	app.Use(secure.New())
-	app.Use(requestid.New())
 	if os.Getenv("ENV") != "prod" {
 		app.Use(pprof.New())
 		app.Use(expvar.New())

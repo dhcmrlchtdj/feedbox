@@ -16,7 +16,7 @@ func New(ctx context.Context) fiber.Handler {
 	return func(c *fiber.Ctx) error {
 		logger := zerolog.Ctx(ctx).
 			With().
-			Str("id", c.Locals("requestid").(string)).
+			Str("traceId", c.Locals("requestid").(string)).
 			Logger()
 		c.SetUserContext(logger.WithContext(ctx))
 
