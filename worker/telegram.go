@@ -20,7 +20,7 @@ func isLobsters(tgItem telegramItem) bool {
 	return tgItem.feed.URL == "https://lobste.rs/rss"
 }
 
-func telegramSendMsg(ctx context.Context, msg telegram.SendMessagePayload, rl *RateLimiter) {
+func telegramSendMsg(ctx context.Context, msg *telegram.SendMessagePayload, rl *RateLimiter) {
 	logger := zerolog.Ctx(ctx)
 
 	retry := 1
@@ -85,7 +85,7 @@ func sendTelegram(ctx context.Context, done *sync.WaitGroup, qTelegram <-chan te
 				ChatID: user,
 				Text:   content,
 			}
-			telegramSendMsg(ctx, payload, rateLimiter)
+			telegramSendMsg(ctx, &payload, rateLimiter)
 		}
 	}
 

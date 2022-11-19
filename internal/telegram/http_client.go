@@ -29,7 +29,7 @@ func (c *httpClient) GetBotName(ctx context.Context) string {
 	return c.name
 }
 
-func (c *httpClient) GetChatMember(ctx context.Context, payload GetChatMemberPayload) (*ChatMember, error) {
+func (c *httpClient) GetChatMember(ctx context.Context, payload *GetChatMemberPayload) (*ChatMember, error) {
 	body, err := c.rawSend(ctx, "getChatMember", payload)
 	if err != nil {
 		return nil, err
@@ -47,19 +47,19 @@ func (c *httpClient) GetChatMember(ctx context.Context, payload GetChatMemberPay
 	return resp.Result, nil
 }
 
-func (c *httpClient) SetWebhook(ctx context.Context, payload SetWebhookPayload) error {
+func (c *httpClient) SetWebhook(ctx context.Context, payload *SetWebhookPayload) error {
 	return c.rawSendSimple(ctx, "setWebhook", payload)
 }
 
-func (c *httpClient) SetMyCommands(ctx context.Context, payload SetMyCommandsPayload) error {
+func (c *httpClient) SetMyCommands(ctx context.Context, payload *SetMyCommandsPayload) error {
 	return c.rawSendSimple(ctx, "setMyCommands", payload)
 }
 
-func (c *httpClient) SendMessage(ctx context.Context, payload SendMessagePayload) error {
+func (c *httpClient) SendMessage(ctx context.Context, payload *SendMessagePayload) error {
 	return c.rawSendSimple(ctx, "sendMessage", payload)
 }
 
-func (c *httpClient) SendDocument(ctx context.Context, payload SendDocumentPayload) error {
+func (c *httpClient) SendDocument(ctx context.Context, payload *SendDocumentPayload) error {
 	r, w := io.Pipe()
 	m := multipart.New(w)
 	go func() {

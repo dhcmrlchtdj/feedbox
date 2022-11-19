@@ -57,7 +57,7 @@ func executeCommand(ctx context.Context, cmd string, arg string, msg *telegram.M
 		text := err.Error()
 		err := global.Telegram.SendMessage(
 			ctx,
-			telegram.SendMessagePayload{
+			&telegram.SendMessagePayload{
 				ChatID: msg.Chat.ID,
 				Text:   text,
 			})
@@ -74,7 +74,7 @@ func executeCommand(ctx context.Context, cmd string, arg string, msg *telegram.M
 func start(ctx context.Context, msg *telegram.Message) error {
 	return global.Telegram.SendMessage(
 		ctx,
-		telegram.SendMessagePayload{
+		&telegram.SendMessagePayload{
 			ChatID:    msg.Chat.ID,
 			Text:      "<code>hello, world</code>",
 			ParseMode: telegram.ParseModeHTML,
@@ -107,7 +107,7 @@ func list(ctx context.Context, msg *telegram.Message) error {
 
 	return global.Telegram.SendMessage(
 		ctx,
-		telegram.SendMessagePayload{
+		&telegram.SendMessagePayload{
 			ChatID: msg.Chat.ID,
 			Text:   text,
 		},
@@ -130,7 +130,7 @@ func add(ctx context.Context, arg string, msg *telegram.Message) error {
 
 	return global.Telegram.SendMessage(
 		ctx,
-		telegram.SendMessagePayload{
+		&telegram.SendMessagePayload{
 			ChatID: msg.Chat.ID,
 			Text:   "added",
 		},
@@ -153,7 +153,7 @@ func remove(ctx context.Context, arg string, msg *telegram.Message) error {
 
 	return global.Telegram.SendMessage(
 		ctx,
-		telegram.SendMessagePayload{
+		&telegram.SendMessagePayload{
 			ChatID: msg.Chat.ID,
 			Text:   "removed",
 		},
@@ -180,7 +180,7 @@ func removeAll(ctx context.Context, msg *telegram.Message) error {
 	opml := util.BuildOPMLFromFeed(feeds)
 	return global.Telegram.SendDocument(
 		ctx,
-		telegram.SendDocumentPayload{
+		&telegram.SendDocumentPayload{
 			ChatID:  msg.Chat.ID,
 			Caption: "removed",
 			Document: telegram.InputFile{
@@ -208,7 +208,7 @@ func export(ctx context.Context, msg *telegram.Message) error {
 	opml := util.BuildOPMLFromFeed(feeds)
 	return global.Telegram.SendDocument(
 		ctx,
-		telegram.SendDocumentPayload{
+		&telegram.SendDocumentPayload{
 			ChatID: msg.Chat.ID,
 			Document: telegram.InputFile{
 				Name:    "feeds.opml",

@@ -18,18 +18,18 @@ import (
 )
 
 type feedItem struct {
-	feed  database.Feed
+	feed  *database.Feed
 	items []gofeed.Item
 }
 
 type githubItem struct {
-	feed  database.Feed
+	feed  *database.Feed
 	item  *gofeed.Item
 	users []string
 }
 
 type telegramItem struct {
-	feed  database.Feed
+	feed  *database.Feed
 	item  *gofeed.Item
 	users []int64
 }
@@ -90,7 +90,8 @@ func fetchFeed(ctx context.Context, done *sync.WaitGroup, qFeed <-chan database.
 
 	worker := func() {
 		fp := feedparser.New()
-		for dbFeed := range qFeed {
+		for databaseFeed := range qFeed {
+			dbFeed := databaseFeed
 			feed, etag, err := fp.ParseURL(ctx, dbFeed.URL, dbFeed.ETag)
 			if err != nil {
 				logger.Warn().Str("module", "worker").Stack().Err(err).Send()
@@ -153,7 +154,7 @@ func fetchFeed(ctx context.Context, done *sync.WaitGroup, qFeed <-chan database.
 				continue
 			}
 
-			qFeedItem <- &feedItem{feed: dbFeed, items: newItems}
+			qFeedItem <- &feedItem{feed: &dbFeed, items: newItems}
 		}
 	}
 

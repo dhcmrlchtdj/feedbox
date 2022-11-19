@@ -42,6 +42,3 @@ disabled-checks = [
   "unnamedResult",
   "whyNoLint",
 ]
-
-[linters-settings.gocritic.settings.hugeParam]
-sizeThreshold = 100

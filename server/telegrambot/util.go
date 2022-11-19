@@ -12,7 +12,7 @@ func isAdmin(ctx context.Context, msg *telegram.Message) bool {
 	if chatType == "group" || chatType == "supergroup" {
 		member, err := global.Telegram.GetChatMember(
 			ctx,
-			telegram.GetChatMemberPayload{
+			&telegram.GetChatMemberPayload{
 				ChatID: msg.Chat.ID,
 				UserID: msg.From.ID,
 			},

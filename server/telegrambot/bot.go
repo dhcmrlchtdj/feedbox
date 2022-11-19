@@ -15,7 +15,7 @@ func RegisterWebhook(ctx context.Context) error {
 	// curl -XPOST -v 'https://api.telegram.org/bot<<token>>/setWebhook' -H 'content-type: application/json' -d '{"url":"<<url>>"}'
 	err := global.Telegram.SetWebhook(
 		ctx,
-		telegram.SetWebhookPayload{
+		&telegram.SetWebhookPayload{
 			URL: fmt.Sprintf("%s/webhook/telegram/%s",
 				os.Getenv("SERVER"),
 				os.Getenv("TELEGRAM_WEBHOOK_PATH")),
@@ -26,7 +26,7 @@ func RegisterWebhook(ctx context.Context) error {
 
 	err = global.Telegram.SetMyCommands(
 		ctx,
-		telegram.SetMyCommandsPayload{
+		&telegram.SetMyCommandsPayload{
 			Commands: []telegram.BotCommand{
 				{Command: "list", Description: "list all feeds"},
 				{Command: "add", Description: "[url] subscribe feed"},

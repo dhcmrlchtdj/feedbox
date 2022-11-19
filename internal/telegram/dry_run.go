@@ -20,7 +20,7 @@ func (*dryRun) GetBotName(ctx context.Context) string {
 	return ""
 }
 
-func (*dryRun) GetChatMember(ctx context.Context, payload GetChatMemberPayload) (*ChatMember, error) {
+func (*dryRun) GetChatMember(ctx context.Context, payload *GetChatMemberPayload) (*ChatMember, error) {
 	zerolog.Ctx(ctx).Debug().
 		Str("module", "telegram").
 		Str("method", "GetChatMember").
@@ -28,7 +28,7 @@ func (*dryRun) GetChatMember(ctx context.Context, payload GetChatMemberPayload) 
 	return nil, nil
 }
 
-func (*dryRun) SetWebhook(ctx context.Context, payload SetWebhookPayload) error {
+func (*dryRun) SetWebhook(ctx context.Context, payload *SetWebhookPayload) error {
 	zerolog.Ctx(ctx).Debug().
 		Str("module", "telegram").
 		Str("method", "SetWebhook").
@@ -36,7 +36,7 @@ func (*dryRun) SetWebhook(ctx context.Context, payload SetWebhookPayload) error 
 	return nil
 }
 
-func (*dryRun) SetMyCommands(ctx context.Context, payload SetMyCommandsPayload) error {
+func (*dryRun) SetMyCommands(ctx context.Context, payload *SetMyCommandsPayload) error {
 	zerolog.Ctx(ctx).Debug().
 		Str("module", "telegram").
 		Str("method", "SetMyCommands").
@@ -44,7 +44,7 @@ func (*dryRun) SetMyCommands(ctx context.Context, payload SetMyCommandsPayload) 
 	return nil
 }
 
-func (*dryRun) SendMessage(ctx context.Context, payload SendMessagePayload) error {
+func (*dryRun) SendMessage(ctx context.Context, payload *SendMessagePayload) error {
 	zerolog.Ctx(ctx).Debug().
 		Str("module", "telegram").
 		Str("method", "SendMessage").
@@ -52,7 +52,7 @@ func (*dryRun) SendMessage(ctx context.Context, payload SendMessagePayload) erro
 	return nil
 }
 
-func (*dryRun) SendDocument(ctx context.Context, payload SendDocumentPayload) error {
+func (*dryRun) SendDocument(ctx context.Context, payload *SendDocumentPayload) error {
 	zerolog.Ctx(ctx).Debug().
 		Str("module", "telegram").
 		Str("method", "SendDocument").
