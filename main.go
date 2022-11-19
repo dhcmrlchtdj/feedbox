@@ -4,6 +4,7 @@ import (
 	"context"
 	"flag"
 	"fmt"
+	"net"
 	"os"
 	"os/signal"
 	"strconv"
@@ -188,7 +189,7 @@ func runServer(ctx context.Context) {
 		}
 	}()
 
-	host := os.Getenv("HOST") + ":" + os.Getenv("PORT")
+	host := net.JoinHostPort(os.Getenv("HOST"), os.Getenv("PORT"))
 	url := "http://" + host + os.Getenv("SERVER_SUB_DIR")
 	zerolog.Ctx(ctx).Info().Str("module", "app").Str("url", url).Msg("app started")
 	err := app.Listen(host)
