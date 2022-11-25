@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"github.com/gofiber/fiber/v2"
+	"github.com/rs/zerolog"
 )
 
 type Config struct {
@@ -19,9 +20,15 @@ func New(cfg Config) fiber.Handler {
 			return fiber.ErrUnauthorized
 		}
 
-		credential, err := cfg.Validator(c.UserContext(), token)
+		ctx := c.UserContext()
+		credential, err := cfg.Validator(ctx, token)
 		if err != nil {
 			Clear(c)
+			zerolog.Ctx(ctx).Trace().
+				Str("module", "server.auth.cookie").
+				Stack().
+				Err(err).
+				Send()
 			return fiber.NewError(fiber.StatusUnauthorized, err.Error())
 		}
 
