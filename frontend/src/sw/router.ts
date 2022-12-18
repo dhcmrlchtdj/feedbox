@@ -14,7 +14,7 @@ const just =
 			| "networkOnly"
 			| "networkFirst",
 	) =>
-	async (event: FetchEvent) => {
+	async ({ event }: { event: FetchEvent }) => {
 		console.log(
 			`[SW] | just | ${cacheName} | ${strategyName} | ${event.request.url}`,
 		)
@@ -23,7 +23,7 @@ const just =
 		return resp
 	}
 
-const getThenUpdate = async (event: FetchEvent) => {
+const getThenUpdate = async ({ event }: { event: FetchEvent }) => {
 	console.log(
 		`[SW] | getThenUpdate | ${version.API} | networkOnly | ${event.request.url}`,
 	)
@@ -33,10 +33,14 @@ const getThenUpdate = async (event: FetchEvent) => {
 	return resp
 }
 
-export const router = new WorkerRouter()
+type RouterContext = {
+	params: Map<string, string>
+	event: FetchEvent
+}
+export const router = new WorkerRouter<RouterContext>()
 	.fallback(just(version.API, "networkOnly"))
 	// homepage
-	.get("/", async (event) => {
+	.get("/", async ({ event }) => {
 		const apiCache = await caches.open(version.API)
 		const staticCache = await caches.open(version.STATIC)
 
@@ -98,7 +102,7 @@ export const router = new WorkerRouter()
 	.get("/sw.js", just(version.STATIC, "networkOnly"))
 	.get("/favicon.ico", just(version.STATIC, "cacheFirst"))
 	.get("/npm/*", just(version.STATIC, "cacheFirst"))
-	.get("/:file", (event, params) => {
+	.get("/:file", ({ event, params }) => {
 		const file = params.get("file")!
 		if (
 			file.endsWith(".js") ||
@@ -106,8 +110,8 @@ export const router = new WorkerRouter()
 			file.endsWith(".map") ||
 			file.endsWith(".ico")
 		) {
-			return just(version.STATIC, "cacheFirst")(event)
+			return just(version.STATIC, "cacheFirst")({ event })
 		} else {
-			return just(version.STATIC, "networkOnly")(event)
+			return just(version.STATIC, "networkOnly")({ event })
 		}
 	})
