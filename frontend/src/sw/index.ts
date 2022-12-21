@@ -30,7 +30,9 @@ self.addEventListener("activate", (event) => {
 
 self.addEventListener("fetch", (event) => {
 	console.log("[SW] fetch", event.request.url)
-	event.respondWith(router.route(event))
+	const found = router.route(event.request)!
+	const resp = found.handler({ event, params: found.params })
+	event.respondWith(resp)
 })
 
 self.addEventListener("message", (event) => {
