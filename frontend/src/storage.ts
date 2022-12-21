@@ -24,6 +24,19 @@ export class Composed implements Layer {
 	}
 }
 
+export class DefaultLayer implements Layer {
+	private value: string
+	constructor(value: string) {
+		this.value = value
+	}
+	get(): string | null {
+		return this.value
+	}
+	set(_value: string): boolean {
+		return false
+	}
+}
+
 export class QueryLayer implements Layer {
 	private key: string
 	private query: URLSearchParams | undefined

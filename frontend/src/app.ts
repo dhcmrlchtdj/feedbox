@@ -1,6 +1,11 @@
 // @ts-ignore
 import App from "./components/app.html"
-import { Composed, QueryLayer, SessionStorageLayer } from "./storage"
+import {
+	Composed,
+	DefaultLayer,
+	QueryLayer,
+	SessionStorageLayer,
+} from "./storage"
 
 new App({
 	target: document.querySelector("#app"),
@@ -19,6 +24,7 @@ if (navigator.serviceWorker) {
 	const swEnable = new Composed(
 		new QueryLayer("sw", new URLSearchParams(location.search)),
 		new SessionStorageLayer("swEnable"),
+		new DefaultLayer("true"),
 	)
 
 	if (swEnable.get() === "false" || swEnable.get() === "0") {
