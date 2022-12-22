@@ -30,8 +30,6 @@ func RegisterWebhook(ctx context.Context) error {
 			Commands: []telegram.BotCommand{
 				{Command: "list", Description: "list all feeds"},
 				{Command: "add", Description: "[url] subscribe feed"},
-				{Command: "twitter", Description: "[username] subscribe twitter via nitter"},
-				{Command: "twitter_media", Description: "[username] subscribe twitter via nitter"},
 				{Command: "remove", Description: "[url] unsubscribe feed"},
 				{Command: "remove_all", Description: "unsubscribe all"},
 				{Command: "export", Description: "export feed list as OPML"},
