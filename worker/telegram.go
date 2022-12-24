@@ -3,22 +3,18 @@ package worker
 import (
 	"context"
 	"math"
+	"path"
 	"strings"
 	"sync"
 	"time"
 
+	"github.com/mmcdole/gofeed"
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	"github.com/dhcmrlchtdj/feedbox/internal/global"
 	"github.com/dhcmrlchtdj/feedbox/internal/telegram"
 )
-
-// we should support template for different source
-// but I'm too lazy to implement it
-func isLobsters(tgItem telegramItem) bool {
-	return tgItem.feed.URL == "https://lobste.rs/rss"
-}
 
 func telegramSendMsg(ctx context.Context, msg *telegram.SendMessagePayload, rl *RateLimiter) {
 	logger := zerolog.Ctx(ctx)
@@ -60,25 +56,7 @@ func sendTelegram(ctx context.Context, done *sync.WaitGroup, qTelegram <-chan te
 			return
 		}
 
-		item := x.item
-		var text strings.Builder
-		text.WriteString(item.Link)
-		if len(item.Categories) > 0 {
-			text.WriteString("\n\n")
-			for _, tag := range item.Categories {
-				text.WriteByte('#')
-				text.WriteString(strings.TrimSpace(tag))
-				text.WriteByte(' ')
-			}
-		}
-		if isLobsters(x) {
-			if comment, ok := item.Custom["comments"]; ok {
-				text.WriteString("\n\n")
-				text.WriteString("comment: ")
-				text.WriteString(comment)
-			}
-		}
-		content := text.String()
+		content := buildContent(&x)
 
 		for _, user := range x.users {
 			payload := telegram.SendMessagePayload{
@@ -96,4 +74,70 @@ func sendTelegram(ctx context.Context, done *sync.WaitGroup, qTelegram <-chan te
 			worker(item)
 		}
 	}()
+}
+
+func buildContent(tgItem *telegramItem) string {
+	if isLobsters(tgItem.feed.URL) {
+		return buildContentForLobsters(tgItem.item)
+	} else if isBangumiMoe(tgItem.feed.URL) {
+		return buildContentForBangumuMoe(tgItem.item)
+	} else {
+		return buildContentForCommon(tgItem.item)
+	}
+}
+
+func buildContentForCommon(item *gofeed.Item) string {
+	var text strings.Builder
+	text.WriteString(item.Link)
+	if len(item.Categories) > 0 {
+		text.WriteString("\n\n")
+		for _, tag := range item.Categories {
+			text.WriteByte('#')
+			text.WriteString(strings.TrimSpace(tag))
+			text.WriteByte(' ')
+		}
+	}
+	return text.String()
+}
+
+func isLobsters(url string) bool {
+	return url == "https://lobste.rs/rss"
+}
+
+func buildContentForLobsters(item *gofeed.Item) string {
+	var text strings.Builder
+	text.WriteString(item.Link)
+	if len(item.Categories) > 0 {
+		text.WriteString("\n\n")
+		for _, tag := range item.Categories {
+			text.WriteByte('#')
+			text.WriteString(strings.TrimSpace(tag))
+			text.WriteByte(' ')
+		}
+	}
+	if comment, ok := item.Custom["comments"]; ok {
+		text.WriteString("\n\n")
+		text.WriteString("comment: ")
+		text.WriteString(comment)
+	}
+	return text.String()
+}
+
+func isBangumiMoe(url string) bool {
+	return strings.HasPrefix(url, "https://bangumi.moe/rss/")
+}
+
+func buildContentForBangumuMoe(item *gofeed.Item) string {
+	var text strings.Builder
+
+	text.WriteString(item.Title)
+	text.WriteString("\n\n")
+	text.WriteString("<pre>")
+	text.WriteString("magnet:?xt=urn:btih:")
+	text.WriteString(path.Base(item.Link))
+	text.WriteString("</pre>")
+	text.WriteString("\n\n")
+	text.WriteString(item.Link)
+
+	return text.String()
 }
