@@ -11,6 +11,7 @@ require (
 	github.com/joho/godotenv v1.4.0
 	github.com/mmcdole/gofeed v1.1.3
 	github.com/pkg/errors v0.9.1
+	github.com/rs/xid v1.4.0
 	github.com/rs/zerolog v1.28.0
 	github.com/zeebo/xxh3 v1.0.2
 	golang.org/x/crypto v0.4.0

@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/pkg/errors"
+	"github.com/rs/xid"
 	"github.com/rs/zerolog"
 	"modernc.org/sqlite"
 	sqlite_const "modernc.org/sqlite/lib"
@@ -55,29 +56,25 @@ func (db *Database) Close() {
 }
 
 func (db *Database) Exec(ctx context.Context, query string, args ...any) (sql.Result, error) {
+	logger := zerolog.Ctx(ctx).With().
+		Str("module", "database").
+		Str("dbrid", xid.New().String()).
+		Logger()
+	logger.Trace().
+		Str("query", query).
+		Str("args", util.Jsonify(args...)).
+		Msg("Exec")
 	start := time.Now()
 	defer func() {
 		latency := time.Since(start)
-		zerolog.Ctx(ctx).
-			Trace().
-			Str("module", "database").
-			Str("query", query).
-			Str("args", util.Jsonify(args...)).
-			Dur("latency", latency).
-			Msg("exec")
+		logger.Trace().Dur("latency", latency).Send()
 	}()
 
 	retry := 0
 	for {
 		r, err := db.db.ExecContext(ctx, query, args...)
 		if isBusy(err) && retry < 3 {
-			zerolog.Ctx(ctx).
-				Trace().
-				Str("module", "database").
-				Str("query", query).
-				Str("args", util.Jsonify(args...)).
-				Err(err).
-				Msg("retry")
+			logger.Warn().Err(err).Msg("retry")
 			time.Sleep(time.Second)
 			retry += 1
 		} else {
@@ -86,40 +83,44 @@ func (db *Database) Exec(ctx context.Context, query string, args ...any) (sql.Re
 	}
 }
 
+func (db *Database) Query(ctx context.Context, query string, args ...any) (*sql.Rows, error) {
+	logger := zerolog.Ctx(ctx).With().
+		Str("module", "database").
+		Str("dbrid", xid.New().String()).
+		Logger()
+	logger.Trace().
+		Str("query", query).
+		Str("args", util.Jsonify(args...)).
+		Msg("Query")
+	start := time.Now()
+	defer func() {
+		latency := time.Since(start)
+		logger.Trace().Dur("latency", latency).Send()
+	}()
+	return db.db.QueryContext(ctx, query, args...)
+}
+
+func (db *Database) QueryRow(ctx context.Context, query string, args ...any) *sql.Row {
+	logger := zerolog.Ctx(ctx).With().
+		Str("module", "database").
+		Str("dbrid", xid.New().String()).
+		Logger()
+	logger.Trace().
+		Str("query", query).
+		Str("args", util.Jsonify(args...)).
+		Msg("QueryRow")
+	start := time.Now()
+	defer func() {
+		latency := time.Since(start)
+		logger.Trace().Dur("latency", latency).Send()
+	}()
+	return db.db.QueryRowContext(ctx, query, args...)
+}
+
 func isBusy(err error) bool {
 	var errBusy *sqlite.Error
 	if errors.As(err, &errBusy) {
 		return errBusy.Code() == sqlite_const.SQLITE_BUSY
 	}
 	return false
-}
-
-func (db *Database) Query(ctx context.Context, query string, args ...any) (*sql.Rows, error) {
-	start := time.Now()
-	defer func() {
-		latency := time.Since(start)
-		zerolog.Ctx(ctx).
-			Trace().
-			Str("module", "database").
-			Str("query", query).
-			Str("args", util.Jsonify(args...)).
-			Dur("latency", latency).
-			Msg("exec")
-	}()
-	return db.db.QueryContext(ctx, query, args...)
-}
-
-func (db *Database) QueryRow(ctx context.Context, query string, args ...any) *sql.Row {
-	start := time.Now()
-	defer func() {
-		latency := time.Since(start)
-		zerolog.Ctx(ctx).
-			Trace().
-			Str("module", "database").
-			Str("query", query).
-			Str("args", util.Jsonify(args...)).
-			Dur("latency", latency).
-			Msg("exec")
-	}()
-	return db.db.QueryRowContext(ctx, query, args...)
 }
