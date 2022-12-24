@@ -2,6 +2,7 @@ package worker
 
 import (
 	"context"
+	"html"
 	"math"
 	"path"
 	"strings"
@@ -60,8 +61,9 @@ func sendTelegram(ctx context.Context, done *sync.WaitGroup, qTelegram <-chan te
 
 		for _, user := range x.users {
 			payload := telegram.SendMessagePayload{
-				ChatID: user,
-				Text:   content,
+				ChatID:    user,
+				Text:      content,
+				ParseMode: "HTML",
 			}
 			telegramSendMsg(ctx, &payload, rateLimiter)
 		}
@@ -97,7 +99,7 @@ func buildContentForCommon(item *gofeed.Item) string {
 			text.WriteByte(' ')
 		}
 	}
-	return text.String()
+	return html.EscapeString(text.String())
 }
 
 func isLobsters(url string) bool {
@@ -120,7 +122,7 @@ func buildContentForLobsters(item *gofeed.Item) string {
 		text.WriteString("comment: ")
 		text.WriteString(comment)
 	}
-	return text.String()
+	return html.EscapeString(text.String())
 }
 
 func isBangumiMoe(url string) bool {
@@ -130,14 +132,14 @@ func isBangumiMoe(url string) bool {
 func buildContentForBangumuMoe(item *gofeed.Item) string {
 	var text strings.Builder
 
-	text.WriteString(item.Title)
+	text.WriteString(html.EscapeString(item.Link))
+	text.WriteString("\n\n")
+	text.WriteString(html.EscapeString(item.Title))
 	text.WriteString("\n\n")
 	text.WriteString("<pre>")
 	text.WriteString("magnet:?xt=urn:btih:")
-	text.WriteString(path.Base(item.Link))
+	text.WriteString(html.EscapeString(path.Base(item.Link)))
 	text.WriteString("</pre>")
-	text.WriteString("\n\n")
-	text.WriteString(item.Link)
 
 	return text.String()
 }
