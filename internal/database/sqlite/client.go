@@ -8,7 +8,8 @@ import (
 
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
-	_ "modernc.org/sqlite"
+	"modernc.org/sqlite"
+	sqlite_const "modernc.org/sqlite/lib"
 
 	"github.com/dhcmrlchtdj/feedbox/internal/util"
 )
@@ -36,8 +37,8 @@ func New(ctx context.Context, uri string) (*Database, error) {
 	_, err = db.Exec(`
 		PRAGMA journal_mode = WAL;
 		PRAGMA synchronous = NORMAL;
-		PRAGMA temp_store = memory;
-		PRAGMA busy_timeout = 5000;
+		PRAGMA temp_store = MEMORY;
+		PRAGMA busy_timeout = 10000;
 	`)
 	if err != nil {
 		return nil, err
@@ -65,7 +66,32 @@ func (db *Database) Exec(ctx context.Context, query string, args ...any) (sql.Re
 			Dur("latency", latency).
 			Msg("exec")
 	}()
-	return db.db.ExecContext(ctx, query, args...)
+
+	retry := 0
+	for {
+		r, err := db.db.ExecContext(ctx, query, args...)
+		if isBusy(err) && retry < 3 {
+			zerolog.Ctx(ctx).
+				Trace().
+				Str("module", "database").
+				Str("query", query).
+				Str("args", util.Jsonify(args...)).
+				Err(err).
+				Msg("retry")
+			time.Sleep(time.Second)
+			retry += 1
+		} else {
+			return r, err
+		}
+	}
+}
+
+func isBusy(err error) bool {
+	var errBusy *sqlite.Error
+	if errors.As(err, &errBusy) {
+		return errBusy.Code() == sqlite_const.SQLITE_BUSY
+	}
+	return false
 }
 
 func (db *Database) Query(ctx context.Context, query string, args ...any) (*sql.Rows, error) {
