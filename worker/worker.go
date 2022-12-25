@@ -18,8 +18,10 @@ import (
 )
 
 type feedItem struct {
-	feed  *database.Feed
-	items []gofeed.Item
+	feed    *database.Feed
+	fetched *gofeed.Feed
+	etag    string
+	items   []gofeed.Item
 }
 
 type githubItem struct {
@@ -52,10 +54,13 @@ func Start(ctx context.Context) {
 	qFeed := slice2chan(&wg, feeds)
 
 	wg.Add(1)
-	qFeedItem := fetchFeed(ctx, &wg, qFeed)
+	qFeedFetched := fetchFeed(ctx, &wg, qFeed)
 
 	wg.Add(1)
-	qGithub, qTelegram := dispatchFeed(ctx, &wg, qFeedItem)
+	qFeedParsed := parseFeed(ctx, &wg, qFeedFetched)
+
+	wg.Add(1)
+	qGithub, qTelegram := dispatchFeed(ctx, &wg, qFeedParsed)
 
 	wg.Add(1)
 	sendEmail(ctx, &wg, qGithub)
@@ -102,59 +107,7 @@ func fetchFeed(ctx context.Context, done *sync.WaitGroup, qFeed <-chan database.
 				continue
 			}
 
-			updated := getLatestUpdated(feed)
-			if updated == nil {
-				err := errors.Errorf("can not parse date field: %s", dbFeed.URL)
-				logger.Warn().Str("module", "worker").Stack().Err(err).Send()
-				now := time.Now()
-				updated = &now
-			}
-
-			if feed.Len() == 0 {
-				err := updateFeedStatus(ctx, dbFeed, updated, etag)
-				if err != nil {
-					logger.Warn().Str("module", "worker").Stack().Err(err).Send()
-				}
-				continue
-			}
-
-			oldLinks, err := global.Database.GetLinks(ctx, dbFeed.ID)
-			if err != nil {
-				logger.Error().Str("module", "worker").Stack().Err(err).Send()
-				continue
-			}
-			oldLinkSet := map[string]bool{}
-			for _, link := range oldLinks {
-				oldLinkSet[link] = true
-			}
-
-			newLinks := []string{}
-			newItems := []gofeed.Item{}
-			for i := range feed.Items {
-				item := feed.Items[i]
-				link := item.Link
-				if _, present := oldLinkSet[link]; !present {
-					oldLinkSet[link] = true
-					newLinks = append(newLinks, link)
-					newItems = append(newItems, *item)
-				}
-			}
-
-			if len(newItems) == 0 {
-				err := updateFeedStatus(ctx, dbFeed, updated, etag)
-				if err != nil {
-					logger.Warn().Str("module", "worker").Stack().Err(err).Send()
-				}
-				continue
-			}
-
-			err = global.Database.AddFeedLinks(ctx, dbFeed.ID, newLinks, updated, etag)
-			if err != nil {
-				logger.Error().Str("module", "worker").Stack().Err(err).Send()
-				continue
-			}
-
-			qFeedItem <- &feedItem{feed: &dbFeed, items: newItems}
+			qFeedItem <- &feedItem{feed: &dbFeed, fetched: feed, etag: etag, items: nil}
 		}
 	}
 
@@ -166,6 +119,80 @@ func fetchFeed(ctx context.Context, done *sync.WaitGroup, qFeed <-chan database.
 	}()
 
 	return qFeedItem
+}
+
+func parseFeed(ctx context.Context, done *sync.WaitGroup, qFeedFetched <-chan *feedItem) <-chan *feedItem {
+	logger := zerolog.Ctx(ctx)
+
+	qFeedParsed := make(chan *feedItem)
+
+	worker := func(feed *feedItem) {
+		updated := getLatestUpdated(feed.fetched)
+		if updated == nil {
+			err := errors.Errorf("can not parse date field: %s", feed.feed.URL)
+			logger.Warn().Str("module", "worker").Stack().Err(err).Send()
+			now := time.Now()
+			updated = &now
+		}
+
+		if feed.Len() == 0 {
+			err := updateFeedStatus(ctx, feed.feed, updated, feed.etag)
+			if err != nil {
+				logger.Warn().Str("module", "worker").Stack().Err(err).Send()
+			}
+			return
+		}
+
+		oldLinks, err := global.Database.GetLinks(ctx, feed.feed.ID)
+		if err != nil {
+			logger.Error().Str("module", "worker").Stack().Err(err).Send()
+			return
+		}
+		oldLinkSet := map[string]bool{}
+		for _, link := range oldLinks {
+			oldLinkSet[link] = true
+		}
+
+		newLinks := []string{}
+		newItems := []gofeed.Item{}
+		for i := range feed.fetched.Items {
+			item := feed.fetched.Items[i]
+			link := item.Link
+			if _, present := oldLinkSet[link]; !present {
+				oldLinkSet[link] = true
+				newLinks = append(newLinks, link)
+				newItems = append(newItems, *item)
+			}
+		}
+
+		if len(newItems) == 0 {
+			err := updateFeedStatus(ctx, feed.feed, updated, feed.etag)
+			if err != nil {
+				logger.Warn().Str("module", "worker").Stack().Err(err).Send()
+			}
+			return
+		}
+
+		err = global.Database.AddFeedLinks(ctx, feed.feed.ID, newLinks, updated, feed.etag)
+		if err != nil {
+			logger.Error().Str("module", "worker").Stack().Err(err).Send()
+			return
+		}
+
+		feed.items = newItems
+		qFeedParsed <- feed
+	}
+
+	go func() {
+		defer done.Done()
+		for feed := range qFeedFetched {
+			feed := feed
+			worker(feed)
+		}
+		close(qFeedParsed)
+	}()
+
+	return qFeedParsed
 }
 
 func getLatestUpdated(feed *gofeed.Feed) *time.Time {
@@ -187,7 +214,7 @@ func getLatestUpdated(feed *gofeed.Feed) *time.Time {
 	return latest
 }
 
-func updateFeedStatus(ctx context.Context, dbFeed database.Feed, updated *time.Time, etag string) error {
+func updateFeedStatus(ctx context.Context, dbFeed *database.Feed, updated *time.Time, etag string) error {
 	if dbFeed.ETag != etag {
 		return global.Database.SetFeedUpdated(ctx, dbFeed.ID, updated, etag)
 	}
@@ -244,6 +271,8 @@ func dispatchFeed(ctx context.Context, done *sync.WaitGroup, qFeedItem <-chan *f
 
 	return qGithub, qTelegram
 }
+
+///
 
 func (f *feedItem) Len() int {
 	return len(f.items)
