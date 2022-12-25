@@ -9,8 +9,7 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/xid"
 	"github.com/rs/zerolog"
-	"modernc.org/sqlite"
-	sqlite_const "modernc.org/sqlite/lib"
+	_ "modernc.org/sqlite"
 
 	"github.com/dhcmrlchtdj/feedbox/internal/util"
 )
@@ -70,17 +69,7 @@ func (db *Database) Exec(ctx context.Context, query string, args ...any) (sql.Re
 		logger.Trace().Dur("latency", latency).Send()
 	}()
 
-	retry := 0
-	for {
-		r, err := db.db.ExecContext(ctx, query, args...)
-		if isBusy(err) && retry < 3 {
-			logger.Warn().Err(err).Msg("retry")
-			time.Sleep(time.Second)
-			retry += 1
-		} else {
-			return r, err
-		}
-	}
+	return db.db.ExecContext(ctx, query, args...)
 }
 
 func (db *Database) Query(ctx context.Context, query string, args ...any) (*sql.Rows, error) {
@@ -115,12 +104,4 @@ func (db *Database) QueryRow(ctx context.Context, query string, args ...any) *sq
 		logger.Trace().Dur("latency", latency).Send()
 	}()
 	return db.db.QueryRowContext(ctx, query, args...)
-}
-
-func isBusy(err error) bool {
-	var errBusy *sqlite.Error
-	if errors.As(err, &errBusy) {
-		return errBusy.Code() == sqlite_const.SQLITE_BUSY
-	}
-	return false
 }
