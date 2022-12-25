@@ -7,9 +7,9 @@ import (
 	"sync"
 	"time"
 
-	"github.com/google/uuid"
 	"github.com/mmcdole/gofeed"
 	"github.com/pkg/errors"
+	"github.com/rs/xid"
 	"github.com/rs/zerolog"
 
 	"github.com/dhcmrlchtdj/feedbox/internal/database"
@@ -35,7 +35,7 @@ type telegramItem struct {
 }
 
 func Start(ctx context.Context) {
-	logger := zerolog.Ctx(ctx).With().Str("traceId", uuid.NewString()).Logger()
+	logger := zerolog.Ctx(ctx).With().Str("traceId", xid.New().String()).Logger()
 	ctx = logger.WithContext(ctx)
 
 	logger.Info().Str("module", "worker").Msg("start")

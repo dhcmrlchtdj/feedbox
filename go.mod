@@ -6,7 +6,6 @@ require (
 	github.com/bradleyjkemp/cupaloy/v2 v2.8.0
 	github.com/gofiber/fiber/v2 v2.40.1
 	github.com/golang-migrate/migrate/v4 v4.15.2
-	github.com/google/uuid v1.3.0
 	github.com/jackc/pgx/v5 v5.2.0
 	github.com/joho/godotenv v1.4.0
 	github.com/mmcdole/gofeed v1.1.3
@@ -27,6 +26,7 @@ require (
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/dustin/go-humanize v1.0.0 // indirect
 	github.com/golang/protobuf v1.5.2 // indirect
+	github.com/google/uuid v1.3.0 // indirect
 	github.com/hashicorp/errwrap v1.1.0 // indirect
 	github.com/hashicorp/go-multierror v1.1.1 // indirect
 	github.com/jackc/pgpassfile v1.0.0 // indirect
