@@ -135,7 +135,7 @@ func parseFeed(ctx context.Context, done *sync.WaitGroup, qFeedFetched <-chan *f
 			updated = &now
 		}
 
-		if feed.Len() == 0 {
+		if feed.fetched.Len() == 0 {
 			err := updateFeedStatus(ctx, feed.feed, updated, feed.etag)
 			if err != nil {
 				logger.Warn().Str("module", "worker").Stack().Err(err).Send()
