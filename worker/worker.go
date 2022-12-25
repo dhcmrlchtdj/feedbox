@@ -91,7 +91,7 @@ func slice2chan(done *sync.WaitGroup, feeds []database.Feed) <-chan database.Fee
 func fetchFeed(ctx context.Context, done *sync.WaitGroup, qFeed <-chan database.Feed) <-chan *feedItem {
 	logger := zerolog.Ctx(ctx)
 
-	qFeedItem := make(chan *feedItem)
+	qFeedFetched := make(chan *feedItem)
 
 	worker := func() {
 		fp := feedparser.New()
@@ -107,7 +107,7 @@ func fetchFeed(ctx context.Context, done *sync.WaitGroup, qFeed <-chan database.
 				continue
 			}
 
-			qFeedItem <- &feedItem{feed: &dbFeed, fetched: feed, etag: etag, items: nil}
+			qFeedFetched <- &feedItem{feed: &dbFeed, fetched: feed, etag: etag, items: nil}
 		}
 	}
 
@@ -115,10 +115,10 @@ func fetchFeed(ctx context.Context, done *sync.WaitGroup, qFeed <-chan database.
 		defer done.Done()
 
 		parallel(5, worker)
-		close(qFeedItem)
+		close(qFeedFetched)
 	}()
 
-	return qFeedItem
+	return qFeedFetched
 }
 
 func parseFeed(ctx context.Context, done *sync.WaitGroup, qFeedFetched <-chan *feedItem) <-chan *feedItem {
