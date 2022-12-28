@@ -4,7 +4,6 @@ import (
 	"context"
 	"html"
 	"math"
-	"path"
 	"strings"
 	"sync"
 	"time"
@@ -135,11 +134,6 @@ func buildContentForBangumuMoe(item *gofeed.Item) string {
 	text.WriteString(html.EscapeString(item.Link))
 	text.WriteString("\n\n")
 	text.WriteString(html.EscapeString(item.Title))
-	text.WriteString("\n\n")
-	text.WriteString("<pre>")
-	text.WriteString("magnet:?xt=urn:btih:")
-	text.WriteString(html.EscapeString(path.Base(item.Link)))
-	text.WriteString("</pre>")
 
 	return text.String()
 }
