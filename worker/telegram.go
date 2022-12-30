@@ -68,6 +68,7 @@ func sendTelegram(ctx context.Context, done *sync.WaitGroup, qTelegram <-chan te
 		}
 	}
 
+	done.Add(1)
 	go func() {
 		defer done.Done()
 

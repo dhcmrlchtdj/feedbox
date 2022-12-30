@@ -43,45 +43,36 @@ func Start(ctx context.Context) {
 	logger.Info().Str("module", "worker").Msg("start")
 
 	var wg sync.WaitGroup
-
-	feeds, err := global.Database.GetActiveFeeds(ctx)
-	if err != nil {
-		logger.Error().Str("module", "worker").Stack().Err(err).Send()
-		return
-	}
-
-	wg.Add(1)
-	qFeed := slice2chan(&wg, feeds)
-
-	wg.Add(1)
+	qFeed := slice2chan(ctx, &wg)
 	qFeedFetched := fetchFeed(ctx, &wg, qFeed)
-
-	wg.Add(1)
 	qFeedParsed := parseFeed(ctx, &wg, qFeedFetched)
-
-	wg.Add(1)
 	qGithub, qTelegram := dispatchFeed(ctx, &wg, qFeedParsed)
-
-	wg.Add(1)
 	sendEmail(ctx, &wg, qGithub)
-
-	wg.Add(1)
 	sendTelegram(ctx, &wg, qTelegram)
-
 	wg.Wait()
 
 	logger.Info().Str("module", "worker").Msg("completed")
 }
 
-func slice2chan(done *sync.WaitGroup, feeds []database.Feed) <-chan database.Feed {
+func slice2chan(ctx context.Context, done *sync.WaitGroup) <-chan database.Feed {
+	logger := zerolog.Ctx(ctx)
+
 	qFeed := make(chan database.Feed)
 
+	done.Add(1)
 	go func() {
 		defer done.Done()
+
+		feeds, err := global.Database.GetActiveFeeds(ctx)
+		if err != nil {
+			logger.Error().Str("module", "worker").Stack().Err(err).Send()
+			return
+		}
 
 		for i := range feeds {
 			qFeed <- feeds[i]
 		}
+
 		close(qFeed)
 	}()
 
@@ -111,6 +102,7 @@ func fetchFeed(ctx context.Context, done *sync.WaitGroup, qFeed <-chan database.
 		}
 	}
 
+	done.Add(1)
 	go func() {
 		defer done.Done()
 
@@ -183,6 +175,7 @@ func parseFeed(ctx context.Context, done *sync.WaitGroup, qFeedFetched <-chan *f
 		qFeedParsed <- feed
 	}
 
+	done.Add(1)
 	go func() {
 		defer done.Done()
 		for feed := range qFeedFetched {
@@ -259,6 +252,7 @@ func dispatchFeed(ctx context.Context, done *sync.WaitGroup, qFeedItem <-chan *f
 		}
 	}
 
+	done.Add(1)
 	go func() {
 		defer done.Done()
 
