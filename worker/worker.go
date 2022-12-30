@@ -149,7 +149,7 @@ func parseFeed(ctx context.Context, done *sync.WaitGroup, qFeedFetched <-chan *f
 		newItems := []gofeed.Item{}
 		for i := range feed.fetched.Items {
 			item := feed.fetched.Items[i]
-			link := item.GUID
+			link := getGUID(item)
 			if _, present := oldLinkSet[link]; !present {
 				oldLinkSet[link] = true
 				newLinks = append(newLinks, link)
@@ -186,6 +186,14 @@ func parseFeed(ctx context.Context, done *sync.WaitGroup, qFeedFetched <-chan *f
 	}()
 
 	return qFeedParsed
+}
+
+func getGUID(item *gofeed.Item) string {
+	id := item.GUID
+	if id == "" {
+		id = item.Link
+	}
+	return id
 }
 
 func getLatestUpdated(feed *gofeed.Feed) *time.Time {
