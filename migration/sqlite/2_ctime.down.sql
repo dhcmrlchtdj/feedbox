@@ -1,0 +1,5 @@
+ALTER TABLE users DROP COLUMN ctime;
+ALTER TABLE feeds DROP COLUMN ctime;
+ALTER TABLE links DROP COLUMN ctime;
+ALTER TABLE r_feed_link DROP COLUMN ctime;
+ALTER TABLE r_user_feed DROP COLUMN ctime;
