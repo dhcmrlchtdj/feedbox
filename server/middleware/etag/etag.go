@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/zeebo/xxh3"
 	"github.com/gofiber/fiber/v2"
+	"github.com/zeebo/xxh3"
 )
 
 func New() fiber.Handler {
