@@ -82,13 +82,13 @@ func buildContent(tgItem *telegramItem) string {
 	if isLobsters(tgItem.feed.URL) {
 		return buildContentForLobsters(tgItem.item)
 	} else if isBangumiMoe(tgItem.feed.URL) {
-		return buildContentForBangumuMoe(tgItem.item)
+		return buildContentForCommon(tgItem.item, true)
 	} else {
-		return buildContentForCommon(tgItem.item)
+		return buildContentForCommon(tgItem.item, false)
 	}
 }
 
-func buildContentForCommon(item *gofeed.Item) string {
+func buildContentForCommon(item *gofeed.Item, withTitle bool) string {
 	var text strings.Builder
 	text.WriteString(item.Link)
 	if len(item.Categories) > 0 {
@@ -98,6 +98,9 @@ func buildContentForCommon(item *gofeed.Item) string {
 			text.WriteString(strings.TrimSpace(tag))
 			text.WriteByte(' ')
 		}
+	}
+	if withTitle {
+		text.WriteString(html.EscapeString(item.Title))
 	}
 	return html.EscapeString(text.String())
 }
@@ -127,14 +130,4 @@ func buildContentForLobsters(item *gofeed.Item) string {
 
 func isBangumiMoe(url string) bool {
 	return strings.HasPrefix(url, "https://bangumi.moe/rss/")
-}
-
-func buildContentForBangumuMoe(item *gofeed.Item) string {
-	var text strings.Builder
-
-	text.WriteString(html.EscapeString(item.Link))
-	text.WriteString("\n\n")
-	text.WriteString(html.EscapeString(item.Title))
-
-	return text.String()
 }
