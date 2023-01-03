@@ -60,7 +60,7 @@ func startServerAndWorker() {
 	initEmail()
 	initTelegram()
 	initSign()
-	go initQuitSignal(ctx, cancel)
+	initQuitSignal(ctx, cancel)
 
 	var wg sync.WaitGroup
 
@@ -93,7 +93,7 @@ func startServer() {
 	initEmail()
 	initTelegram()
 	initSign()
-	go initQuitSignal(ctx, cancel)
+	initQuitSignal(ctx, cancel)
 
 	runServer(ctx)
 	logger.Info().Str("module", "app").Msg("app stopped")
@@ -277,7 +277,13 @@ func initSign() {
 func initQuitSignal(ctx context.Context, cancel context.CancelFunc) {
 	c := make(chan os.Signal, 1)
 	signal.Notify(c, syscall.SIGINT, syscall.SIGTERM)
-	sig := <-c
-	zerolog.Ctx(ctx).Info().Str("module", "app").Str("signal", sig.String()).Msg("app stopping")
-	cancel()
+	go func() {
+		select {
+		case sig := <-c:
+			zerolog.Ctx(ctx).Info().Str("module", "app").Str("signal", sig.String()).Msg("app stopping")
+			cancel()
+		case <-ctx.Done():
+			return
+		}
+	}()
 }
