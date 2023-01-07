@@ -81,8 +81,6 @@ func sendTelegram(ctx context.Context, done *sync.WaitGroup, qTelegram <-chan te
 func buildContent(tgItem *telegramItem) string {
 	if isLobsters(tgItem.feed.URL) {
 		return buildContentForLobsters(tgItem.item)
-	} else if isBangumiMoe(tgItem.feed.URL) {
-		return buildContentForCommon(tgItem.item, true)
 	} else {
 		return buildContentForCommon(tgItem.item, false)
 	}
@@ -126,8 +124,4 @@ func buildContentForLobsters(item *gofeed.Item) string {
 		text.WriteString(comment)
 	}
 	return html.EscapeString(text.String())
-}
-
-func isBangumiMoe(url string) bool {
-	return strings.HasPrefix(url, "https://bangumi.moe/rss/")
 }
