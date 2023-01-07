@@ -87,7 +87,7 @@ func setupRoute(app fiber.Router) {
 
 	// debug
 	if os.Getenv("ENV") != "prod" {
-		app.Get("/helper/preview/*", handler.HelperParseFeed)
+		app.Get("/helper/preview", handler.HelperParseFeed)
 	}
 
 	// telegram

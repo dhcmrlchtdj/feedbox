@@ -7,7 +7,7 @@ import (
 )
 
 func HelperParseFeed(c *fiber.Ctx) error {
-	url := c.Params("*")
+	url := c.Query("u")
 	fp := feedparser.New()
 	feed, _, err := fp.ParseURL(c.UserContext(), url, "")
 	if err != nil {
