@@ -3,7 +3,7 @@ import * as version from "./version"
 
 declare const self: ServiceWorkerGlobalScope
 
-console.log("[SW] current version", version.STATIC)
+console.log("[SW] current version", version.STATIC, version.API)
 
 self.addEventListener("install", (event) => {
 	console.log("[SW] install | start", version.STATIC)
