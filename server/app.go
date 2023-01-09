@@ -7,7 +7,6 @@ import (
 	"time"
 
 	"github.com/gofiber/fiber/v2"
-	"github.com/gofiber/fiber/v2/middleware/basicauth"
 	"github.com/gofiber/fiber/v2/middleware/expvar"
 	"github.com/gofiber/fiber/v2/middleware/pprof"
 	"github.com/gofiber/fiber/v2/middleware/recover"
@@ -95,15 +94,6 @@ func setupRoute(app fiber.Router) {
 		"/webhook/telegram/"+os.Getenv("TELEGRAM_WEBHOOK_PATH"),
 		validate.ContentType("application/json"),
 		handler.TelegramWebhook,
-	)
-
-	// worker
-	app.Post(
-		"/worker/start",
-		basicauth.New(basicauth.Config{
-			Users: map[string]string{"token": os.Getenv("WORKER_TOKEN")},
-		}),
-		handler.WorkerStart,
 	)
 
 	// static

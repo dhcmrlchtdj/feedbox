@@ -178,7 +178,7 @@ func startMigration() {
 
 func runServer(ctx context.Context) {
 	util.CheckEnvs("GITHUB_CLIENT_ID", "GITHUB_CLIENT_SECRET")
-	util.CheckEnvs("HOST", "PORT", "TELEGRAM_WEBHOOK_PATH", "WORKER_TOKEN")
+	util.CheckEnvs("HOST", "PORT", "TELEGRAM_WEBHOOK_PATH")
 
 	app := server.Create(ctx)
 	go func() {

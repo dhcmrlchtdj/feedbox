@@ -36,7 +36,6 @@ jobs:
                   SERVER_SUB_DIR: "/"
                   COOKIE_SECRET: "cd783ee4d0d8bb2cf92b867c8de42eaa906431d67bff5532e5e97114837106b4"
                   TELEGRAM_WEBHOOK_PATH: "131cd9868e9cf396a807c265a3c97e72"
-                  WORKER_TOKEN: "2e963311b1396757f9a1d199768555c3"
                   GITHUB_CLIENT_ID: "https://github.com/settings/developers"
                   GITHUB_CLIENT_SECRET: "https://github.com/settings/developers"
                   MAILGUN_API_KEY: "key-example"
