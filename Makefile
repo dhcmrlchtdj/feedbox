@@ -1,19 +1,23 @@
 SHELL := bash
-# PATH := ./frontend/node_modules/.bin:$(PATH)
+.SHELLFLAGS = -O globstar -c
 
 GOFLAGS := \
 	-trimpath \
-	-buildmode=pie \
 	-buildvcs=false \
+	-buildmode=pie \
 	-ldflags='-s -w -linkmode=external'
+
+###
+
+.PHONY: dev build fmt lint test clean outdated upgrade
+
+dev:
+	cd frontend && make
+	# make dev | jq -c -R '. as $line | try fromjson catch $line'
+	go run -race ./main.go serverAndWorker 2>&1 | jq
 
 build:
 	go build $(GOFLAGS) -o ./_build/app
-
-clean:
-	# rm -rf ./**/.snapshots
-	# go clean -testcache ./...
-	-rm -rf ./_build
 
 fmt:
 	gofumpt -w .
@@ -22,19 +26,26 @@ fmt:
 lint:
 	golangci-lint run
 
-dev:
-	cd frontend && make
-	# make dev | jq -c -R '. as $line | try fromjson catch $line'
-	go run -race ./main.go serverAndWorker 2>&1 | jq
-
 test:
 	ENV=test TZ=UTC go test -race ./internal/util
 	ENV=test TZ=UTC go test -race ./internal/database/...
 	ENV=test TZ=UTC go test -race ./server
 
-test_force:
+clean:
+	# rm -rf ./**/.snapshots
 	go clean -testcache ./...
-	$(MAKE) test
+	-rm -rf ./_build
+
+# outdated:
+#     go list -u -m -f '{{if not .Indirect}}{{.}}{{end}}' all
+
+upgrade:
+	go get -v -t -u ./...
+	go mod tidy -v
+
+###
+
+.PHONY: test_update migrate
 
 test_update:
 	-ENV=test TZ=UTC UPDATE_SNAPSHOTS=true go test ./internal/util
@@ -48,9 +59,3 @@ test_update:
 
 migrate:
 	./_build/app migrate up
-
-# outdated:
-#     go list -u -m -f '{{if not .Indirect}}{{.}}{{end}}' all
-upgrade:
-	go get -v -t -u ./...
-	go mod tidy -v
