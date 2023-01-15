@@ -28,7 +28,7 @@ func New(cfg Config) fiber.Handler {
 	}
 
 	fetchProfile := func(ctx context.Context, code string) (*Profile, error) {
-		authToken, err := conf.Exchange(context.Background(), code)
+		authToken, err := conf.Exchange(ctx, code)
 		if err != nil {
 			return nil, errors.Wrap(err, "github login exchange")
 		}
@@ -38,13 +38,12 @@ func New(cfg Config) fiber.Handler {
 		if err != nil {
 			return nil, errors.Wrap(err, "github login profile")
 		}
-		if profile.Email == "" {
-			email, err := getEmail(client)
-			if err != nil {
-				return nil, errors.Wrap(err, "github login email")
-			}
-			profile.Email = email
+
+		email, err := getEmail(client)
+		if err != nil {
+			return nil, errors.Wrap(err, "github login email")
 		}
+		profile.Email = email
 
 		return profile, nil
 	}
