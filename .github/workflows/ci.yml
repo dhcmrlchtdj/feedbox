@@ -60,8 +60,6 @@ jobs:
               env:
                   PNPM_HOME: /home/runner/.local/bin
               working-directory: ./frontend
-            - run: make -j build
-              working-directory: ./frontend
             - run: make build
             # https://github.com/marketplace/actions/scp-command-to-transfer-files
             - uses: appleboy/scp-action@v0.1.3

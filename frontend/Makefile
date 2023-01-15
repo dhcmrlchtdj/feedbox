@@ -9,7 +9,7 @@ PATH := ./node_modules/.bin:$(PATH)
 dev: node_modules/tsconfig.tsbuildinfo copy_static
 	NODE_ENV=development node ./script/build_watch.js
 
-build: node_modules/tsconfig.tsbuildinfo copy_static
+build: clean node_modules/tsconfig.tsbuildinfo copy_static
 	NODE_ENV=production node ./script/build_dist.js
 
 fmt:
@@ -19,7 +19,8 @@ fmt:
 
 # test:
 
-# clean:
+clean:
+	-rm -v ./_build/*
 
 outdated:
 	pnpm outdated
