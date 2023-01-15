@@ -18,7 +18,7 @@ jobs:
             # https://github.com/marketplace/actions/checkout
             - uses: actions/checkout@v3.1.0
             # https://github.com/marketplace/actions/setup-go-environment
-            - uses: actions/setup-go@v3.3.0
+            - uses: actions/setup-go@v3.5.0
               with:
                   go-version: "1.19"
             # https://github.com/marketplace/actions/run-golangci-lint
@@ -44,11 +44,11 @@ jobs:
                   TELEGRAM_BOT_TOKEN: "123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11"
                   TELEGRAM_BOT_NAME: "bot_name"
             # https://github.com/marketplace/actions/setup-node-js-environment
-            - uses: actions/setup-node@v3.5.1
+            - uses: actions/setup-node@v3.6.0
               with:
                   node-version: 18
             # https://github.com/marketplace/actions/cache
-            - uses: actions/cache@v3.0.11
+            - uses: actions/cache@v3.2.3
               with:
                   path: ~/.local/share/pnpm/store
                   key: ${{ runner.os }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}
@@ -72,7 +72,7 @@ jobs:
                   source: "_build/app"
                   target: "/opt/app/feedbox"
             # https://github.com/marketplace/actions/ssh-remote-commands
-            - uses: appleboy/ssh-action@v0.1.5
+            - uses: appleboy/ssh-action@v0.1.7
               with:
                   host: ${{ secrets.SSH_HOST }}
                   username: ${{ secrets.SSH_USERNAME }}
