@@ -28,32 +28,42 @@ const esbuildOpts = {
 	outdir: r(`../_build/`),
 }
 
-export async function buildApp(enableWatch = false) {
-	return esbuild
-		.build({
-			...esbuildOpts,
-			define: env,
-			plugins: [
-				sveltePlugin({
-					generate: "dom",
-					hydratable: true,
-					dev: !prod,
-				}),
-			],
-			entryPoints: [r("../src/app.ts")],
-			entryNames: "[name]-[hash]",
-			watch: enableWatch && {
-				onRebuild(error, result) {
-					if (error) console.error("watch build failed:", error)
-					const r = normalizeResult(result)
-					logResult(r)
-					buildHtml(r)
-				},
-			},
+const rebuildPlugin = {
+	name: "rebuild",
+	setup(build) {
+		build.onEnd((result) => {
+			const r = normalizeResult(result)
+			logResult(r)
+			buildHtml(r)
 		})
-		.then(normalizeResult)
-		.then(logResult)
-		.then(buildHtml)
+	},
+}
+
+export async function buildApp(enableWatch = false) {
+	const opt = {
+		...esbuildOpts,
+		define: env,
+		plugins: [
+			sveltePlugin({
+				generate: "dom",
+				hydratable: true,
+				dev: !prod,
+			}),
+			enableWatch && rebuildPlugin,
+		].filter(Boolean),
+		entryPoints: [r("../src/app.ts")],
+		entryNames: "[name]-[hash]",
+	}
+
+	if (enableWatch) {
+		return (await esbuild.context(opt)).watch()
+	} else {
+		return esbuild
+			.build(opt)
+			.then(normalizeResult)
+			.then(logResult)
+			.then(buildHtml)
+	}
 }
 
 export async function buildServiceWorker(enableWatch = false) {
@@ -68,26 +78,26 @@ export async function buildServiceWorker(enableWatch = false) {
 		r("../../go.sum"),
 	)
 
-	return esbuild
-		.build({
-			...esbuildOpts,
-			define: {
-				...env,
-				__STATIC_VERSION__: JSON.stringify(hashStatic),
-				__API_VERSION__: JSON.stringify(hashAPI),
-			},
-			plugins: [sveltePlugin({ generate: "ssr", dev: !prod })],
-			entryPoints: [r("../src/sw/index.ts")],
-			entryNames: "sw",
-			watch: enableWatch && {
-				onRebuild(error, result) {
-					if (error) console.error("watch build failed:", error)
-					logResult(normalizeResult(result))
-				},
-			},
-		})
-		.then(normalizeResult)
-		.then(logResult)
+	const opt = {
+		...esbuildOpts,
+		define: {
+			...env,
+			__STATIC_VERSION__: JSON.stringify(hashStatic),
+			__API_VERSION__: JSON.stringify(hashAPI),
+		},
+		plugins: [
+			sveltePlugin({ generate: "ssr", dev: !prod }),
+			enableWatch && rebuildPlugin,
+		].filter(Boolean),
+		entryPoints: [r("../src/sw/index.ts")],
+		entryNames: "sw",
+	}
+
+	if (enableWatch) {
+		return (await esbuild.context(opt)).watch()
+	} else {
+		return esbuild.build(opt).then(normalizeResult).then(logResult)
+	}
 }
 
 function buildHtml(pattern) {
