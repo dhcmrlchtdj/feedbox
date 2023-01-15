@@ -27,12 +27,12 @@ func New(cfg Config) fiber.Handler {
 		Scopes:       []string{"user:email"},
 	}
 
-	fetchProfile := func(code string) (*Profile, error) {
+	fetchProfile := func(ctx context.Context, code string) (*Profile, error) {
 		authToken, err := conf.Exchange(context.Background(), code)
 		if err != nil {
 			return nil, errors.Wrap(err, "github login exchange")
 		}
-		client := conf.Client(context.Background(), authToken)
+		client := conf.Client(ctx, authToken)
 
 		profile, err := getProfile(client)
 		if err != nil {
@@ -55,7 +55,7 @@ func New(cfg Config) fiber.Handler {
 			url := conf.AuthCodeURL("state")
 			return c.Redirect(url)
 		}
-		profile, err := fetchProfile(code)
+		profile, err := fetchProfile(c.UserContext(), code)
 		if err != nil {
 			return fiber.NewError(fiber.StatusUnauthorized, err.Error())
 		}
