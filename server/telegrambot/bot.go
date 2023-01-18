@@ -20,27 +20,7 @@ func RegisterWebhook(ctx context.Context) error {
 				os.Getenv("SERVER"),
 				os.Getenv("TELEGRAM_WEBHOOK_PATH")),
 		})
-	if err != nil {
-		return err
-	}
-
-	err = global.Telegram.SetMyCommands(
-		ctx,
-		&telegram.SetMyCommandsPayload{
-			Commands: []telegram.BotCommand{
-				{Command: "list", Description: "list all feeds"},
-				{Command: "add", Description: "[url] subscribe feed"},
-				{Command: "remove", Description: "[url] unsubscribe feed"},
-				{Command: "remove_all", Description: "unsubscribe all"},
-				{Command: "export", Description: "export feed list as OPML"},
-				{Command: "import", Description: "import OPML (reply to OPML file)"},
-			},
-		})
-	if err != nil {
-		return err
-	}
-
-	return nil
+	return err
 }
 
 func HandleWebhook(ctx context.Context, payload *telegram.Update) {

@@ -18,7 +18,6 @@ import (
 var (
 	ErrUnknownCommand = errors.New("unknown command")
 	ErrEmptyList      = errors.New("feed list is empty")
-	ErrInvalidTwitter = errors.New("invalid twitter username")
 )
 
 func executeCommand(ctx context.Context, cmd string, arg string, msg *telegram.Message) {
@@ -41,7 +40,9 @@ func executeCommand(ctx context.Context, cmd string, arg string, msg *telegram.M
 	case "/export":
 		err = export(ctx, msg)
 	case "/import":
-		err = importOPML(msg)
+		err = importOPML(ctx, msg)
+	case "/set_commands":
+		err = setCommands(ctx, msg)
 	default:
 		err = errors.Wrap(ErrUnknownCommand, cmd)
 	}
@@ -52,8 +53,7 @@ func executeCommand(ctx context.Context, cmd string, arg string, msg *telegram.M
 	} else if errors.Is(err, ErrUnknownCommand) {
 		logger.Warn().Str("module", "telegrambot").Stack().Err(err).Send()
 	} else if errors.Is(err, database.ErrInvalidURL) ||
-		errors.Is(err, ErrEmptyList) ||
-		errors.Is(err, ErrInvalidTwitter) {
+		errors.Is(err, ErrEmptyList) {
 		text := err.Error()
 		err := global.Telegram.SendMessage(
 			ctx,
@@ -218,7 +218,27 @@ func export(ctx context.Context, msg *telegram.Message) error {
 	)
 }
 
-func importOPML(msg *telegram.Message) error {
+func importOPML(ctx context.Context, msg *telegram.Message) error {
 	// TODO: unused
 	return nil
+}
+
+func setCommands(ctx context.Context, msg *telegram.Message) error {
+	if msg.Chat.Type != "private" {
+		return nil
+	}
+
+	err := global.Telegram.SetMyCommands(
+		ctx,
+		&telegram.SetMyCommandsPayload{
+			Commands: []telegram.BotCommand{
+				{Command: "list", Description: "List all feeds"},
+				{Command: "add", Description: "[url] Subscribe feed"},
+				{Command: "remove", Description: "[url] Unsubscribe feed"},
+				{Command: "remove_all", Description: "Unsubscribe all"},
+				{Command: "export", Description: "Export feed list as OPML"},
+				// {Command: "import", Description: "Import OPML (reply to OPML file)"},
+			},
+		})
+	return err
 }
