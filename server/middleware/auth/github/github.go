@@ -34,12 +34,12 @@ func New(cfg Config) fiber.Handler {
 		}
 		client := conf.Client(ctx, authToken)
 
-		profile, err := getProfile(client)
+		profile, err := getProfile(ctx, client)
 		if err != nil {
 			return nil, errors.Wrap(err, "github login profile")
 		}
 
-		email, err := getEmail(client)
+		email, err := getEmail(ctx, client)
 		if err != nil {
 			return nil, errors.Wrap(err, "github login email")
 		}

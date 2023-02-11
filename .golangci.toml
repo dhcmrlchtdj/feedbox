@@ -5,18 +5,29 @@ timeout = "5m"
 sort-results = true
 
 [linters]
-presets = ["bugs", "error", "metalinter", "performance", "unused"]
+presets = [
+	"bugs",
+	"comment",
+	# "complexity",
+	"error",
+	"format",
+	"import",
+	"metalinter",
+	# "module",
+	"performance",
+	"sql",
+	# "style",
+	"test",
+	"unused",
+]
 disable = [
-  "deadcode",
-  "maligned",
-  "rowserrcheck",
-  "scopelint",
-  "sqlclosecheck",
-  "structcheck",
-  "varcheck",
-  "wrapcheck",
-  "noctx",
-  "revive",
+	"exhaustruct",
+	"gci",
+	"godox",
+	"musttag",
+	"paralleltest",
+	"revive",
+	"wrapcheck",
 ]
 
 [linters-settings.govet]
@@ -28,17 +39,17 @@ check-type-assertions = false
 
 [linters-settings.gocritic]
 enabled-tags = [
-  "diagnostic",
-  "style",
-  "performance",
-  "experimental",
-  "opinionated",
+	"diagnostic",
+	"style",
+	"performance",
+	"experimental",
+	"opinionated",
 ]
 disabled-checks = [
-  "commentedOutCode",
-  "ifElseChain",
-  "paramTypeCombine",
-  "sprintfQuotedString",
-  "unnamedResult",
-  "whyNoLint",
+	"commentedOutCode",
+	"ifElseChain",
+	"paramTypeCombine",
+	"sprintfQuotedString",
+	"unnamedResult",
+	"whyNoLint",
 ]

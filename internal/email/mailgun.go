@@ -42,7 +42,12 @@ func (c *mailgun) Send(ctx context.Context, addr string, subject string, text st
 		return err
 	}
 
-	req, err := http.NewRequest("POST", c.urlPrefix+"/messages", &payload)
+	req, err := http.NewRequestWithContext(
+		ctx,
+		http.MethodPost,
+		c.urlPrefix+"/messages",
+		&payload,
+	)
 	if err != nil {
 		return err
 	}

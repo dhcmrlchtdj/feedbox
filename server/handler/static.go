@@ -72,14 +72,14 @@ func sendFile(c *fiber.Ctx, filename string, handlers ...fiber.Handler) error {
 	if err != nil {
 		if errors.Is(err, fs.ErrNotExist) {
 			return fiber.ErrNotFound
+		}
+
+		inner := errors.Unwrap(err)
+		if inner != nil && inner.Error() == "is a directory" {
+			return fiber.ErrNotFound
 		} else {
-			inner := errors.Unwrap(err)
-			if inner != nil && inner.Error() == "is a directory" {
-				return fiber.ErrNotFound
-			} else {
-				log.Error().Str("module", "server").Stack().Err(err).Send()
-				return fiber.ErrNotFound
-			}
+			log.Error().Str("module", "server").Stack().Err(err).Send()
+			return fiber.ErrNotFound
 		}
 	}
 	if err := c.Send(content); err != nil {

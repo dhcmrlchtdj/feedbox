@@ -1,6 +1,7 @@
 package github
 
 import (
+	"context"
 	"encoding/json"
 	"net/http"
 	"sort"
@@ -8,8 +9,18 @@ import (
 	"github.com/pkg/errors"
 )
 
-func getProfile(client *http.Client) (*Profile, error) {
-	resp, err := client.Get("https://api.github.com/user")
+func getProfile(ctx context.Context, client *http.Client) (*Profile, error) {
+	req, err := http.NewRequestWithContext(
+		ctx,
+		http.MethodGet,
+		"https://api.github.com/user",
+		http.NoBody,
+	)
+	if err != nil {
+		return nil, err
+	}
+
+	resp, err := client.Do(req)
 	if err != nil {
 		return nil, err
 	}
@@ -34,8 +45,18 @@ type githubEmail struct {
 	Verified bool   `json:"verified"`
 }
 
-func getEmail(client *http.Client) (string, error) {
-	resp, err := client.Get("https://api.github.com/user/emails")
+func getEmail(ctx context.Context, client *http.Client) (string, error) {
+	req, err := http.NewRequestWithContext(
+		ctx,
+		http.MethodGet,
+		"https://api.github.com/user/emails",
+		http.NoBody,
+	)
+	if err != nil {
+		return "", err
+	}
+
+	resp, err := client.Do(req)
 	if err != nil {
 		return "", err
 	}

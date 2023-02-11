@@ -77,7 +77,7 @@ func (c *httpClient) SendDocument(ctx context.Context, payload *SendDocumentPayl
 
 ///
 
-// caller MUST close response.Body
+// caller MUST close response.Body.
 func (c *httpClient) rawSend(ctx context.Context, cmd string, payload any) (io.ReadCloser, error) {
 	url := "https://api.telegram.org/bot" + c.token + "/" + cmd
 
