@@ -16,16 +16,16 @@ jobs:
         runs-on: ubuntu-22.04
         steps:
             # https://github.com/marketplace/actions/checkout
-            - uses: actions/checkout@v3.1.0
+            - uses: actions/checkout@v3.3.0
             # https://github.com/marketplace/actions/setup-go-environment
             - uses: actions/setup-go@v3.5.0
               with:
                   go-version: "1.19"
             # https://github.com/marketplace/actions/run-golangci-lint
-            - uses: golangci/golangci-lint-action@v3.3.1
+            - uses: golangci/golangci-lint-action@v3.4.0
               with:
                   # https://github.com/golangci/golangci-lint/releases
-                  version: v1.50.1
+                  version: v1.51.1
             - run: make test
               env:
                   DATABASE_URL: "sqlite://feedbox.db"
@@ -48,7 +48,7 @@ jobs:
               with:
                   node-version: 18
             # https://github.com/marketplace/actions/cache
-            - uses: actions/cache@v3.2.3
+            - uses: actions/cache@v3.2.5
               with:
                   path: ~/.local/share/pnpm/store
                   key: ${{ runner.os }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}
