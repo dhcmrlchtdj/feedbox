@@ -52,7 +52,6 @@ build_ui:
 test_update:
 	-ENV=test TZ=UTC UPDATE_SNAPSHOTS=true go test ./internal/util
 	-ENV=test TZ=UTC UPDATE_SNAPSHOTS=true go test ./internal/database/sqlite
-	-ENV=test TZ=UTC UPDATE_SNAPSHOTS=true go test ./internal/database/postgresql
 	-ENV=test TZ=UTC UPDATE_SNAPSHOTS=true go test ./server
 
 # coverage:

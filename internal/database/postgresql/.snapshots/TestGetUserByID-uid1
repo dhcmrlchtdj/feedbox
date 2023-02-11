@@ -1,8 +1,0 @@
-(*common.User)({
-  ID: (int64) 1,
-  Platform: (string) (len=6) "github",
-  PID: (string) (len=3) "123",
-  Addition: (map[string]string) (len=1) {
-    (string) (len=5) "email": (string) (len=17) "email@example.com"
-  }
-})

@@ -8,7 +8,6 @@ import (
 	"github.com/pkg/errors"
 
 	"github.com/dhcmrlchtdj/feedbox/internal/database/common"
-	"github.com/dhcmrlchtdj/feedbox/internal/database/postgresql"
 	"github.com/dhcmrlchtdj/feedbox/internal/database/sqlite"
 )
 
@@ -46,10 +45,6 @@ var (
 ///
 
 func New(ctx context.Context, uri string) (Database, error) {
-	if strings.HasPrefix(uri, "postgres://") {
-		return postgresql.New(ctx, uri)
-	}
-
 	if strings.HasPrefix(uri, "sqlite://") {
 		return sqlite.New(ctx, uri)
 	}
