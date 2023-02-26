@@ -5,7 +5,7 @@ GOFLAGS := \
 	-trimpath \
 	-buildvcs=false \
 	-buildmode=pie \
-	-ldflags='-s -w -linkmode=external'
+	-ldflags='-linkmode=external'
 
 ###
 
