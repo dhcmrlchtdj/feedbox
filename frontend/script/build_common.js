@@ -21,7 +21,7 @@ const esbuildOpts = {
 	metafile: true,
 	bundle: true,
 	format: "esm",
-	target: "es2020",
+	target: "esnext",
 	platform: "browser",
 	sourcemap: true,
 	minify: prod,
