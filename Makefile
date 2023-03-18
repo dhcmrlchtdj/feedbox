@@ -4,19 +4,18 @@ SHELL := bash
 GOFLAGS := \
 	-trimpath \
 	-buildvcs=false \
-	-buildmode=pie \
-	-ldflags='-linkmode=external'
+	-buildmode=pie
 
 ###
 
 .PHONY: dev build fmt lint test clean outdated upgrade
 
+build: build_ui
+	go build $(GOFLAGS) -o ./_build/app
+
 dev: build_ui
 	# make dev | jq -c -R '. as $line | try fromjson catch $line'
 	go run -race ./main.go serverAndWorker 2>&1 | jq
-
-build: build_ui
-	go build $(GOFLAGS) -o ./_build/app
 
 fmt:
 	gofumpt -w .

@@ -6,11 +6,11 @@ PATH := ./node_modules/.bin:$(PATH)
 
 .PHONY: dev build fmt lint test clean outdated upgrade
 
-dev: node_modules/tsconfig.tsbuildinfo copy_static
-	NODE_ENV=development node ./script/build_watch.js
-
 build: clean node_modules/tsconfig.tsbuildinfo copy_static
 	NODE_ENV=production node ./script/build_dist.js
+
+dev: node_modules/tsconfig.tsbuildinfo copy_static
+	NODE_ENV=development node ./script/build_watch.js
 
 fmt:
 	prettier --write .
