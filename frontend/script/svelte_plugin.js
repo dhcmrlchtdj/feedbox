@@ -1,5 +1,6 @@
 // https://esbuild.github.io/plugins/#svelte-plugin
 // https://svelte.dev/docs#svelte_compile
+// https://github.com/EMH333/esbuild-svelte
 
 import fs from "fs/promises"
 import path from "path"
@@ -10,7 +11,7 @@ const defaultOpts = {
 	generate: "dom",
 	hydratable: false,
 	immutable: true,
-	css: false,
+	css: "injected",
 	format: "esm",
 }
 
@@ -18,6 +19,8 @@ export function sveltePlugin(opts) {
 	return {
 		name: "svelte",
 		setup(build) {
+			const cssCode = new Map()
+
 			build.onLoad({ filter: /\.html$/ }, async (args) => {
 				const source = await fs.readFile(args.path, "utf8")
 				const filename = path.resolve(process.cwd(), args.path)
@@ -25,9 +28,20 @@ export function sveltePlugin(opts) {
 
 				const convert = convertMessage(source, filename)
 				try {
-					const { js, warnings } = svelte.compile(source, svelteOpts)
+					const { js, css, warnings } = svelte.compile(
+						source,
+						svelteOpts,
+					)
 					let contents =
-						js.code + `//# sourceMappingURL=` + js.map.toUrl()
+						js.code + "//# sourceMappingURL=" + js.map.toUrl()
+					if (css && css.code) {
+						const cssPath = filename + ".svelte-css"
+						const cssContent = `${
+							css.code
+						}\n/*# sourceMappingURL=${css.map.toUrl()} */`
+						cssCode.set(cssPath, cssContent)
+						contents = `import "${cssPath}";\n${contents}`
+					}
 					return {
 						contents,
 						warnings: warnings.map(convert),
@@ -38,6 +52,25 @@ export function sveltePlugin(opts) {
 					return { errors: [convert(e)] }
 				}
 			})
+
+			build.onResolve({ filter: /\.svelte-css$/ }, (args) => {
+				return { path: args.path, namespace: "virtual" }
+			})
+			build.onLoad(
+				{ filter: /\.svelte-css$/, namespace: "virtual" },
+				(args) => {
+					const css = cssCode.get(args.path)
+					if (css) {
+						return {
+							contents: css,
+							loader: "css",
+							resolveDir: path.dirname(args.path),
+						}
+					} else {
+						return null
+					}
+				},
+			)
 		},
 	}
 }

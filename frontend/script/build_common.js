@@ -48,6 +48,7 @@ export async function buildApp(enableWatch = false) {
 				generate: "dom",
 				hydratable: true,
 				dev: !prod,
+				css: "external",
 			}),
 			enableWatch && rebuildPlugin,
 		].filter(Boolean),
@@ -86,7 +87,7 @@ export async function buildServiceWorker(enableWatch = false) {
 			__API_VERSION__: JSON.stringify(hashAPI),
 		},
 		plugins: [
-			sveltePlugin({ generate: "ssr", dev: !prod }),
+			sveltePlugin({ generate: "ssr", dev: !prod, css: "none" }),
 			enableWatch && rebuildPlugin,
 		].filter(Boolean),
 		entryPoints: [r("../src/sw/index.ts")],
@@ -124,7 +125,10 @@ function buildHtml(pattern) {
 function normalizeResult(r) {
 	const result = Object.entries(r?.metafile?.outputs ?? {})
 		.filter(([out, meta]) => Boolean(meta.entryPoint))
-		.map(([out, meta]) => [meta.entryPoint, out])
+		.map(([out, meta]) => [
+			meta.entryPoint,
+			out + `${meta.cssBundle ? " + " + meta.cssBundle : ""}`,
+		])
 	return result
 }
 
