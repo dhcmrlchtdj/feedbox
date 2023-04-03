@@ -125,10 +125,17 @@ function buildHtml(pattern) {
 function normalizeResult(r) {
 	const result = Object.entries(r?.metafile?.outputs ?? {})
 		.filter(([out, meta]) => Boolean(meta.entryPoint))
-		.map(([out, meta]) => [
-			meta.entryPoint,
-			out + `${meta.cssBundle ? " + " + meta.cssBundle : ""}`,
-		])
+		.map(([out, meta]) => {
+			if (meta.cssBundle) {
+				return [
+					[meta.entryPoint, out],
+					[meta.entryPoint + ".css", meta.cssBundle],
+				]
+			} else {
+				return [[meta.entryPoint, out]]
+			}
+		})
+		.flat()
 	return result
 }
 

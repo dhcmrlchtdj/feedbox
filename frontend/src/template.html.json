@@ -2,7 +2,7 @@
 	"header": [
 		{
 			"key": "Link",
-			"value": "<./app.ts>; rel=preload; as=script; crossorigin, <https://cdn.jsdelivr.net/npm/spectre.css@0.5.9/dist/spectre.min.css>; rel=preload; as=style; crossorigin"
+			"value": "<./app.ts>; rel=preload; as=script; crossorigin, <./app.ts.css>; rel=preload; as=style; crossorigin"
 		}
 	]
 }
