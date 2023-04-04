@@ -15,11 +15,12 @@ build:
 	go build $(GOFLAGS) -o ./_build/app
 
 dev:
-	$(MAKE) dev_ui & $(MAKE) dev_server & wait
+	$(MAKE) --jobs=2 _dev
 
-dev_ui:
+_dev: _dev_ui _dev_server
+_dev_ui:
 	cd frontend && $(MAKE) dev
-dev_server:
+_dev_server:
 	# make dev | jq -c -R '. as $line | try fromjson catch $line'
 	go run -tags=dev -race ./main.go serverAndWorker 2>&1 | jq
 
