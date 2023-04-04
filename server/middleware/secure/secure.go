@@ -23,7 +23,7 @@ func New() fiber.Handler {
 			c.Set("content-security-policy", buildCSP(
 				"default-src 'self'",
 				"script-src 'self'",
-				"style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net",
+				"style-src 'self'",
 				"base-uri 'none'",
 				"object-src 'none'",
 			))
