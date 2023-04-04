@@ -11,16 +11,16 @@ jobs:
         runs-on: ubuntu-22.04
         steps:
             # https://github.com/marketplace/actions/checkout
-            - uses: actions/checkout@v3.3.0
+            - uses: actions/checkout@v3.5.0
             # https://github.com/marketplace/actions/setup-go-environment
-            - uses: actions/setup-go@v3.5.0
+            - uses: actions/setup-go@v4.0.0
               with:
-                  go-version: "1.19"
+                  go-version: "1.20"
             # https://github.com/marketplace/actions/run-golangci-lint
             - uses: golangci/golangci-lint-action@v3.4.0
               with:
                   # https://github.com/golangci/golangci-lint/releases
-                  version: v1.51.1
+                  version: v1.52.2
             - run: make test
               env:
                   DATABASE_URL: "sqlite://feedbox.db"
@@ -43,12 +43,16 @@ jobs:
               with:
                   node-version: 18
             # https://github.com/marketplace/actions/cache
-            - uses: actions/cache@v3.2.5
+            - uses: actions/cache@v3.3.1
               with:
                   path: ~/.local/share/pnpm/store
                   key: ${{ runner.os }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}
                   restore-keys: ${{ runner.os }}-pnpm-
             - run: |
+                  corepack enable
+                  # https://www.npmjs.com/package/pnpm
+                  corepack prepare pnpm@8.1.0 --activate
+                  pnpm config set store-dir ~/.local/share/pnpm/store
                   corepack enable pnpm
                   pnpm install
                   pnpm store prune
@@ -65,7 +69,7 @@ jobs:
                   source: "_build/app"
                   target: "/opt/app/feedbox"
             # https://github.com/marketplace/actions/ssh-remote-commands
-            - uses: appleboy/ssh-action@v0.1.7
+            - uses: appleboy/ssh-action@v0.1.9
               with:
                   host: ${{ secrets.SSH_HOST }}
                   username: ${{ secrets.SSH_USERNAME }}
