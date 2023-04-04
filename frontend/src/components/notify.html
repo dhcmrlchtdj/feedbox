@@ -1,5 +1,5 @@
 <style>
-	div {
+	.notification {
 		position: fixed;
 		width: 10em;
 		right: 0.4rem;
@@ -9,7 +9,7 @@
 	}
 </style>
 
-<div>
+<div class="notification">
 	{#each $notify as n, i (n.key)}
 	<div
 		class="toast toast-success mb-2"
