@@ -158,6 +158,9 @@ func TestAddFeedLinks(t *testing.T) {
 		if err != nil {
 			t.Fatal(err)
 		}
+		if rows.Err() != nil {
+			t.Fatal(rows.Err())
+		}
 
 		r, err := readFeedAll(rows)
 		if err != nil {
@@ -187,6 +190,9 @@ func TestAddFeedLinks(t *testing.T) {
 			1)
 		if err != nil {
 			t.Fatal(err)
+		}
+		if rows.Err() != nil {
+			t.Fatal(rows.Err())
 		}
 
 		r, err := readFeedAll(rows)
