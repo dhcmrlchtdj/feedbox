@@ -1,13 +1,15 @@
-<div
-	style="
+<style>
+	div {
 		position: fixed;
 		width: 10em;
 		right: 0.4rem;
 		top: 0.4rem;
 		z-index: 10;
 		contain: content;
-	"
->
+	}
+</style>
+
+<div>
 	{#each $notify as n, i (n.key)}
 	<div
 		class="toast toast-success mb-2"
