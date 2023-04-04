@@ -9,7 +9,7 @@ PATH := ./node_modules/.bin:$(PATH)
 build: clean node_modules/tsconfig.tsbuildinfo copy_static
 	NODE_ENV=production node ./script/build_dist.js
 
-dev: node_modules/tsconfig.tsbuildinfo copy_static
+dev: clean node_modules/tsconfig.tsbuildinfo copy_static
 	NODE_ENV=development node ./script/build_watch.js
 
 fmt:

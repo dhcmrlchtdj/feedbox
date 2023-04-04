@@ -10,12 +10,18 @@ GOFLAGS := \
 
 .PHONY: dev build fmt lint test clean outdated upgrade
 
-build: build_ui
+build:
+	cd frontend && $(MAKE) build
 	go build $(GOFLAGS) -o ./_build/app
 
-dev: build_ui
+dev:
+	$(MAKE) dev_ui & $(MAKE) dev_server & wait
+
+dev_ui:
+	cd frontend && $(MAKE) dev
+dev_server:
 	# make dev | jq -c -R '. as $line | try fromjson catch $line'
-	go run -race ./main.go serverAndWorker 2>&1 | jq
+	go run -tags=dev -race ./main.go serverAndWorker 2>&1 | jq
 
 fmt:
 	gofumpt -w .
@@ -43,10 +49,7 @@ upgrade:
 
 ###
 
-.PHONY: test_update migrate build_ui
-
-build_ui:
-	cd frontend && $(MAKE) build
+.PHONY: test_update migrate
 
 test_update:
 	-ENV=test TZ=UTC UPDATE_SNAPSHOTS=true go test ./internal/util

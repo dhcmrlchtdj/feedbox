@@ -11,8 +11,6 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
-
-	"github.com/dhcmrlchtdj/feedbox/frontend"
 )
 
 func StaticFile(filename string, handlers ...fiber.Handler) fiber.Handler {
@@ -48,7 +46,7 @@ type customHeader struct {
 
 func StaticWithCustomHeader(filename string) fiber.Handler {
 	return func(c *fiber.Ctx) error {
-		content, err := frontend.Static.ReadFile(filename)
+		content, err := frontendReadFile(filename)
 		if err != nil {
 			return err
 		}
@@ -68,7 +66,7 @@ func StaticWithCustomHeader(filename string) fiber.Handler {
 }
 
 func sendFile(c *fiber.Ctx, filename string, handlers ...fiber.Handler) error {
-	content, err := frontend.Static.ReadFile(filename)
+	content, err := frontendReadFile(filename)
 	if err != nil {
 		if errors.Is(err, fs.ErrNotExist) {
 			return fiber.ErrNotFound

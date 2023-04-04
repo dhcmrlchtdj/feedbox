@@ -28,17 +28,6 @@ const esbuildOpts = {
 	outdir: r(`../_build/`),
 }
 
-const rebuildPlugin = {
-	name: "rebuild",
-	setup(build) {
-		build.onEnd((result) => {
-			const r = normalizeResult(result)
-			logResult(r)
-			buildHtml(r)
-		})
-	},
-}
-
 export async function buildApp(enableWatch = false) {
 	const opt = {
 		...esbuildOpts,
@@ -50,8 +39,8 @@ export async function buildApp(enableWatch = false) {
 				dev: !prod,
 				css: "external",
 			}),
-			enableWatch && rebuildPlugin,
-		].filter(Boolean),
+			afterBuild({ html: true }),
+		],
 		entryPoints: [r("../src/app.ts")],
 		entryNames: "[name]-[hash]",
 	}
@@ -59,11 +48,7 @@ export async function buildApp(enableWatch = false) {
 	if (enableWatch) {
 		return (await esbuild.context(opt)).watch()
 	} else {
-		return esbuild
-			.build(opt)
-			.then(normalizeResult)
-			.then(logResult)
-			.then(buildHtml)
+		return esbuild.build(opt)
 	}
 }
 
@@ -88,7 +73,7 @@ export async function buildServiceWorker(enableWatch = false) {
 		},
 		plugins: [
 			sveltePlugin({ generate: "ssr", dev: !prod, css: "none" }),
-			enableWatch && rebuildPlugin,
+			afterBuild({ html: false }),
 		].filter(Boolean),
 		entryPoints: [r("../src/sw/index.ts")],
 		entryNames: "sw",
@@ -97,7 +82,20 @@ export async function buildServiceWorker(enableWatch = false) {
 	if (enableWatch) {
 		return (await esbuild.context(opt)).watch()
 	} else {
-		return esbuild.build(opt).then(normalizeResult).then(logResult)
+		return esbuild.build(opt)
+	}
+}
+
+function afterBuild(opts) {
+	return {
+		name: "afterBuild",
+		setup(build) {
+			build.onEnd((result) => {
+				const r = normalizeResult(result)
+				logResult(r)
+				if (opts.html) buildHtml(r)
+			})
+		},
 	}
 }
 
