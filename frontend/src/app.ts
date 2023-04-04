@@ -1,5 +1,7 @@
 // @ts-ignore
 import App from "./components/app.html"
+import "./app.reset.css"
+
 import {
 	Composed,
 	DefaultLayer,
