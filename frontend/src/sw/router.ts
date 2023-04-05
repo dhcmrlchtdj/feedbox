@@ -100,8 +100,6 @@ export const router = new WorkerRouter<RouterContext>()
 	.delete("/api/v1/feeds/remove", getThenUpdate)
 	// static
 	.get("/sw.js", just(version.STATIC, "networkOnly"))
-	.get("/favicon.ico", just(version.STATIC, "cacheFirst"))
-	.get("/npm/*", just(version.STATIC, "cacheFirst"))
 	.get("/:file", ({ event, params }) => {
 		const file = params.get("file")!
 		if (

@@ -11,16 +11,15 @@ export const cacheOnly: strategy = async (cache, req) => {
 
 export const cacheFirst: strategy = async (cache, req) => {
 	const cached = await cache.match(req)
-	if (cached) return cached
-	const fetched = fetch(req).then((resp) => {
-		if (resp.ok) {
-			cache.put(req, resp.clone())
-		} else {
-			cache.delete(req)
+	if (cached) {
+		// @ts-expect-error
+		if (process.env.NODE_ENV !== "production") {
+			fetchResource(req, cache)
 		}
-		return resp
-	})
-	return fetched
+		return cached
+	} else {
+		return fetchResource(req, cache)
+	}
 }
 
 export const networkOnly: strategy = async (_cache, req) => {
@@ -28,7 +27,17 @@ export const networkOnly: strategy = async (_cache, req) => {
 }
 
 export const networkFirst: strategy = async (cache, req) => {
-	const fetched = fetch(req).then((resp) => {
+	const fetched = fetchResource(req, cache)
+	const resp = fetched.catch(async (err) => {
+		const cached = await cache.match(req)
+		if (cached) return cached
+		throw err
+	})
+	return resp
+}
+
+function fetchResource(req: Request | string, cache: Cache): Promise<Response> {
+	return fetch(req).then((resp) => {
 		if (resp.ok) {
 			cache.put(req, resp.clone())
 		} else {
@@ -36,10 +45,4 @@ export const networkFirst: strategy = async (cache, req) => {
 		}
 		return resp
 	})
-	const resp = fetched.catch(async (err) => {
-		const cached = await cache.match(req)
-		if (cached) return cached
-		throw err
-	})
-	return resp
 }
