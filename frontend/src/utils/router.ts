@@ -97,7 +97,7 @@ class Tree<T> {
 export type Params = Map<string, string>
 type Handler<Context> = (ctx: Context) => Response | Promise<Response>
 
-export class WorkerRouter<Context> {
+export class Router<Context> {
 	private _router: Tree<Handler<Context>>
 	private _fallbackHandler: Handler<Context> | null
 	constructor() {

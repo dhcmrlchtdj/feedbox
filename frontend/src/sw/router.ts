@@ -1,6 +1,6 @@
 // @ts-ignore
 import App from "../components/app.html"
-import { WorkerRouter } from "./worker_router"
+import { Router } from "../utils/router"
 import * as strategy from "./strategy"
 import * as version from "./version"
 import { sanitize } from "../utils/sanitize"
@@ -37,7 +37,7 @@ type RouterContext = {
 	params: Map<string, string>
 	event: FetchEvent
 }
-export const router = new WorkerRouter<RouterContext>()
+export const router = new Router<RouterContext>()
 	.fallback(just(version.API, "networkOnly"))
 	// homepage
 	.get("/", async ({ event }) => {
