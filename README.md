@@ -8,4 +8,5 @@ convert RSS to email/telegram.
 - self-host
 	- how to [deploy](https://github.com/dhcmrlchtdj/feedbox/blob/master/DEPLOYMENT.md) with systemd
 	- GitHub OAuth
-	- MailChannels(CloudFlare) or Mailgun
+	- MailChannels(Cloudflare) or Mailgun
+	- Telegram

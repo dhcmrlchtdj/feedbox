@@ -52,7 +52,6 @@ func startServerAndWorker() {
 	ctx, cancel := context.WithCancel(context.Background())
 	ctx = logger.WithContext(ctx)
 
-	// zerolog.Ctx(ctx)
 	initEnv()
 	initLogger()
 	initDatabase(ctx)
@@ -238,6 +237,7 @@ func initDatabase(ctx context.Context) {
 }
 
 func initEmail() {
+	global.Email = email.NewDryRun()
 	if os.Getenv("ENV") == "prod" {
 		if util.CheckEnvsExist("MAILCHANNELS_URL", "MAILCHANNELS_USERNAME", "MAILCHANNELS_PASSWORD") {
 			global.Email = email.NewMailChannels(
@@ -251,24 +251,20 @@ func initEmail() {
 				os.Getenv("MAILGUN_API_KEY"),
 				os.Getenv("MAILGUN_FROM"),
 			)
-		} else {
-			panic("no available mail service")
 		}
-	} else {
-		global.Email = email.NewDryRun()
 	}
 }
 
 func initTelegram() {
+	global.Telegram = telegram.NewDryRun()
 	if os.Getenv("ENV") == "prod" {
 		util.CheckEnvs("SERVER")
-		util.CheckEnvs("TELEGRAM_BOT_NAME", "TELEGRAM_BOT_TOKEN")
-		global.Telegram = telegram.NewHTTPClient(
-			os.Getenv("TELEGRAM_BOT_NAME"),
-			os.Getenv("TELEGRAM_BOT_TOKEN"),
-		)
-	} else {
-		global.Telegram = telegram.NewDryRun()
+		if util.CheckEnvsExist("TELEGRAM_BOT_NAME", "TELEGRAM_BOT_TOKEN") {
+			global.Telegram = telegram.NewHTTPClient(
+				os.Getenv("TELEGRAM_BOT_NAME"),
+				os.Getenv("TELEGRAM_BOT_TOKEN"),
+			)
+		}
 	}
 }
 
