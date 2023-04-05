@@ -15,14 +15,15 @@ build:
 	go build $(GOFLAGS) -o ./_build/app
 
 dev:
-	$(MAKE) --jobs=2 _dev
+	$(MAKE) --jobs=2 _dev_ui _dev_server
 
-_dev: _dev_ui _dev_server
 _dev_ui:
 	cd frontend && $(MAKE) dev
 _dev_server:
 	# make dev | jq -c -R '. as $line | try fromjson catch $line'
-	go run -tags=dev -race ./main.go serverAndWorker 2>&1 | jq
+	# go run -tags=dev -race ./main.go serverAndWorker 2>&1 | jq
+	go run -tags=dev -race ./main.go serverAndWorker 2>&1 | \
+		jq -R '. as $$line | try fromjson catch $$line'
 
 fmt:
 	gofumpt -w .
@@ -61,5 +62,5 @@ test_update:
 #     ENV=test go test -cover -coverprofile=./_build/cover.out ./...
 #     go tool cover -html=./_build/cover.out
 
-migrate:
+migrate: build
 	./_build/app migrate up
