@@ -5,10 +5,12 @@ import (
 	"fmt"
 	"strings"
 	"sync"
+	"time"
+
+	"github.com/rs/zerolog"
 
 	"github.com/dhcmrlchtdj/feedbox/internal/global"
 	"github.com/dhcmrlchtdj/feedbox/internal/util"
-	"github.com/rs/zerolog"
 )
 
 func isTelegramChannel(ghItem githubItem) bool {
@@ -16,6 +18,8 @@ func isTelegramChannel(ghItem githubItem) bool {
 }
 
 func sendEmail(ctx context.Context, done *sync.WaitGroup, qGithub <-chan githubItem) {
+	rateLimiter := NewRateLimiter(5, time.Second)
+
 	logger := zerolog.Ctx(ctx)
 
 	worker := func(x githubItem) {
@@ -51,6 +55,7 @@ func sendEmail(ctx context.Context, done *sync.WaitGroup, qGithub <-chan githubI
 		content := text.String()
 
 		for _, user := range x.users {
+			rateLimiter.Wait()
 			err := global.Email.Send(ctx, user, subject, content)
 			if err != nil {
 				logger.Error().Str("module", "worker").Stack().Err(err).Send()
