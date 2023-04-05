@@ -3,10 +3,7 @@ type strategy = (cache: Cache, req: Request | string) => Promise<Response>
 export const cacheOnly: strategy = async (cache, req) => {
 	const cached = await cache.match(req)
 	if (cached) return cached
-	return new Response("Cache Not Found", {
-		status: 404,
-		statusText: "Not Found",
-	})
+	return new Response("Cache Not Found", { status: 404 })
 }
 
 export const cacheFirst: strategy = async (cache, req) => {
