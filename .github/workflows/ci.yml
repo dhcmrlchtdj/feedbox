@@ -33,9 +33,9 @@ jobs:
                   TELEGRAM_WEBHOOK_PATH: "131cd9868e9cf396a807c265a3c97e72"
                   GITHUB_CLIENT_ID: "https://github.com/settings/developers"
                   GITHUB_CLIENT_SECRET: "https://github.com/settings/developers"
-                  MAILGUN_API_KEY: "key-example"
-                  MAILGUN_DOMAIN: "feedbox.example.com"
-                  MAILGUN_FROM: "feedbox <feedbox@example.com>"
+                  MAILCHANNELS_URL: "https://email.YOUR.workers.dev"
+                  MAILCHANNELS_USERNAME: "feedbox"
+                  MAILCHANNELS_PASSWORD: "feedbox"
                   TELEGRAM_BOT_TOKEN: "123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11"
                   TELEGRAM_BOT_NAME: "bot_name"
             # https://github.com/marketplace/actions/setup-node-js-environment

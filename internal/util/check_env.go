@@ -9,3 +9,12 @@ func CheckEnvs(names ...string) {
 		}
 	}
 }
+
+func CheckEnvsExist(names ...string) bool {
+	for _, name := range names {
+		if os.Getenv(name) == "" {
+			return false
+		}
+	}
+	return true
+}

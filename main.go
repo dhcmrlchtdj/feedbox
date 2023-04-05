@@ -239,12 +239,21 @@ func initDatabase(ctx context.Context) {
 
 func initEmail() {
 	if os.Getenv("ENV") == "prod" {
-		util.CheckEnvs("MAILGUN_DOMAIN", "MAILGUN_API_KEY", "MAILGUN_FROM")
-		global.Email = email.NewMailgun(
-			os.Getenv("MAILGUN_DOMAIN"),
-			os.Getenv("MAILGUN_API_KEY"),
-			os.Getenv("MAILGUN_FROM"),
-		)
+		if util.CheckEnvsExist("MAILCHANNELS_URL", "MAILCHANNELS_USERNAME", "MAILCHANNELS_PASSWORD") {
+			global.Email = email.NewMailChannels(
+				os.Getenv("MAILCHANNELS_URL"),
+				os.Getenv("MAILCHANNELS_USERNAME"),
+				os.Getenv("MAILCHANNELS_PASSWORD"),
+			)
+		} else if util.CheckEnvsExist("MAILGUN_DOMAIN", "MAILGUN_API_KEY", "MAILGUN_FROM") {
+			global.Email = email.NewMailgun(
+				os.Getenv("MAILGUN_DOMAIN"),
+				os.Getenv("MAILGUN_API_KEY"),
+				os.Getenv("MAILGUN_FROM"),
+			)
+		} else {
+			panic("no available mail service")
+		}
 	} else {
 		global.Email = email.NewDryRun()
 	}
