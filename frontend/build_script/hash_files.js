@@ -1,6 +1,6 @@
-import crypto from "crypto"
-import fs from "fs/promises"
-import path from "path"
+import * as crypto from "node:crypto"
+import * as fs from "node:fs/promises"
+import * as path from "node:path"
 
 const pMap = (arr, fn) => Promise.all(arr.map(fn))
 
@@ -13,10 +13,9 @@ export async function hashFiles(...entries) {
 
 	const digest = await files
 		.sort()
-		.map((file) => fs.readFile(file))
 		.reduce(async (acc, file) => {
 			const hash = await acc
-			const data = await file
+			const data = await fs.readFile(file)
 			hash.update(data)
 			return hash
 		}, crypto.createHash("sha256"))

@@ -2,8 +2,8 @@
 // https://svelte.dev/docs#svelte_compile
 // https://github.com/EMH333/esbuild-svelte
 
-import fs from "fs/promises"
-import path from "path"
+import * as fs from "node:fs/promises"
+import * as path from "node:path"
 import * as svelte from "svelte/compiler"
 
 const defaultOpts = {

@@ -1,7 +1,7 @@
 // https://esbuild.github.io/api/#build-api
 
-import path from "path"
-import esbuild from "esbuild"
+import * as path from "node:path"
+import * as esbuild from "esbuild"
 import { hashFiles } from "./hash_files.js"
 import { sveltePlugin } from "./svelte_plugin.js"
 import { template } from "./template.js"
@@ -56,11 +56,13 @@ export async function buildServiceWorker(enableWatch = false) {
 	const hashStatic = await hashFiles(
 		r("./"),
 		r("../src/"),
+		r("../package.json"),
 		r("../pnpm-lock.yaml"),
 	)
 	const hashAPI = await hashFiles(
 		r("../../server/"),
 		r("../../internal/"),
+		r("../../go.mod"),
 		r("../../go.sum"),
 	)
 
