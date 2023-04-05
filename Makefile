@@ -38,7 +38,7 @@ test:
 
 clean:
 	# rm -rf ./**/.snapshots
-	go clean -testcache ./...
+	go clean -testcache
 	-rm -rf ./_build
 
 # outdated:
