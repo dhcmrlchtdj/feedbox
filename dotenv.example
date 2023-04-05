@@ -11,13 +11,16 @@ TELEGRAM_WEBHOOK_PATH="openssl rand -hex 16"
 GITHUB_CLIENT_ID="https://github.com/settings/developers"
 GITHUB_CLIENT_SECRET="https://github.com/settings/developers"
 
+# optional
 MAILCHANNELS_URL="https://email.YOUR.workers.dev"
 MAILCHANNELS_USERNAME="feedbox"
 MAILCHANNELS_PASSWORD="feedbox"
 
+# optional
 MAILGUN_API_KEY="key-example"
 MAILGUN_DOMAIN="feedbox.example.com"
 MAILGUN_FROM="feedbox <feedbox@example.com>"
 
+# optional
 TELEGRAM_BOT_NAME="bot_name"
 TELEGRAM_BOT_TOKEN="123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11"
