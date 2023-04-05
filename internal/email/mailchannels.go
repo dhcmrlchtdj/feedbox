@@ -16,29 +16,39 @@ type mailchannels struct {
 	workerUrl string
 	username  string
 	password  string
+	fromAddr  mcAddress
 }
 
-type mailchannelsPayload struct {
-	To      []string `json:"to"`
-	Subject string   `json:"subject"`
-	Content string   `json:"content"`
-}
-
-func NewMailChannels(workerUrl string, username string, password string) *mailchannels {
+func NewMailChannels(workerUrl string, username string, password string, fromAddr string, fromName string) *mailchannels {
 	return &mailchannels{
 		client:    new(http.Client),
 		workerUrl: workerUrl,
 		username:  username,
 		password:  password,
+		fromAddr: mcAddress{
+			Email: fromAddr,
+			Name:  fromName,
+		},
 	}
 }
 
-func (c *mailchannels) Send(ctx context.Context, addr string, subject string, text string) error {
-	payload, err := json.Marshal(mailchannelsPayload{
-		To:      []string{addr},
+func (c *mailchannels) buildSendPayload(addr string, subject string, text string) mcPayload {
+	payload := mcPayload{
 		Subject: subject,
-		Content: text,
-	})
+		Content: []mcContent{
+			{Type: "text/plain", Value: text},
+			{Type: "text/html", Value: text},
+		},
+		From: c.fromAddr,
+		Personalizations: []mcPersonalization{
+			{To: []mcAddress{{Email: addr}}},
+		},
+	}
+	return payload
+}
+
+func (c *mailchannels) Send(ctx context.Context, addr string, subject string, text string) error {
+	payload, err := json.Marshal(c.buildSendPayload(addr, subject, text))
 	if err != nil {
 		return err
 	}
@@ -61,10 +71,41 @@ func (c *mailchannels) Send(ctx context.Context, addr string, subject string, te
 	}
 	defer resp.Body.Close()
 
-	if resp.StatusCode >= 300 {
-		e := errors.New(resp.Status)
-		return errors.Wrap(e, "mailchannels failure")
+	if resp.StatusCode != 202 {
+		return errors.Errorf("mailchannels return '%v'", resp.Status)
 	}
 
 	return nil
+}
+
+type mcAddress struct {
+	Email string `json:"email"`
+	Name  string `json:"name,omitempty"`
+}
+
+type mcContent struct {
+	Type  string `json:"type"`
+	Value string `json:"value"`
+}
+
+type mcPersonalization struct {
+	To []mcAddress `json:"to"`
+	// Cc             []mcAddress       `json:"cc,omitempty"`
+	// Bcc            []mcAddress       `json:"bcc,omitempty"`
+	// DkimDomain     string            `json:"Dkim_domain,omitempty"`
+	// DkimPrivateKey string            `json:"Dkim_private_key,omitempty"`
+	// DkimSelector   string            `json:"Dkim_selector,omitempty"`
+	// From           *mcAddress        `json:"from,omitempty"`
+	// Headers        map[string]string `json:"headers,omitempty"`
+	// ReplyTo        *mcAddress        `json:"reply_to,omitempty"`
+	// Subject        string            `json:"subject,omitempty"`
+}
+
+type mcPayload struct {
+	Subject          string              `json:"subject"`
+	Content          []mcContent         `json:"content"`
+	From             mcAddress           `json:"from"`
+	Personalizations []mcPersonalization `json:"personalizations"`
+	// Headers          map[string]string   `json:"headers,omitempty"`
+	// ReplyTo          *mcAddress          `json:"reply_to,omitempty"`
 }
