@@ -36,7 +36,7 @@ func (c *mailchannels) buildSendPayload(addr string, subject string, text string
 	payload := mcPayload{
 		Subject: subject,
 		Content: []mcContent{
-			{Type: "text/plain", Value: text},
+			// {Type: "text/plain", Value: text},
 			{Type: "text/html", Value: text},
 		},
 		From: c.fromAddr,

@@ -35,7 +35,7 @@ func (c *mailgun) Send(ctx context.Context, addr string, subject string, text st
 		Str("from", c.from).
 		Str("to", addr).
 		Str("subject", subject).
-		Str("text", text).
+		// Str("text", text).
 		Str("html", text).
 		Str("o:dkim", "yes")
 	if err := m.Close(); err != nil {
