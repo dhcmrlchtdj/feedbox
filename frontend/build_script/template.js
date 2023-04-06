@@ -3,9 +3,8 @@ import * as path from "node:path"
 
 export async function template(input, output, pattern) {
 	const replace = (tmpl) => {
-		pattern.sort(([f1], [f2]) => f2.length - f1.length)
 		return pattern.reduce((content, [fromPattern, toPattern]) => {
-			return content.replaceAll(fromPattern, toPattern)
+			return content.replaceAll(`{{${fromPattern}}}`, toPattern)
 		}, tmpl)
 	}
 
