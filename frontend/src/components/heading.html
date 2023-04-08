@@ -1,9 +1,15 @@
+<style>
+	:global(.sw.loading) {
+		width: 0.8rem;
+		vertical-align: text-top;
+	}
+</style>
+
 <div class="column col-12">
 	<h1 class="d-inline-block mb-0">FeedBox</h1>
 	<span
-		class="loading d-inline-block"
+		class="sw loading d-inline-block"
 		class:d-invisible="{$initialized}"
-		style="width: 0.8rem; vertical-align: text-top"
 	></span>
 	<span>{$email}</span>
 	<a
