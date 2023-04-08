@@ -1,5 +1,5 @@
-import { router } from "./router"
-import * as version from "./version"
+import { router } from "./router.js"
+import * as version from "./version.js"
 
 declare const self: ServiceWorkerGlobalScope
 

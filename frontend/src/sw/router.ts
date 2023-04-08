@@ -1,9 +1,9 @@
 // @ts-ignore
 import App from "../components/app.html"
-import { Router } from "../utils/router"
-import * as strategy from "./strategy"
-import * as version from "./version"
-import { sanitize } from "../utils/sanitize"
+import { Router } from "../utils/router.js"
+import * as strategy from "./strategy.js"
+import * as version from "./version.js"
+import { sanitize } from "../utils/sanitize.js"
 
 const just =
 	(

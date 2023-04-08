@@ -7,7 +7,7 @@ import {
 	DefaultLayer,
 	QueryLayer,
 	SessionStorageLayer,
-} from "./storage"
+} from "./storage.js"
 
 new App({
 	target: document.querySelector("#app"),

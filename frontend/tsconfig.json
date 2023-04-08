@@ -4,10 +4,9 @@
 		"outDir": "node_modules/",
 		"noEmit": true,
 
-		"module": "ES6",
+		"module": "ESNext",
 		"target": "ESNext",
 		"lib": ["ESNext", "DOM", "WebWorker"],
-		"skipLibCheck": true,
 
 		"sourceMap": false,
 		"inlineSourceMap": false,
@@ -17,10 +16,11 @@
 		"declaration": false,
 		"incremental": true,
 
-		"moduleResolution": "node",
-		"isolatedModules": true,
-		"resolveJsonModule": true,
+		"moduleResolution": "NodeNext",
+		"resolveJsonModule": false,
 		"esModuleInterop": false,
+		"forceConsistentCasingInFileNames": true,
+		"verbatimModuleSyntax": true,
 
 		"strict": true,
 		"allowUnreachableCode": false,
@@ -33,6 +33,9 @@
 		"noUncheckedIndexedAccess": true,
 		"noUnusedLocals": true,
 		"noUnusedParameters": true,
+
+		"checkJs": true,
+		"skipLibCheck": true,
 
 		"pretty": true
 	}
