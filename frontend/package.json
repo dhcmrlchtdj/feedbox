@@ -28,5 +28,10 @@
 		"endOfLine": "lf",
 		"embeddedLanguageFormatting": "auto",
 		"singleAttributePerLine": true
+	},
+	"pnpm": {
+		"patchedDependencies": {
+			"svelte@3.58.0": "patches/svelte@3.58.0.patch"
+		}
 	}
 }

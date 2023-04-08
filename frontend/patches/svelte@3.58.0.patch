@@ -1,0 +1,19 @@
+diff --git a/compiler.mjs b/compiler.mjs
+index 975aed0b010eae0780762030c0a200108094ea9f..e480a125aa2664f48bd6d8cd6129346bc2a9532f 100644
+--- a/compiler.mjs
++++ b/compiler.mjs
+@@ -39126,12 +39126,12 @@ function ssr(component, options) {
+         ...reactive_store_subscriptions,
+         instance_javascript,
+         ...parent_bindings,
+-        css.code && b `$$result.css.add(#css);`,
++        css.code && options.css === "injected" && b `$$result.css.add(#css);`,
+         main
+     ].filter(Boolean);
+     const css_sourcemap_enabled = check_enable_sourcemap(options.enableSourcemap, 'css');
+     const js = b `
+-		${css.code ? b `
++		${css.code && options.css === "injected" ? b `
+ 		const #css = {
+ 			code: "${css.code}",
+ 			map: ${css_sourcemap_enabled && css.map ? string_literal(css.map.toString()) : 'null'}
