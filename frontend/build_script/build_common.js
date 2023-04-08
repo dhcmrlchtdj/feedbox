@@ -74,7 +74,7 @@ export async function buildServiceWorker(enableWatch = false) {
 			__API_VERSION__: JSON.stringify(hashAPI),
 		},
 		plugins: [
-			sveltePlugin({ generate: "ssr", dev: !prod, css: "none" }),
+			sveltePlugin({ generate: "ssr", dev: !prod, css: "external" }),
 			afterBuild({ html: false }),
 		].filter(Boolean),
 		entryPoints: [r("../src/sw/index.ts")],
