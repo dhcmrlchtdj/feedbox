@@ -4,11 +4,11 @@
 	"version": "0.0.0",
 	"type": "module",
 	"devDependencies": {
-		"esbuild": "0.17.15",
-		"prettier": "2.8.7",
+		"esbuild": "0.17.18",
+		"prettier": "2.8.8",
 		"spectre.css": "0.5.9",
 		"svelte": "3.58.0",
-		"typescript": "5.0.3"
+		"typescript": "5.0.4"
 	},
 	"prettier": {
 		"printWidth": 80,
