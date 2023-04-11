@@ -16,19 +16,14 @@ type mailchannels struct {
 	workerUrl string
 	username  string
 	password  string
-	fromAddr  mcAddress
 }
 
-func NewMailChannels(workerUrl string, username string, password string, fromAddr string, fromName string) *mailchannels {
+func NewMailChannels(workerUrl string, username string, password string) *mailchannels {
 	return &mailchannels{
 		client:    new(http.Client),
 		workerUrl: workerUrl,
 		username:  username,
 		password:  password,
-		fromAddr: mcAddress{
-			Email: fromAddr,
-			Name:  fromName,
-		},
 	}
 }
 
@@ -39,7 +34,6 @@ func (c *mailchannels) buildSendPayload(addr string, subject string, text string
 			// {Type: "text/plain", Value: text},
 			{Type: "text/html", Value: text},
 		},
-		From: c.fromAddr,
 		Personalizations: []mcPersonalization{
 			{To: []mcAddress{{Email: addr}}},
 		},
@@ -104,8 +98,8 @@ type mcPersonalization struct {
 type mcPayload struct {
 	Subject          string              `json:"subject"`
 	Content          []mcContent         `json:"content"`
-	From             mcAddress           `json:"from"`
 	Personalizations []mcPersonalization `json:"personalizations"`
+	// From             mcAddress           `json:"from"`
 	// Headers          map[string]string   `json:"headers,omitempty"`
 	// ReplyTo          *mcAddress          `json:"reply_to,omitempty"`
 }

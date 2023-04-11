@@ -15,8 +15,6 @@ GITHUB_CLIENT_SECRET="https://github.com/settings/developers"
 MAILCHANNELS_URL="https://email.YOUR.workers.dev"
 MAILCHANNELS_USERNAME="feedbox"
 MAILCHANNELS_PASSWORD="feedbox"
-MAILCHANNELS_FROM_ADDR="feedbox@example.com"
-MAILCHANNELS_FROM_NAME="feedbox"
 
 # optional
 MAILGUN_API_KEY="key-example"

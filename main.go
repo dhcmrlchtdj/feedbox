@@ -239,13 +239,11 @@ func initDatabase(ctx context.Context) {
 func initEmail() {
 	global.Email = email.NewDryRun()
 	if os.Getenv("ENV") == "prod" {
-		if util.CheckEnvsExist("MAILCHANNELS_URL", "MAILCHANNELS_USERNAME", "MAILCHANNELS_PASSWORD", "MAILCHANNELS_FROM_ADDR") {
+		if util.CheckEnvsExist("MAILCHANNELS_URL", "MAILCHANNELS_USERNAME", "MAILCHANNELS_PASSWORD") {
 			global.Email = email.NewMailChannels(
 				os.Getenv("MAILCHANNELS_URL"),
 				os.Getenv("MAILCHANNELS_USERNAME"),
 				os.Getenv("MAILCHANNELS_PASSWORD"),
-				os.Getenv("MAILCHANNELS_FROM_ADDR"),
-				os.Getenv("MAILCHANNELS_FROM_NAME"),
 			)
 		} else if util.CheckEnvsExist("MAILGUN_DOMAIN", "MAILGUN_API_KEY", "MAILGUN_FROM") {
 			global.Email = email.NewMailgun(
