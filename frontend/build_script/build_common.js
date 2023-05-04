@@ -1,5 +1,6 @@
 // https://esbuild.github.io/api/#build-api
 
+import * as url from "node:url"
 import * as path from "node:path"
 import * as esbuild from "esbuild"
 import { hashFiles } from "./hash_files.js"
@@ -7,7 +8,7 @@ import { sveltePlugin } from "./svelte_plugin.js"
 import { template } from "./template.js"
 
 const r = (p) =>
-	path.relative(process.cwd(), new URL(p, import.meta.url).pathname)
+	path.relative(process.cwd(), url.fileURLToPath(new URL(p, import.meta.url)))
 
 const prod = process.env.NODE_ENV === "production"
 
