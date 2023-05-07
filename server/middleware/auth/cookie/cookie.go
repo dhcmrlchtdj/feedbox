@@ -2,10 +2,14 @@ package cookie
 
 import (
 	"context"
+	"encoding/json"
 	"time"
 
 	"github.com/gofiber/fiber/v2"
+	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
+
+	"github.com/dhcmrlchtdj/feedbox/internal/global"
 )
 
 type Config struct {
@@ -62,4 +66,48 @@ func Clear(c *fiber.Ctx) {
 		HTTPOnly: true,
 		SameSite: "strict",
 	})
+}
+
+///
+
+type UserProfile struct {
+	UserID    int64
+	ExpiresAt int64
+}
+
+func EncodeToToken(userID int64) (string, error) {
+	token := UserProfile{
+		UserID:    userID,
+		ExpiresAt: time.Now().Add(time.Hour * 24 * 3).Unix(),
+	}
+
+	plaintext, err := json.Marshal(token)
+	if err != nil {
+		return "", err
+	}
+	tokenStr, err := global.Sign.EncodeToHex(plaintext)
+	if err != nil {
+		return "", err
+	}
+
+	return tokenStr, nil
+}
+
+func DecodeFromToken(tokenStr string) (UserProfile, error) {
+	var user UserProfile
+
+	plaintext, err := global.Sign.DecodeFromHex(tokenStr)
+	if err != nil {
+		return user, errors.New("invalid token")
+	}
+
+	if err := json.Unmarshal(plaintext, &user); err != nil {
+		return user, errors.New("broken token")
+	}
+
+	if time.Now().Unix() > user.ExpiresAt {
+		return user, errors.New("expired token")
+	}
+
+	return user, nil
 }

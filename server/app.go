@@ -2,9 +2,7 @@ package server
 
 import (
 	"context"
-	"encoding/json"
 	"os"
-	"time"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/expvar"
@@ -23,7 +21,6 @@ import (
 	"github.com/dhcmrlchtdj/feedbox/server/middleware/logger"
 	"github.com/dhcmrlchtdj/feedbox/server/middleware/secure"
 	"github.com/dhcmrlchtdj/feedbox/server/middleware/validate"
-	"github.com/dhcmrlchtdj/feedbox/server/types"
 )
 
 func Create(ctx context.Context) *fiber.App {
@@ -114,16 +111,9 @@ func errorHandler(c *fiber.Ctx, err error) error {
 }
 
 func cookieValidator(ctx context.Context, tokenStr string) ( /* Credential */ any, error) {
-	plaintext, err := global.Sign.DecodeFromHex(tokenStr)
+	credential, err := cookie.DecodeFromToken(tokenStr)
 	if err != nil {
-		return nil, errors.New("invalid token")
-	}
-	var credential types.Credential
-	if err := json.Unmarshal(plaintext, &credential); err != nil {
-		return nil, errors.New("broken token")
-	}
-	if time.Now().Unix() > credential.ExpiresAt {
-		return nil, errors.New("expired token")
+		return nil, err
 	}
 
 	if _, err = global.Database.GetUserByID(ctx, credential.UserID); err != nil {

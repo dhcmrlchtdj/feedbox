@@ -9,12 +9,12 @@ import (
 	"github.com/dhcmrlchtdj/feedbox/internal/database"
 	"github.com/dhcmrlchtdj/feedbox/internal/global"
 	"github.com/dhcmrlchtdj/feedbox/internal/util"
-	"github.com/dhcmrlchtdj/feedbox/server/types"
+	"github.com/dhcmrlchtdj/feedbox/server/middleware/auth/cookie"
 )
 
 func FeedList(c *fiber.Ctx) error {
 	ctx := c.UserContext()
-	credential := c.Locals("credential").(types.Credential)
+	credential := c.Locals("credential").(cookie.UserProfile)
 
 	feeds, err := global.Database.GetFeedByUser(ctx, credential.UserID, "updated")
 	if err != nil {
@@ -34,7 +34,7 @@ func FeedAdd(c *fiber.Ctx) error {
 	}
 
 	ctx := c.UserContext()
-	credential := c.Locals("credential").(types.Credential)
+	credential := c.Locals("credential").(cookie.UserProfile)
 
 	feedID, err := global.Database.GetFeedIDByURL(ctx, strings.TrimSpace(b.URL))
 	if err != nil {
@@ -66,7 +66,7 @@ func FeedRemove(c *fiber.Ctx) error {
 	}
 
 	ctx := c.UserContext()
-	credential := c.Locals("credential").(types.Credential)
+	credential := c.Locals("credential").(cookie.UserProfile)
 
 	if err := global.Database.Unsubscribe(ctx, credential.UserID, b.FeedID); err != nil {
 		return err
@@ -81,7 +81,7 @@ func FeedRemove(c *fiber.Ctx) error {
 
 func FeedExport(c *fiber.Ctx) error {
 	ctx := c.UserContext()
-	credential := c.Locals("credential").(types.Credential)
+	credential := c.Locals("credential").(cookie.UserProfile)
 
 	feeds, err := global.Database.GetFeedByUser(ctx, credential.UserID, "url")
 	if err != nil {
@@ -95,7 +95,7 @@ func FeedExport(c *fiber.Ctx) error {
 
 func FeedImport(c *fiber.Ctx) error {
 	ctx := c.UserContext()
-	credential := c.Locals("credential").(types.Credential)
+	credential := c.Locals("credential").(cookie.UserProfile)
 
 	fileheader, err := c.FormFile("opml")
 	if err != nil {
