@@ -30,7 +30,7 @@ func (ct *customRSSTranslator) Translate(feed any) (*gofeed.Feed, error) {
 
 	for i, item := range rssFeed.Items {
 		comments := item.Comments
-		if len(comments) > 0 {
+		if comments != "" {
 			f.Items[i].Custom = map[string]string{"comments": comments}
 		}
 	}

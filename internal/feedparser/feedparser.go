@@ -24,7 +24,7 @@ func (p *FeedParser) ParseURL(ctx context.Context, url string, etag string) (*go
 	if err != nil {
 		return nil, "", err
 	}
-	if len(etag) > 0 {
+	if etag != "" {
 		req.Header.Set("If-None-Match", etag)
 	}
 	req.Header.Set("User-Agent", "FeedBox/2.0 (+https://github.com/dhcmrlchtdj/feedbox)")
