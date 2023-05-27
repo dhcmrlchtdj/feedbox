@@ -1,5 +1,8 @@
 SHELL := bash
-.SHELLFLAGS = -O globstar -c
+.SHELLFLAGS := -O globstar -e -u -o pipefail -c
+MAKEFLAGS += --warn-undefined-variables
+MAKEFLAGS += --no-builtin-rules
+
 PATH := ./node_modules/.bin:$(PATH)
 
 ###
