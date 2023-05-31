@@ -23,9 +23,8 @@ func New() fiber.Handler {
 			c.Set("content-security-policy", buildCSP(
 				"default-src 'self'",
 				"script-src 'self'",
+				// https://github.com/sveltejs/svelte/issues/6662
 				"style-src 'self' 'unsafe-inline'",
-				"base-uri 'none'",
-				"object-src 'none'",
 			))
 		}
 
