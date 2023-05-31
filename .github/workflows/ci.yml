@@ -11,16 +11,16 @@ jobs:
         runs-on: ubuntu-22.04
         steps:
             # https://github.com/marketplace/actions/checkout
-            - uses: actions/checkout@v3.5.2
+            - uses: actions/checkout@v3.5.3
             # https://github.com/marketplace/actions/setup-go-environment
-            - uses: actions/setup-go@v4.0.0
+            - uses: actions/setup-go@v4.0.1
               with:
                   go-version: "1.20"
             # https://github.com/marketplace/actions/run-golangci-lint
-            - uses: golangci/golangci-lint-action@v3.4.0
+            - uses: golangci/golangci-lint-action@v3.5.0
               with:
                   # https://github.com/golangci/golangci-lint/releases
-                  version: "v1.52.2"
+                  version: "v1.53.2"
             - run: make test
               env:
                   DATABASE_URL: "sqlite://feedbox.db"
@@ -36,7 +36,7 @@ jobs:
             # https://github.com/marketplace/actions/setup-node-js-environment
             - uses: actions/setup-node@v3.6.0
               with:
-                  node-version: 20
+                  node-version: "20.x"
             # https://github.com/marketplace/actions/cache
             - uses: actions/cache@v3.3.1
               with:
@@ -46,7 +46,7 @@ jobs:
             - run: |
                   corepack enable
                   # https://www.npmjs.com/package/pnpm
-                  corepack prepare pnpm@8.4.0 --activate
+                  corepack prepare pnpm@8.6.1 --activate
                   pnpm config set store-dir ~/.local/share/pnpm/store
                   pnpm install
               env:
@@ -54,7 +54,7 @@ jobs:
               working-directory: ./frontend
             - run: make build
             # https://github.com/marketplace/actions/scp-command-to-transfer-files
-            - uses: appleboy/scp-action@v0.1.3
+            - uses: appleboy/scp-action@v0.1.4
               with:
                   host: ${{ secrets.SSH_HOST }}
                   username: ${{ secrets.SSH_USERNAME }}
@@ -62,7 +62,7 @@ jobs:
                   source: "_build/app"
                   target: "/opt/app/feedbox"
             # https://github.com/marketplace/actions/ssh-remote-commands
-            - uses: appleboy/ssh-action@v0.1.9
+            - uses: appleboy/ssh-action@v0.1.10
               with:
                   host: ${{ secrets.SSH_HOST }}
                   username: ${{ secrets.SSH_USERNAME }}

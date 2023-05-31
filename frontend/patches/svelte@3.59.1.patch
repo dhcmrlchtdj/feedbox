@@ -1,8 +1,8 @@
 diff --git a/compiler.mjs b/compiler.mjs
-index 975aed0b010eae0780762030c0a200108094ea9f..e480a125aa2664f48bd6d8cd6129346bc2a9532f 100644
+index 5dbc4a784b955e5e0f82fd87aa2b5b0fe86d6900..ad629e11f895c9f1d1dd7e3169a007dcf5e1a87f 100644
 --- a/compiler.mjs
 +++ b/compiler.mjs
-@@ -39126,12 +39126,12 @@ function ssr(component, options) {
+@@ -39417,12 +39417,12 @@ function ssr(component, options) {
          ...reactive_store_subscriptions,
          instance_javascript,
          ...parent_bindings,
