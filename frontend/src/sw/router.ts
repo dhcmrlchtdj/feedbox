@@ -23,15 +23,22 @@ const just =
 		return resp
 	}
 
-const getThenUpdate = async ({ event }: { event: FetchEvent }) => {
-	console.log(
-		`[SW] | getThenUpdate | ${version.API} | networkOnly | ${event.request.url}`,
-	)
-	const cache = await caches.open(version.API)
-	const resp = await strategy.networkOnly(cache, event.request)
-	if (resp.ok) cache.put("/api/v1/feeds", resp.clone())
-	return resp
-}
+const getThenUpdate = (() => {
+	let latestVersion = 0
+	return async ({ event }: { event: FetchEvent }) => {
+		console.log(
+			`[SW] | getThenUpdate | ${version.API} | networkOnly | ${event.request.url}`,
+		)
+		const currentVersion = latestVersion
+		const cache = await caches.open(version.API)
+		const resp = await strategy.networkOnly(cache, event.request)
+		if (resp.ok && currentVersion === latestVersion) {
+			latestVersion++
+			cache.put("/api/v1/feeds", resp.clone())
+		}
+		return resp
+	}
+})()
 
 type RouterContext = {
 	params: Map<string, string>
@@ -70,8 +77,7 @@ export const router = new Router<RouterContext>()
 				const scriptNonce = crypto.randomUUID().slice(0, 8)
 				const html = tpl.replace(
 					'<div id="app"></div>',
-					`<div id="app">${app.html}</div>
-                    <script nonce="${scriptNonce}">${inlinedState}</script>`,
+					`<div id="app">${app.html}</div><script nonce="${scriptNonce}">${inlinedState}</script>`,
 				)
 
 				const headers = new Headers(resp.headers)
