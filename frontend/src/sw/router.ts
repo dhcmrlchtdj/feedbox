@@ -110,6 +110,7 @@ export const router = new Router<RouterContext>()
 			file.endsWith(".js") ||
 			file.endsWith(".css") ||
 			file.endsWith(".map") ||
+			file.endsWith(".LEGAL.txt") ||
 			file.endsWith(".ico")
 		) {
 			return just(version.STATIC, "cacheFirst")({ event })
