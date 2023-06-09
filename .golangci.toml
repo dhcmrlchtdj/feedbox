@@ -28,6 +28,7 @@ disable = [
 	"paralleltest",
 	"revive",
 	"wrapcheck",
+	"depguard",
 ]
 
 [linters-settings.govet]

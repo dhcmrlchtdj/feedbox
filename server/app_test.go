@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"context"
 	"io"
+	"net/http"
 	"net/http/httptest"
 	"os"
 	"strings"
@@ -114,7 +115,7 @@ func setupApp() {
 }
 
 func TestCreateUser(t *testing.T) {
-	req := httptest.NewRequest("GET", "http://127.0.0.1:8000/api/connect/github", nil)
+	req := httptest.NewRequest("GET", "http://127.0.0.1:8000/api/connect/github", http.NoBody)
 	resp, err := app.Test(req)
 	if err != nil {
 		t.Fatal(err)
@@ -124,7 +125,7 @@ func TestCreateUser(t *testing.T) {
 }
 
 func TestLogout(t *testing.T) {
-	req := httptest.NewRequest("GET", "http://127.0.0.1:8000/api/logout", nil)
+	req := httptest.NewRequest("GET", "http://127.0.0.1:8000/api/logout", http.NoBody)
 	resp, err := app.Test(req)
 	if err != nil {
 		t.Fatal(err)
@@ -134,7 +135,7 @@ func TestLogout(t *testing.T) {
 }
 
 func TestUser(t *testing.T) {
-	req := httptest.NewRequest("GET", "http://127.0.0.1:8000/api/v1/user", nil)
+	req := httptest.NewRequest("GET", "http://127.0.0.1:8000/api/v1/user", http.NoBody)
 	resp, err := app.Test(req)
 	if err != nil {
 		t.Fatal(err)
@@ -164,7 +165,7 @@ func TestAddFeed(t *testing.T) {
 }
 
 func TestListFeed(t *testing.T) {
-	req := httptest.NewRequest("GET", "http://127.0.0.1:8000/api/v1/feeds", nil)
+	req := httptest.NewRequest("GET", "http://127.0.0.1:8000/api/v1/feeds", http.NoBody)
 	resp, err := app.Test(req)
 	if err != nil {
 		t.Fatal(err)
@@ -178,7 +179,7 @@ func TestListFeed(t *testing.T) {
 }
 
 func TestExportFeed(t *testing.T) {
-	req := httptest.NewRequest("GET", "http://127.0.0.1:8000/api/v1/feeds/export", nil)
+	req := httptest.NewRequest("GET", "http://127.0.0.1:8000/api/v1/feeds/export", http.NoBody)
 	resp, err := app.Test(req)
 	if err != nil {
 		t.Fatal(err)
