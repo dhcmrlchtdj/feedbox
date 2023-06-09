@@ -1,10 +1,12 @@
 export function dataGuarder<T extends unknown[]>(fn: (...args: T) => void) {
 	let latestVersion = 0
+	let nextVersion = 1
 	return () => {
-		const currentVersion = latestVersion
+		const currentVersion = nextVersion
+		nextVersion += 1
 		return (...args: Parameters<typeof fn>) => {
-			if (currentVersion !== latestVersion) return
-			latestVersion++
+			if (currentVersion <= latestVersion) return
+			latestVersion = currentVersion
 			fn(...args)
 		}
 	}
