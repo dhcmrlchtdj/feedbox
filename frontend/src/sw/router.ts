@@ -4,6 +4,7 @@ import { Router } from "../utils/router.js"
 import * as strategy from "./strategy.js"
 import * as version from "./version.js"
 import { sanitize } from "../utils/sanitize.js"
+import { dataGuarder } from "../utils/data-guarder.js"
 
 const just =
 	(
@@ -23,22 +24,19 @@ const just =
 		return resp
 	}
 
-const getThenUpdate = (() => {
-	let latestVersion = 0
-	return async ({ event }: { event: FetchEvent }) => {
-		console.log(
-			`[SW] | getThenUpdate | ${version.API} | networkOnly | ${event.request.url}`,
-		)
-		const currentVersion = latestVersion
-		const cache = await caches.open(version.API)
-		const resp = await strategy.networkOnly(cache, event.request)
-		if (resp.ok && currentVersion === latestVersion) {
-			latestVersion++
-			cache.put("/api/v1/feeds", resp.clone())
-		}
-		return resp
-	}
-})()
+const createFeedsSetter = dataGuarder((cache: Cache, r: Response) =>
+	cache.put("/api/v1/feeds", r),
+)
+const getThenUpdate = async ({ event }: { event: FetchEvent }) => {
+	console.log(
+		`[SW] | getThenUpdate | ${version.API} | networkOnly | ${event.request.url}`,
+	)
+	const setFeeds = createFeedsSetter()
+	const cache = await caches.open(version.API)
+	const resp = await strategy.networkOnly(cache, event.request)
+	if (resp.ok) setFeeds(cache, resp.clone())
+	return resp
+}
 
 type RouterContext = {
 	params: Map<string, string>

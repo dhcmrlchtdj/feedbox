@@ -1,5 +1,6 @@
 import { writable } from "svelte/store"
 import { type Writable } from "svelte/store"
+import { dataGuarder } from "./utils/data-guarder.js"
 
 export const email = writable("")
 
@@ -9,8 +10,11 @@ type Feed = {
 	url: string
 }
 export const feeds: Writable<Feed[]> = writable([])
+export const createFeedsSetter = dataGuarder((f: Feed[]) => feeds.set(f))
 
-export const notification: Writable<{ key: number; msg: string }[]> = writable([])
+export const notification: Writable<{ key: number; msg: string }[]> = writable(
+	[],
+)
 let count = 0
 export const newNotification = (msg: string) => {
 	const key = count++
