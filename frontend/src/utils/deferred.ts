@@ -1,9 +1,7 @@
 export class Deferred<T = unknown> {
 	promise: Promise<T>
-	// @ts-ignore
-	resolve: (payload: T) => void
-	// @ts-ignore
-	reject: (err: Error) => void
+	resolve!: (payload: T) => void
+	reject!: (err: Error) => void
 	constructor() {
 		this.promise = new Promise((resolve, reject) => {
 			this.resolve = resolve

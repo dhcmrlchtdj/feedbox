@@ -1,5 +1,4 @@
-import { writable } from "svelte/store"
-import { type Writable } from "svelte/store"
+import { writable, type Writable } from "svelte/store"
 import { dataGuarder } from "./utils/data-guarder.js"
 
 export const email = writable("")
