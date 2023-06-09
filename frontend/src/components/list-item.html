@@ -36,7 +36,7 @@
 
 <script>
 	import { slide } from "svelte/transition"
-	import { feeds, notify, newNotify } from "../state"
+	import { feeds, newNotification } from "../state"
 	import * as agent from "../utils/agent"
 	import { format } from "../utils/format-date"
 
@@ -62,7 +62,7 @@
 		agent
 			.del(`/api/v1/feeds/remove`, { feedID: feed.id })
 			.then((resp) => feeds.set(resp))
-			.then(() => newNotify("removed"))
+			.then(() => newNotification("removed"))
 			.catch((err) => {
 				window.alert(err.message)
 				location.reload()

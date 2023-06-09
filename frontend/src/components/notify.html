@@ -10,7 +10,7 @@
 </style>
 
 <div class="notification">
-	{#each $notify as n, i (n.key)}
+	{#each $notification as n, i (n.key)}
 	<div
 		class="toast toast-success mb-2"
 		transition:fly|local="{{x:100}}"
@@ -26,10 +26,10 @@
 
 <script>
 	import { fly } from "svelte/transition"
-	import { notify } from "../state"
+	import { notification } from "../state"
 
 	const remove = (idx) => {
-		notify.update((ns) => {
+		notification.update((ns) => {
 			ns.splice(idx, 1)
 			return [...ns]
 		})

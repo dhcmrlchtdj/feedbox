@@ -10,13 +10,13 @@ type Feed = {
 }
 export const feeds: Writable<Feed[]> = writable([])
 
-export const notify: Writable<{ key: number; msg: string }[]> = writable([])
+export const notification: Writable<{ key: number; msg: string }[]> = writable([])
 let count = 0
-export const newNotify = (msg: string) => {
+export const newNotification = (msg: string) => {
 	const key = count++
-	notify.update((prev) => [...prev, { msg, key }])
+	notification.update((prev) => [...prev, { msg, key }])
 	setTimeout(() => {
-		notify.update((prev) => [...prev.filter((x) => x.key !== key)])
+		notification.update((prev) => [...prev.filter((x) => x.key !== key)])
 	}, 5 * 1000)
 }
 

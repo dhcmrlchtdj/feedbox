@@ -23,7 +23,7 @@
 <div class="column col-12"><div class="divider"></div></div>
 
 <script>
-	import { feeds, newNotify } from "../state"
+	import { feeds, newNotification } from "../state"
 	import * as agent from "../utils/agent"
 
 	let loading = false
@@ -40,7 +40,7 @@
 		agent
 			.put(`/api/v1/feeds/add`, { url })
 			.then((resp) => feeds.set(resp))
-			.then(() => newNotify("added"))
+			.then(() => newNotification("added"))
 			.catch((err) => {
 				window.alert(err.message)
 				location.reload()
