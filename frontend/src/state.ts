@@ -3,6 +3,8 @@ import { dataGuarder } from "./utils/data-guarder.js"
 
 export const email = writable("")
 
+///
+
 type Feed = {
 	id: number
 	updated: string
@@ -10,6 +12,8 @@ type Feed = {
 }
 export const feeds: Writable<Feed[]> = writable([])
 export const createFeedsSetter = dataGuarder((f: Feed[]) => feeds.set(f))
+
+///
 
 export const notification: Writable<{ key: number; msg: string }[]> = writable(
 	[],
@@ -22,5 +26,7 @@ export const newNotification = (msg: string) => {
 		notification.update((prev) => [...prev.filter((x) => x.key !== key)])
 	}, 5 * 1000)
 }
+
+///
 
 export const initialized = writable(false)
