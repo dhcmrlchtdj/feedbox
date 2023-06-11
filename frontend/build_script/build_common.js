@@ -3,6 +3,7 @@
 import * as url from "node:url"
 import * as path from "node:path"
 import * as esbuild from "esbuild"
+import * as fs from "node:fs/promises"
 import { hashFiles } from "./hash_files.js"
 import { sveltePlugin } from "./svelte_plugin.js"
 import { template } from "./template.js"
@@ -93,54 +94,81 @@ function afterBuild(opts) {
 	return {
 		name: "afterBuild",
 		setup(build) {
-			build.onEnd((result) => {
-				const r = normalizeResult(result)
-				logResult(r)
-				if (opts.html) buildHtml(r)
+			build.onEnd(async (result) => {
+				const r = await extractInputOutput(result)
+				printInputOutput(r)
+				if (opts.html) await buildHtml(r)
 			})
 		},
 	}
 }
 
 function buildHtml(pattern) {
+	const replace = pattern.map(([input, output]) => [
+		input.replace("src", "."),
+		output.replace("_build", "."),
+	])
 	return Promise.all([
 		template(
 			r("../src/template.html"),
 			r("../_build/index.html"),
-			pattern.map(([input, output]) => [
-				input.replace("src", "."),
-				output.replace("_build", "."),
-			]),
-		).then(logResult),
+			replace,
+		).then(printInputOutput),
 		template(
 			r("../src/template.html.json"),
 			r("../_build/index.html.json"),
-			pattern.map(([input, output]) => [
-				input.replace("src", "."),
-				output.replace("_build", "."),
-			]),
-		).then(logResult),
+			replace,
+		).then(printInputOutput),
 	])
 }
 
-function normalizeResult(r) {
-	const result = Object.entries(r?.metafile?.outputs ?? {})
-		.filter(([out, meta]) => Boolean(meta.entryPoint))
-		.map(([out, meta]) => {
-			if (meta.cssBundle) {
-				return [
-					[meta.entryPoint, out],
-					[meta.entryPoint + ".css", meta.cssBundle],
-				]
-			} else {
-				return [[meta.entryPoint, out]]
+async function extractInputOutput(result) {
+	const metafile = result?.metafile
+	if (!metafile) return []
+
+	const generated = metafile.outputs
+	const inputOutputTask = Object.entries(generated)
+		.filter(([_, meta]) => Boolean(meta.entryPoint))
+		.map(async ([out, meta]) => {
+			const fileMap = []
+
+			const sourceFile = meta.entryPoint
+			const jsFile = out
+			const cssFile = meta.cssBundle
+			const metaFile = out + ".meta.json"
+
+			fileMap.push([sourceFile, jsFile])
+			if (generated[jsFile + ".map"]) {
+				fileMap.push([sourceFile + ".map", jsFile + ".map"])
 			}
+			if (generated[jsFile + ".LEGAL.txt"]) {
+				fileMap.push([sourceFile + ".LEGAL.txt", jsFile + ".LEGAL.txt"])
+			}
+
+			if (cssFile) {
+				fileMap.push([sourceFile + ".css", cssFile])
+				if (generated[cssFile + ".map"]) {
+					fileMap.push([sourceFile + ".css.map", cssFile + ".map"])
+				}
+				if (generated[cssFile + ".LEGAL.txt"]) {
+					fileMap.push([
+						sourceFile + ".css.LEGAL.txt",
+						cssFile + ".LEGAL.txt",
+					])
+				}
+			}
+
+			await fs.writeFile(metaFile, JSON.stringify(metafile, null, 4))
+			fileMap.push([sourceFile + ".meta.json", metaFile])
+
+			return fileMap
 		})
-		.flat()
-	return result
+	const inputOutput = (await Promise.all(inputOutputTask)).flat()
+
+	return inputOutput
 }
 
-function logResult(result) {
+function printInputOutput(result) {
 	result.forEach(([i, o]) => console.log(`${i} -> ${o}`))
 	return result
 }
