@@ -2,6 +2,7 @@ SHELL := bash
 .SHELLFLAGS := -O globstar -e -u -o pipefail -c
 MAKEFLAGS += --warn-undefined-variables
 MAKEFLAGS += --no-builtin-rules
+MAKEFLAGS += --no-builtin-variables
 
 GOFLAGS := \
 	-trimpath \
@@ -13,18 +14,18 @@ GOFLAGS := \
 .PHONY: dev build fmt lint test clean outdated upgrade
 
 build:
-	cd frontend && $(MAKE) build
-	go build $(GOFLAGS) -o ./_build/app
+	cd frontend && make build
+	CGO_ENABLED=0 go build $(GOFLAGS) -o ./_build/app
 
 dev:
-	$(MAKE) --jobs=2 _dev_ui _dev_server
+	make --jobs=2 _dev_ui _dev_server
 
 _dev_ui:
-	cd frontend && $(MAKE) dev
+	cd frontend && make dev
 _dev_server:
 	# make dev | jq -c -R '. as $line | try fromjson catch $line'
 	# go run -tags=dev -race ./main.go serverAndWorker 2>&1 | jq
-	go run -tags=dev -race ./main.go serverAndWorker 2>&1 | \
+	CGO_ENABLED=0 go run -tags=dev -race ./main.go serverAndWorker 2>&1 | \
 		jq -R '. as $$line | try fromjson catch $$line'
 
 fmt:
