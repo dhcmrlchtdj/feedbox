@@ -17,10 +17,10 @@ jobs:
               with:
                   go-version: "1.20"
             # https://github.com/marketplace/actions/run-golangci-lint
-            - uses: golangci/golangci-lint-action@v3.5.0
+            - uses: golangci/golangci-lint-action@v3.6.0
               with:
                   # https://github.com/golangci/golangci-lint/releases
-                  version: "v1.53.2"
+                  version: "v1.53.3"
             - run: make test
               env:
                   DATABASE_URL: "sqlite://feedbox.db"
@@ -46,7 +46,7 @@ jobs:
             - run: |
                   corepack enable
                   # https://www.npmjs.com/package/pnpm
-                  corepack prepare pnpm@8.6.1 --activate
+                  corepack prepare pnpm@8.6.3 --activate
                   pnpm config set store-dir ~/.local/share/pnpm/store
                   pnpm install
               env:
