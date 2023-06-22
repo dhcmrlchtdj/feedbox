@@ -10,10 +10,10 @@ PATH := ./node_modules/.bin:$(PATH)
 
 .PHONY: dev build fmt lint test clean outdated upgrade
 
-build: clean node_modules/tsconfig.tsbuildinfo copy_static
+build: clean node_modules/tsconfig.tsbuildinfo
 	NODE_ENV=production node ./build_script/build_dist.js
 
-dev: clean node_modules/tsconfig.tsbuildinfo copy_static
+dev: clean node_modules/tsconfig.tsbuildinfo
 	NODE_ENV=development node ./build_script/build_watch.js
 
 fmt:
@@ -34,10 +34,7 @@ upgrade:
 
 ###
 
-.PHONY: copy_static check force
-
-copy_static:
-	cp -v src/static/* _build/
+.PHONY: check force
 
 node_modules/tsconfig.tsbuildinfo: node_modules $(shell ls src/**/*.ts)
 	@make --no-print-directory check

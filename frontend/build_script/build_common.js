@@ -41,7 +41,7 @@ export async function buildApp(enableWatch = false) {
 				dev: !prod,
 				css: "external",
 			}),
-			afterBuild({ html: true }),
+			afterBuild({ buildHtml: true, copyStatic: true }),
 		],
 		entryPoints: [r("../src/app.ts")],
 		entryNames: "[name]-[hash]",
@@ -78,7 +78,7 @@ export async function buildServiceWorker(enableWatch = false) {
 		},
 		plugins: [
 			sveltePlugin({ generate: "ssr", dev: !prod, css: "external" }),
-			afterBuild({ html: false }),
+			afterBuild({ buildHtml: false, copyStatic: false }),
 		].filter(Boolean),
 		entryPoints: [r("../src/sw/index.ts")],
 		entryNames: "sw",
@@ -96,24 +96,41 @@ function afterBuild(opts) {
 		name: "afterBuild",
 		setup(build) {
 			build.onEnd(async (result) => {
-				const p = await Promise.all([
-					extractInputOutput(result),
-					buildWebManifest(),
-				])
-				const r = [...p[0], ...p[1]]
+				const r = (
+					await Promise.all([
+						extractInputOutput(result),
+						opts.copyStatic ? copyStatic() : [],
+					])
+				).flat()
 				printInputOutput(r)
-				if (opts.html) await buildHtml(r)
+				if (opts.buildHtml) await buildHtml(r)
 			})
 		},
 	}
 }
 
-async function buildWebManifest() {
+async function copyStatic() {
+	return (await Promise.all([copyStaticDir(), copyWebManifest()])).flat()
+}
+
+async function copyStaticDir() {
+	const result = []
+	await fs.cp(r("../src/static/"), r("../_build/"), {
+		recursive: true,
+		mode: fs.constants.COPYFILE_FICLONE,
+		filter: (i, o) => {
+			if (o !== "_build") result.push([i, o])
+			return true
+		},
+	})
+	return result
+}
+
+async function copyWebManifest() {
 	const input = r("../src/manifest.webmanifest")
 	const hash = await hashFiles(input)
 	const output = r(`../_build/${hash}.webmanifest`)
-	await fs.mkdir(path.dirname(output), { recursive: true })
-	await fs.copyFile(input, output)
+	await fs.copyFile(input, output, fs.constants.COPYFILE_FICLONE)
 	return [[input, output]]
 }
 

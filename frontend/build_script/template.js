@@ -10,7 +10,6 @@ export async function template(input, output, pattern) {
 
 	const tmpl = await fs.readFile(input, "utf8")
 	const content = replace(tmpl)
-	await fs.mkdir(path.dirname(output), { recursive: true })
 	await fs.writeFile(output, content)
 
 	return [[input, output]]
