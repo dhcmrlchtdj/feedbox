@@ -116,7 +116,7 @@ var onceMine sync.Once
 
 func addMissingMIME(ctx context.Context) {
 	onceMine.Do(func() {
-		err := mime.AddExtensionType(".webmanifest", "application/manifest+json")
+		err := mime.AddExtensionType(".webmanifest", "application/manifest+json; charset=utf-8")
 		if err != nil {
 			zerolog.Ctx(ctx).Error().
 				Str("module", "server").
