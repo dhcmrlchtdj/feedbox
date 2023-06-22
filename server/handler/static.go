@@ -1,16 +1,18 @@
 package handler
 
 import (
+	"context"
 	"encoding/json"
 	"io/fs"
 	"mime"
 	"net/http"
 	"path/filepath"
 	"strconv"
+	"sync"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/pkg/errors"
-	"github.com/rs/zerolog/log"
+	"github.com/rs/zerolog"
 )
 
 func StaticFile(filename string, handlers ...fiber.Handler) fiber.Handler {
@@ -66,6 +68,7 @@ func StaticWithCustomHeader(filename string) fiber.Handler {
 }
 
 func sendFile(c *fiber.Ctx, filename string, handlers ...fiber.Handler) error {
+	ctx := c.UserContext()
 	content, err := frontendReadFile(filename)
 	if err != nil {
 		if errors.Is(err, fs.ErrNotExist) {
@@ -76,7 +79,11 @@ func sendFile(c *fiber.Ctx, filename string, handlers ...fiber.Handler) error {
 		if inner != nil && inner.Error() == "is a directory" {
 			return fiber.ErrNotFound
 		} else {
-			log.Error().Str("module", "server").Stack().Err(err).Send()
+			zerolog.Ctx(ctx).Error().
+				Str("module", "server").
+				Stack().
+				Err(err).
+				Send()
 			return fiber.ErrNotFound
 		}
 	}
@@ -86,6 +93,7 @@ func sendFile(c *fiber.Ctx, filename string, handlers ...fiber.Handler) error {
 
 	// set content-type by extension
 	ext := filepath.Ext(filename)
+	addMissingMIME(ctx)
 	contentType := mime.TypeByExtension(ext)
 	if contentType == "" {
 		contentType = http.DetectContentType(content)
@@ -102,4 +110,19 @@ func sendFile(c *fiber.Ctx, filename string, handlers ...fiber.Handler) error {
 	}
 
 	return nil
+}
+
+var onceMine sync.Once
+
+func addMissingMIME(ctx context.Context) {
+	onceMine.Do(func() {
+		err := mime.AddExtensionType(".webmanifest", "application/manifest+json")
+		if err != nil {
+			zerolog.Ctx(ctx).Error().
+				Str("module", "server").
+				Stack().
+				Err(err).
+				Send()
+		}
+	})
 }
