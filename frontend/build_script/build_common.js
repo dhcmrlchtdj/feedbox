@@ -70,6 +70,7 @@ export async function buildServiceWorker(enableWatch = false) {
 
 	const opt = {
 		...esbuildOpts,
+		platform: "node",
 		define: {
 			...env,
 			__STATIC_VERSION__: JSON.stringify(hashStatic),

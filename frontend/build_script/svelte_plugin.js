@@ -12,7 +12,6 @@ const defaultOpts = {
 	hydratable: false,
 	immutable: true,
 	css: "injected",
-	format: "esm",
 }
 
 export function sveltePlugin(opts) {
