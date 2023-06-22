@@ -2,13 +2,17 @@
 	"id": "/",
 	"scope": "/",
 	"name": "FeedBox",
+	"short_name": "FeedBox",
+	"description": "FeedBox",
 	"start_url": "/",
-	"display": "minimal-ui",
+	"display": "standalone",
 	"icons": [
 		{
 			"src": "/favicon.svg",
 			"sizes": "any",
 			"type": "image/svg+xml"
 		}
-	]
+	],
+	"theme_color": "#ffffff",
+	"background_color": "#ffffff"
 }
