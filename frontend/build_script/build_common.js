@@ -95,12 +95,25 @@ function afterBuild(opts) {
 		name: "afterBuild",
 		setup(build) {
 			build.onEnd(async (result) => {
-				const r = await extractInputOutput(result)
+				const p = await Promise.all([
+					extractInputOutput(result),
+					buildWebManifest(),
+				])
+				const r = [...p[0], ...p[1]]
 				printInputOutput(r)
 				if (opts.html) await buildHtml(r)
 			})
 		},
 	}
+}
+
+async function buildWebManifest() {
+	const input = r("../src/manifest.webmanifest")
+	const hash = await hashFiles(input)
+	const output = r(`../_build/${hash}.webmanifest`)
+	await fs.mkdir(path.dirname(output), { recursive: true })
+	await fs.copyFile(input, output)
+	return [[input, output]]
 }
 
 function buildHtml(pattern) {
