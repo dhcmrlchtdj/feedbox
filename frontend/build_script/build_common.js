@@ -24,7 +24,6 @@ const esbuildOpts = {
 	bundle: true,
 	format: "esm",
 	target: "esnext",
-	platform: "browser",
 	sourcemap: true,
 	minify: prod,
 	outdir: r(`../_build/`),
@@ -33,6 +32,7 @@ const esbuildOpts = {
 export async function buildApp(enableWatch = false) {
 	const opt = {
 		...esbuildOpts,
+		platform: "browser",
 		define: env,
 		plugins: [
 			sveltePlugin({
@@ -70,7 +70,7 @@ export async function buildServiceWorker(enableWatch = false) {
 
 	const opt = {
 		...esbuildOpts,
-		platform: "node",
+		platform: "neutral",
 		define: {
 			...env,
 			__STATIC_VERSION__: JSON.stringify(hashStatic),
