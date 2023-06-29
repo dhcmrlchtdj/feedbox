@@ -35,9 +35,10 @@ export function sveltePlugin(opts) {
 						js.code + "//# sourceMappingURL=" + js.map.toUrl()
 					if (css && css.code) {
 						const cssPath = filename + ".svelte-css"
-						const cssContent = `${
-							css.code
-						}\n/*# sourceMappingURL=${css.map.toUrl()} */`
+						const cssContent = [
+							css.code,
+							`/*# sourceMappingURL=${css.map.toUrl()} */`,
+						].join("\n")
 						cssCode.set(cssPath, cssContent)
 						contents = `import "${cssPath}";\n${contents}`
 					}
