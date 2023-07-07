@@ -17,7 +17,7 @@ dev: clean node_modules/tsconfig.tsbuildinfo
 	NODE_ENV=development node ./build_script/build_watch.js
 
 fmt:
-	prettier --write .
+	prettier --write "./**/*.{html,js,ts,json,css}"
 
 # lint:
 

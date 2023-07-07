@@ -1,0 +1,20 @@
+diff --git a/src/compiler/compile/render_ssr/index.js b/src/compiler/compile/render_ssr/index.js
+index be1297dd1bf79592b7789bd937d8ca27adb5dcc5..a6a70e5c6d414c27b7eb4579428d5f4fde5cc5c4 100644
+--- a/src/compiler/compile/render_ssr/index.js
++++ b/src/compiler/compile/render_ssr/index.js
+@@ -171,13 +171,13 @@ export default function ssr(component, options) {
+ 		...reactive_store_subscriptions,
+ 		instance_javascript,
+ 		...parent_bindings,
+-		css.code && b`$$result.css.add(#css);`,
++		css.code && options.css === "injected" && b`$$result.css.add(#css);`,
+ 		main
+ 	].filter(Boolean);
+ 	const css_sourcemap_enabled = check_enable_sourcemap(options.enableSourcemap, 'css');
+ 	const js = b`
+ 		${
+-			css.code
++			css.code && options.css === "injected"
+ 				? b`
+ 		const #css = {
+ 			code: "${css.code}",
