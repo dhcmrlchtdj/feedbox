@@ -1,3 +1,5 @@
+//go:build !dev
+
 package github
 
 import (
@@ -8,16 +10,6 @@ import (
 	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/github"
 )
-
-type Profile struct {
-	Email string `json:"email,omitempty"`
-	ID    int64  `json:"id"`
-}
-
-type Config struct {
-	ClientID     string
-	ClientSecret string
-}
 
 func New(cfg Config) fiber.Handler {
 	conf := &oauth2.Config{

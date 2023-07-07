@@ -9,6 +9,16 @@ import (
 	"github.com/pkg/errors"
 )
 
+type Config struct {
+	ClientID     string
+	ClientSecret string
+}
+
+type Profile struct {
+	Email string `json:"email,omitempty"`
+	ID    int64  `json:"id"`
+}
+
 func getProfile(ctx context.Context, client *http.Client) (*Profile, error) {
 	req, err := http.NewRequestWithContext(
 		ctx,

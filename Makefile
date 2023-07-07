@@ -22,10 +22,9 @@ dev:
 
 _dev_ui:
 	cd frontend && make dev
+
 _dev_server:
-	# make dev | jq -c -R '. as $line | try fromjson catch $line'
-	# go run -tags=dev -race ./main.go serverAndWorker 2>&1 | jq
-	CGO_ENABLED=0 go run -tags=dev -race ./main.go serverAndWorker 2>&1 | \
+	CGO_ENABLED=0 go run -tags=dev -race ./main.go server 2>&1 | \
 		jq -R '. as $$line | try fromjson catch $$line'
 
 fmt:
