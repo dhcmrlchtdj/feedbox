@@ -2,16 +2,10 @@ import * as crypto from "node:crypto"
 import * as fs from "node:fs/promises"
 import * as path from "node:path"
 
-const pMap = (arr, fn) => Promise.all(arr.map(fn))
-
 export async function hashFiles(...entries) {
-	const files = []
-	await pMap(entries, async (filepath) => {
-		const stat = await fs.stat(filepath)
-		return addEntry(files, stat, filepath)
-	})
-
+	const files = await collect(...entries)
 	const digest = await files
+		.filter(shouldBeHash)
 		.sort()
 		.reduce(async (acc, file) => {
 			const hash = await acc
@@ -25,25 +19,34 @@ export async function hashFiles(...entries) {
 	return digest
 }
 
-async function addEntry(output, entry, filepath) {
-	if (entry.isFile()) {
-		output.push(filepath)
-	} else if (entry.isDirectory()) {
-		const subEntries = await fs.readdir(filepath, {
-			withFileTypes: true,
-		})
-		return pMap(subEntries, (subEntry) => {
-			const name = subEntry.name
-			if (
-				name.startsWith(".") ||
-				name.startsWith("_") ||
-				name.startsWith("node_modules") ||
-				name.endsWith("_test.go")
-			) {
-				return
+function shouldBeHash(filename) {
+	const shouldBeIgnore =
+		filename.includes("/.") ||
+		filename.includes("/_") ||
+		filename.endsWith("_test.go") ||
+		filename.includes("node_modules")
+	return !shouldBeIgnore
+}
+
+async function collect(...entries) {
+	const files = []
+	await Promise.all(
+		entries.map(async (filepath) => {
+			const stat = await fs.stat(filepath)
+			if (stat.isFile()) {
+				files.push(filepath)
+			} else if (stat.isDirectory()) {
+				const subEntries = await fs.readdir(filepath, {
+					withFileTypes: true,
+					recursive: true,
+				})
+				for (const subEntry of subEntries) {
+					if (subEntry.isFile()) {
+						files.push(path.join(subEntry.path, subEntry.name))
+					}
+				}
 			}
-			const subFilepath = path.join(filepath, name)
-			return addEntry(output, subEntry, subFilepath)
-		})
-	}
+		}),
+	)
+	return files
 }
