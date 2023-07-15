@@ -24,7 +24,7 @@ fmt:
 # test:
 
 clean:
-	-rm -v ./_build/*
+	-rm ./_build/*
 
 outdated:
 	pnpm outdated

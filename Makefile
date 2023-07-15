@@ -4,10 +4,8 @@ MAKEFLAGS += --warn-undefined-variables
 MAKEFLAGS += --no-builtin-rules
 MAKEFLAGS += --no-builtin-variables
 
-GOFLAGS := \
-	-trimpath \
-	-buildvcs=false \
-	-buildmode=pie
+GOFLAGS := -buildvcs=false -buildmode=pie -mod=readonly -trimpath
+# -ldflags="-w -s"
 
 ###
 
@@ -15,7 +13,7 @@ GOFLAGS := \
 
 build:
 	cd frontend && make build
-	CGO_ENABLED=0 go build $(GOFLAGS) -o ./_build/app
+	CGO_ENABLED=0 go build $(GOFLAGS) -o _build/ ./cmd/...
 
 dev:
 	make --jobs=2 _dev_ui _dev_server
@@ -24,7 +22,7 @@ _dev_ui:
 	cd frontend && make dev
 
 _dev_server:
-	CGO_ENABLED=0 go run -tags=dev -race ./main.go server 2>&1 | \
+	go run -tags=dev -race ./cmd/feedbox server 2>&1 | \
 		jq -R '. as $$line | try fromjson catch $$line'
 
 fmt:
@@ -65,4 +63,4 @@ test_update:
 #     go tool cover -html=./_build/cover.out
 
 migrate: build
-	./_build/app migrate up
+	./_build/feedbox migrate up
