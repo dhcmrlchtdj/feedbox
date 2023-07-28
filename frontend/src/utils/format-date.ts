@@ -1,4 +1,4 @@
-const pad = (value: number) => `0${value}`.slice(-2)
+const pad = (value: number) => String(value).padStart(2, "0")
 
 export const format = (date: Date, fmt: string = "YYYY-MM-DD hh:mm:ss") => {
 	const _year = date.getFullYear()

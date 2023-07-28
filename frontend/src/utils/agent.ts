@@ -8,21 +8,14 @@ const auth = async (r: Response) => {
 	}
 }
 
-type headers = Record<string, string>
 type data = Record<string, unknown>
 
-const req = async (
-	method: string,
-	url: string,
-	data: null | data,
-	headers: headers = {},
-) => {
-	if (!headers["Content-Type"]) {
-		headers["Content-Type"] = "application/json; charset=utf-8"
-	}
+const req = async (method: string, url: string, data: null | data) => {
 	return fetch(url, {
 		method,
-		headers,
+		headers: {
+			"Content-Type": "application/json; charset=utf-8",
+		},
 		body: data && JSON.stringify(data),
 		redirect: "follow",
 		mode: "same-origin",
@@ -30,11 +23,7 @@ const req = async (
 	}).then(auth)
 }
 
-export const get = async (url: string, headers: headers) =>
-	req("GET", url, null, headers)
-export const post = async (url: string, data: data, headers: headers) =>
-	req("POST", url, data, headers)
-export const put = async (url: string, data: data, headers: headers) =>
-	req("PUT", url, data, headers)
-export const del = async (url: string, data: data, headers: headers) =>
-	req("DELETE", url, data, headers)
+export const get = (url: string) => req("GET", url, null)
+export const post = (url: string, data: data) => req("POST", url, data)
+export const put = (url: string, data: data) => req("PUT", url, data)
+export const del = (url: string, data: data) => req("DELETE", url, data)

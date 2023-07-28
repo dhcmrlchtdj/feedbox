@@ -42,7 +42,7 @@
 	onMount(() => {
 		// keep the loading animation
 		const delayAnimation = sleep(1000)
-		Promise.all([agent.get(`/api/v1/user`), agent.get(`/api/v1/feeds`)])
+		Promise.all([agent.get("/api/v1/user"), agent.get("/api/v1/feeds")])
 			.then(async ([user, resp]) => {
 				state.email.set(user.addition.email)
 				state.feeds.set(resp)

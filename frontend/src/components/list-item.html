@@ -61,7 +61,7 @@
 
 		const setFeeds = createFeedsSetter()
 		agent
-			.del(`/api/v1/feeds/remove`, { feedID: feed.id })
+			.del("/api/v1/feeds/remove", { feedID: feed.id })
 			.then((resp) => setFeeds(resp))
 			.then(() => newNotification("removed"))
 			.catch((err) => {
