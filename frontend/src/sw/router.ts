@@ -86,11 +86,7 @@ export const router = new Router<RouterContext>()
 				)
 				headers.set("content-security-policy", patchedCSP)
 
-				return new Response(html, {
-					status: resp.status,
-					statusText: resp.statusText,
-					headers,
-				})
+				return new Response(html, { status: 200, headers })
 			})
 			.catch((err) => {
 				console.error(err.stack)

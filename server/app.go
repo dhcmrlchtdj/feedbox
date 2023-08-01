@@ -94,11 +94,27 @@ func setupRoute(app fiber.Router) {
 	)
 
 	// static
-	app.Get("/", handler.StaticFile("_build/index.html", handler.StaticWithCustomHeader("_build/index.html.json")))
-	app.Get("/sw.js", handler.StaticFile("_build/sw.js"))
-	app.Get("/sw.js.map", handler.StaticFile("_build/sw.js.map"))
-	app.Get("/favicon.ico", handler.StaticFile("_build/favicon.svg", handler.StaticWithMaxAge(60*60*24*7)))
-	app.Get("/:filename", handler.StaticDir("_build/", handler.StaticWithMaxAge(60*60*24*7)))
+	app.Get("/", handler.StaticFile(
+		"_build/index.html",
+		handler.StaticWithCustomHeader("_build/index.html.json"),
+		handler.StaticWithMaxAge(60*10),
+	))
+	app.Get("/sw.js", handler.StaticFile(
+		"_build/sw.js",
+		handler.StaticWithMaxAge(60*10),
+	))
+	app.Get("/sw.js.map", handler.StaticFile(
+		"_build/sw.js.map",
+		handler.StaticWithMaxAge(60*10),
+	))
+	app.Get("/favicon.ico", handler.StaticFile(
+		"_build/favicon.svg",
+		handler.StaticWithMaxAge(60*60*24*7),
+	))
+	app.Get("/:filename", handler.StaticDir(
+		"_build/",
+		handler.StaticWithMaxAge(60*60*24*7),
+	))
 }
 
 func errorHandler(c *fiber.Ctx, err error) error {

@@ -35,8 +35,11 @@ func StaticWithHeader(key string, val string) fiber.Handler {
 	}
 }
 
-func StaticWithMaxAge(maxAge int) fiber.Handler {
-	return StaticWithHeader("cache-control", "must-revalidate, max-age="+strconv.Itoa(maxAge))
+func StaticWithMaxAge(seconds int) fiber.Handler {
+	return StaticWithHeader(
+		"cache-control",
+		"public, must-revalidate, max-age="+strconv.Itoa(seconds),
+	)
 }
 
 type customHeader struct {

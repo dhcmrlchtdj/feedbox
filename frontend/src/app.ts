@@ -33,7 +33,7 @@ if (navigator.serviceWorker) {
 		unregisterServiceWorker()
 		swEnable.set("false")
 	} else {
-		navigator.serviceWorker.register("/sw.js")
+		navigator.serviceWorker.register("/sw.js", { updateViaCache: "all" })
 		swEnable.set("true")
 	}
 }
