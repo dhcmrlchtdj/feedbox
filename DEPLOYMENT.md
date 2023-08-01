@@ -14,8 +14,8 @@ User=feedbox
 Type=exec
 Restart=on-abort
 WorkingDirectory=/opt/app/feedbox
-ExecStartPre=/opt/app/feedbox/_build/app migrate up
-ExecStart=/opt/app/feedbox/_build/app serverAndWorker
+ExecStartPre=/opt/app/feedbox/_build/feedbox migrate up
+ExecStart=/opt/app/feedbox/_build/feedbox serverAndWorker
 EnvironmentFile=/opt/app/feedbox/dotenv
 
 [Install]
