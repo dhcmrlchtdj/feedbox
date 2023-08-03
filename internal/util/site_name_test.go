@@ -3,25 +3,23 @@ package util_test
 import (
 	"testing"
 
-	"github.com/bradleyjkemp/cupaloy/v2"
-
 	"github.com/dhcmrlchtdj/feedbox/internal/util"
 )
 
 func TestExtractSiteName(t *testing.T) {
-	cases := []string{
-		"https://feeds.feedburner.com/example",
-		"https://medium.com/feed/example",
-		"https://dev.to/feed/example",
-		"https://rsshub.app/example/example",
-		"https://feed43.com/example.xml",
-		"https://example.com/rss",
-		"https://buttondown.email/example/rss",
+	f := func(link string, name string) {
+		t.Helper()
+		extracted := util.ExtractSiteName(link)
+		if extracted != name {
+			t.Errorf("expected: %#v, got: %#v", name, extracted)
+		}
 	}
-	for i := range cases {
-		url := cases[i]
-		t.Run(url, func(t *testing.T) {
-			cupaloy.SnapshotT(t, util.ExtractSiteName(url))
-		})
-	}
+
+	f("https://feeds.feedburner.com/example", "feedburner/example")
+	f("https://medium.com/feed/example", "medium/example")
+	f("https://dev.to/feed/example", "dev.to/example")
+	f("https://rsshub.app/example/example", "rsshub/example/example")
+	f("https://feed43.com/example.xml", "feed43/example")
+	f("https://buttondown.email/example/rss", "buttondown/example")
+	f("https://example.com/rss", "example.com")
 }
