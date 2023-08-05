@@ -2,6 +2,7 @@
 // https://svelte.dev/docs#svelte_compile
 // https://github.com/EMH333/esbuild-svelte
 
+import * as esbuild from "esbuild"
 import * as fs from "node:fs/promises"
 import * as path from "node:path"
 import * as svelte from "svelte/compiler"
@@ -12,6 +13,7 @@ const defaultOpts = {
 	hydratable: false,
 	immutable: true,
 	css: "injected",
+	discloseVersion: false,
 }
 
 export function sveltePlugin(opts) {
@@ -27,8 +29,9 @@ export function sveltePlugin(opts) {
 
 				const convert = convertMessage(source, filename)
 				try {
+					const processed = await preprocess(source)
 					const { js, css, warnings } = svelte.compile(
-						source,
+						processed.code,
 						svelteOpts,
 					)
 					let contents =
@@ -92,4 +95,26 @@ function convertMessage(source, filename) {
 		}
 		return { text: message, location }
 	}
+}
+
+async function preprocess(source) {
+	const processed = await svelte.preprocess(source, {
+		script: ({ content, attributes }) => {
+			if (attributes.language === "typescript") {
+				const r = esbuild.transformSync(content, {
+					loader: "ts",
+					tsconfigRaw: {
+						compilerOptions: {
+							verbatimModuleSyntax: true,
+						},
+					},
+				})
+				return {
+					code: r.code,
+					map: r.map,
+				}
+			}
+		},
+	})
+	return processed
 }
