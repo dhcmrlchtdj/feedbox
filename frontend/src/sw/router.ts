@@ -1,5 +1,4 @@
-// @ts-ignore
-import App from "../components/app.html"
+import App from "../components/app.svelte.js"
 import { Router } from "../utils/router.js"
 import * as strategy from "./strategy.js"
 import * as version from "./version.js"
@@ -68,6 +67,7 @@ export const router = new Router<RouterContext>()
 					feeds: feeds,
 				}
 				const tpl = await resp.clone().text()
+				// @ts-expect-error
 				const app = App.render(state)
 				const inlinedState = `window.__STATE__=${sanitize(
 					JSON.stringify(state),

@@ -16,22 +16,61 @@ const defaultOpts = {
 	discloseVersion: false,
 }
 
+const styleRe = new RegExp(
+	[
+		/export/,
+		/\s+/,
+		/const/,
+		/\s+/,
+		/\$\$style/,
+		/\s+/,
+		/=/,
+		/\s+/,
+		/`(((?:\\`)|[^`])*)`/,
+		/\s*/,
+		/;?/,
+	]
+		.map((x) => x.source)
+		.join(""),
+	"m",
+)
+
+const templateRe = new RegExp(
+	[
+		/export/,
+		/\s+/,
+		/const/,
+		/\s+/,
+		/\$\$template/,
+		/\s+/,
+		/=/,
+		/\s+/,
+		/`(((?:\\`)|[^`])*)`/,
+		/\s*/,
+		/;?/,
+	]
+		.map((x) => x.source)
+		.join(""),
+	"m",
+)
+
 export function sveltePlugin(opts) {
 	return {
 		name: "svelte",
 		setup(build) {
 			const cssCode = new Map()
 
-			build.onLoad({ filter: /\.html$/ }, async (args) => {
-				const source = await fs.readFile(args.path, "utf8")
+			build.onLoad({ filter: /\.svelte\.ts$/ }, async (args) => {
 				const filename = path.resolve(process.cwd(), args.path)
+				const source = await fs.readFile(args.path, "utf8")
+				const sfc = await preprocess(source)
+
 				const svelteOpts = { ...defaultOpts, ...opts, filename }
 
-				const convert = convertMessage(source, filename)
+				const convert = convertMessage(sfc, filename)
 				try {
-					const processed = await preprocess(source)
 					const { js, css, warnings } = svelte.compile(
-						processed.code,
+						sfc,
 						svelteOpts,
 					)
 					let contents =
@@ -98,23 +137,42 @@ function convertMessage(source, filename) {
 }
 
 async function preprocess(source) {
-	const processed = await svelte.preprocess(source, {
-		script: ({ content, attributes }) => {
-			if (attributes.language === "typescript") {
-				const r = esbuild.transformSync(content, {
-					loader: "ts",
-					tsconfigRaw: {
-						compilerOptions: {
-							verbatimModuleSyntax: true,
-						},
-					},
-				})
-				return {
-					code: r.code,
-					map: r.map,
-				}
-			}
+	let templateContent = ""
+	let styleContent = ""
+	let script = source
+
+	const style = styleRe.exec(source)
+	if (style) {
+		styleContent = style[1].trim()
+		script = script.replace(style[0], "")
+	}
+
+	const template = templateRe.exec(source)
+	if (template) {
+		templateContent = template[1].trim()
+		script = script.replace(template[0], "")
+	}
+
+	const r = await esbuild.transform(script, {
+		loader: "ts",
+		tsconfigRaw: {
+			compilerOptions: {
+				verbatimModuleSyntax: true,
+			},
 		},
 	})
-	return processed
+
+	const sfc = [
+		"<style>",
+		styleContent,
+		"</style>",
+		"",
+		"<script>",
+		r.code,
+		"</script>",
+		"",
+		templateContent,
+	].join("\n")
+
+	return sfc
 }

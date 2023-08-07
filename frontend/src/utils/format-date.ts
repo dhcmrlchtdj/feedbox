@@ -7,7 +7,7 @@ export const format = (date: Date, fmt: string = "YYYY-MM-DD hh:mm:ss") => {
 	const _hour = date.getHours()
 	const _minute = date.getMinutes()
 	const _second = date.getSeconds()
-	const pairs = {
+	const pairs: Record<string, unknown> = {
 		YYYY: _year,
 		M: _month,
 		MM: pad(_month),
@@ -21,6 +21,8 @@ export const format = (date: Date, fmt: string = "YYYY-MM-DD hh:mm:ss") => {
 		ss: pad(_second),
 	}
 
-	// @ts-ignore
-	return fmt.replace(/YYYY|MM?|DD?|hh?|mm?|ss?/g, (matched) => pairs[matched])
+	return fmt.replace(
+		/YYYY|MM?|DD?|hh?|mm?|ss?/g,
+		(matched) => pairs[matched] as string,
+	)
 }

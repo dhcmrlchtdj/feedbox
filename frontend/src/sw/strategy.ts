@@ -9,10 +9,6 @@ export const cacheOnly: strategy = async (cache, req) => {
 export const cacheFirst: strategy = async (cache, req) => {
 	const cached = await cache.match(req)
 	if (cached) {
-		// @ts-expect-error
-		if (process.env.NODE_ENV !== "production") {
-			fetchResource(req, cache)
-		}
 		return cached
 	} else {
 		return fetchResource(req, cache)

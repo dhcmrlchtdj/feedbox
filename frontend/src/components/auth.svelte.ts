@@ -1,3 +1,6 @@
+export { SvelteComponent as default } from "svelte"
+
+export const $$template = `
 <div class="columns">
 	<div class="column col-12 mt-2">
 		<div class="toast toast-error">
@@ -15,7 +18,6 @@
 		</a>
 	</div>
 </div>
+`
 
-<script>
-	export let err = "unknown error"
-</script>
+export let err = "unknown error"

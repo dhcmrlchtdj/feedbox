@@ -1,5 +1,4 @@
-// @ts-ignore
-import App from "./components/app.html"
+import App from "./components/app.svelte.js"
 import "spectre.css"
 
 import {
@@ -10,7 +9,7 @@ import {
 } from "./storage.js"
 
 new App({
-	target: document.querySelector("#app"),
+	target: document.querySelector("#app")!,
 	hydrate: true,
 })
 

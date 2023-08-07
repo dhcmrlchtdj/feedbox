@@ -5,7 +5,7 @@ export const email = writable("")
 
 ///
 
-type Feed = {
+export type Feed = {
 	id: number
 	updated: string
 	url: string

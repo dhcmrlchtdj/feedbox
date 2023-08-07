@@ -1,10 +1,13 @@
-<style>
-	.loading {
-		width: 0.8rem;
-		vertical-align: text-top;
-	}
-</style>
+export { SvelteComponent as default } from "svelte"
 
+export const $$style = `
+.loading {
+	width: 0.8rem;
+	vertical-align: text-top;
+}
+`
+
+export const $$template = `
 <div class="column col-12">
 	<h1 class="d-inline-block mb-0">FeedBox</h1>
 	<span
@@ -26,14 +29,13 @@
 	</a>
 </div>
 <div class="column col-12"><div class="divider"></div></div>
+`
 
-<script>
-	import { email, initialized } from "../state"
+import { email, initialized } from "../state.js"
 
-	const logout = () => {
-		const sw = navigator.serviceWorker
-		if (sw && sw.controller) {
-			sw.controller.postMessage("logout")
-		}
+const logout = () => {
+	const sw = navigator.serviceWorker
+	if (sw && sw.controller) {
+		sw.controller.postMessage("logout")
 	}
-</script>
+}
