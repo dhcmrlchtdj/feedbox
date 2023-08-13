@@ -74,7 +74,7 @@ func initTelegram() {
 
 func initSign() {
 	util.CheckEnvs("COOKIE_SECRET")
-	s, err := sign.New(os.Getenv("COOKIE_SECRET"))
+	s, err := sign.NewWithPassword(os.Getenv("COOKIE_SECRET"))
 	if err != nil {
 		panic(err)
 	}
