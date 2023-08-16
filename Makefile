@@ -13,7 +13,7 @@ GOFLAGS := -buildvcs=false -buildmode=pie -mod=readonly -trimpath
 
 build:
 	cd frontend && make build
-	CGO_ENABLED=0 go build $(GOFLAGS) -o _build/ ./cmd/...
+	GOEXPERIMENT=loopvar CGO_ENABLED=0 go build $(GOFLAGS) -o _build/ ./cmd/...
 
 dev:
 	make --jobs=2 _dev_ui _dev_server
@@ -22,7 +22,7 @@ _dev_ui:
 	cd frontend && make dev
 
 _dev_server:
-	go run -tags=dev -race ./cmd/feedbox server 2>&1 | \
+	GOEXPERIMENT=loopvar go run -tags=dev -race ./cmd/feedbox server 2>&1 | \
 		jq -R '. as $$line | try fromjson catch $$line'
 
 fmt:
@@ -33,9 +33,9 @@ lint:
 	golangci-lint run
 
 test:
-	ENV=test TZ=UTC go test -race ./internal/util
-	ENV=test TZ=UTC go test -race ./internal/database/...
-	ENV=test TZ=UTC go test -race ./server
+	GOEXPERIMENT=loopvar ENV=test TZ=UTC go test -race ./internal/util
+	GOEXPERIMENT=loopvar ENV=test TZ=UTC go test -race ./internal/database/...
+	GOEXPERIMENT=loopvar ENV=test TZ=UTC go test -race ./server
 
 clean:
 	# rm -rf ./**/.snapshots
