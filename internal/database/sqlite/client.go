@@ -3,6 +3,7 @@ package sqlite
 import (
 	"context"
 	"database/sql"
+	"encoding/json"
 	"strings"
 	"time"
 
@@ -10,8 +11,6 @@ import (
 	"github.com/rs/xid"
 	"github.com/rs/zerolog"
 	_ "modernc.org/sqlite"
-
-	"github.com/dhcmrlchtdj/feedbox/internal/util"
 )
 
 type Database struct {
@@ -61,7 +60,7 @@ func (db *Database) Exec(ctx context.Context, query string, args ...any) (sql.Re
 		Logger()
 	logger.Trace().
 		Str("query", query).
-		Str("args", util.Jsonify(args...)).
+		Str("args", jsonify(args...)).
 		Msg("Exec")
 	start := time.Now()
 	defer func() {
@@ -79,7 +78,7 @@ func (db *Database) Query(ctx context.Context, query string, args ...any) (*sql.
 		Logger()
 	logger.Trace().
 		Str("query", query).
-		Str("args", util.Jsonify(args...)).
+		Str("args", jsonify(args...)).
 		Msg("Query")
 	start := time.Now()
 	defer func() {
@@ -96,7 +95,7 @@ func (db *Database) QueryRow(ctx context.Context, query string, args ...any) *sq
 		Logger()
 	logger.Trace().
 		Str("query", query).
-		Str("args", util.Jsonify(args...)).
+		Str("args", jsonify(args...)).
 		Msg("QueryRow")
 	start := time.Now()
 	defer func() {
@@ -104,4 +103,12 @@ func (db *Database) QueryRow(ctx context.Context, query string, args ...any) *sq
 		logger.Trace().Dur("latency", latency).Send()
 	}()
 	return db.db.QueryRowContext(ctx, query, args...)
+}
+
+func jsonify(args ...any) string {
+	b, err := json.Marshal(args)
+	if err != nil {
+		return err.Error()
+	}
+	return string(b)
 }

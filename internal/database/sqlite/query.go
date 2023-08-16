@@ -4,13 +4,13 @@ import (
 	"context"
 	"database/sql"
 	"encoding/json"
+	"net/url"
 	"time"
 
 	"github.com/pkg/errors"
 	_ "modernc.org/sqlite"
 
 	"github.com/dhcmrlchtdj/feedbox/internal/database/common"
-	"github.com/dhcmrlchtdj/feedbox/internal/util"
 )
 
 type (
@@ -94,7 +94,7 @@ func (db *Database) GetOrCreateUserByTelegram(ctx context.Context, chatID string
 }
 
 func (db *Database) GetFeedIDByURL(ctx context.Context, url string) (int64, error) {
-	if !util.IsValidURL(url) {
+	if !isValidURL(url) {
 		return 0, ErrInvalidURL
 	}
 
@@ -363,4 +363,12 @@ func readLinks(rows *sql.Rows) ([]string, error) {
 		links = append(links, link)
 	}
 	return links, nil
+}
+
+func isValidURL(link string) bool {
+	u, err := url.Parse(link)
+	if err != nil || u.Scheme == "" || u.Host == "" {
+		return false
+	}
+	return true
 }
