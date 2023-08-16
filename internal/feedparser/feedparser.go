@@ -5,7 +5,7 @@ import (
 	"net/http"
 
 	"github.com/mmcdole/gofeed"
-	"github.com/pkg/errors"
+	"github.com/morikuni/failure"
 )
 
 type FeedParser struct {
@@ -40,18 +40,18 @@ func (p *FeedParser) ParseURL(ctx context.Context, url string, etag string) (*go
 	}
 
 	if resp.StatusCode != 200 {
-		return nil, "", errors.Errorf("'%v' return '%v'", url, resp.Status)
+		return nil, "", failure.Unexpected(resp.Status, failure.Message(url))
 	}
 
 	// sanitize body
 	body, err := sanitize(resp.Body)
 	if err != nil {
-		return nil, "", errors.Wrap(err, url)
+		return nil, "", failure.Wrap(err, failure.Message(url))
 	}
 
 	feed, err := p.parser.Parse(body)
 	if err != nil {
-		return nil, "", errors.Wrap(err, url)
+		return nil, "", failure.Wrap(err, failure.Message(url))
 	}
 
 	// fix item

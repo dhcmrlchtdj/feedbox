@@ -4,13 +4,14 @@ import (
 	"context"
 	"database/sql"
 	"encoding/json"
-	"net/url"
+	"errors"
+	netUrl "net/url"
 	"time"
 
-	"github.com/pkg/errors"
 	_ "modernc.org/sqlite"
 
 	"github.com/dhcmrlchtdj/feedbox/internal/database/common"
+	"github.com/morikuni/failure"
 )
 
 type (
@@ -38,7 +39,7 @@ func (db *Database) GetUserByID(ctx context.Context, id int64) (*User, error) {
 		return nil, err
 	}
 	if user == nil {
-		return nil, ErrEmptyRow
+		return nil, failure.New(ErrEmptyRow)
 	}
 
 	return user, nil
@@ -95,7 +96,7 @@ func (db *Database) GetOrCreateUserByTelegram(ctx context.Context, chatID string
 
 func (db *Database) GetFeedIDByURL(ctx context.Context, url string) (int64, error) {
 	if !isValidURL(url) {
-		return 0, ErrInvalidURL
+		return 0, failure.New(ErrInvalidURL)
 	}
 
 	_, err := db.Exec(ctx, `INSERT OR IGNORE INTO feeds(url) VALUES ($1)`, url)
@@ -366,7 +367,7 @@ func readLinks(rows *sql.Rows) ([]string, error) {
 }
 
 func isValidURL(link string) bool {
-	u, err := url.Parse(link)
+	u, err := netUrl.Parse(link)
 	if err != nil || u.Scheme == "" || u.Host == "" {
 		return false
 	}

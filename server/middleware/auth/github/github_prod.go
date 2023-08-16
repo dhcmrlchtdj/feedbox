@@ -6,7 +6,7 @@ import (
 	"context"
 
 	"github.com/gofiber/fiber/v2"
-	"github.com/pkg/errors"
+	"github.com/morikuni/failure"
 	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/github"
 )
@@ -22,18 +22,18 @@ func New(cfg Config) fiber.Handler {
 	fetchProfile := func(ctx context.Context, code string) (*Profile, error) {
 		authToken, err := conf.Exchange(ctx, code)
 		if err != nil {
-			return nil, errors.Wrap(err, "github login exchange")
+			return nil, failure.Wrap(err, failure.Message("github login exchange"))
 		}
 		client := conf.Client(ctx, authToken)
 
 		profile, err := getProfile(ctx, client)
 		if err != nil {
-			return nil, errors.Wrap(err, "github login profile")
+			return nil, failure.Wrap(err, failure.Message("github login profile"))
 		}
 
 		email, err := getEmail(ctx, client)
 		if err != nil {
-			return nil, errors.Wrap(err, "github login email")
+			return nil, failure.Wrap(err, failure.Message("github login email"))
 		}
 		profile.Email = email
 

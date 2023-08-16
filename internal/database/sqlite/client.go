@@ -7,7 +7,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/pkg/errors"
+	"github.com/morikuni/failure"
 	"github.com/rs/xid"
 	"github.com/rs/zerolog"
 	_ "modernc.org/sqlite"
@@ -19,7 +19,7 @@ type Database struct {
 
 func New(ctx context.Context, uri string) (*Database, error) {
 	if !strings.HasPrefix(uri, "sqlite://") {
-		return nil, errors.Errorf("invalid DATABASE_URL: %s", uri)
+		return nil, failure.Unexpected("invalid DATABASE_URL", failure.Message(uri))
 	}
 	dbURI := uri[9:]
 	db, err := sql.Open("sqlite", dbURI)

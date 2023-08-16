@@ -7,9 +7,8 @@ import (
 	"io"
 	"net/http"
 
-	"github.com/pkg/errors"
-
 	"github.com/dhcmrlchtdj/feedbox/internal/multipart"
+	"github.com/morikuni/failure"
 )
 
 var _ Client = (*httpClient)(nil)
@@ -41,7 +40,7 @@ func (c *httpClient) GetChatMember(ctx context.Context, payload *GetChatMemberPa
 		Response
 	}
 	if err := DecodeResponse(body, &resp); err != nil {
-		return nil, errors.Wrap(err, "telegram/getChatMember")
+		return nil, failure.Wrap(err, failure.Message("telegram/getChatMember"))
 	}
 
 	return resp.Result, nil
@@ -83,18 +82,18 @@ func (c *httpClient) rawSend(ctx context.Context, cmd string, payload any) (io.R
 
 	var buf bytes.Buffer
 	if err := json.NewEncoder(&buf).Encode(payload); err != nil {
-		return nil, errors.Wrap(err, "telegram/"+cmd)
+		return nil, failure.Wrap(err, failure.Message("telegram/"+cmd))
 	}
 
 	req, err := http.NewRequestWithContext(ctx, "POST", url, &buf)
 	if err != nil {
-		return nil, errors.Wrap(err, "telegram/"+cmd)
+		return nil, failure.Wrap(err, failure.Message("telegram/"+cmd))
 	}
 	req.Header.Set("Content-Type", "application/json")
 
 	resp, err := http.DefaultClient.Do(req)
 	if err != nil {
-		return nil, errors.Wrap(err, "telegram/"+cmd)
+		return nil, failure.Wrap(err, failure.Message("telegram/"+cmd))
 	}
 
 	if resp.StatusCode == 429 {
@@ -104,7 +103,7 @@ func (c *httpClient) rawSend(ctx context.Context, cmd string, payload any) (io.R
 		if err == nil {
 			err = err429
 		}
-		return nil, errors.Wrap(err, "telegram/"+cmd)
+		return nil, failure.Wrap(err, failure.Message("telegram/"+cmd))
 	}
 
 	return resp.Body, nil
@@ -118,7 +117,7 @@ func (c *httpClient) rawSendSimple(ctx context.Context, cmd string, payload any)
 	defer body.Close()
 
 	if err := DecodeResponse(body, new(Response)); err != nil {
-		return errors.Wrap(err, "telegram/"+cmd)
+		return failure.Wrap(err, failure.Message("telegram/"+cmd))
 	}
 
 	return nil
@@ -129,18 +128,18 @@ func (c *httpClient) rawSendFileSimple(ctx context.Context, cmd string, contentT
 
 	req, err := http.NewRequestWithContext(ctx, "POST", url, payload)
 	if err != nil {
-		return errors.Wrap(err, "telegram/"+cmd)
+		return failure.Wrap(err, failure.Message("telegram/"+cmd))
 	}
 	req.Header.Set("Content-Type", contentType)
 
 	resp, err := http.DefaultClient.Do(req)
 	if err != nil {
-		return errors.Wrap(err, "telegram/"+cmd)
+		return failure.Wrap(err, failure.Message("telegram/"+cmd))
 	}
 	defer resp.Body.Close()
 
 	if err := DecodeResponse(resp.Body, new(Response)); err != nil {
-		return errors.Wrap(err, "telegram/"+cmd)
+		return failure.Wrap(err, failure.Message("telegram/"+cmd))
 	}
 
 	return nil

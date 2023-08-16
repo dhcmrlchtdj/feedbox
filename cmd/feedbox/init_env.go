@@ -4,11 +4,12 @@ import (
 	"context"
 	"os"
 	"os/signal"
+	"strconv"
 	"syscall"
 
 	"github.com/joho/godotenv"
+	"github.com/morikuni/failure"
 	"github.com/rs/zerolog"
-	"github.com/rs/zerolog/pkgerrors"
 
 	"github.com/dhcmrlchtdj/feedbox/internal/database"
 	"github.com/dhcmrlchtdj/feedbox/internal/email"
@@ -28,7 +29,24 @@ func initEnv() {
 }
 
 func initLogger() {
-	zerolog.ErrorStackMarshaler = pkgerrors.MarshalStack // nolint:reassign
+	zerolog.ErrorStackMarshaler = marshalStack // nolint:reassign
+}
+
+func marshalStack(err error) interface{} {
+	cs, ok := failure.CallStackOf(err)
+	if !ok {
+		return nil
+	}
+	frames := cs.Frames()
+	out := make([]map[string]string, 0, len(frames))
+	for _, frame := range frames {
+		out = append(out, map[string]string{
+			"path": frame.Path(),
+			"line": strconv.Itoa(frame.Line()),
+			"func": frame.Func(),
+		})
+	}
+	return out
 }
 
 func initDatabase(ctx context.Context) {

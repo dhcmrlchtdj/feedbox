@@ -4,12 +4,12 @@ import (
 	"net/url"
 
 	"github.com/mmcdole/gofeed"
-	"github.com/pkg/errors"
+	"github.com/morikuni/failure"
 )
 
 func fixFeed(source string, feed *gofeed.Feed) error {
 	if err := normalizeItemLink(source, feed); err != nil {
-		return errors.Wrap(err, source)
+		return failure.Wrap(err, failure.Message(source))
 	}
 	restoreFeedburnerLink(feed)
 	return nil

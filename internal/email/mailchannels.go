@@ -6,7 +6,7 @@ import (
 	"encoding/json"
 	"net/http"
 
-	"github.com/pkg/errors"
+	"github.com/morikuni/failure"
 )
 
 var _ Client = (*mailchannels)(nil)
@@ -66,7 +66,7 @@ func (c *mailchannels) Send(ctx context.Context, addr string, subject string, te
 	defer resp.Body.Close()
 
 	if resp.StatusCode != 202 {
-		return errors.Errorf("mailchannels return '%v'", resp.Status)
+		return failure.Unexpected("mailchannels", failure.Message(resp.Status))
 	}
 
 	return nil

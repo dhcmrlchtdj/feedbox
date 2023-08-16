@@ -2,6 +2,7 @@ package worker
 
 import (
 	"context"
+	"errors"
 	"html"
 	"math"
 	"strings"
@@ -9,7 +10,6 @@ import (
 	"time"
 
 	"github.com/mmcdole/gofeed"
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	"github.com/dhcmrlchtdj/feedbox/internal/global"

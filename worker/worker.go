@@ -8,7 +8,7 @@ import (
 	"time"
 
 	"github.com/mmcdole/gofeed"
-	"github.com/pkg/errors"
+	"github.com/morikuni/failure"
 	"github.com/rs/xid"
 	"github.com/rs/zerolog"
 
@@ -121,7 +121,10 @@ func parseFeed(ctx context.Context, done *sync.WaitGroup, qFeedFetched <-chan *f
 	worker := func(feed *feedItem) {
 		updated := getLatestUpdated(feed.fetched)
 		if updated == nil {
-			err := errors.Errorf("can not parse date field: %s", feed.feed.URL)
+			err := failure.Unexpected(
+				"can not parse date field",
+				failure.Message(feed.feed.URL),
+			)
 			logger.Warn().Str("module", "worker").Stack().Err(err).Send()
 			now := time.Now()
 			updated = &now

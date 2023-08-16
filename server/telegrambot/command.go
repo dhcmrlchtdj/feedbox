@@ -6,7 +6,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/pkg/errors"
+	"github.com/morikuni/failure"
 	"github.com/rs/zerolog"
 
 	"github.com/dhcmrlchtdj/feedbox/internal/database"
@@ -16,8 +16,8 @@ import (
 )
 
 var (
-	ErrUnknownCommand = errors.New("unknown command")
-	ErrEmptyList      = errors.New("feed list is empty")
+	ErrUnknownCommand failure.StringCode = "UnknownCommand"
+	ErrEmptyList      failure.StringCode = "EmptyList"
 )
 
 func executeCommand(ctx context.Context, cmd string, arg string, msg *telegram.Message) {
@@ -44,16 +44,16 @@ func executeCommand(ctx context.Context, cmd string, arg string, msg *telegram.M
 	case "/set_commands":
 		err = setCommands(ctx, msg)
 	default:
-		err = errors.Wrap(ErrUnknownCommand, cmd)
+		err = failure.New(ErrUnknownCommand, failure.Message(cmd))
 	}
 
 	logger := zerolog.Ctx(ctx)
 	if err == nil {
 		return
-	} else if errors.Is(err, ErrUnknownCommand) {
+	} else if failure.Is(err, ErrUnknownCommand) {
 		logger.Warn().Str("module", "telegrambot").Stack().Err(err).Send()
-	} else if errors.Is(err, database.ErrInvalidURL) ||
-		errors.Is(err, ErrEmptyList) {
+	} else if failure.Is(err, database.ErrInvalidURL) ||
+		failure.Is(err, ErrEmptyList) {
 		text := err.Error()
 		err := global.Telegram.SendMessage(
 			ctx,
@@ -93,7 +93,7 @@ func list(ctx context.Context, msg *telegram.Message) error {
 		return err
 	}
 	if len(feeds) == 0 {
-		return ErrEmptyList
+		return failure.New(ErrEmptyList)
 	}
 
 	var builder strings.Builder
@@ -171,7 +171,7 @@ func removeAll(ctx context.Context, msg *telegram.Message) error {
 		return err
 	}
 	if len(feeds) == 0 {
-		return ErrEmptyList
+		return failure.New(ErrEmptyList)
 	}
 	if err := global.Database.UnsubscribeAll(ctx, user.ID); err != nil {
 		return err
@@ -202,7 +202,7 @@ func export(ctx context.Context, msg *telegram.Message) error {
 		return err
 	}
 	if len(feeds) == 0 {
-		return ErrEmptyList
+		return failure.New(ErrEmptyList)
 	}
 
 	opml := util.BuildOPMLFromFeed(feeds)

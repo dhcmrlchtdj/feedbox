@@ -3,6 +3,7 @@ package sqlite_test
 import (
 	"context"
 	"database/sql"
+	"errors"
 	"os"
 	"strings"
 	"testing"
@@ -11,7 +12,6 @@ import (
 	"github.com/bradleyjkemp/cupaloy/v2"
 	"github.com/golang-migrate/migrate/v4"
 	"github.com/joho/godotenv"
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	"github.com/dhcmrlchtdj/feedbox/internal/database/sqlite"

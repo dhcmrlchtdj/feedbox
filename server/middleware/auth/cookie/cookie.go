@@ -6,7 +6,7 @@ import (
 	"time"
 
 	"github.com/gofiber/fiber/v2"
-	"github.com/pkg/errors"
+	"github.com/morikuni/failure"
 	"github.com/rs/zerolog"
 
 	"github.com/dhcmrlchtdj/feedbox/internal/global"
@@ -98,15 +98,15 @@ func DecodeFromToken(tokenStr string) (UserProfile, error) {
 
 	plaintext, err := global.Sign.DecodeFromHex(tokenStr)
 	if err != nil {
-		return user, errors.New("invalid token")
+		return user, failure.Unexpected("InvalidToken")
 	}
 
 	if err := json.Unmarshal(plaintext, &user); err != nil {
-		return user, errors.New("broken token")
+		return user, failure.Unexpected("BrokenToken")
 	}
 
 	if time.Now().Unix() > user.ExpiresAt {
-		return user, errors.New("expired token")
+		return user, failure.Unexpected("ExpiredToken")
 	}
 
 	return user, nil
