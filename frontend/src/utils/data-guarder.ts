@@ -1,4 +1,4 @@
-export function dataGuarder<T extends unknown[]>(fn: (...args: T) => void) {
+export function dataGuarder<T extends unknown[]>(fn: (...args: T) => unknown) {
 	let latestVersion = 0
 	let nextVersion = 1
 	return () => {

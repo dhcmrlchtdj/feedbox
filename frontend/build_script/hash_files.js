@@ -23,8 +23,8 @@ function shouldBeHash(filename) {
 	const shouldBeIgnore =
 		filename.includes("/.") ||
 		filename.includes("/_") ||
-		filename.endsWith("_test.go") ||
-		filename.includes("node_modules")
+		filename.includes("target/") ||
+		filename.includes("node_modules/")
 	return !shouldBeIgnore
 }
 

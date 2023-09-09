@@ -1,6 +1,6 @@
-const auth = async (r: Response) => {
+const auth = async <T>(r: Response) => {
 	if (r.ok) {
-		const body = await r.json()
+		const body = (await r.json()) as T
 		return body
 	} else {
 		const msg = await r.text()
@@ -10,7 +10,7 @@ const auth = async (r: Response) => {
 
 type data = Record<string, unknown>
 
-const req = async (method: string, url: string, data: null | data) => {
+const req = async <T>(method: string, url: string, data: null | data) => {
 	return fetch(url, {
 		method,
 		headers: {
@@ -20,10 +20,10 @@ const req = async (method: string, url: string, data: null | data) => {
 		redirect: "follow",
 		mode: "same-origin",
 		credentials: "same-origin",
-	}).then(auth)
+	}).then(auth<T>)
 }
 
-export const get = (url: string) => req("GET", url, null)
-export const post = (url: string, data: data) => req("POST", url, data)
-export const put = (url: string, data: data) => req("PUT", url, data)
-export const del = (url: string, data: data) => req("DELETE", url, data)
+export const get = <T>(url: string) => req<T>("GET", url, null)
+export const post = <T>(url: string, data: data) => req<T>("POST", url, data)
+export const put = <T>(url: string, data: data) => req<T>("PUT", url, data)
+export const del = <T>(url: string, data: data) => req<T>("DELETE", url, data)

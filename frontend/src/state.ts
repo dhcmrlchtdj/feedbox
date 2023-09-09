@@ -1,6 +1,15 @@
 import { writable, type Writable } from "svelte/store"
 import { dataGuarder } from "./utils/data-guarder.js"
 
+///
+
+export type User = {
+	id: number
+	platform: "github"
+	pid: string
+	addition: { email: string }
+}
+
 export const email = writable("")
 
 ///

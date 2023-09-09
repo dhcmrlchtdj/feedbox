@@ -4,9 +4,12 @@
 		"outDir": "node_modules/",
 		"noEmit": true,
 
-		"module": "ESNext",
-		"target": "ESNext",
-		"lib": ["ESNext", "DOM", "WebWorker"],
+		"module": "esnext",
+		"target": "esnext",
+		"lib": ["esnext", "DOM", "WebWorker"],
+
+		"moduleResolution": "bundler",
+		"allowImportingTsExtensions": true,
 
 		"sourceMap": false,
 		"inlineSourceMap": false,
@@ -16,7 +19,6 @@
 		"declaration": false,
 		"incremental": true,
 
-		"moduleResolution": "NodeNext",
 		"resolveJsonModule": false,
 		"esModuleInterop": false,
 		"forceConsistentCasingInFileNames": true,

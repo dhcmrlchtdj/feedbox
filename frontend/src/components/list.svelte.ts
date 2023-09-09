@@ -57,7 +57,7 @@ const formatDate = (date: string) => {
 	return format(new Date(date))
 }
 
-const remove = (feed: Feed) => async () => {
+const remove = (feed: Feed) => () => {
 	if (loading[feed.id] === true) {
 		window.alert("processing")
 		return
@@ -69,11 +69,11 @@ const remove = (feed: Feed) => async () => {
 
 	const setFeeds = createFeedsSetter()
 	agent
-		.del("/api/v1/feeds/remove", { feedID: feed.id })
+		.del<Feed[]>("/api/v1/feeds/remove", { feedID: feed.id })
 		.then((resp) => setFeeds(resp))
 		.then(() => (loading = { ...loading, [feed.id]: false }))
 		.then(() => newNotification("removed"))
-		.catch((err) => {
+		.catch((err: Error) => {
 			window.alert(err.message)
 			location.reload()
 		})

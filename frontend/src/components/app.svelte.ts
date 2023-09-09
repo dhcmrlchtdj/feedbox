@@ -35,7 +35,7 @@ import { Deferred, sleep } from "../utils/deferred.js"
 declare global {
 	interface Window {
 		__STATE__: {
-			loaded: Deferred
+			loaded: Deferred<boolean>
 			email: string
 			feeds: state.Feed[]
 		}
@@ -44,7 +44,7 @@ declare global {
 
 // self -> Window | ServiceWorkerGlobalScope
 const workerState = self.__STATE__ || {}
-export let loaded = workerState.loaded || new Deferred()
+export let loaded = workerState.loaded || new Deferred<boolean>()
 export let email = workerState.email || ""
 export let feeds = workerState.feeds || []
 
@@ -53,7 +53,10 @@ if (feeds.length) state.feeds.set(feeds)
 onMount(() => {
 	// keep the loading animation
 	const delayAnimation = sleep(1000)
-	Promise.all([agent.get("/api/v1/user"), agent.get("/api/v1/feeds")])
+	Promise.all([
+		agent.get<state.User>("/api/v1/user"),
+		agent.get<state.Feed[]>("/api/v1/feeds"),
+	])
 		.then(async ([user, resp]) => {
 			state.email.set(user.addition.email)
 			state.feeds.set(resp)
@@ -68,7 +71,7 @@ onMount(() => {
 				state.initialized.set(true)
 			}
 		})
-		.catch(async (err) => {
+		.catch(async (err: Error) => {
 			if (loaded.reject) {
 				// first time
 				await delayAnimation

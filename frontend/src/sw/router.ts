@@ -4,6 +4,7 @@ import * as strategy from "./strategy.js"
 import * as version from "./version.js"
 import { sanitize } from "../utils/sanitize.js"
 import { dataGuarder } from "../utils/data-guarder.js"
+import type { Feed, User } from "../state.js"
 
 const just =
 	(
@@ -55,7 +56,10 @@ export const router = new Router<RouterContext>()
 		])
 			.then(async ([user, feeds]) => {
 				if (user && user.ok && feeds && feeds.ok) {
-					return Promise.all([user.json(), feeds.json()])
+					return Promise.all([
+						user.json() as Promise<User>,
+						feeds.json() as Promise<Feed[]>,
+					])
 				} else {
 					throw new Error("cache missing")
 				}
@@ -68,7 +72,8 @@ export const router = new Router<RouterContext>()
 				}
 				const tpl = await resp.clone().text()
 				// @ts-expect-error
-				const app = App.render(state)
+				// eslint-disable-next-line @typescript-eslint/no-unsafe-call
+				const app = App.render(state) as { html: string }
 				const inlinedState = `window.__STATE__=${sanitize(
 					JSON.stringify(state),
 				)}`
@@ -88,7 +93,7 @@ export const router = new Router<RouterContext>()
 
 				return new Response(html, { status: 200, headers })
 			})
-			.catch((err) => {
+			.catch((err: Error) => {
 				console.error(err.stack)
 				return resp
 			})

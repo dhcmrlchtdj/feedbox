@@ -26,13 +26,18 @@ export const $$template = `
 <div class="column col-12"><div class="divider"></div></div>
 `
 
-import { feeds, createFeedsSetter, newNotification } from "../state.js"
+import {
+	feeds,
+	createFeedsSetter,
+	newNotification,
+	type Feed,
+} from "../state.js"
 import * as agent from "../utils/agent.js"
 
 let loading = false
 let url = ""
 
-const add = async () => {
+const add = () => {
 	if (loading === true) {
 		window.alert("processing")
 		return
@@ -42,10 +47,10 @@ const add = async () => {
 
 	const setFeeds = createFeedsSetter()
 	agent
-		.put("/api/v1/feeds/add", { url })
+		.put<Feed[]>("/api/v1/feeds/add", { url })
 		.then((resp) => setFeeds(resp))
 		.then(() => newNotification("added"))
-		.catch((err) => {
+		.catch((err: Error) => {
 			window.alert(err.message)
 			location.reload()
 		})
