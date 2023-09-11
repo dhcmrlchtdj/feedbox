@@ -15,6 +15,7 @@ func TestExtractSiteName(t *testing.T) {
 		}
 	}
 
+	f("https://feeds.feedblitz.com/example", "feedblitz/example")
 	f("https://feeds.feedburner.com/example", "feedburner/example")
 	f("https://medium.com/feed/example", "medium/example")
 	f("https://dev.to/feed/example", "dev.to/example")

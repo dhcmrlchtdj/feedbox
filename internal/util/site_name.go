@@ -14,6 +14,8 @@ func ExtractSiteName(link string) string {
 
 	hostname := u.Hostname()
 	switch hostname {
+	case "feeds.feedblitz.com":
+		return "feedblitz/" + path.Base(u.EscapedPath())
 	case "feeds.feedburner.com":
 		return "feedburner/" + path.Base(u.EscapedPath())
 	case "medium.com":
