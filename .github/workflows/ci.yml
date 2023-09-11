@@ -11,16 +11,16 @@ jobs:
         runs-on: ubuntu-22.04
         steps:
             # https://github.com/marketplace/actions/checkout
-            - uses: actions/checkout@v3.5.3
+            - uses: actions/checkout@v4.0.0
             # https://github.com/marketplace/actions/setup-go-environment
-            - uses: actions/setup-go@v4.0.1
+            - uses: actions/setup-go@v4.1.0
               with:
-                  go-version: "1.20"
+                  go-version: "1.21"
             # https://github.com/marketplace/actions/run-golangci-lint
-            - uses: golangci/golangci-lint-action@v3.6.0
+            - uses: golangci/golangci-lint-action@v3.7.0
               with:
                   # https://github.com/golangci/golangci-lint/releases
-                  version: "v1.53.3"
+                  version: "v1.54.2"
             - run: make test
               env:
                   DATABASE_URL: "sqlite://feedbox.db"
@@ -34,11 +34,11 @@ jobs:
                   GITHUB_CLIENT_ID: "https://github.com/settings/developers"
                   GITHUB_CLIENT_SECRET: "https://github.com/settings/developers"
             # https://github.com/marketplace/actions/setup-node-js-environment
-            - uses: actions/setup-node@v3.6.0
+            - uses: actions/setup-node@v3.8.1
               with:
                   node-version: "20.x"
             # https://github.com/marketplace/actions/cache
-            - uses: actions/cache@v3.3.1
+            - uses: actions/cache@v3.3.2
               with:
                   path: ~/.local/share/pnpm/store
                   key: ${{ runner.os }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}
@@ -46,9 +46,10 @@ jobs:
             - run: |
                   corepack enable
                   # https://www.npmjs.com/package/pnpm
-                  corepack prepare pnpm@8.6.3 --activate
+                  corepack prepare pnpm@8.7.4 --activate
                   pnpm config set store-dir ~/.local/share/pnpm/store
                   pnpm install
+                  make lint
               env:
                   PNPM_HOME: /home/runner/.local/bin
               working-directory: ./frontend
@@ -62,7 +63,7 @@ jobs:
                   source: "_build/feedbox"
                   target: "/opt/app/feedbox"
             # https://github.com/marketplace/actions/ssh-remote-commands
-            - uses: appleboy/ssh-action@v0.1.10
+            - uses: appleboy/ssh-action@v1.0.0
               with:
                   host: ${{ secrets.SSH_HOST }}
                   username: ${{ secrets.SSH_USERNAME }}
