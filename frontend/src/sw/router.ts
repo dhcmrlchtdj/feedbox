@@ -1,10 +1,10 @@
 import App from "../components/app.svelte.js"
+import type { Feed, User } from "../state.js"
+import { dataGuarder } from "../utils/data-guarder.js"
 import { Router } from "../utils/router.js"
+import { sanitize } from "../utils/sanitize.js"
 import * as strategy from "./strategy.js"
 import * as version from "./version.js"
-import { sanitize } from "../utils/sanitize.js"
-import { dataGuarder } from "../utils/data-guarder.js"
-import type { Feed, User } from "../state.js"
 
 const just =
 	(

@@ -21,9 +21,9 @@ export const $$template = `
 </div>
 `
 
+import Add from "./add.svelte.js"
 import Auth from "./auth.svelte.js"
 import Heading from "./heading.svelte.js"
-import Add from "./add.svelte.js"
 import List from "./list.svelte.js"
 import Notify from "./notify.svelte.js"
 

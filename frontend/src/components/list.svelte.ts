@@ -42,8 +42,8 @@ export const $$template = `
 
 import { slide } from "svelte/transition"
 import {
-	feeds,
 	createFeedsSetter,
+	feeds,
 	newNotification,
 	type Feed,
 } from "../state.js"

@@ -27,8 +27,8 @@ export const $$template = `
 `
 
 import {
-	feeds,
 	createFeedsSetter,
+	feeds,
 	newNotification,
 	type Feed,
 } from "../state.js"

@@ -1,9 +1,9 @@
 // https://esbuild.github.io/api/#build-api
 
-import * as url from "node:url"
-import * as path from "node:path"
 import * as esbuild from "esbuild"
 import * as fs from "node:fs/promises"
+import * as path from "node:path"
+import * as url from "node:url"
 import { hashFiles } from "./hash_files.js"
 import { sveltePlugin } from "./svelte_plugin.js"
 import { template } from "./template.js"

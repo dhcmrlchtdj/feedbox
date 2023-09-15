@@ -1,5 +1,5 @@
-import App from "./components/app.svelte.js"
 import "spectre.css"
+import App from "./components/app.svelte.js"
 
 import {
 	Composed,

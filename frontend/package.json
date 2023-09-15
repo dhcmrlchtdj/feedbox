@@ -10,6 +10,7 @@
 		"eslint": "8.49.0",
 		"eslint-config-prettier": "9.0.0",
 		"prettier": "3.0.3",
+		"prettier-plugin-organize-imports": "3.2.3",
 		"spectre.css": "0.5.9",
 		"svelte": "4.2.0",
 		"typescript": "5.2.2"
@@ -33,6 +34,10 @@
 		"htmlWhitespaceSensitivity": "ignore",
 		"endOfLine": "lf",
 		"embeddedLanguageFormatting": "auto",
-		"singleAttributePerLine": true
+		"singleAttributePerLine": true,
+		"plugins": [
+			"prettier-plugin-organize-imports"
+		],
+		"organizeImportsSkipDestructiveCodeActions": true
 	}
 }
