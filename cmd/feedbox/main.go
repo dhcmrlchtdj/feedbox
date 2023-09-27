@@ -124,6 +124,8 @@ func runServer(ctx context.Context) {
 }
 
 func runWorker(ctx context.Context) {
+	util.CheckEnvs("SERVER")
+
 	ticker := time.NewTicker(time.Minute * 10)
 	for {
 		select {

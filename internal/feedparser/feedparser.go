@@ -3,6 +3,7 @@ package feedparser
 import (
 	"context"
 	"net/http"
+	"os"
 
 	"github.com/mmcdole/gofeed"
 	"github.com/morikuni/failure"
@@ -27,7 +28,8 @@ func (p *FeedParser) ParseURL(ctx context.Context, url string, etag string) (*go
 	if etag != "" {
 		req.Header.Set("If-None-Match", etag)
 	}
-	req.Header.Set("User-Agent", "FeedBox/2.0 (+https://github.com/dhcmrlchtdj/feedbox)")
+	server := os.Getenv("SERVER")
+	req.Header.Set("User-Agent", "FeedBox/2.0 (+"+server+")")
 
 	resp, err := p.client.Do(req)
 	if err != nil {
