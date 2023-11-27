@@ -89,7 +89,7 @@ func FeedExport(c *fiber.Ctx) error {
 	}
 
 	opml := util.BuildOPMLFromFeed(feeds)
-	c.Set("content-type", "text/x-opml; charset=utf-8")
+	c.Set("content-type", "application/xml; charset=utf-8")
 	return c.Send(opml)
 }
 
