@@ -54,12 +54,15 @@ func executeCommand(ctx context.Context, cmd string, arg string, msg *telegram.M
 		logger.Warn().Str("module", "telegrambot").Stack().Err(err).Send()
 	} else if failure.Is(err, database.ErrInvalidURL) ||
 		failure.Is(err, ErrEmptyList) {
-		text := err.Error()
+		code, ok := failure.CodeOf(err)
+		if !ok {
+			panic(ok)
+		}
 		err := global.Telegram.SendMessage(
 			ctx,
 			&telegram.SendMessagePayload{
 				ChatID: msg.Chat.ID,
-				Text:   text,
+				Text:   code.ErrorCode(),
 			})
 		if err != nil {
 			logger.Error().Str("module", "telegrambot").Stack().Err(err).Send()
