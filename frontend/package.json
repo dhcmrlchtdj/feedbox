@@ -4,19 +4,21 @@
 	"version": "0.0.0",
 	"type": "module",
 	"devDependencies": {
-		"@typescript-eslint/eslint-plugin": "6.6.0",
-		"@typescript-eslint/parser": "6.6.0",
-		"esbuild": "0.19.2",
-		"eslint": "8.49.0",
-		"eslint-config-prettier": "9.0.0",
-		"prettier": "3.0.3",
-		"prettier-plugin-organize-imports": "3.2.3",
+		"@typescript-eslint/eslint-plugin": "6.21.0",
+		"@typescript-eslint/parser": "6.21.0",
+		"esbuild": "0.20.0",
+		"eslint": "8.56.0",
+		"eslint-config-prettier": "9.1.0",
+		"prettier": "3.2.5",
+		"prettier-plugin-organize-imports": "3.2.4",
 		"spectre.css": "0.5.9",
-		"svelte": "4.2.0",
-		"typescript": "5.2.2"
+		"svelte": "4.2.10",
+		"typescript": "5.3.3"
 	},
 	"pnpm": {
-		"patchedDependencies": {}
+		"patchedDependencies": {
+			"svelte@4.2.10": "patches/svelte@4.2.10.patch"
+		}
 	},
 	"prettier": {
 		"printWidth": 80,
