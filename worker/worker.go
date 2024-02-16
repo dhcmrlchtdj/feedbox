@@ -2,7 +2,7 @@ package worker
 
 import (
 	"context"
-	"sort"
+	"slices"
 	"strconv"
 	"sync"
 	"time"
@@ -224,7 +224,23 @@ func dispatchFeed(ctx context.Context, done *sync.WaitGroup, qFeedItem <-chan *f
 	qTelegram := make(chan telegramItem)
 
 	worker := func(item *feedItem) {
-		sort.Sort(item)
+		slices.SortFunc(item.items, func(a gofeed.Item, b gofeed.Item) int {
+			x := a.PublishedParsed
+			y := b.PublishedParsed
+			if x != nil && y != nil {
+				if x.Before(*y) {
+					return -1
+				} else {
+					return 1
+				}
+			} else if x != nil {
+				return -1
+			} else if y != nil {
+				return 1
+			} else {
+				return 0
+			}
+		})
 
 		feed := item.feed
 		users, err := global.Database.GetSubscribers(ctx, feed.ID)
@@ -267,24 +283,4 @@ func dispatchFeed(ctx context.Context, done *sync.WaitGroup, qFeedItem <-chan *f
 	}()
 
 	return qGithub, qTelegram
-}
-
-///
-
-func (f *feedItem) Len() int {
-	return len(f.items)
-}
-
-func (f *feedItem) Less(i int, k int) bool {
-	x := f.items[i].PublishedParsed
-	y := f.items[k].PublishedParsed
-	if x != nil && y != nil {
-		return x.Before(*y)
-	} else {
-		return false
-	}
-}
-
-func (f *feedItem) Swap(i int, k int) {
-	f.items[i], f.items[k] = f.items[k], f.items[i]
 }

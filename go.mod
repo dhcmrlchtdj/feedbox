@@ -1,6 +1,6 @@
 module github.com/dhcmrlchtdj/feedbox
 
-go 1.21
+go 1.22
 
 require (
 	github.com/bradleyjkemp/cupaloy/v2 v2.8.0
