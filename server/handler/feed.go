@@ -20,7 +20,7 @@ func FeedList(c *fiber.Ctx) error {
 	if err != nil {
 		return err
 	}
-	return c.JSON(feeds)
+	return errors.WithStack(c.JSON(feeds))
 }
 
 type feedAddBody struct {
@@ -44,7 +44,7 @@ func FeedAdd(c *fiber.Ctx) error {
 		return err
 	}
 
-	if err := global.Database.Subscribe(ctx, credential.UserID, feedID); err != nil {
+	if err = global.Database.Subscribe(ctx, credential.UserID, feedID); err != nil {
 		return err
 	}
 
@@ -111,7 +111,7 @@ func FeedImport(c *fiber.Ctx) error {
 		return err
 	}
 
-	if err := global.Database.SubscribeURLs(ctx, credential.UserID, urls); err != nil {
+	if err = global.Database.SubscribeURLs(ctx, credential.UserID, urls); err != nil {
 		if errors.Is(err, database.ErrInvalidURL) {
 			return fiber.NewError(fiber.StatusBadRequest, err.Error())
 		}

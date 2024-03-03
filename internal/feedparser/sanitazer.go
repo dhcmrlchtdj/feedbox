@@ -18,7 +18,7 @@ func sanitize(source io.Reader) (io.Reader, error) {
 		preview = preview[:n]
 		source = bytes.NewReader(preview)
 	case err != nil:
-		return nil, err
+		return nil, errors.WithStack(err)
 	default:
 		source = io.MultiReader(bytes.NewReader(preview), source)
 	}

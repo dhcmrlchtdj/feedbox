@@ -39,7 +39,7 @@ func (c *mailgun) Send(ctx context.Context, addr string, subject string, text st
 		Str("html", text).
 		Str("o:dkim", "yes")
 	if err := m.Close(); err != nil {
-		return err
+		return errors.WithStack(err)
 	}
 
 	req, err := http.NewRequestWithContext(
@@ -49,14 +49,14 @@ func (c *mailgun) Send(ctx context.Context, addr string, subject string, text st
 		&payload,
 	)
 	if err != nil {
-		return err
+		return errors.WithStack(err)
 	}
 	req.SetBasicAuth("api", c.apiKey)
 	req.Header.Set("content-type", m.ContentType)
 
 	resp, err := c.client.Do(req)
 	if err != nil {
-		return err
+		return errors.WithStack(err)
 	}
 	defer resp.Body.Close()
 

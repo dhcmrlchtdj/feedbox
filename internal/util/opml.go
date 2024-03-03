@@ -7,6 +7,8 @@ import (
 	"html"
 	"io"
 
+	"github.com/pkg/errors"
+
 	"github.com/dhcmrlchtdj/feedbox/internal/database/common"
 )
 
@@ -21,7 +23,7 @@ type outline struct {
 func ExtractLinksFromOPML(content io.Reader) ([]string, error) {
 	var c opml
 	if err := xml.NewDecoder(content).Decode(&c); err != nil {
-		return nil, err
+		return nil, errors.WithStack(err)
 	}
 
 	links := []string{}

@@ -54,7 +54,7 @@ func executeCommand(ctx context.Context, cmd string, arg string, msg *telegram.M
 		logger.Warn().Str("module", "telegrambot").Stack().Err(err).Send()
 	} else if errors.Is(err, database.ErrInvalidURL) ||
 		errors.Is(err, ErrEmptyList) {
-		err := global.Telegram.SendMessage(
+		err = global.Telegram.SendMessage(
 			ctx,
 			&telegram.SendMessagePayload{
 				ChatID: msg.Chat.ID,

@@ -24,7 +24,7 @@ func New(ctx context.Context, uri string) (*Database, error) {
 	dbURI := uri[9:]
 	db, err := sql.Open("sqlite", dbURI)
 	if err != nil {
-		return nil, err
+		return nil, errors.WithStack(err)
 	}
 
 	zerolog.Ctx(ctx).
@@ -40,7 +40,7 @@ func New(ctx context.Context, uri string) (*Database, error) {
 		PRAGMA busy_timeout = 10000;
 	`)
 	if err != nil {
-		return nil, err
+		return nil, errors.WithStack(err)
 	}
 
 	return &Database{db}, nil

@@ -45,7 +45,8 @@ var (
 
 func New(ctx context.Context, uri string) (Database, error) {
 	if strings.HasPrefix(uri, "sqlite://") {
-		return sqlite.New(ctx, uri)
+		r, err := sqlite.New(ctx, uri)
+		return r, errors.WithStack(err)
 	}
 
 	return nil, errors.New("unknown database url")

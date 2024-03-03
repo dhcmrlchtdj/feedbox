@@ -3,7 +3,6 @@ package sqlite_test
 import (
 	"context"
 	"database/sql"
-	"errors"
 	"os"
 	"strings"
 	"testing"
@@ -12,6 +11,7 @@ import (
 	"github.com/bradleyjkemp/cupaloy/v2"
 	"github.com/golang-migrate/migrate/v4"
 	"github.com/joho/godotenv"
+	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	"github.com/dhcmrlchtdj/feedbox/internal/database/sqlite"
@@ -128,7 +128,7 @@ func TestAddFeedLinks(t *testing.T) {
 			var feed feedAll
 			err := rows.Scan(&feed.ID, &feed.URL, &feed.Updated, &feed.ETag, &feed.Link)
 			if err != nil {
-				return nil, err
+				return nil, errors.WithStack(err)
 			}
 			feeds = append(feeds, feed)
 		}

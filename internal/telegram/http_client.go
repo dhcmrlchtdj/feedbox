@@ -149,7 +149,7 @@ func (c *httpClient) rawSendFileSimple(ctx context.Context, cmd string, contentT
 
 func DecodeResponse(body io.Reader, t interface{ Check() error }) error {
 	if err := json.NewDecoder(body).Decode(t); err != nil {
-		return err
+		return errors.WithStack(err)
 	}
-	return t.Check()
+	return errors.WithStack(t.Check())
 }

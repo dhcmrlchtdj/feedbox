@@ -33,7 +33,7 @@ disable = [
 
 [linters-settings.govet]
 enable-all = true
-disable = ["shadow", "fieldalignment"]
+disable = ["fieldalignment"]
 
 [linters-settings.errcheck]
 check-type-assertions = false
@@ -53,4 +53,5 @@ disabled-checks = [
 	"sprintfQuotedString",
 	"unnamedResult",
 	"whyNoLint",
+	"sloppyReassign",
 ]

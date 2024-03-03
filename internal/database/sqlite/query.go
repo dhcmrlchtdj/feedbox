@@ -108,7 +108,7 @@ func (db *Database) GetFeedIDByURL(ctx context.Context, url string) (int64, erro
 	var feedID int64
 	err = row.Scan(&feedID)
 	if err != nil {
-		return 0, err
+		return 0, errors.WithStack(err)
 	}
 
 	return feedID, nil
@@ -163,7 +163,7 @@ func (db *Database) AddFeedLinks(ctx context.Context, id int64, links []string, 
 		var linkID int64
 		err = row.Scan(&linkID)
 		if err != nil {
-			return err
+			return errors.WithStack(err)
 		}
 
 		_, err = db.Exec(
