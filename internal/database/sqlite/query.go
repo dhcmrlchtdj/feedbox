@@ -4,14 +4,13 @@ import (
 	"context"
 	"database/sql"
 	"encoding/json"
-	"errors"
 	netUrl "net/url"
 	"time"
 
+	"github.com/pkg/errors"
 	_ "modernc.org/sqlite"
 
 	"github.com/dhcmrlchtdj/feedbox/internal/database/common"
-	"github.com/morikuni/failure"
 )
 
 type (
@@ -39,7 +38,7 @@ func (db *Database) GetUserByID(ctx context.Context, id int64) (*User, error) {
 		return nil, err
 	}
 	if user == nil {
-		return nil, failure.New(ErrEmptyRow)
+		return nil, errors.WithStack(ErrEmptyRow)
 	}
 
 	return user, nil
@@ -48,7 +47,7 @@ func (db *Database) GetUserByID(ctx context.Context, id int64) (*User, error) {
 func (db *Database) GetOrCreateUserByGithub(ctx context.Context, githubID string, email string) (*User, error) {
 	addition, err := json.Marshal(map[string]string{"email": email})
 	if err != nil {
-		return nil, err
+		return nil, errors.WithStack(err)
 	}
 	row := db.QueryRow(
 		ctx,
@@ -96,7 +95,7 @@ func (db *Database) GetOrCreateUserByTelegram(ctx context.Context, chatID string
 
 func (db *Database) GetFeedIDByURL(ctx context.Context, url string) (int64, error) {
 	if !isValidURL(url) {
-		return 0, failure.New(ErrInvalidURL)
+		return 0, errors.WithStack(ErrInvalidURL)
 	}
 
 	_, err := db.Exec(ctx, `INSERT OR IGNORE INTO feeds(url) VALUES ($1)`, url)
@@ -300,12 +299,12 @@ func readUser(row *sql.Row) (*User, error) {
 		if errors.Is(err, sql.ErrNoRows) {
 			return nil, nil
 		}
-		return nil, err
+		return nil, errors.WithStack(err)
 	}
 
 	err = json.Unmarshal(addition, &user.Addition)
 	if err != nil {
-		return nil, err
+		return nil, errors.WithStack(err)
 	}
 
 	return &user, nil
@@ -318,11 +317,11 @@ func readUsers(rows *sql.Rows) ([]User, error) {
 		var addition []byte
 		err := rows.Scan(&user.ID, &user.Platform, &user.PID, &addition)
 		if err != nil {
-			return nil, err
+			return nil, errors.WithStack(err)
 		}
 		err = json.Unmarshal(addition, &user.Addition)
 		if err != nil {
-			return nil, err
+			return nil, errors.WithStack(err)
 		}
 		users = append(users, user)
 	}
@@ -336,7 +335,7 @@ func readFeeds(rows *sql.Rows) ([]Feed, error) {
 		var ts *int64
 		err := rows.Scan(&feed.ID, &feed.URL, &ts, &feed.ETag)
 		if err != nil {
-			return nil, err
+			return nil, errors.WithStack(err)
 		}
 		feed.Updated = parseTime(ts)
 		feeds = append(feeds, feed)
@@ -359,7 +358,7 @@ func readLinks(rows *sql.Rows) ([]string, error) {
 		var link string
 		err := rows.Scan(&link)
 		if err != nil {
-			return nil, err
+			return nil, errors.WithStack(err)
 		}
 		links = append(links, link)
 	}

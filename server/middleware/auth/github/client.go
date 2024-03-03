@@ -6,7 +6,7 @@ import (
 	"net/http"
 	"sort"
 
-	"github.com/morikuni/failure"
+	"github.com/pkg/errors"
 )
 
 type Config struct {
@@ -37,7 +37,7 @@ func getProfile(ctx context.Context, client *http.Client) (*Profile, error) {
 	defer resp.Body.Close()
 
 	if resp.StatusCode != 200 {
-		return nil, failure.Unexpected(resp.Status)
+		return nil, errors.New(resp.Status)
 	}
 
 	var profile Profile
@@ -73,7 +73,7 @@ func getEmail(ctx context.Context, client *http.Client) (string, error) {
 	defer resp.Body.Close()
 
 	if resp.StatusCode != 200 {
-		return "", failure.Unexpected(resp.Status)
+		return "", errors.New(resp.Status)
 	}
 
 	var emails []githubEmail
@@ -97,5 +97,5 @@ func getEmail(ctx context.Context, client *http.Client) (string, error) {
 		return verifiedEmails[0], nil
 	}
 
-	return "", failure.Unexpected("verified email is required")
+	return "", errors.New("verified email is required")
 }

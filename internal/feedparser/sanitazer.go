@@ -2,10 +2,10 @@ package feedparser
 
 import (
 	"bytes"
-	"errors"
 	"io"
 	"unicode"
 
+	"github.com/pkg/errors"
 	"golang.org/x/text/runes"
 	"golang.org/x/text/transform"
 )

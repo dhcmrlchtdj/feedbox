@@ -6,7 +6,7 @@ import (
 	"encoding/json"
 	"net/http"
 
-	"github.com/morikuni/failure"
+	"github.com/pkg/errors"
 )
 
 var _ Client = (*mailchannels)(nil)
@@ -44,7 +44,7 @@ func (c *mailchannels) buildSendPayload(addr string, subject string, text string
 func (c *mailchannels) Send(ctx context.Context, addr string, subject string, text string) error {
 	payload, err := json.Marshal(c.buildSendPayload(addr, subject, text))
 	if err != nil {
-		return err
+		return errors.WithStack(err)
 	}
 
 	req, err := http.NewRequestWithContext(
@@ -54,19 +54,19 @@ func (c *mailchannels) Send(ctx context.Context, addr string, subject string, te
 		bytes.NewBuffer(payload),
 	)
 	if err != nil {
-		return err
+		return errors.WithStack(err)
 	}
 	req.SetBasicAuth(c.username, c.password)
 	req.Header.Set("content-type", "application/json")
 
 	resp, err := c.client.Do(req)
 	if err != nil {
-		return err
+		return errors.WithStack(err)
 	}
 	defer resp.Body.Close()
 
 	if resp.StatusCode != 202 {
-		return failure.Unexpected("mailchannels", failure.Message(resp.Status))
+		return errors.WithMessage(errors.New("mailchannels"), resp.Status)
 	}
 
 	return nil

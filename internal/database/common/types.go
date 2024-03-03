@@ -3,7 +3,7 @@ package common
 import (
 	"time"
 
-	"github.com/morikuni/failure"
+	"github.com/pkg/errors"
 )
 
 type User struct {
@@ -20,6 +20,7 @@ type Feed struct {
 	ETag    string     `json:"etag"`
 }
 
-var ErrEmptyRow failure.StringCode = "EmptyRow"
-
-var ErrInvalidURL failure.StringCode = "InvalidUrl"
+var (
+	ErrEmptyRow   = errors.New("empty row")
+	ErrInvalidURL = errors.New("invalid url")
+)

@@ -1,9 +1,10 @@
 package feedparser
 
 import (
+	"errors"
+
 	"github.com/mmcdole/gofeed"
 	"github.com/mmcdole/gofeed/rss"
-	"github.com/morikuni/failure"
 )
 
 type customRSSTranslator struct {
@@ -20,7 +21,7 @@ func newCustomRSSTranslator() *customRSSTranslator {
 func (ct *customRSSTranslator) Translate(feed any) (*gofeed.Feed, error) {
 	rssFeed, ok := feed.(*rss.Feed)
 	if !ok {
-		return nil, failure.Unexpected("Feed did not match expected type of *rss.Feed")
+		return nil, errors.New("Feed did not match expected type of *rss.Feed")
 	}
 
 	f, err := ct.defaultTranslator.Translate(rssFeed)

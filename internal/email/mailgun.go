@@ -6,7 +6,7 @@ import (
 	"encoding/json"
 	"net/http"
 
-	"github.com/morikuni/failure"
+	"github.com/pkg/errors"
 
 	"github.com/dhcmrlchtdj/feedbox/internal/multipart"
 )
@@ -61,14 +61,14 @@ func (c *mailgun) Send(ctx context.Context, addr string, subject string, text st
 	defer resp.Body.Close()
 
 	if resp.StatusCode != 200 {
-		e := failure.Unexpected(resp.Status)
+		e := errors.New(resp.Status)
 		var r struct {
 			Message string `json:"message,omitempty"`
 		}
 		if err := json.NewDecoder(resp.Body).Decode(&r); err != nil {
-			return failure.Wrap(e, failure.Message(err.Error()))
+			return errors.WithMessage(e, err.Error())
 		}
-		return failure.Wrap(e, failure.Message(r.Message))
+		return errors.WithMessage(e, r.Message)
 	}
 
 	return nil

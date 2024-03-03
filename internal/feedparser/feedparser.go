@@ -6,7 +6,7 @@ import (
 	"os"
 
 	"github.com/mmcdole/gofeed"
-	"github.com/morikuni/failure"
+	"github.com/pkg/errors"
 )
 
 type FeedParser struct {
@@ -23,7 +23,7 @@ func New() *FeedParser {
 func (p *FeedParser) ParseURL(ctx context.Context, url string, etag string) (*gofeed.Feed, string, error) {
 	req, err := http.NewRequestWithContext(ctx, "GET", url, http.NoBody)
 	if err != nil {
-		return nil, "", err
+		return nil, "", errors.WithStack(err)
 	}
 	if etag != "" {
 		req.Header.Set("If-None-Match", etag)
@@ -33,7 +33,7 @@ func (p *FeedParser) ParseURL(ctx context.Context, url string, etag string) (*go
 
 	resp, err := p.client.Do(req)
 	if err != nil {
-		return nil, "", err
+		return nil, "", errors.WithStack(err)
 	}
 	defer resp.Body.Close()
 
@@ -42,23 +42,23 @@ func (p *FeedParser) ParseURL(ctx context.Context, url string, etag string) (*go
 	}
 
 	if resp.StatusCode != 200 {
-		return nil, "", failure.Unexpected(resp.Status, failure.Message(url))
+		return nil, "", errors.WithMessage(errors.New(resp.Status), url)
 	}
 
 	// sanitize body
 	body, err := sanitize(resp.Body)
 	if err != nil {
-		return nil, "", failure.Wrap(err, failure.Message(url))
+		return nil, "", errors.WithMessage(err, url)
 	}
 
 	feed, err := p.parser.Parse(body)
 	if err != nil {
-		return nil, "", failure.Wrap(err, failure.Message(url))
+		return nil, "", errors.Wrap(err, url)
 	}
 
 	// fix item
 	if err := fixFeed(url, feed); err != nil {
-		return nil, "", err
+		return nil, "", errors.WithStack(err)
 	}
 
 	newEtag := resp.Header.Get("etag")

@@ -6,7 +6,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/morikuni/failure"
+	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	"github.com/dhcmrlchtdj/feedbox/internal/database"
@@ -16,8 +16,8 @@ import (
 )
 
 var (
-	ErrUnknownCommand failure.StringCode = "UnknownCommand"
-	ErrEmptyList      failure.StringCode = "EmptyList"
+	ErrUnknownCommand = errors.New("unknown command")
+	ErrEmptyList      = errors.New("empty list")
 )
 
 func executeCommand(ctx context.Context, cmd string, arg string, msg *telegram.Message) {
@@ -44,25 +44,21 @@ func executeCommand(ctx context.Context, cmd string, arg string, msg *telegram.M
 	case "/set_commands":
 		err = setCommands(ctx, msg)
 	default:
-		err = failure.New(ErrUnknownCommand, failure.Message(cmd))
+		err = errors.Wrap(ErrUnknownCommand, cmd)
 	}
 
 	logger := zerolog.Ctx(ctx)
 	if err == nil {
 		return
-	} else if failure.Is(err, ErrUnknownCommand) {
+	} else if errors.Is(err, ErrUnknownCommand) {
 		logger.Warn().Str("module", "telegrambot").Stack().Err(err).Send()
-	} else if failure.Is(err, database.ErrInvalidURL) ||
-		failure.Is(err, ErrEmptyList) {
-		code, ok := failure.CodeOf(err)
-		if !ok {
-			panic(ok)
-		}
+	} else if errors.Is(err, database.ErrInvalidURL) ||
+		errors.Is(err, ErrEmptyList) {
 		err := global.Telegram.SendMessage(
 			ctx,
 			&telegram.SendMessagePayload{
 				ChatID: msg.Chat.ID,
-				Text:   code.ErrorCode(),
+				Text:   err.Error(),
 			})
 		if err != nil {
 			logger.Error().Str("module", "telegrambot").Stack().Err(err).Send()
@@ -96,7 +92,7 @@ func list(ctx context.Context, msg *telegram.Message) error {
 		return err
 	}
 	if len(feeds) == 0 {
-		return failure.New(ErrEmptyList)
+		return errors.WithStack(ErrEmptyList)
 	}
 
 	var builder strings.Builder
@@ -174,7 +170,7 @@ func removeAll(ctx context.Context, msg *telegram.Message) error {
 		return err
 	}
 	if len(feeds) == 0 {
-		return failure.New(ErrEmptyList)
+		return errors.WithStack(ErrEmptyList)
 	}
 	if err := global.Database.UnsubscribeAll(ctx, user.ID); err != nil {
 		return err
@@ -205,7 +201,7 @@ func export(ctx context.Context, msg *telegram.Message) error {
 		return err
 	}
 	if len(feeds) == 0 {
-		return failure.New(ErrEmptyList)
+		return errors.WithStack(ErrEmptyList)
 	}
 
 	opml := util.BuildOPMLFromFeed(feeds)

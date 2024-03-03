@@ -7,7 +7,7 @@ import (
 
 	"github.com/dhcmrlchtdj/feedbox/internal/database/common"
 	"github.com/dhcmrlchtdj/feedbox/internal/database/sqlite"
-	"github.com/morikuni/failure"
+	"github.com/pkg/errors"
 )
 
 type Database interface {
@@ -48,5 +48,5 @@ func New(ctx context.Context, uri string) (Database, error) {
 		return sqlite.New(ctx, uri)
 	}
 
-	return nil, failure.Unexpected("unknown database url")
+	return nil, errors.New("unknown database url")
 }

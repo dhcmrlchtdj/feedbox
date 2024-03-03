@@ -7,7 +7,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/morikuni/failure"
+	"github.com/pkg/errors"
 	"github.com/rs/xid"
 	"github.com/rs/zerolog"
 	_ "modernc.org/sqlite"
@@ -19,7 +19,7 @@ type Database struct {
 
 func New(ctx context.Context, uri string) (*Database, error) {
 	if !strings.HasPrefix(uri, "sqlite://") {
-		return nil, failure.Unexpected("invalid DATABASE_URL", failure.Message(uri))
+		return nil, errors.WithMessage(errors.New("invalid DATABASE_URL"), uri)
 	}
 	dbURI := uri[9:]
 	db, err := sql.Open("sqlite", dbURI)
@@ -67,8 +67,8 @@ func (db *Database) Exec(ctx context.Context, query string, args ...any) (sql.Re
 		latency := time.Since(start)
 		logger.Trace().Dur("latency", latency).Send()
 	}()
-
-	return db.db.ExecContext(ctx, query, args...)
+	r, err := db.db.ExecContext(ctx, query, args...)
+	return r, errors.WithStack(err)
 }
 
 func (db *Database) Query(ctx context.Context, query string, args ...any) (*sql.Rows, error) {
@@ -85,7 +85,8 @@ func (db *Database) Query(ctx context.Context, query string, args ...any) (*sql.
 		latency := time.Since(start)
 		logger.Trace().Dur("latency", latency).Send()
 	}()
-	return db.db.QueryContext(ctx, query, args...)
+	r, err := db.db.QueryContext(ctx, query, args...)
+	return r, errors.WithStack(err)
 }
 
 func (db *Database) QueryRow(ctx context.Context, query string, args ...any) *sql.Row {

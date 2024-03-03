@@ -4,7 +4,7 @@ import (
 	"strings"
 
 	"github.com/gofiber/fiber/v2"
-	"github.com/morikuni/failure"
+	"github.com/pkg/errors"
 
 	"github.com/dhcmrlchtdj/feedbox/internal/database"
 	"github.com/dhcmrlchtdj/feedbox/internal/global"
@@ -38,7 +38,7 @@ func FeedAdd(c *fiber.Ctx) error {
 
 	feedID, err := global.Database.GetFeedIDByURL(ctx, strings.TrimSpace(b.URL))
 	if err != nil {
-		if failure.Is(err, database.ErrInvalidURL) {
+		if errors.Is(err, database.ErrInvalidURL) {
 			return fiber.NewError(fiber.StatusBadRequest, err.Error())
 		}
 		return err
@@ -112,7 +112,7 @@ func FeedImport(c *fiber.Ctx) error {
 	}
 
 	if err := global.Database.SubscribeURLs(ctx, credential.UserID, urls); err != nil {
-		if failure.Is(err, database.ErrInvalidURL) {
+		if errors.Is(err, database.ErrInvalidURL) {
 			return fiber.NewError(fiber.StatusBadRequest, err.Error())
 		}
 		return err

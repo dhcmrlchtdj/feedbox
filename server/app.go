@@ -9,7 +9,7 @@ import (
 	"github.com/gofiber/fiber/v2/middleware/pprof"
 	"github.com/gofiber/fiber/v2/middleware/recover"
 	"github.com/gofiber/fiber/v2/middleware/requestid"
-	"github.com/morikuni/failure"
+	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	"github.com/dhcmrlchtdj/feedbox/internal/database"
@@ -133,8 +133,8 @@ func cookieValidator(ctx context.Context, tokenStr string) ( /* Credential */ an
 	}
 
 	if _, err = global.Database.GetUserByID(ctx, credential.UserID); err != nil {
-		if failure.Is(err, database.ErrEmptyRow) {
-			err = failure.New(failure.StringCode("InvalidUser"))
+		if errors.Is(err, database.ErrEmptyRow) {
+			err = errors.New("invalid user")
 		}
 		return nil, err
 	}

@@ -8,7 +8,7 @@ import (
 	_ "github.com/golang-migrate/migrate/v4/database/sqlite"
 	"github.com/golang-migrate/migrate/v4/source"
 	"github.com/golang-migrate/migrate/v4/source/iofs"
-	"github.com/morikuni/failure"
+	"github.com/pkg/errors"
 )
 
 //go:embed sqlite/*.sql
@@ -20,15 +20,15 @@ func InitMigration(uri string) (*migrate.Migrate, error) {
 	if strings.HasPrefix(uri, "sqlite://") {
 		migrationDir, err = iofs.New(fs, "sqlite")
 	} else {
-		return nil, failure.Unexpected("unknown database url")
+		return nil, errors.Errorf("unknown database url: %s", uri)
 	}
 	if err != nil {
-		return nil, err
+		return nil, errors.WithStack(err)
 	}
 
 	m, err := migrate.NewWithSourceInstance("iofs", migrationDir, uri)
 	if err != nil {
-		return nil, err
+		return nil, errors.WithStack(err)
 	}
 
 	return m, nil
