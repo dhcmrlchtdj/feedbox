@@ -103,7 +103,7 @@ func FeedImport(c *fiber.Ctx) error {
 	}
 	file, err := fileheader.Open()
 	if err != nil {
-		return err
+		return errors.WithStack(err)
 	}
 	urls, err := util.ExtractLinksFromOPML(file)
 	file.Close()

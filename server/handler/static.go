@@ -59,7 +59,7 @@ func StaticWithCustomHeader(filename string) fiber.Handler {
 		var h customHeader
 		err = json.Unmarshal(content, &h)
 		if err != nil {
-			return err
+			return errors.WithStack(err)
 		}
 
 		for _, kv := range h.Header {

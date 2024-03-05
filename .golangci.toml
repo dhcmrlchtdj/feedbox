@@ -27,8 +27,13 @@ disable = [
 	"musttag",
 	"paralleltest",
 	"revive",
-	"wrapcheck",
 	"depguard",
+]
+
+[linters-settings.wrapcheck]
+ignorePackageGlobs = [
+	"github.com/dhcmrlchtdj/feedbox/*",
+	"github.com/gofiber/fiber/*"
 ]
 
 [linters-settings.govet]

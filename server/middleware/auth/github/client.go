@@ -27,12 +27,12 @@ func getProfile(ctx context.Context, client *http.Client) (*Profile, error) {
 		http.NoBody,
 	)
 	if err != nil {
-		return nil, err
+		return nil, errors.WithStack(err)
 	}
 
 	resp, err := client.Do(req)
 	if err != nil {
-		return nil, err
+		return nil, errors.WithStack(err)
 	}
 	defer resp.Body.Close()
 
@@ -43,7 +43,7 @@ func getProfile(ctx context.Context, client *http.Client) (*Profile, error) {
 	var profile Profile
 	err = json.NewDecoder(resp.Body).Decode(&profile)
 	if err != nil {
-		return nil, err
+		return nil, errors.WithStack(err)
 	}
 
 	return &profile, nil
@@ -63,12 +63,12 @@ func getEmail(ctx context.Context, client *http.Client) (string, error) {
 		http.NoBody,
 	)
 	if err != nil {
-		return "", err
+		return "", errors.WithStack(err)
 	}
 
 	resp, err := client.Do(req)
 	if err != nil {
-		return "", err
+		return "", errors.WithStack(err)
 	}
 	defer resp.Body.Close()
 
@@ -79,7 +79,7 @@ func getEmail(ctx context.Context, client *http.Client) (string, error) {
 	var emails []githubEmail
 	err = json.NewDecoder(resp.Body).Decode(&emails)
 	if err != nil {
-		return "", err
+		return "", errors.WithStack(err)
 	}
 
 	var verifiedEmails []string

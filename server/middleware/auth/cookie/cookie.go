@@ -83,7 +83,7 @@ func EncodeToToken(userID int64) (string, error) {
 
 	plaintext, err := json.Marshal(token)
 	if err != nil {
-		return "", err
+		return "", errors.WithStack(err)
 	}
 	tokenStr, err := global.Sign.EncodeToHex(plaintext)
 	if err != nil {
