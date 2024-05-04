@@ -17,11 +17,16 @@ dev: clean node_modules/tsconfig.tsbuildinfo
 	NODE_ENV=development node ./build_script/build_watch.js
 
 fmt:
-	prettier --write .
+	prettier --write . "!pnpm-lock.yaml"
 
 lint:
-	eslint src
-	prettier --check .
+	oxlint --deny-warnings \
+		-D=correctness \
+		-D=suspicious \
+		-D=pedantic \
+		-A=ban-ts-comment \
+		--import-plugin
+	prettier --check . "!pnpm-lock.yaml"
 
 # test:
 

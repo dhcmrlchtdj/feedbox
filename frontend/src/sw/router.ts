@@ -72,7 +72,6 @@ export const router = new Router<RouterContext>()
 				}
 				const tpl = await resp.clone().text()
 				// @ts-expect-error
-				// eslint-disable-next-line @typescript-eslint/no-unsafe-call
 				const app = App.render(state) as { html: string }
 				const inlinedState = `window.__STATE__=${sanitize(
 					JSON.stringify(state),

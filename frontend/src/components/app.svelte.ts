@@ -49,7 +49,7 @@ export let email = workerState.email || ""
 export let feeds = workerState.feeds || []
 
 if (email) state.email.set(email)
-if (feeds.length) state.feeds.set(feeds)
+if (feeds.length > 0) state.feeds.set(feeds)
 onMount(() => {
 	// keep the loading animation
 	const delayAnimation = sleep(1000)

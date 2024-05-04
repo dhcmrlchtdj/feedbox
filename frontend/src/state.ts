@@ -32,7 +32,7 @@ export const newNotification = (msg: string) => {
 	const key = count++
 	notification.update((prev) => [...prev, { msg, key }])
 	setTimeout(() => {
-		notification.update((prev) => [...prev.filter((x) => x.key !== key)])
+		notification.update((prev) => prev.filter((x) => x.key !== key))
 	}, 5 * 1000)
 }
 

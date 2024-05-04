@@ -21,7 +21,7 @@ export const format = (date: Date, fmt: string = "YYYY-MM-DD hh:mm:ss") => {
 		ss: pad(_second),
 	}
 
-	return fmt.replace(
+	return fmt.replaceAll(
 		/YYYY|MM?|DD?|hh?|mm?|ss?/g,
 		(matched) => pairs[matched] as string,
 	)
