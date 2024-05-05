@@ -47,17 +47,14 @@ func initEmail() {
 				os.Getenv("MAILCHANNELS_USERNAME"),
 				os.Getenv("MAILCHANNELS_PASSWORD"),
 			))
-			return
 		} else if util.CheckEnvsExist("MAILGUN_DOMAIN", "MAILGUN_API_KEY", "MAILGUN_FROM") {
 			email.SetDefault(email.NewMailgun(
 				os.Getenv("MAILGUN_DOMAIN"),
 				os.Getenv("MAILGUN_API_KEY"),
 				os.Getenv("MAILGUN_FROM"),
 			))
-			return
 		}
 	}
-	email.SetDefault(email.NewDryRun())
 }
 
 func initTelegram() {
@@ -68,10 +65,8 @@ func initTelegram() {
 				os.Getenv("TELEGRAM_BOT_NAME"),
 				os.Getenv("TELEGRAM_BOT_TOKEN"),
 			))
-			return
 		}
 	}
-	telegram.SetDefault(telegram.NewDryRun())
 }
 
 func initSign() {

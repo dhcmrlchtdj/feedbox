@@ -8,8 +8,8 @@ import (
 	"time"
 
 	"github.com/mmcdole/gofeed"
+	"github.com/phuslu/log"
 	"github.com/pkg/errors"
-	"github.com/rs/xid"
 	"github.com/rs/zerolog"
 
 	"github.com/dhcmrlchtdj/feedbox/internal/database"
@@ -36,7 +36,7 @@ type telegramItem struct {
 }
 
 func Start(ctx context.Context) {
-	logger := zerolog.Ctx(ctx).With().Str("traceId", xid.New().String()).Logger()
+	logger := zerolog.Ctx(ctx).With().Str("traceId", log.NewXID().String()).Logger()
 	ctx = logger.WithContext(ctx)
 
 	logger.Info().Str("module", "worker").Msg("start")

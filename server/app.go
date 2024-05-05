@@ -9,6 +9,7 @@ import (
 	"github.com/gofiber/fiber/v2/middleware/pprof"
 	"github.com/gofiber/fiber/v2/middleware/recover"
 	"github.com/gofiber/fiber/v2/middleware/requestid"
+	"github.com/phuslu/log"
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
@@ -36,7 +37,10 @@ func Create(ctx context.Context) *fiber.App {
 
 	// middleware
 	app.Use(recover.New())
-	app.Use(requestid.New())
+	app.Use(requestid.New(
+		requestid.Config{
+			Generator: func() string { return log.NewXID().String() },
+		}))
 	app.Use(logger.New(ctx))
 	app.Use(etag.New())
 	app.Use(secure.New())
