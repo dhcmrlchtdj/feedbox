@@ -50,7 +50,6 @@ func New(ctx context.Context) fiber.Handler {
 		logger.
 			Info().
 			Str("module", "server").
-			Str("id", c.Locals("requestid").(string)).
 			Str("remote", c.IP()).
 			Dur("latency", latency).
 			Dict("request", zerolog.Dict().

@@ -7,8 +7,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/phuslu/log"
 	"github.com/pkg/errors"
+	"github.com/rs/xid"
 	"github.com/rs/zerolog"
 	_ "modernc.org/sqlite"
 )
@@ -56,7 +56,7 @@ func (db *Database) Close() {
 func (db *Database) Exec(ctx context.Context, query string, args ...any) (sql.Result, error) {
 	logger := zerolog.Ctx(ctx).With().
 		Str("module", "database").
-		Str("dbrid", log.NewXID().String()).
+		Str("dbrid", xid.New().String()).
 		Logger()
 	logger.Trace().
 		Str("query", query).
@@ -74,7 +74,7 @@ func (db *Database) Exec(ctx context.Context, query string, args ...any) (sql.Re
 func (db *Database) Query(ctx context.Context, query string, args ...any) (*sql.Rows, error) {
 	logger := zerolog.Ctx(ctx).With().
 		Str("module", "database").
-		Str("dbrid", log.NewXID().String()).
+		Str("dbrid", xid.New().String()).
 		Logger()
 	logger.Trace().
 		Str("query", query).
@@ -92,7 +92,7 @@ func (db *Database) Query(ctx context.Context, query string, args ...any) (*sql.
 func (db *Database) QueryRow(ctx context.Context, query string, args ...any) *sql.Row {
 	logger := zerolog.Ctx(ctx).With().
 		Str("module", "database").
-		Str("dbrid", log.NewXID().String()).
+		Str("dbrid", xid.New().String()).
 		Logger()
 	logger.Trace().
 		Str("query", query).
