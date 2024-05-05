@@ -7,7 +7,6 @@ import (
 	"github.com/pkg/errors"
 
 	"github.com/dhcmrlchtdj/feedbox/internal/database"
-	"github.com/dhcmrlchtdj/feedbox/internal/global"
 	"github.com/dhcmrlchtdj/feedbox/internal/util"
 	"github.com/dhcmrlchtdj/feedbox/server/middleware/auth/cookie"
 )
@@ -16,7 +15,7 @@ func FeedList(c *fiber.Ctx) error {
 	ctx := c.UserContext()
 	credential := c.Locals("credential").(cookie.UserProfile)
 
-	feeds, err := global.Database.GetFeedByUser(ctx, credential.UserID, "updated")
+	feeds, err := database.GetFeedByUser(ctx, credential.UserID, "updated")
 	if err != nil {
 		return err
 	}
@@ -36,7 +35,7 @@ func FeedAdd(c *fiber.Ctx) error {
 	ctx := c.UserContext()
 	credential := c.Locals("credential").(cookie.UserProfile)
 
-	feedID, err := global.Database.GetFeedIDByURL(ctx, strings.TrimSpace(b.URL))
+	feedID, err := database.GetFeedIDByURL(ctx, strings.TrimSpace(b.URL))
 	if err != nil {
 		if errors.Is(err, database.ErrInvalidURL) {
 			return fiber.NewError(fiber.StatusBadRequest, err.Error())
@@ -44,11 +43,11 @@ func FeedAdd(c *fiber.Ctx) error {
 		return err
 	}
 
-	if err = global.Database.Subscribe(ctx, credential.UserID, feedID); err != nil {
+	if err = database.Subscribe(ctx, credential.UserID, feedID); err != nil {
 		return err
 	}
 
-	feeds, err := global.Database.GetFeedByUser(ctx, credential.UserID, "updated")
+	feeds, err := database.GetFeedByUser(ctx, credential.UserID, "updated")
 	if err != nil {
 		return err
 	}
@@ -68,11 +67,11 @@ func FeedRemove(c *fiber.Ctx) error {
 	ctx := c.UserContext()
 	credential := c.Locals("credential").(cookie.UserProfile)
 
-	if err := global.Database.Unsubscribe(ctx, credential.UserID, b.FeedID); err != nil {
+	if err := database.Unsubscribe(ctx, credential.UserID, b.FeedID); err != nil {
 		return err
 	}
 
-	feeds, err := global.Database.GetFeedByUser(ctx, credential.UserID, "updated")
+	feeds, err := database.GetFeedByUser(ctx, credential.UserID, "updated")
 	if err != nil {
 		return err
 	}
@@ -83,7 +82,7 @@ func FeedExport(c *fiber.Ctx) error {
 	ctx := c.UserContext()
 	credential := c.Locals("credential").(cookie.UserProfile)
 
-	feeds, err := global.Database.GetFeedByUser(ctx, credential.UserID, "url")
+	feeds, err := database.GetFeedByUser(ctx, credential.UserID, "url")
 	if err != nil {
 		return err
 	}
@@ -111,14 +110,14 @@ func FeedImport(c *fiber.Ctx) error {
 		return err
 	}
 
-	if err = global.Database.SubscribeURLs(ctx, credential.UserID, urls); err != nil {
+	if err = database.SubscribeURLs(ctx, credential.UserID, urls); err != nil {
 		if errors.Is(err, database.ErrInvalidURL) {
 			return fiber.NewError(fiber.StatusBadRequest, err.Error())
 		}
 		return err
 	}
 
-	feeds, err := global.Database.GetFeedByUser(ctx, credential.UserID, "updated")
+	feeds, err := database.GetFeedByUser(ctx, credential.UserID, "updated")
 	if err != nil {
 		return err
 	}

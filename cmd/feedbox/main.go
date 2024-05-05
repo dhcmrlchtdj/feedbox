@@ -4,14 +4,16 @@ import (
 	"context"
 	"flag"
 	"fmt"
+	"log/slog"
 	"net"
 	"os"
 	"sync"
 	"time"
 
+	"github.com/phuslu/log"
 	"github.com/rs/zerolog"
 
-	"github.com/dhcmrlchtdj/feedbox/internal/global"
+	"github.com/dhcmrlchtdj/feedbox/internal/database"
 	"github.com/dhcmrlchtdj/feedbox/internal/util"
 	"github.com/dhcmrlchtdj/feedbox/server"
 	"github.com/dhcmrlchtdj/feedbox/worker"
@@ -40,10 +42,18 @@ func startServerAndWorker() {
 	ctx, cancel := context.WithCancel(context.Background())
 	ctx = logger.WithContext(ctx)
 
+	plog := log.Logger{
+		Level:      log.InfoLevel,
+		TimeField:  "date",
+		TimeFormat: "2006-01-02",
+		Caller:     1,
+	}
+	slog.SetDefault(plog.Slog())
+
 	initEnv()
 	initLogger()
 	initDatabase(ctx)
-	defer global.Database.Close()
+	defer database.Close()
 	initEmail()
 	initTelegram()
 	initSign()
@@ -76,7 +86,7 @@ func startServer() {
 	initEnv()
 	initLogger()
 	initDatabase(ctx)
-	defer global.Database.Close()
+	defer database.Close()
 	initEmail()
 	initTelegram()
 	initSign()

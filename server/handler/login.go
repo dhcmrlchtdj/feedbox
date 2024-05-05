@@ -5,7 +5,7 @@ import (
 
 	"github.com/gofiber/fiber/v2"
 
-	"github.com/dhcmrlchtdj/feedbox/internal/global"
+	"github.com/dhcmrlchtdj/feedbox/internal/database"
 	"github.com/dhcmrlchtdj/feedbox/server/middleware/auth/cookie"
 	"github.com/dhcmrlchtdj/feedbox/server/middleware/auth/github"
 )
@@ -20,7 +20,7 @@ func ConnectGithub(c *fiber.Ctx) error {
 	credential := c.Locals("credential").(*github.Profile)
 
 	id := strconv.FormatInt(credential.ID, 10)
-	user, err := global.Database.GetOrCreateUserByGithub(ctx, id, credential.Email)
+	user, err := database.GetOrCreateUserByGithub(ctx, id, credential.Email)
 	if err != nil {
 		return err
 	}

@@ -14,7 +14,6 @@ import (
 
 	"github.com/dhcmrlchtdj/feedbox/internal/database"
 	"github.com/dhcmrlchtdj/feedbox/internal/feedparser"
-	"github.com/dhcmrlchtdj/feedbox/internal/global"
 )
 
 type feedItem struct {
@@ -63,7 +62,7 @@ func slice2chan(ctx context.Context, done *sync.WaitGroup) <-chan database.Feed 
 	go func() {
 		defer done.Done()
 
-		feeds, err := global.Database.GetActiveFeeds(ctx)
+		feeds, err := database.GetActiveFeeds(ctx)
 		if err != nil {
 			logger.Error().Str("module", "worker").Stack().Err(err).Send()
 			return
@@ -135,7 +134,7 @@ func parseFeed(ctx context.Context, done *sync.WaitGroup, qFeedFetched <-chan *f
 			return
 		}
 
-		oldLinks, err := global.Database.GetLinks(ctx, feed.feed.ID)
+		oldLinks, err := database.GetLinks(ctx, feed.feed.ID)
 		if err != nil {
 			logger.Error().Str("module", "worker").Stack().Err(err).Send()
 			return
@@ -165,7 +164,7 @@ func parseFeed(ctx context.Context, done *sync.WaitGroup, qFeedFetched <-chan *f
 			return
 		}
 
-		err = global.Database.AddFeedLinks(ctx, feed.feed.ID, newLinks, updated, feed.etag)
+		err = database.AddFeedLinks(ctx, feed.feed.ID, newLinks, updated, feed.etag)
 		if err != nil {
 			logger.Error().Str("module", "worker").Stack().Err(err).Send()
 			return
@@ -209,7 +208,7 @@ func getLatestUpdated(feed *gofeed.Feed) *time.Time {
 
 func updateFeedStatus(ctx context.Context, dbFeed *database.Feed, updated *time.Time, etag string) error {
 	if dbFeed.ETag != etag {
-		return global.Database.SetFeedUpdated(ctx, dbFeed.ID, updated, etag)
+		return database.SetFeedUpdated(ctx, dbFeed.ID, updated, etag)
 	}
 	return nil
 }
@@ -240,7 +239,7 @@ func dispatchFeed(ctx context.Context, done *sync.WaitGroup, qFeedItem <-chan *f
 		})
 
 		feed := item.feed
-		users, err := global.Database.GetSubscribers(ctx, feed.ID)
+		users, err := database.GetSubscribers(ctx, feed.ID)
 		if err != nil {
 			logger.Error().Str("module", "worker").Stack().Err(err).Send()
 			return

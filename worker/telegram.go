@@ -12,7 +12,6 @@ import (
 	"github.com/mmcdole/gofeed"
 	"github.com/rs/zerolog"
 
-	"github.com/dhcmrlchtdj/feedbox/internal/global"
 	"github.com/dhcmrlchtdj/feedbox/internal/telegram"
 )
 
@@ -24,7 +23,7 @@ func telegramSendMsg(ctx context.Context, msg *telegram.SendMessagePayload, rl *
 		retry--
 
 		rl.Wait()
-		err := global.Telegram.SendMessage(ctx, msg)
+		err := telegram.SendMessage(ctx, msg)
 		if err != nil {
 			var err429 *telegram.ErrTooManyRequests
 			if errors.As(err, &err429) {

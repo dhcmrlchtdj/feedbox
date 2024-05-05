@@ -13,7 +13,6 @@ import (
 	"github.com/rs/zerolog"
 
 	"github.com/dhcmrlchtdj/feedbox/internal/database"
-	"github.com/dhcmrlchtdj/feedbox/internal/global"
 	"github.com/dhcmrlchtdj/feedbox/server/handler"
 	"github.com/dhcmrlchtdj/feedbox/server/middleware/auth/cookie"
 	"github.com/dhcmrlchtdj/feedbox/server/middleware/auth/github"
@@ -132,7 +131,7 @@ func cookieValidator(ctx context.Context, tokenStr string) ( /* Credential */ an
 		return nil, err
 	}
 
-	if _, err = global.Database.GetUserByID(ctx, credential.UserID); err != nil {
+	if _, err = database.GetUserByID(ctx, credential.UserID); err != nil {
 		if errors.Is(err, database.ErrEmptyRow) {
 			err = errors.New("invalid user")
 		}

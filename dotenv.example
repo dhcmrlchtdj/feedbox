@@ -1,3 +1,4 @@
+DATABASE_URL="sqlite://:memory:"
 DATABASE_URL="sqlite:///path/to/feedbox.db"
 HOST="0.0.0.0"
 PORT=8000

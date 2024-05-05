@@ -3,14 +3,13 @@ package telegrambot
 import (
 	"context"
 
-	"github.com/dhcmrlchtdj/feedbox/internal/global"
 	"github.com/dhcmrlchtdj/feedbox/internal/telegram"
 )
 
 func isAdmin(ctx context.Context, msg *telegram.Message) bool {
 	chatType := msg.Chat.Type
 	if chatType == "group" || chatType == "supergroup" {
-		member, err := global.Telegram.GetChatMember(
+		member, err := telegram.GetChatMember(
 			ctx,
 			&telegram.GetChatMemberPayload{
 				ChatID: msg.Chat.ID,

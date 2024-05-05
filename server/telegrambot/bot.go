@@ -7,13 +7,12 @@ import (
 	"strings"
 	"unicode/utf16"
 
-	"github.com/dhcmrlchtdj/feedbox/internal/global"
 	"github.com/dhcmrlchtdj/feedbox/internal/telegram"
 )
 
 func RegisterWebhook(ctx context.Context) error {
 	// curl -XPOST -v 'https://api.telegram.org/bot<<token>>/setWebhook' -H 'content-type: application/json' -d '{"url":"<<url>>"}'
-	err := global.Telegram.SetWebhook(
+	err := telegram.SetWebhook(
 		ctx,
 		&telegram.SetWebhookPayload{
 			URL: fmt.Sprintf("%s/webhook/telegram/%s",
@@ -43,7 +42,7 @@ func handleMessage(ctx context.Context, message *telegram.Message) {
 		if i := strings.Index(cmd, "@"); i != -1 {
 			name := cmd[i+1:]
 			cmd = cmd[:i]
-			if !strings.EqualFold(name, global.Telegram.GetBotName(ctx)) {
+			if !strings.EqualFold(name, telegram.GetBotName(ctx)) {
 				break
 			}
 		}

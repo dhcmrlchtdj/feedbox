@@ -9,7 +9,7 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
-	"github.com/dhcmrlchtdj/feedbox/internal/global"
+	"github.com/dhcmrlchtdj/feedbox/internal/sign"
 )
 
 type Config struct {
@@ -85,7 +85,7 @@ func EncodeToToken(userID int64) (string, error) {
 	if err != nil {
 		return "", errors.WithStack(err)
 	}
-	tokenStr, err := global.Sign.EncodeToHex(plaintext)
+	tokenStr, err := sign.EncodeToHex(plaintext)
 	if err != nil {
 		return "", err
 	}
@@ -96,7 +96,7 @@ func EncodeToToken(userID int64) (string, error) {
 func DecodeFromToken(tokenStr string) (UserProfile, error) {
 	var user UserProfile
 
-	plaintext, err := global.Sign.DecodeFromHex(tokenStr)
+	plaintext, err := sign.DecodeFromHex(tokenStr)
 	if err != nil {
 		return user, errors.New("invalid token")
 	}

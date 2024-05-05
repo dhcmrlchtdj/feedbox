@@ -12,7 +12,6 @@ import (
 
 	"github.com/dhcmrlchtdj/feedbox/internal/database"
 	"github.com/dhcmrlchtdj/feedbox/internal/email"
-	"github.com/dhcmrlchtdj/feedbox/internal/global"
 	"github.com/dhcmrlchtdj/feedbox/internal/sign"
 	"github.com/dhcmrlchtdj/feedbox/internal/telegram"
 	"github.com/dhcmrlchtdj/feedbox/internal/util"
@@ -37,39 +36,42 @@ func initDatabase(ctx context.Context) {
 	if err != nil {
 		panic(err)
 	}
-	global.Database = db
+	database.SetDefault(db)
 }
 
 func initEmail() {
-	global.Email = email.NewDryRun()
 	if os.Getenv("ENV") == "prod" {
 		if util.CheckEnvsExist("MAILCHANNELS_URL", "MAILCHANNELS_USERNAME", "MAILCHANNELS_PASSWORD") {
-			global.Email = email.NewMailChannels(
+			email.SetDefault(email.NewMailChannels(
 				os.Getenv("MAILCHANNELS_URL"),
 				os.Getenv("MAILCHANNELS_USERNAME"),
 				os.Getenv("MAILCHANNELS_PASSWORD"),
-			)
+			))
+			return
 		} else if util.CheckEnvsExist("MAILGUN_DOMAIN", "MAILGUN_API_KEY", "MAILGUN_FROM") {
-			global.Email = email.NewMailgun(
+			email.SetDefault(email.NewMailgun(
 				os.Getenv("MAILGUN_DOMAIN"),
 				os.Getenv("MAILGUN_API_KEY"),
 				os.Getenv("MAILGUN_FROM"),
-			)
+			))
+			return
 		}
 	}
+	email.SetDefault(email.NewDryRun())
 }
 
 func initTelegram() {
-	global.Telegram = telegram.NewDryRun()
 	if os.Getenv("ENV") == "prod" {
 		util.CheckEnvs("SERVER")
 		if util.CheckEnvsExist("TELEGRAM_BOT_NAME", "TELEGRAM_BOT_TOKEN") {
-			global.Telegram = telegram.NewHTTPClient(
+			telegram.SetDefault(telegram.NewHTTPClient(
 				os.Getenv("TELEGRAM_BOT_NAME"),
 				os.Getenv("TELEGRAM_BOT_TOKEN"),
-			)
+			))
+			return
 		}
 	}
+	telegram.SetDefault(telegram.NewDryRun())
 }
 
 func initSign() {
@@ -78,7 +80,7 @@ func initSign() {
 	if err != nil {
 		panic(err)
 	}
-	global.Sign = s
+	sign.SetDefault(s)
 }
 
 ///

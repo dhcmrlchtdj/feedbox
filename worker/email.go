@@ -9,7 +9,7 @@ import (
 
 	"github.com/rs/zerolog"
 
-	"github.com/dhcmrlchtdj/feedbox/internal/global"
+	"github.com/dhcmrlchtdj/feedbox/internal/email"
 	"github.com/dhcmrlchtdj/feedbox/internal/util"
 )
 
@@ -56,7 +56,7 @@ func sendEmail(ctx context.Context, done *sync.WaitGroup, qGithub <-chan githubI
 
 		for _, user := range x.users {
 			rateLimiter.Wait()
-			err := global.Email.Send(ctx, user, subject, content)
+			err := email.Send(ctx, user, subject, content)
 			if err != nil {
 				logger.Error().Str("module", "worker").Stack().Err(err).Send()
 			}

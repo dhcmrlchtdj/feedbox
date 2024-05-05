@@ -19,7 +19,6 @@ import (
 	"github.com/rs/zerolog"
 
 	"github.com/dhcmrlchtdj/feedbox/internal/database"
-	"github.com/dhcmrlchtdj/feedbox/internal/global"
 	"github.com/dhcmrlchtdj/feedbox/internal/multipart"
 	"github.com/dhcmrlchtdj/feedbox/internal/sign"
 	"github.com/dhcmrlchtdj/feedbox/migration"
@@ -45,18 +44,18 @@ func TestMain(m *testing.M) {
 		setupDatabase()
 		defer cleanupDatabase()
 
-		var err error
-
-		global.Database, err = database.New(ctx, os.Getenv("DATABASE_URL"))
+		db, err := database.New(ctx, os.Getenv("DATABASE_URL"))
 		if err != nil {
 			panic(err)
 		}
-		defer global.Database.Close()
+		database.SetDefault(db)
+		defer database.Close()
 
-		global.Sign, err = sign.New(os.Getenv("COOKIE_SECRET"))
+		s, err := sign.New(os.Getenv("COOKIE_SECRET"))
 		if err != nil {
 			panic(err)
 		}
+		sign.SetDefault(s)
 
 		setupApp()
 

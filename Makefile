@@ -12,7 +12,7 @@ GOFLAGS := -buildvcs=false -buildmode=pie -mod=readonly -trimpath
 .PHONY: dev build fmt lint test clean outdated upgrade
 
 build:
-	cd frontend && make build
+	# cd frontend && make build
 	CGO_ENABLED=0 go build $(GOFLAGS) -o _build/ ./cmd/...
 
 dev:
