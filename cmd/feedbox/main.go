@@ -4,13 +4,11 @@ import (
 	"context"
 	"flag"
 	"fmt"
-	"log/slog"
 	"net"
 	"os"
 	"sync"
 	"time"
 
-	"github.com/phuslu/log"
 	"github.com/rs/zerolog"
 
 	"github.com/dhcmrlchtdj/feedbox/internal/database"
@@ -41,14 +39,6 @@ func startServerAndWorker() {
 	logger := zerolog.New(os.Stderr).With().Timestamp().Logger()
 	ctx, cancel := context.WithCancel(context.Background())
 	ctx = logger.WithContext(ctx)
-
-	plog := log.Logger{
-		Level:      log.InfoLevel,
-		TimeField:  "date",
-		TimeFormat: "2006-01-02",
-		Caller:     1,
-	}
-	slog.SetDefault(plog.Slog())
 
 	initEnv()
 	initLogger()

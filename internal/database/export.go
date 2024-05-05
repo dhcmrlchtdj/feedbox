@@ -34,14 +34,14 @@ type Database interface {
 
 var defaultImpl atomic.Pointer[Database]
 
-func init() {
-	var dryrun Database
-	dryrun, err := New(context.Background(), "sqlite://:memory:")
-	if err != nil {
-		panic(err)
-	}
-	defaultImpl.Store(&dryrun)
-}
+// func init() {
+//     var dryrun Database
+//     dryrun, err := New(context.Background(), "sqlite://:memory:")
+//     if err != nil {
+//         panic(err)
+//     }
+//     defaultImpl.Store(&dryrun)
+// }
 
 func Default() Database {
 	return *defaultImpl.Load()
