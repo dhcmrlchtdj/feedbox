@@ -36,37 +36,42 @@ func initDatabase(ctx context.Context) {
 	if err != nil {
 		panic(err)
 	}
-	database.SetDefault(db)
+	database.Init(db)
 }
 
 func initEmail() {
 	if os.Getenv("ENV") == "prod" {
 		if util.CheckEnvsExist("MAILCHANNELS_URL", "MAILCHANNELS_USERNAME", "MAILCHANNELS_PASSWORD") {
-			email.SetDefault(email.NewMailChannels(
+			email.Init(email.NewMailChannels(
 				os.Getenv("MAILCHANNELS_URL"),
 				os.Getenv("MAILCHANNELS_USERNAME"),
 				os.Getenv("MAILCHANNELS_PASSWORD"),
 			))
+			return
 		} else if util.CheckEnvsExist("MAILGUN_DOMAIN", "MAILGUN_API_KEY", "MAILGUN_FROM") {
-			email.SetDefault(email.NewMailgun(
+			email.Init(email.NewMailgun(
 				os.Getenv("MAILGUN_DOMAIN"),
 				os.Getenv("MAILGUN_API_KEY"),
 				os.Getenv("MAILGUN_FROM"),
 			))
+			return
 		}
 	}
+	email.Init(email.NewDryRun())
 }
 
 func initTelegram() {
 	if os.Getenv("ENV") == "prod" {
 		util.CheckEnvs("SERVER")
 		if util.CheckEnvsExist("TELEGRAM_BOT_NAME", "TELEGRAM_BOT_TOKEN") {
-			telegram.SetDefault(telegram.NewHTTPClient(
+			telegram.Init(telegram.NewHTTPClient(
 				os.Getenv("TELEGRAM_BOT_NAME"),
 				os.Getenv("TELEGRAM_BOT_TOKEN"),
 			))
+			return
 		}
 	}
+	telegram.Init(telegram.NewDryRun())
 }
 
 func initSign() {
@@ -75,7 +80,7 @@ func initSign() {
 	if err != nil {
 		panic(err)
 	}
-	sign.SetDefault(s)
+	sign.Init(s)
 }
 
 ///

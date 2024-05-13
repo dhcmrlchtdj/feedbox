@@ -13,20 +13,11 @@ type Client interface {
 
 var defaultImpl atomic.Pointer[Client]
 
-func init() {
-	var dryrun Client
-	dryrun, err := NewWithPassword("dryrun")
-	if err != nil {
-		panic(err)
-	}
-	defaultImpl.Store(&dryrun)
-}
-
 func Default() Client {
 	return *defaultImpl.Load()
 }
 
-func SetDefault(c Client) {
+func Init(c Client) {
 	defaultImpl.Store(&c)
 }
 

@@ -48,14 +48,14 @@ func TestMain(m *testing.M) {
 		if err != nil {
 			panic(err)
 		}
-		database.SetDefault(db)
+		database.Init(db)
 		defer database.Close()
 
 		s, err := sign.New(os.Getenv("COOKIE_SECRET"))
 		if err != nil {
 			panic(err)
 		}
-		sign.SetDefault(s)
+		sign.Init(s)
 
 		setupApp()
 

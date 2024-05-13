@@ -18,16 +18,11 @@ type Client interface {
 
 var defaultImpl atomic.Pointer[Client]
 
-func init() {
-	var dryrun Client = NewDryRun()
-	defaultImpl.Store(&dryrun)
-}
-
 func Default() Client {
 	return *defaultImpl.Load()
 }
 
-func SetDefault(c Client) {
+func Init(c Client) {
 	defaultImpl.Store(&c)
 }
 

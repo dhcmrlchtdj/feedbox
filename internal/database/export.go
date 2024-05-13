@@ -34,20 +34,11 @@ type Database interface {
 
 var defaultImpl atomic.Pointer[Database]
 
-// func init() {
-//     var dryrun Database
-//     dryrun, err := New(context.Background(), "sqlite://:memory:")
-//     if err != nil {
-//         panic(err)
-//     }
-//     defaultImpl.Store(&dryrun)
-// }
-
 func Default() Database {
 	return *defaultImpl.Load()
 }
 
-func SetDefault(c Database) {
+func Init(c Database) {
 	defaultImpl.Store(&c)
 }
 
@@ -66,7 +57,7 @@ func GetOrCreateUserByGithub(ctx context.Context, githubID string, email string)
 }
 
 func GetOrCreateUserByTelegram(ctx context.Context, chatID string) (*User, error) {
-	return GetOrCreateUserByTelegram(ctx, chatID)
+	return Default().GetOrCreateUserByTelegram(ctx, chatID)
 }
 
 func GetFeedIDByURL(ctx context.Context, url string) (int64, error) {
