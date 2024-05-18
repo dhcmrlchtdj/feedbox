@@ -69,7 +69,7 @@ export async function buildServiceWorker(enableWatch = false) {
 
 	const opt = {
 		...esbuildOpts,
-		platform: "neutral",
+		platform: "browser",
 		define: {
 			...env,
 			__STATIC_VERSION__: JSON.stringify(hashStatic),
@@ -82,7 +82,6 @@ export async function buildServiceWorker(enableWatch = false) {
 		entryPoints: [r("../src/sw/index.ts")],
 		entryNames: "sw",
 	}
-	if (!prod) opt["conditions"] = ["development", "import", "default"]
 
 	if (enableWatch) {
 		return (await esbuild.context(opt)).watch()
