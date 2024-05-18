@@ -28,7 +28,7 @@ export const $$template = `
 					class="btn btn-error"
 					class:loading="{loading[feed.id]}"
 					class:disabled="{loading[feed.id]}"
-					on:click="{remove(feed)}"
+					onclick="{remove(feed)}"
 				>
 					remove
 				</button>
@@ -50,7 +50,7 @@ import {
 import * as agent from "../utils/agent.js"
 import { format } from "../utils/format-date.js"
 
-let loading: Record<string, boolean> = {}
+let loading: Record<string, boolean> = $state({})
 
 const formatDate = (date: string) => {
 	if (!date) return "never"

@@ -20,7 +20,7 @@ export const $$template = `
 	>
 		<button
 			class="btn btn-clear float-right"
-			on:click="{() => remove(i)}"
+			onclick="{() => remove(i)}"
 		></button>
 		{n.msg}
 	</div>

@@ -1,4 +1,5 @@
 import "spectre.css"
+import { hydrate } from "svelte"
 import App from "./components/app.svelte.js"
 
 import {
@@ -8,10 +9,13 @@ import {
 	SessionStorageLayer,
 } from "./storage.js"
 
-new App({
+///
+
+hydrate(App, {
 	target: document.querySelector("#app")!,
-	hydrate: true,
 })
+
+///
 
 const unregisterServiceWorker = async () => {
 	const workers = await navigator.serviceWorker.getRegistrations()

@@ -4,7 +4,7 @@ export const $$template = `
 <div class="column col-12">
 	<form
 		class="input-group"
-		on:submit|preventDefault="{add}"
+		onsubmit="{add}"
 	>
 		<input
 			class="form-input"
@@ -34,10 +34,12 @@ import {
 } from "../state.js"
 import * as agent from "../utils/agent.js"
 
-let loading = false
-let url = ""
+let loading = $state(false)
+let url = $state("")
 
-const add = () => {
+const add = (e: Event) => {
+	e.preventDefault()
+
 	if (loading === true) {
 		window.alert("processing")
 		return

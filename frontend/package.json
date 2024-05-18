@@ -9,13 +9,11 @@
 		"prettier": "3.2.5",
 		"prettier-plugin-organize-imports": "3.2.4",
 		"spectre.css": "0.5.9",
-		"svelte": "4.2.15",
+		"svelte": "5.0.0-next.136",
 		"typescript": "5.4.5"
 	},
 	"pnpm": {
-		"patchedDependencies": {
-			"svelte@4.2.15": "patches/svelte@4.2.15.patch"
-		}
+		"patchedDependencies": {}
 	},
 	"prettier": {
 		"printWidth": 80,

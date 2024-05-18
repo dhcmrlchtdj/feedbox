@@ -20,4 +20,4 @@ export const $$template = `
 </div>
 `
 
-export let err = "unknown error"
+let { err = "unknown error" } = $props()

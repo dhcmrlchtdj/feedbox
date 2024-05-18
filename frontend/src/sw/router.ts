@@ -1,3 +1,4 @@
+import { render } from "svelte/server"
 import App from "../components/app.svelte.js"
 import type { Feed, User } from "../state.js"
 import { dataGuarder } from "../utils/data-guarder.js"
@@ -71,8 +72,7 @@ export const router = new Router<RouterContext>()
 					feeds: feeds,
 				}
 				const tpl = await resp.clone().text()
-				// @ts-expect-error
-				const app = App.render(state) as { html: string }
+				const app = render(App, { props: state })
 				const inlinedState = `window.__STATE__=${sanitize(
 					JSON.stringify(state),
 				)}`

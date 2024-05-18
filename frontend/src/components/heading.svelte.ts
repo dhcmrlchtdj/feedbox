@@ -23,7 +23,7 @@ export const $$template = `
 	</a>
 	<a
 		href="/api/logout"
-		on:click="{logout}"
+		onclick="{logout}"
 	>
 		logout
 	</a>

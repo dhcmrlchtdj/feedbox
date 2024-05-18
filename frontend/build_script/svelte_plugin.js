@@ -8,10 +8,9 @@ import * as path from "node:path"
 import * as svelte from "svelte/compiler"
 
 const defaultOpts = {
+	runes: true,
 	dev: false,
 	generate: "dom",
-	hydratable: false,
-	immutable: true,
 	css: "injected",
 	discloseVersion: false,
 }
@@ -152,6 +151,11 @@ async function preprocess(source) {
 		templateContent = template[1].trim()
 		script = script.replace(template[0], "")
 	}
+
+	script = script.replace(
+		'export { SvelteComponent as default } from "svelte"',
+		"",
+	)
 
 	const r = await esbuild.transform(script, {
 		loader: "ts",
