@@ -3,20 +3,34 @@ import resolve from "@rollup/plugin-node-resolve"
 import replace from "@rollup/plugin-replace"
 import terser from "@rollup/plugin-terser"
 import typescript from "@rollup/plugin-typescript"
+import * as path from "node:path"
+import * as url from "node:url"
 import transformInferno from "ts-plugin-inferno"
+import { hashFiles } from "./plugin/hash-files.js"
 import lightningcss from "./plugin/rollup-plugin-lightningcss.js"
 
 const prod = process.env.NODE_ENV === "production"
+const isSW = process.env.IS_SW === "true"
 const env = Object.entries(process.env).reduce((acc, [k, v]) => {
 	acc["process.env." + k] = JSON.stringify(v)
 	return acc
 }, {})
 
+const r = (p) =>
+	path.relative(process.cwd(), url.fileURLToPath(new URL(p, import.meta.url)))
+const hashStatic = hashFiles(
+	r("./src/"),
+	r("./package.json"),
+	r("./pnpm-lock.yaml"),
+)
+const hashAPI = hashFiles(
+	r("../server/"),
+	r("../internal/"),
+	r("../go.mod"),
+	r("../go.sum"),
+)
+
 export default {
-	input: {
-		app: "./src/app.tsx",
-		// sw: "./src/sw.ts",
-	},
 	output: {
 		format: "es",
 		dir: "./_build",
@@ -35,9 +49,13 @@ export default {
 		replace({
 			objectGuards: true,
 			preventAssignment: true,
-			values: { ...env },
+			values: {
+				...env,
+				__STATIC_VERSION__: JSON.stringify(hashStatic),
+				__API_VERSION__: JSON.stringify(hashAPI),
+			},
 		}),
-		lightningcss({
+		!isSW && lightningcss({
 			name: "style.css",
 			browserslist: "last 2 versions, not dead",
 			minify: prod,
@@ -48,8 +66,8 @@ export default {
 			},
 		}),
 		prod && terser(),
-		html({ fileName: "index.html", template: generateHtml }),
-		html({ fileName: "index.html.json", template: generateHtmlJson }),
+		!isSW && html({ fileName: "index.html", template: generateHtml }),
+		!isSW && html({ fileName: "index.html.json", template: generateHtmlJson }),
 	],
 }
 
@@ -59,10 +77,10 @@ function generateHtml({ files }) {
 			`<link href="${fileName}" rel="stylesheet" crossorigin>`,
 	)
 
-	const scripts = (files.js || []).map(
-		({ fileName }) =>
-			`<script defer src="${fileName}" crossorigin></script>`,
-	)
+	const scripts = (files.js || []).map(({ fileName }) => {
+		if (fileName.startsWith("sw-")) return ""
+		return `<script defer src="${fileName}" crossorigin></script>`
+	})
 
 	const tmpl = [
 		"<!DOCTYPE html>",
@@ -79,7 +97,7 @@ function generateHtml({ files }) {
 		"</body>",
 		"</html>",
 	]
-	return tmpl.join("\n")
+	return tmpl.filter(Boolean).join("\n")
 }
 
 function generateHtmlJson({ files }) {
@@ -87,16 +105,17 @@ function generateHtmlJson({ files }) {
 		({ fileName }) => `<${fileName}>; rel=preload; as=style; crossorigin`,
 	)
 
-	const scripts = (files.js || []).map(
-		({ fileName }) => `<${fileName}>; rel=preload; as=script; crossorigin`,
-	)
+	const scripts = (files.js || []).map(({ fileName }) => {
+		if (fileName.startsWith("sw-")) return ""
+		return `<${fileName}>; rel=preload; as=script; crossorigin`
+	})
 
 	return JSON.stringify(
 		{
 			header: [
 				{
 					key: "Link",
-					value: [...scripts, ...styles].join(", "),
+					value: [...scripts, ...styles].filter(Boolean).join(", "),
 				},
 			],
 		},

@@ -11,7 +11,8 @@ PATH := ./node_modules/.bin:$(PATH)
 .PHONY: dev build fmt lint test clean outdated upgrade
 
 build: clean node_modules/tsconfig.tsbuildinfo
-	NODE_ENV=production rollup --config ./rollup.config.js
+	NODE_ENV=production rollup --config ./rollup.config.js --input ./src/app.tsx
+	NODE_ENV=production IS_SW=true rollup --config ./rollup.config.js --input ./src/sw.ts
 
 dev: clean node_modules/tsconfig.tsbuildinfo
 	NODE_ENV=development rollup --config ./rollup.config.js --watch
