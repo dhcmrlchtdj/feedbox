@@ -12,14 +12,14 @@ GOFLAGS := -buildvcs=false -buildmode=pie -mod=readonly -trimpath
 .PHONY: dev build fmt lint test clean outdated upgrade
 
 build:
-	cd frontend && make build
+	cd ui && make build
 	CGO_ENABLED=0 go build $(GOFLAGS) -o _build/ ./cmd/...
 
 dev:
 	make --jobs=2 _dev_ui _dev_server
 
 _dev_ui:
-	cd frontend && make dev
+	cd ui && make dev
 
 _dev_server:
 	go run -tags=dev -race ./cmd/feedbox server 2>&1 | \

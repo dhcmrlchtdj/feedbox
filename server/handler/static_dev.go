@@ -5,5 +5,5 @@ package handler
 import "os"
 
 func frontendReadFile(name string) ([]byte, error) {
-	return os.ReadFile("frontend/" + name)
+	return os.ReadFile("ui/" + name)
 }

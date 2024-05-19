@@ -1,0 +1,47 @@
+{
+	"include": ["src/**/*.ts", "src/**/*.tsx"],
+	"compilerOptions": {
+		"outDir": "_build/",
+		"noEmit": true,
+
+		"module": "esnext",
+		"target": "esnext",
+		"lib": ["esnext", "DOM", "WebWorker"],
+
+		"moduleResolution": "bundler",
+		// "allowImportingTsExtensions": true,
+		// "allowArbitraryExtensions": true,
+
+		"jsx": "preserve",
+
+		"sourceMap": false,
+		"inlineSourceMap": true,
+		"inlineSources": true,
+		"removeComments": true,
+		"importHelpers": false,
+		"declaration": false,
+		"incremental": true,
+
+		"resolveJsonModule": false,
+		"esModuleInterop": false,
+		"forceConsistentCasingInFileNames": true,
+		"verbatimModuleSyntax": true,
+
+		"strict": true,
+		"allowUnreachableCode": false,
+		"allowUnusedLabels": false,
+		"exactOptionalPropertyTypes": true,
+		"noFallthroughCasesInSwitch": true,
+		"noImplicitOverride": true,
+		"noImplicitReturns": true,
+		"noPropertyAccessFromIndexSignature": true,
+		"noUncheckedIndexedAccess": true,
+		"noUnusedLocals": false,
+		"noUnusedParameters": true,
+
+		"checkJs": true,
+		"skipLibCheck": true,
+
+		"pretty": true
+	}
+}

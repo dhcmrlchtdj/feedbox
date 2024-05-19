@@ -52,7 +52,7 @@ jobs:
                   make lint
               env:
                   PNPM_HOME: /home/runner/.local/bin
-              working-directory: ./frontend
+              working-directory: ./ui
             - run: make build
             # https://github.com/marketplace/actions/scp-command-to-transfer-files
             - uses: appleboy/scp-action@v0.1.7

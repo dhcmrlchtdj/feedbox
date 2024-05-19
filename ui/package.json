@@ -1,0 +1,43 @@
+{
+	"private": true,
+	"name": "feedbox",
+	"version": "0.0.0",
+	"type": "module",
+	"devDependencies": {
+		"@rollup/plugin-commonjs": "25.0.7",
+		"@rollup/plugin-html": "1.0.3",
+		"@rollup/plugin-node-resolve": "15.2.3",
+		"@rollup/plugin-terser": "0.4.4",
+		"@rollup/plugin-typescript": "11.1.6",
+		"inferno": "8.2.3",
+		"oxlint": "0.3.1",
+		"prettier": "3.2.5",
+		"prettier-plugin-organize-imports": "3.2.4",
+		"rollup": "4.17.2",
+		"ts-plugin-inferno": "6.0.3",
+		"tslib": "2.6.2",
+		"typescript": "5.4.5"
+	},
+	"prettier": {
+		"printWidth": 80,
+		"tabWidth": 4,
+		"useTabs": true,
+		"semi": false,
+		"singleQuote": false,
+		"quoteProps": "as-needed",
+		"jsxSingleQuote": false,
+		"trailingComma": "all",
+		"bracketSpacing": true,
+		"bracketSameLine": false,
+		"arrowParens": "always",
+		"proseWrap": "preserve",
+		"htmlWhitespaceSensitivity": "ignore",
+		"endOfLine": "lf",
+		"embeddedLanguageFormatting": "auto",
+		"singleAttributePerLine": true,
+		"plugins": [
+			"prettier-plugin-organize-imports"
+		],
+		"organizeImportsSkipDestructiveCodeActions": true
+	}
+}
