@@ -7,6 +7,7 @@
 		"module": "esnext",
 		"target": "esnext",
 		"lib": ["esnext", "DOM", "WebWorker"],
+		"types": ["inferno"],
 
 		"moduleResolution": "bundler",
 		// "allowImportingTsExtensions": true,

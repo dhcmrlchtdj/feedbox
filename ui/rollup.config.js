@@ -47,7 +47,7 @@ export default {
 				after: [transformInferno.default()],
 			},
 		}),
-		// prod && terser(),
+		prod && terser(),
 		html({ fileName: "index.html", template: generateHtml }),
 		html({ fileName: "index.html.json", template: generateHtmlJson }),
 	],

@@ -1,14 +1,5 @@
-import { render } from "inferno"
+import { hydrate } from "inferno-hydrate"
 import "spectre.css"
-import { MyComponent } from "./components/app"
-import * as style from "./style.module.css"
+import { App } from "./components/app"
 
-const container = document.querySelector("#app")
-
-render(
-	<MyComponent
-		name={style.a}
-		age={2}
-	/>,
-	container,
-)
+hydrate(<App />, document.querySelector("#app")!)

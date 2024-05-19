@@ -7,6 +7,19 @@ settings:
 importers:
 
   .:
+    dependencies:
+      inferno:
+        specifier: 8.2.3
+        version: 8.2.3
+      inferno-hydrate:
+        specifier: 8.2.3
+        version: 8.2.3
+      nanostores:
+        specifier: 0.10.3
+        version: 0.10.3
+      spectre.css:
+        specifier: 0.5.9
+        version: 0.5.9
     devDependencies:
       '@rollup/plugin-html':
         specifier: 1.0.3
@@ -29,9 +42,6 @@ importers:
       browserslist:
         specifier: 4.23.0
         version: 4.23.0
-      inferno:
-        specifier: 8.2.3
-        version: 8.2.3
       lightningcss:
         specifier: 1.25.0
         version: 1.25.0
@@ -47,9 +57,6 @@ importers:
       rollup:
         specifier: 4.17.2
         version: 4.17.2
-      spectre.css:
-        specifier: 0.5.9
-        version: 0.5.9
       ts-plugin-inferno:
         specifier: 6.0.3
         version: 6.0.3
@@ -324,6 +331,9 @@ packages:
     resolution: {integrity: sha512-0hJU9SCPvmMzIBdZFqNPXWa6dqh7WdH0cII9y+CyS8rG3nL48Bclra9HmKhVVUHyPWNH5Y7xDwAB7bfgSjkUMQ==}
     engines: {node: '>= 0.4'}
 
+  inferno-hydrate@8.2.3:
+    resolution: {integrity: sha512-AyCiswnjYg7D9veJdjiQg06Npp0/iXKhwOm2hjoY3cjadT3fIdz2XtDElLB7imU4icuJ3xOmXA8FgIfnSJfHrQ==}
+
   inferno-vnode-flags@8.2.3:
     resolution: {integrity: sha512-dfC0MIwFv9PCbZCUsuk9ISejFS3fKJODC0rZ/LjxxzE+OrCk+PMwPLsUnGU6O9/jbBnPACVz1BkACDf5LWgU5Q==}
 
@@ -400,6 +410,10 @@ packages:
 
   magic-string@0.30.10:
     resolution: {integrity: sha512-iIRwTIf0QKV3UAnYK4PU8uiEc4SRh5jX0mwpIwETPpHdhVM4f53RSwS/vXvN1JhGX+Cs7B8qIq3d6AH49O5fAQ==}
+
+  nanostores@0.10.3:
+    resolution: {integrity: sha512-Nii8O1XqmawqSCf9o2aWqVxhKRN01+iue9/VEd1TiJCr9VT5XxgPFbF1Edl1XN6pwJcZRsl8Ki+z01yb/T/C2g==}
+    engines: {node: ^18.0.0 || >=20.0.0}
 
   node-releases@2.0.14:
     resolution: {integrity: sha512-y10wOWt8yZpqXmOgRo77WaHEmhYQYGNA6y421PKsKYWEK8aW+cqAphborZDhqfyKrbZEN92CN1X2KbafY2s7Yw==}
@@ -684,6 +698,10 @@ snapshots:
     dependencies:
       function-bind: 1.1.2
 
+  inferno-hydrate@8.2.3:
+    dependencies:
+      inferno: 8.2.3
+
   inferno-vnode-flags@8.2.3: {}
 
   inferno@8.2.3:
@@ -746,6 +764,8 @@ snapshots:
   magic-string@0.30.10:
     dependencies:
       '@jridgewell/sourcemap-codec': 1.4.15
+
+  nanostores@0.10.3: {}
 
   node-releases@2.0.14: {}
 
