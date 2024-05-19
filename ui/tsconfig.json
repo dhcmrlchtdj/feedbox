@@ -1,23 +1,19 @@
 {
-	"include": ["src/**/*.ts", "src/**/*.tsx"],
+	"include": ["src/**/*.ts"],
 	"compilerOptions": {
-		"outDir": "_build/",
+		"outDir": "node_modules/",
 		"noEmit": true,
 
 		"module": "esnext",
 		"target": "esnext",
 		"lib": ["esnext", "DOM", "WebWorker"],
-		"types": ["inferno"],
 
 		"moduleResolution": "bundler",
-		// "allowImportingTsExtensions": true,
-		// "allowArbitraryExtensions": true,
-
-		"jsx": "preserve",
+		"allowImportingTsExtensions": true,
 
 		"sourceMap": false,
-		"inlineSourceMap": true,
-		"inlineSources": true,
+		"inlineSourceMap": false,
+		"inlineSources": false,
 		"removeComments": true,
 		"importHelpers": false,
 		"declaration": false,

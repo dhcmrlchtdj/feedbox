@@ -1,3 +1,6 @@
 /node_modules/
+
+/.rollup.cache/
+
 /_build/*
 !/_build/.gitkeep

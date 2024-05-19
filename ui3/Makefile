@@ -11,10 +11,11 @@ PATH := ./node_modules/.bin:$(PATH)
 .PHONY: dev build fmt lint test clean outdated upgrade
 
 build: clean node_modules/tsconfig.tsbuildinfo
-	NODE_ENV=production node ./build_script/build_dist.js
+	NODE_ENV=production rollup --config ./rollup.config.js --input ./src/app.tsx
+	NODE_ENV=production IS_SW=true rollup --config ./rollup.config.js --input ./src/sw.ts
 
 dev: clean node_modules/tsconfig.tsbuildinfo
-	NODE_ENV=development node ./build_script/build_watch.js
+	NODE_ENV=development rollup --config ./rollup.config.js --watch
 
 fmt:
 	prettier --write . "!pnpm-lock.yaml"
@@ -25,13 +26,14 @@ lint:
 		-D=suspicious \
 		-D=pedantic \
 		-A=ban-ts-comment \
+		-A=react-in-jsx-scope \
 		--import-plugin
 	prettier --check . "!pnpm-lock.yaml"
 
 # test:
 
 clean:
-	-rm ./_build/*
+	-rm -r ./_build/*
 
 outdated:
 	pnpm outdated
