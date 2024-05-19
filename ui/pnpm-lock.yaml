@@ -11,6 +11,9 @@ importers:
       inferno:
         specifier: 8.2.3
         version: 8.2.3
+      inferno-animation:
+        specifier: 8.2.3
+        version: 8.2.3
       inferno-hydrate:
         specifier: 8.2.3
         version: 8.2.3
@@ -330,6 +333,9 @@ packages:
   hasown@2.0.2:
     resolution: {integrity: sha512-0hJU9SCPvmMzIBdZFqNPXWa6dqh7WdH0cII9y+CyS8rG3nL48Bclra9HmKhVVUHyPWNH5Y7xDwAB7bfgSjkUMQ==}
     engines: {node: '>= 0.4'}
+
+  inferno-animation@8.2.3:
+    resolution: {integrity: sha512-oljkSgK+U2pMZNzZ6aHeca9X06iY0FeWsvm+KAbr6p5cIZ+p5dcPOaFeFu4t4QUzYlIBRJvArRwwjRJn2MlVrw==}
 
   inferno-hydrate@8.2.3:
     resolution: {integrity: sha512-AyCiswnjYg7D9veJdjiQg06Npp0/iXKhwOm2hjoY3cjadT3fIdz2XtDElLB7imU4icuJ3xOmXA8FgIfnSJfHrQ==}
@@ -697,6 +703,10 @@ snapshots:
   hasown@2.0.2:
     dependencies:
       function-bind: 1.1.2
+
+  inferno-animation@8.2.3:
+    dependencies:
+      inferno: 8.2.3
 
   inferno-hydrate@8.2.3:
     dependencies:

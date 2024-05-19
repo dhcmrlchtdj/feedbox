@@ -1,4 +1,5 @@
 import { Component, linkEvent } from "inferno"
+import { componentDidAppear, componentWillDisappear } from "inferno-animation"
 import * as http from "../global/http"
 import { formatDate, genClass } from "../global/shared"
 import {
@@ -11,6 +12,50 @@ import {
 const formatUpdated = (date: string) => {
 	if (!date) return "never"
 	return formatDate(new Date(date))
+}
+
+const Item = (props: {
+	feed: Feed
+	loading: boolean | undefined
+	handleRemove: (feed: Feed) => void
+}) => {
+	return (
+		<div class="column col-12">
+			<div class="tile">
+				<div class="tile-content">
+					<div class="tile-title text-break">
+						<a
+							target="_blank"
+							rel="noopener noreferrer"
+							href={props.feed.url}
+						>
+							{props.feed.url}
+						</a>
+					</div>
+					<div class="tile-subtitle text-gray">
+						<span>
+							updated @ {formatUpdated(props.feed.updated)}
+						</span>
+					</div>
+				</div>
+				<div class="tile-action">
+					<div>
+						<button
+							type="button"
+							class={genClass("btn btn-error", [
+								props.loading,
+								"loading disabled",
+							])}
+							onClick={linkEvent(props.feed, props.handleRemove)}
+						>
+							remove
+						</button>
+					</div>
+				</div>
+			</div>
+			<div class="divider"></div>
+		</div>
+	)
 }
 
 export class List extends Component {
@@ -67,41 +112,14 @@ export class List extends Component {
 	}
 
 	override render() {
-		const lst = this.state.feeds.map((feed) => (
-			<div class="column col-12">
-				<div class="tile">
-					<div class="tile-content">
-						<div class="tile-title text-break">
-							<a
-								target="_blank"
-								rel="noopener noreferrer"
-								href={feed.url}
-							>
-								{feed.url}
-							</a>
-						</div>
-						<div class="tile-subtitle text-gray">
-							<span>updated @ {formatUpdated(feed.updated)}</span>
-						</div>
-					</div>
-					<div class="tile-action">
-						<div>
-							<button
-								type="button"
-								class={genClass("btn btn-error", [
-									this.state.loading[feed.id],
-									"loading disabled",
-								])}
-								onClick={linkEvent(feed, this.handleRemove)}
-							>
-								remove
-							</button>
-						</div>
-					</div>
-				</div>
-				<div class="divider"></div>
-			</div>
+		return this.state.feeds.map((feed) => (
+			<Item
+				onComponentDidAppear={componentDidAppear}
+				onComponentWillDisappear={componentWillDisappear}
+				feed={feed}
+				loading={this.state.loading[feed.id]}
+				handleRemove={this.handleRemove}
+			></Item>
 		))
-		return lst
 	}
 }

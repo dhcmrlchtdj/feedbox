@@ -5,6 +5,7 @@
 	"type": "module",
 	"dependencies": {
 		"inferno": "8.2.3",
+		"inferno-animation": "8.2.3",
 		"inferno-hydrate": "8.2.3",
 		"nanostores": "0.10.3",
 		"spectre.css": "0.5.9"
