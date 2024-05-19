@@ -36,7 +36,3 @@ export const newNotification = (msg: string) => {
 		notification.set(notification.get().filter((x) => x.key !== key))
 	}, 5 * 1000)
 }
-
-///
-
-export const initialized = atom<boolean>(false)
