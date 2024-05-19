@@ -1,10 +1,10 @@
-import commonjs from "@rollup/plugin-commonjs"
 import html from "@rollup/plugin-html"
 import resolve from "@rollup/plugin-node-resolve"
 import replace from "@rollup/plugin-replace"
 import terser from "@rollup/plugin-terser"
 import typescript from "@rollup/plugin-typescript"
 import transformInferno from "ts-plugin-inferno"
+import { cssModule } from "./plugin/rollup-plugin-css-module.js"
 
 const prod = process.env.NODE_ENV === "production"
 const env = Object.entries(process.env).reduce((acc, [k, v]) => {
@@ -22,6 +22,9 @@ export default {
 		dir: "./_build",
 		sourcemap: true,
 		generatedCode: "es2015",
+		entryFileNames: "[name]-[hash].js",
+		assetFileNames: "[name]-[hash][extname]",
+		hashCharacters: "hex",
 	},
 	plugins: [
 		resolve({
@@ -29,20 +32,22 @@ export default {
 				? ["module", "main"]
 				: ["dev:module", "module", "main"],
 		}),
-		// commonjs(),
 		replace({
 			objectGuards: true,
 			preventAssignment: true,
 			values: { ...env },
+		}),
+		cssModule({
+			name: "style.css",
 		}),
 		typescript({
 			transformers: {
 				after: [transformInferno.default()],
 			},
 		}),
+		prod && terser(),
 		html({ fileName: "index.html", template: generateHtml }),
 		html({ fileName: "index.html.json", template: generateHtmlJson }),
-		prod && terser(),
 	],
 }
 
@@ -89,7 +94,7 @@ function generateHtmlJson({ files }) {
 			header: [
 				{
 					key: "Link",
-					value: [...scripts, ...styles].join(","),
+					value: [...scripts, ...styles].join(", "),
 				},
 			],
 		},

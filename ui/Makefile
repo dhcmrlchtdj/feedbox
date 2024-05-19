@@ -32,7 +32,7 @@ lint:
 # test:
 
 clean:
-	-rm ./_build/*
+	-rm -r ./_build/*
 
 outdated:
 	pnpm outdated
