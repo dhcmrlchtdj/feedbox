@@ -10,6 +10,7 @@
 		"@rollup/plugin-terser": "0.4.4",
 		"@rollup/plugin-typescript": "11.1.6",
 		"@rollup/pluginutils": "5.1.0",
+		"browserslist": "4.23.0",
 		"inferno": "8.2.3",
 		"lightningcss": "1.25.0",
 		"oxlint": "0.3.1",

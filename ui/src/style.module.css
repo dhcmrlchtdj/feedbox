@@ -1,3 +1,9 @@
 .a {
 	color: red;
 }
+
+.b {
+	.c {
+		display: flex;
+	}
+}

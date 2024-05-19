@@ -4,7 +4,7 @@ import replace from "@rollup/plugin-replace"
 import terser from "@rollup/plugin-terser"
 import typescript from "@rollup/plugin-typescript"
 import transformInferno from "ts-plugin-inferno"
-import { cssModule } from "./plugin/rollup-plugin-css-module.js"
+import lightningcss from "./plugin/rollup-plugin-lightningcss.js"
 
 const prod = process.env.NODE_ENV === "production"
 const env = Object.entries(process.env).reduce((acc, [k, v]) => {
@@ -37,15 +37,17 @@ export default {
 			preventAssignment: true,
 			values: { ...env },
 		}),
-		cssModule({
+		lightningcss({
 			name: "style.css",
+			browserslist: "last 2 versions, not dead",
+			minify: prod,
 		}),
 		typescript({
 			transformers: {
 				after: [transformInferno.default()],
 			},
 		}),
-		prod && terser(),
+		// prod && terser(),
 		html({ fileName: "index.html", template: generateHtml }),
 		html({ fileName: "index.html.json", template: generateHtmlJson }),
 	],
