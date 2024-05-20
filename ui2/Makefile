@@ -25,6 +25,7 @@ lint:
 		-D=suspicious \
 		-D=pedantic \
 		-A=ban-ts-comment \
+		-A=react-in-jsx-scope \
 		--import-plugin
 	prettier --check . "!pnpm-lock.yaml"
 

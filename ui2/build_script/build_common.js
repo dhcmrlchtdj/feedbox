@@ -35,7 +35,7 @@ export async function buildApp(enableWatch = false) {
 		...esbuildOpts,
 		define: env,
 		plugins: [afterBuild({ buildHtml: true, copyStatic: true })],
-		entryPoints: [r("../src/app.tsx")],
+		entryPoints: [r("../src/app.ts")],
 		entryNames: "[name]-[hash]",
 	}
 
@@ -68,7 +68,7 @@ export async function buildServiceWorker(enableWatch = false) {
 			__API_VERSION__: JSON.stringify(hashAPI),
 		},
 		plugins: [afterBuild({ buildHtml: false, copyStatic: false })],
-		entryPoints: [r("../src/sw/index.tsx")],
+		entryPoints: [r("../src/sw/index.ts")],
 		entryNames: "sw",
 	}
 
