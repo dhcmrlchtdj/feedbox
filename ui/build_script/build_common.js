@@ -19,12 +19,12 @@ const env = Object.entries(process.env).reduce((acc, [k, v]) => {
 }, {})
 
 const esbuildOpts = {
-	legalComments: "linked",
+	platform: "browser",
 	metafile: true,
 	bundle: true,
 	format: "esm",
 	target: "esnext",
-	sourcemap: true,
+	sourcemap: prod ? "inline" : "linked",
 	minify: prod,
 	outdir: r(`../_build/`),
 }
@@ -32,7 +32,6 @@ const esbuildOpts = {
 export async function buildApp(enableWatch = false) {
 	const opt = {
 		...esbuildOpts,
-		platform: "browser",
 		define: env,
 		plugins: [
 			sveltePlugin({
@@ -69,7 +68,6 @@ export async function buildServiceWorker(enableWatch = false) {
 
 	const opt = {
 		...esbuildOpts,
-		platform: "browser",
 		define: {
 			...env,
 			__STATIC_VERSION__: JSON.stringify(hashStatic),

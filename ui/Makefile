@@ -12,6 +12,15 @@ PATH := ./node_modules/.bin:$(PATH)
 
 build: clean node_modules/tsconfig.tsbuildinfo
 	NODE_ENV=production node ./build_script/build_dist.js
+	NODE_ENV=production esbuild \
+			 --format=esm \
+			 --target=esnext \
+			 --minify \
+			 --tree-shaking=true \
+			 --sourcemap=linked \
+			 --outdir=./_build \
+			 --allow-overwrite \
+			 ./_build/*.{js,css}
 
 dev: clean node_modules/tsconfig.tsbuildinfo
 	NODE_ENV=development node ./build_script/build_watch.js
