@@ -1,0 +1,8 @@
+{
+	"header": [
+		{
+			"key": "Link",
+			"value": "<{{./app.ts}}>; rel=preload; as=script; crossorigin, <{{./app.ts.css}}>; rel=preload; as=style; crossorigin"
+		}
+	]
+}
