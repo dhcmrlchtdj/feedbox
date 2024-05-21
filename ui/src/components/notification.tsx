@@ -12,7 +12,7 @@ const Item = (props: { msg: Message }) => {
 				class="btn btn-clear float-right"
 				onClick={handleClick}
 			></button>
-			{props.msg}
+			{props.msg.msg}
 		</div>
 	)
 }

@@ -12,13 +12,13 @@ declare global {
 		}
 	}
 }
-const __STATE__ = self.__STATE__ || {}
+const prevState = self.__STATE__ || {}
 
-export const hydrated = !!__STATE__
-export const loaded = signal(true)
+export const hydrated = !!self.__STATE__
+export const loaded = signal(false)
 export const loadingError = signal("")
-export const email = signal(__STATE__.email || "")
-export const feeds = signal(__STATE__.feeds || [])
+export const email = signal(prevState.email || "")
+export const feeds = signal(prevState.feeds || [])
 
 export const initState = () => {
 	// keep the loading animation
@@ -73,9 +73,9 @@ export const notification = signal<Message[]>([])
 let count = 0
 export const notificationAdd = (msg: string): number => {
 	const key = count++
-	notification.value = [...notification.peek(), { msg, key }]
+	notification.value = [...notification.value, { msg, key }]
 	setTimeout(() => {
-		notification.value = notification.peek().filter((x) => x.key !== key)
+		notification.value = notification.value.filter((x) => x.key !== key)
 	}, 5 * 1000)
 	return key
 }
