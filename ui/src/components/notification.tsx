@@ -1,12 +1,11 @@
 import { useCallback } from "preact/hooks"
-import { notification } from "../shared/state"
+import { notification, notificationRemove, type Message } from "../shared/state"
 
-const remove = (idx: number) => {
-	notification.value = notification.value.filter((_, i) => i !== idx)
-}
-
-const Item = (props: { idx: number; msg: string }) => {
-	const handleClick = useCallback(() => remove(props.idx), [props.idx])
+const Item = (props: { msg: Message }) => {
+	const handleClick = useCallback(
+		() => notificationRemove(props.msg.key),
+		[props.msg],
+	)
 	return (
 		<div class="toast toast-success mb-2">
 			<button
@@ -30,11 +29,10 @@ const style = {
 export const Notification = () => {
 	return (
 		<div style={style}>
-			{notification.value.map((msg, idx) => (
+			{notification.value.map((msg) => (
 				<Item
 					key={msg.key}
-					msg={msg.msg}
-					idx={idx}
+					msg={msg}
 				/>
 			))}
 		</div>

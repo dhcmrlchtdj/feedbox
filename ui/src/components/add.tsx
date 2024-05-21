@@ -1,7 +1,7 @@
 import { signal } from "@preact/signals"
 import { genClass } from "../shared/helper"
 import * as http from "../shared/http"
-import { createFeedsSetter, newNotification, type Feed } from "../shared/state"
+import { createFeedsSetter, notificationAdd, type Feed } from "../shared/state"
 
 const loading = signal(false)
 const url = signal("")
@@ -20,7 +20,7 @@ const handleSubmit = (event: Event) => {
 	const setFeeds = createFeedsSetter()
 	http.put<Feed[]>("/api/v1/feeds/add", { url: url.value })
 		.then((resp) => setFeeds(resp))
-		.then(() => newNotification("added"))
+		.then(() => notificationAdd("added"))
 		.catch((err: Error) => {
 			window.alert(err.message)
 			location.reload()

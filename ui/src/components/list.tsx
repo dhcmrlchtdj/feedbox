@@ -5,7 +5,7 @@ import * as http from "../shared/http"
 import {
 	createFeedsSetter,
 	feeds,
-	newNotification,
+	notificationAdd,
 	type Feed,
 } from "../shared/state"
 
@@ -28,7 +28,7 @@ const handleRemove = (feed: Feed, loading: Signal<boolean>) => {
 	http.del<Feed[]>("/api/v1/feeds/remove", { feedID: feed.id })
 		.then((resp) => setFeeds(resp))
 		.then(() => (loading.value = false))
-		.then(() => newNotification("removed"))
+		.then(() => notificationAdd("removed"))
 		.catch((err: Error) => {
 			window.alert(err.message)
 			location.reload()

@@ -1,5 +1,3 @@
-import { sleep } from "./helper"
-
 const auth = async <T>(r: Response) => {
 	if (r.ok) {
 		const body = (await r.json()) as T
@@ -22,12 +20,7 @@ const req = async <T>(method: string, url: string, data: null | data) => {
 		redirect: "follow",
 		mode: "same-origin",
 		credentials: "same-origin",
-	})
-		.then(auth<T>)
-		.then(async(r) => {
-			await sleep(1000)
-			return r
-		})
+	}).then(auth<T>)
 }
 
 export const get = <T>(url: string) => req<T>("GET", url, null)

@@ -12,13 +12,13 @@ declare global {
 		}
 	}
 }
-const cachedState = self.__STATE__ || {}
+const __STATE__ = self.__STATE__ || {}
 
-export const hasCache = signal(cachedState.email)
-export const loaded = signal(false)
-export const initError = signal("")
-export const email = signal(cachedState.email || "")
-export const feeds = signal(cachedState.feeds || [])
+export const hydrated = !!__STATE__
+export const loaded = signal(true)
+export const loadingError = signal("")
+export const email = signal(__STATE__.email || "")
+export const feeds = signal(__STATE__.feeds || [])
 
 export const initState = () => {
 	// keep the loading animation
@@ -34,12 +34,12 @@ export const initState = () => {
 			loaded.value = true
 		})
 		.catch(async (err: Error) => {
-			if (hasCache.value) {
+			if (hydrated) {
 				window.alert(err.message)
 				location.reload()
 			} else {
 				await delayAnimation
-				initError.value = err.message
+				loadingError.value = err.message
 			}
 		})
 }
@@ -71,10 +71,15 @@ export type Message = { key: number; msg: string }
 export const notification = signal<Message[]>([])
 
 let count = 0
-export const newNotification = (msg: string) => {
+export const notificationAdd = (msg: string): number => {
 	const key = count++
 	notification.value = [...notification.peek(), { msg, key }]
 	setTimeout(() => {
 		notification.value = notification.peek().filter((x) => x.key !== key)
 	}, 5 * 1000)
+	return key
+}
+
+export const notificationRemove = (key: number) => {
+	notification.value = notification.value.filter((n) => n.key !== key)
 }
