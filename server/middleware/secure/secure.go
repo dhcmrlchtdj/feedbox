@@ -23,7 +23,7 @@ func New() fiber.Handler {
 			c.Set("content-security-policy", buildCSP(
 				"default-src 'self'",
 				"script-src 'self'",
-				"style-src 'self' 'sha256-9OlNO0DNEeaVzHL4RZwCLsBHA8WBQ8toBp/4F5XV2nc='",
+				"style-src 'self'",
 			))
 		}
 

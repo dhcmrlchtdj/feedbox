@@ -8,14 +8,15 @@ const logout = () => {
 	}
 }
 
-export const Heading = (props: { initialized: boolean }) => {
+export const Heading = (props: { loaded: boolean }) => {
 	return (
 		<>
 			<div class="column col-12">
 				<h1 class="d-inline-block mb-0">FeedBox</h1>
+				<span>&nbsp;</span>
 				<span
-					class={genClass("d-inline-block", [
-						props.initialized,
+					class={genClass("loading d-inline-block", [
+						props.loaded,
 						"d-invisible",
 					])}
 					style={{
@@ -23,6 +24,7 @@ export const Heading = (props: { initialized: boolean }) => {
 						"vertical-align": "text-top",
 					}}
 				></span>
+				<span>&nbsp;</span>
 				<span>{email}</span>
 				<span>&nbsp;</span>
 				<a

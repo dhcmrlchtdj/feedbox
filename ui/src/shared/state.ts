@@ -4,8 +4,21 @@ import * as http from "./http"
 
 ///
 
-export const initialized = signal(false)
+declare global {
+	interface Window {
+		__STATE__: {
+			email: string
+			feeds: Feed[]
+		}
+	}
+}
+const cachedState = self.__STATE__ || {}
+
+export const hasCache = signal(cachedState.email)
+export const loaded = signal(false)
 export const initError = signal("")
+export const email = signal(cachedState.email || "")
+export const feeds = signal(cachedState.feeds || [])
 
 export const initState = () => {
 	// keep the loading animation
@@ -18,12 +31,16 @@ export const initState = () => {
 			email.value = user.addition.email
 			feeds.value = resp
 			await delayAnimation
-			initialized.value = true
+			loaded.value = true
 		})
 		.catch(async (err: Error) => {
-			await delayAnimation
-			initialized.value = true
-			initError.value = err.message
+			if (hasCache.value) {
+				window.alert(err.message)
+				location.reload()
+			} else {
+				await delayAnimation
+				initError.value = err.message
+			}
 		})
 }
 
@@ -35,7 +52,6 @@ export type User = {
 	pid: string
 	addition: { email: string }
 }
-export const email = signal<string>("")
 
 ///
 
@@ -44,7 +60,6 @@ export type Feed = {
 	updated: string
 	url: string
 }
-export const feeds = signal<Feed[]>([])
 
 export const createFeedsSetter = versionGuarder(
 	(f: Feed[]) => (feeds.value = f),

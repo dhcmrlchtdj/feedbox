@@ -1,4 +1,4 @@
-import { signal } from "@preact/signals"
+import { Signal, useSignal } from "@preact/signals"
 import { useCallback } from "preact/hooks"
 import { formatDate, genClass } from "../shared/helper"
 import * as http from "../shared/http"
@@ -9,27 +9,25 @@ import {
 	type Feed,
 } from "../shared/state"
 
-const loading = signal<Record<string, boolean>>({})
-
 const formatUpdated = (date: string) => {
 	if (!date) return "never"
 	return formatDate(new Date(date))
 }
 
-const handleRemove = (feed: Feed) => {
-	if (loading.value[feed.id] === true) {
+const handleRemove = (feed: Feed, loading: Signal<boolean>) => {
+	if (loading.value === true) {
 		window.alert("processing")
 		return
 	}
 	const c = window.confirm(`remove "${feed.url}"`)
 	if (!c) return
 
-	loading.value = { ...loading.value, [feed.id]: true }
+	loading.value = true
 
 	const setFeeds = createFeedsSetter()
 	http.del<Feed[]>("/api/v1/feeds/remove", { feedID: feed.id })
 		.then((resp) => setFeeds(resp))
-		.then(() => (loading.value = { ...loading.value, [feed.id]: false }))
+		.then(() => (loading.value = false))
 		.then(() => newNotification("removed"))
 		.catch((err: Error) => {
 			window.alert(err.message)
@@ -38,10 +36,12 @@ const handleRemove = (feed: Feed) => {
 }
 
 const Item = (props: { feed: Feed }) => {
+	const loading = useSignal(false)
 	const handleClick = useCallback(
-		() => handleRemove(props.feed),
-		[props.feed],
+		() => handleRemove(props.feed, loading),
+		[props.feed, loading],
 	)
+
 	return (
 		<div class="column col-12">
 			<div class="tile">
@@ -66,7 +66,7 @@ const Item = (props: { feed: Feed }) => {
 						<button
 							type="button"
 							class={genClass("btn btn-error", [
-								loading.value[props.feed.id],
+								loading.value,
 								"loading disabled",
 							])}
 							onClick={handleClick}

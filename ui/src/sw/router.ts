@@ -3,7 +3,7 @@ import { jsx } from "preact/jsx-runtime"
 import { App } from "../components/app.js"
 import { sanitize, versionGuarder } from "../shared/helper.js"
 import { Router } from "../shared/router.js"
-import type { Feed, User } from "../shared/state.js"
+import { email, feeds, type Feed, type User } from "../shared/state.js"
 import * as strategy from "./strategy.js"
 import * as version from "./version.js"
 
@@ -65,14 +65,16 @@ export const router = new Router<RouterContext>()
 					throw new Error("cache missing")
 				}
 			})
-			.then(async ([user, feeds]) => {
+			.then(async ([user, feed]) => {
 				const state = {
-					loaded: { promise: true },
 					email: user.addition.email,
-					feeds: feeds,
+					feeds: feed,
 				}
+				email.value = state.email
+				feeds.value = feed
+
 				const tpl = await resp.clone().text()
-				const app = renderToString(jsx(App, {}), { props: state })
+				const app = renderToString(jsx(App, {}))
 				const inlinedState = `window.__STATE__=${sanitize(
 					JSON.stringify(state),
 				)}`
