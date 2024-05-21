@@ -1,9 +1,8 @@
 export const genClass = (
-	...name: (string | [boolean | null | undefined, string])[]
+	base: string,
+	...cond: [boolean | null | undefined, string][]
 ): string => {
-	return name
-		.map((x) => (typeof x === "string" ? x : x[0] ? x[1] : ""))
-		.join(" ")
+	return [base, ...cond.map(([c, v]) => (c ? v : ""))].join(" ")
 }
 
 ///
