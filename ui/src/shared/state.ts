@@ -1,5 +1,31 @@
 import { signal } from "@preact/signals"
-import { versionGuarder } from "./helper"
+import { sleep, versionGuarder } from "./helper"
+import * as http from "./http"
+
+///
+
+export const initialized = signal(false)
+export const initError = signal("")
+
+export const initState = () => {
+	// keep the loading animation
+	const delayAnimation = sleep(1000)
+	Promise.all([
+		http.get<User>("/api/v1/user"),
+		http.get<Feed[]>("/api/v1/feeds"),
+	])
+		.then(async ([user, resp]) => {
+			email.value = user.addition.email
+			feeds.value = resp
+			await delayAnimation
+			initialized.value = true
+		})
+		.catch(async (err: Error) => {
+			await delayAnimation
+			initialized.value = true
+			initError.value = err.message
+		})
+}
 
 ///
 

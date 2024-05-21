@@ -1,5 +1,8 @@
-import { h, hydrate, render } from "preact"
+import { hydrate, render } from "preact"
+import { jsx } from "preact/jsx-runtime"
 import "spectre.css"
 import { App } from "./components/app.tsx"
+import { initState } from "./shared/state.ts"
 
-hydrate(h(App, null), document.querySelector("#app")!)
+initState()
+hydrate(jsx(App, {}), document.querySelector("#app")!)
