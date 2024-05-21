@@ -5,6 +5,7 @@ import * as fs from "node:fs/promises"
 import * as path from "node:path"
 import * as url from "node:url"
 import { hashFiles } from "./hash_files.js"
+import { sveltePlugin } from "./svelte_plugin.js"
 import { template } from "./template.js"
 
 const r = (p) =>
@@ -23,18 +24,23 @@ const esbuildOpts = {
 	bundle: true,
 	format: "esm",
 	target: "esnext",
-	sourcemap: "inline",
+	sourcemap: prod ? "inline" : "linked",
 	minify: prod,
 	outdir: r(`../_build/`),
-	jsxDev: !prod,
-	jsx: "automatic",
 }
 
 export async function buildApp(enableWatch = false) {
 	const opt = {
 		...esbuildOpts,
 		define: env,
-		plugins: [afterBuild({ buildHtml: true, copyStatic: true })],
+		plugins: [
+			sveltePlugin({
+				generate: "dom",
+				dev: !prod,
+				css: "external",
+			}),
+			afterBuild({ buildHtml: true, copyStatic: true }),
+		],
 		entryPoints: [r("../src/app.ts")],
 		entryNames: "[name]-[hash]",
 	}
@@ -67,7 +73,10 @@ export async function buildServiceWorker(enableWatch = false) {
 			__STATIC_VERSION__: JSON.stringify(hashStatic),
 			__API_VERSION__: JSON.stringify(hashAPI),
 		},
-		plugins: [afterBuild({ buildHtml: false, copyStatic: false })],
+		plugins: [
+			sveltePlugin({ generate: "ssr", dev: !prod, css: "external" }),
+			afterBuild({ buildHtml: false, copyStatic: false }),
+		].filter(Boolean),
 		entryPoints: [r("../src/sw/index.ts")],
 		entryNames: "sw",
 	}

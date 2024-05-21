@@ -3,18 +3,17 @@
 	"name": "feedbox",
 	"version": "0.0.0",
 	"type": "module",
-	"dependencies": {
-		"@preact/signals": "1.2.3",
-		"preact": "10.22.0",
-		"preact-render-to-string": "6.4.2",
-		"spectre.css": "0.5.9"
-	},
 	"devDependencies": {
-		"esbuild": "0.21.3",
-		"oxlint": "0.3.5",
+		"esbuild": "0.20.2",
+		"oxlint": "0.3.1",
 		"prettier": "3.2.5",
 		"prettier-plugin-organize-imports": "3.2.4",
+		"spectre.css": "0.5.9",
+		"svelte": "5.0.0-next.136",
 		"typescript": "5.4.5"
+	},
+	"pnpm": {
+		"patchedDependencies": {}
 	},
 	"prettier": {
 		"printWidth": 80,

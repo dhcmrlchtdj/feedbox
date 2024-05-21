@@ -12,15 +12,6 @@ PATH := ./node_modules/.bin:$(PATH)
 
 build: clean node_modules/tsconfig.tsbuildinfo
 	NODE_ENV=production node ./build_script/build_dist.js
-	NODE_ENV=production esbuild \
-			 --format=esm \
-			 --target=esnext \
-			 --minify \
-			 --tree-shaking=true \
-			 --sourcemap=linked \
-			 --outdir=./_build \
-			 --allow-overwrite \
-			 ./_build/*.{js,css}
 
 dev: clean node_modules/tsconfig.tsbuildinfo
 	NODE_ENV=development node ./build_script/build_watch.js
@@ -34,6 +25,8 @@ lint:
 		-D=suspicious \
 		-D=pedantic \
 		-A=ban-ts-comment \
+		-A=react-in-jsx-scope \
+		-A=max-classes-per-file \
 		--import-plugin
 	prettier --check . "!pnpm-lock.yaml"
 
@@ -52,7 +45,7 @@ upgrade:
 
 .PHONY: check force
 
-node_modules/tsconfig.tsbuildinfo: node_modules $(shell ls src/**/*.ts)
+node_modules/tsconfig.tsbuildinfo: node_modules $(shell ls src/**/*.tsx)
 	@make --no-print-directory check
 
 node_modules:
