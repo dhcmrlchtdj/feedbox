@@ -45,7 +45,7 @@ upgrade:
 
 .PHONY: check force
 
-node_modules/tsconfig.tsbuildinfo: node_modules $(shell ls src/**/*.tsx)
+node_modules/tsconfig.tsbuildinfo: node_modules
 	@make --no-print-directory check
 
 node_modules:
