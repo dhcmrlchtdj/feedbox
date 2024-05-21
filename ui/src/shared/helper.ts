@@ -37,7 +37,6 @@ export const formatDate = (date: Date, fmt: string = "YYYY-MM-DD hh:mm:ss") => {
 
 ///
 
-export class VersionConflict extends Error {}
 export function versionGuarder<T extends unknown[]>(
 	fn: (...args: T) => unknown,
 ) {
@@ -47,7 +46,7 @@ export function versionGuarder<T extends unknown[]>(
 		const currentVersion = nextVersion
 		nextVersion += 1
 		return (...args: Parameters<typeof fn>) => {
-			if (currentVersion <= latestVersion) throw new VersionConflict()
+			if (currentVersion <= latestVersion) return
 			latestVersion = currentVersion
 			fn(...args)
 		}
