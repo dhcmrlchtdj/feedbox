@@ -1,4 +1,4 @@
-import { signal } from "@preact/signals"
+import { batch, signal } from "@preact/signals"
 import { sleep, versionGuarder } from "./helper"
 import * as http from "./http"
 
@@ -28,10 +28,12 @@ export const initState = () => {
 		http.get<Feed[]>("/api/v1/feeds"),
 	])
 		.then(async ([user, resp]) => {
-			email.value = user.addition.email
-			feeds.value = resp
 			await delayAnimation
-			loaded.value = true
+			batch(() => {
+				email.value = user.addition.email
+				feeds.value = resp
+				loaded.value = true
+			})
 		})
 		.catch(async (err: Error) => {
 			if (hydrated) {
