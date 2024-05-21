@@ -1,5 +1,6 @@
 import { useCallback } from "preact/hooks"
 import { notification, notificationRemove, type Message } from "../shared/state"
+import * as style from "./style.module.css"
 
 const Item = (props: { msg: Message }) => {
 	const handleClick = useCallback(
@@ -17,18 +18,9 @@ const Item = (props: { msg: Message }) => {
 	)
 }
 
-const style = {
-	position: "fixed",
-	width: "10em",
-	right: "0.4rem",
-	top: "0.4rem",
-	"z-index": "10",
-	contain: "content",
-}
-
 export const Notification = () => {
 	return (
-		<div style={style}>
+		<div class={style.notificationContainer}>
 			{notification.value.map((msg) => (
 				<Item
 					key={msg.key}

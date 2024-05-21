@@ -24,6 +24,8 @@ func New() fiber.Handler {
 				"default-src 'self'",
 				"script-src 'self'",
 				"style-src 'self'",
+				"base-uri 'none'",
+				"object-src 'none'",
 			))
 		}
 
