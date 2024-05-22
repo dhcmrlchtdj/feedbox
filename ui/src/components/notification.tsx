@@ -1,5 +1,6 @@
 import { useCallback } from "preact/hooks"
 import { notification, notificationRemove, type Message } from "../shared/state"
+import { Transition, TransitionGroup } from "./transition"
 
 const Item = (props: { msg: Message }) => {
 	const handleClick = useCallback(
@@ -28,13 +29,12 @@ const style = {
 
 export const Notification = () => {
 	return (
-		<div style={style}>
+		<TransitionGroup style={style}>
 			{notification.value.map((msg) => (
-				<Item
-					key={msg.key}
-					msg={msg}
-				/>
+				<Transition key={msg.key}>
+					<Item msg={msg} />
+				</Transition>
 			))}
-		</div>
+		</TransitionGroup>
 	)
 }
