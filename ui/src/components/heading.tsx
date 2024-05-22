@@ -1,4 +1,3 @@
-import { genClass } from "../shared/helper"
 import { email } from "../shared/state"
 
 const logout = () => {
@@ -15,10 +14,7 @@ export const Heading = (props: { loaded: boolean }) => {
 				<h1 class="d-inline-block mb-0">FeedBox</h1>
 				<span>&nbsp;</span>
 				<span
-					class={genClass("loading d-inline-block", [
-						props.loaded,
-						"d-invisible",
-					])}
+					class={`loading d-inline-block ${props.loaded ? "d-invisible" : ""}`}
 					style={{
 						width: "0.8rem",
 						"vertical-align": "text-top",

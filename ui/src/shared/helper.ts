@@ -1,12 +1,3 @@
-export const genClass = (
-	base: string,
-	...cond: [boolean | null | undefined, string][]
-): string => {
-	return [base, ...cond.map(([c, v]) => (c ? v : ""))].join(" ")
-}
-
-///
-
 const pad = (value: number) => String(value).padStart(2, "0")
 export const formatDate = (date: Date, fmt: string = "YYYY-MM-DD hh:mm:ss") => {
 	const _year = date.getFullYear()

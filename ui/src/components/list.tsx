@@ -1,6 +1,6 @@
 import { Signal, useSignal } from "@preact/signals"
 import { useCallback } from "preact/hooks"
-import { formatDate, genClass } from "../shared/helper"
+import { formatDate } from "../shared/helper"
 import * as http from "../shared/http"
 import {
 	createFeedsSetter,
@@ -65,10 +65,7 @@ const Item = (props: { feed: Feed }) => {
 					<div>
 						<button
 							type="button"
-							class={genClass("btn btn-error", [
-								loading.value,
-								"loading disabled",
-							])}
+							class={`btn btn-error ${loading.value ? "loading disabled" : ""}`}
 							onClick={handleClick}
 						>
 							remove

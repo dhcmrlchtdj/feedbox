@@ -1,5 +1,4 @@
 import { signal } from "@preact/signals"
-import { genClass } from "../shared/helper"
 import * as http from "../shared/http"
 import { createFeedsSetter, notificationAdd, type Feed } from "../shared/state"
 
@@ -52,10 +51,7 @@ export const Add = () => {
 					/>
 					<button
 						type="submit"
-						class={genClass("btn btn-primary input-group-btn", [
-							loading.value,
-							"loading disabled",
-						])}
+						class={`btn btn-primary input-group-btn ${loading.value ? "loading disabled" : ""}`}
 						disabled={loading}
 					>
 						add
