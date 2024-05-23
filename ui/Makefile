@@ -26,6 +26,7 @@ lint:
 		-D=pedantic \
 		-A=ban-ts-comment \
 		-A=react-in-jsx-scope \
+		-A=jsx-no-useless-fragment \
 		-A=max-classes-per-file \
 		--import-plugin
 	prettier --check . "!pnpm-lock.yaml"
