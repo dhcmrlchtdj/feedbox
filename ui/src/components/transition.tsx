@@ -10,23 +10,37 @@ import type { HTMLAttributes } from "preact/compat"
 import {
 	useCallback,
 	useEffect,
+	useLayoutEffect,
 	useReducer,
 	useRef,
 	useState,
 } from "preact/hooks"
 
+export type TransitionProps = {
+	onEnd?: () => void
+	state?: "enter" | "leave"
+}
+
 type OnTransitionEnd = (key: Key) => void
 
 export const Transition: FunctionComponent<{
+	id?: Key
 	show?: boolean
 	onTransitionEnd?: OnTransitionEnd
 }> = (props) => {
+	const [state, setState] = useState(props.show ? "enter" : "leave")
 	const [display, setDisplay] = useState(props.show)
 	const onEnd = useCallback(() => {
 		if (!props.show) {
 			setDisplay(false)
-			props.onTransitionEnd?.(props.key)
+			props.onTransitionEnd?.(props.id)
 		}
+	}, [props.show])
+	useEffect(() => {
+		if (props.show) setDisplay(true)
+	}, [props.show])
+	useLayoutEffect(() => {
+		setState(props.show ? "enter" : "leave")
 	}, [props.show])
 
 	if (!display) return null
@@ -35,7 +49,7 @@ export const Transition: FunctionComponent<{
 	if (childArr.length === 0) return null
 	const child = childArr[0]!
 	if (typeof child !== "object") return <>{child}</>
-	return cloneElement(child, { onanimationend: onEnd })
+	return cloneElement(child, { onEnd, state })
 }
 
 const mergePrevCurrChildren = (
@@ -61,12 +75,15 @@ const mergePrevCurrChildren = (
 		})
 
 		if (found === -1) {
-			next.push(cloneElement(p, { show: false, onTransitionEnd }))
+			next.push(
+				cloneElement(p, { id: p.key, show: false, onTransitionEnd }),
+			)
 			i++
 		} else {
 			while (j <= found) {
+				const e = curr[j]!
 				next.push(
-					cloneElement(curr[j]!, { show: true, onTransitionEnd }),
+					cloneElement(e, { id: e.key, show: true, onTransitionEnd }),
 				)
 				j++
 			}
@@ -75,12 +92,12 @@ const mergePrevCurrChildren = (
 	}
 	while (i < iLen) {
 		const e = prev[i]!
-		next.push(cloneElement(e, { show: false, onTransitionEnd }))
+		next.push(cloneElement(e, { id: e.key, show: false, onTransitionEnd }))
 		i++
 	}
 	while (j < jLen) {
 		const e = curr[j]!
-		next.push(cloneElement(e, { show: true, onTransitionEnd }))
+		next.push(cloneElement(e, { id: e.key, show: true, onTransitionEnd }))
 		j++
 	}
 
@@ -97,17 +114,19 @@ export const TransitionGroup: FunctionComponent<
 
 	const onTransitionEnd = useCallback(
 		(key: Key) => {
-			nextChildren.value = nextChildren.value.filter((x) => x.key !== key)
+			nextChildren.value = nextChildren
+				.peek()
+				.filter((x) => x.key !== key)
 		},
 		[nextChildren],
 	)
 	useEffect(() => {
 		nextChildren.value = mergePrevCurrChildren(
-			nextChildren.value,
+			nextChildren.peek(),
 			currChildren,
 			onTransitionEnd,
 		)
 	}, [props.children])
 
-	return <div {...props}>{nextChildren}</div>
+	return <>{nextChildren}</>
 }

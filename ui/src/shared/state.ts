@@ -76,9 +76,9 @@ let count = 0
 export const notificationAdd = (msg: string): number => {
 	const key = count++
 	notification.value = [...notification.value, { msg, key }]
-	// setTimeout(() => {
-	//     notification.value = notification.value.filter((x) => x.key !== key)
-	// }, 5 * 1000)
+	setTimeout(() => {
+		notification.value = notification.value.filter((x) => x.key !== key)
+	}, 5 * 1000)
 	return key
 }
 
