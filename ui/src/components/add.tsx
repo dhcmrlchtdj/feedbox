@@ -14,6 +14,13 @@ const handleSubmit = (event: Event) => {
 	}
 
 	if (url.value === "") return
+	try {
+		new URL(url.value)
+	} catch (_) {
+		window.alert("Invalid URL")
+		return
+	}
+
 	loading.value = true
 
 	const setFeeds = createFeedsSetter()
