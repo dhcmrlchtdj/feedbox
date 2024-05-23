@@ -6,9 +6,10 @@
 }
 
 .slide {
-	transition: transform 0.5s ease;
-	transform-origin: top;
+	transition: all 0.5s ease;
+	display: grid;
+	grid-template-rows: 1fr;
 }
 .slide-leave {
-	transform: scaleY(0);
+	grid-template-rows: 0fr;
 }

@@ -51,36 +51,38 @@ const Item = (props: { feed: Feed } & TransitionProps) => {
 			class={`column col-12 ${ani}`}
 			onTransitionEnd={handleLeave}
 		>
-			<div class="tile">
-				<div class="tile-content">
-					<div class="tile-title text-break">
-						<a
-							target="_blank"
-							rel="noopener noreferrer"
-							href={props.feed.url}
-						>
-							{props.feed.url}
-						</a>
+			<div style="overflow:hidden;">
+				<div class="tile">
+					<div class="tile-content">
+						<div class="tile-title text-break">
+							<a
+								target="_blank"
+								rel="noopener noreferrer"
+								href={props.feed.url}
+							>
+								{props.feed.url}
+							</a>
+						</div>
+						<div class="tile-subtitle text-gray">
+							<span>
+								updated @ {formatUpdated(props.feed.updated)}
+							</span>
+						</div>
 					</div>
-					<div class="tile-subtitle text-gray">
-						<span>
-							updated @ {formatUpdated(props.feed.updated)}
-						</span>
+					<div class="tile-action">
+						<div>
+							<button
+								type="button"
+								class={`btn btn-error ${loading.value ? "loading disabled" : ""}`}
+								onClick={handleClick}
+							>
+								remove
+							</button>
+						</div>
 					</div>
 				</div>
-				<div class="tile-action">
-					<div>
-						<button
-							type="button"
-							class={`btn btn-error ${loading.value ? "loading disabled" : ""}`}
-							onClick={handleClick}
-						>
-							remove
-						</button>
-					</div>
-				</div>
+				<div class="divider"></div>
 			</div>
-			<div class="divider"></div>
 		</div>
 	)
 }
