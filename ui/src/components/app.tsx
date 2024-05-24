@@ -25,7 +25,10 @@ export const App = () => {
 		return (
 			<div class="container grid-sm">
 				<div class="columns">
-					<Heading loaded={loaded.value} />
+					<Heading
+						email={email.value}
+						loaded={loaded.value}
+					/>
 					<Add />
 					<List />
 				</div>

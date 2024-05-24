@@ -1,5 +1,3 @@
-import { email } from "../shared/state"
-
 const logout = () => {
 	const sw = navigator.serviceWorker
 	if (sw && sw.controller) {
@@ -7,7 +5,7 @@ const logout = () => {
 	}
 }
 
-export const Heading = (props: { loaded: boolean }) => {
+export const Heading = (props: { email: string; loaded: boolean }) => {
 	return (
 		<>
 			<div class="column col-12">
@@ -21,7 +19,7 @@ export const Heading = (props: { loaded: boolean }) => {
 					}}
 				></span>
 				<span>&nbsp;</span>
-				<span>{email}</span>
+				<span>{props.email}</span>
 				<span>&nbsp;</span>
 				<a
 					href="/api/v1/feeds/export"
