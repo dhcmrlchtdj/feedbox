@@ -36,9 +36,6 @@ export const Transition: FunctionComponent<{
 			props.onTransitionEnd?.(props.id)
 		}
 	}, [props.show])
-	useEffect(() => {
-		if (props.show) setDisplay(true)
-	}, [props.show])
 	useLayoutEffect(() => {
 		setState(props.show ? "enter" : "leave")
 	}, [props.show])
