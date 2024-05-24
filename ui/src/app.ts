@@ -32,12 +32,11 @@ if (navigator.serviceWorker) {
 		new DefaultLayer("true"),
 	)
 
-	unregisterServiceWorker()
-	// if (swEnable.get() === "false" || swEnable.get() === "0") {
-	//     unregisterServiceWorker()
-	//     swEnable.set("false")
-	// } else {
-	//     navigator.serviceWorker.register("/sw.js", { updateViaCache: "all" })
-	//     swEnable.set("true")
-	// }
+	if (swEnable.get() === "false" || swEnable.get() === "0") {
+		unregisterServiceWorker()
+		swEnable.set("false")
+	} else {
+		navigator.serviceWorker.register("/sw.js", { updateViaCache: "all" })
+		swEnable.set("true")
+	}
 }
