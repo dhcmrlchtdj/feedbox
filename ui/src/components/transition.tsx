@@ -30,12 +30,12 @@ export const Transition: FunctionComponent<{
 }> = (props) => {
 	const [state, setState] = useState(props.show ? "enter" : "leave")
 	const [display, setDisplay] = useState(props.show)
-	const onEnd = useCallback(() => {
+	const onEnd = () => {
 		if (!props.show) {
 			setDisplay(false)
 			props.onTransitionEnd?.(props.id)
 		}
-	}, [props.show])
+	}
 	useLayoutEffect(() => {
 		setState(props.show ? "enter" : "leave")
 	}, [props.show])
