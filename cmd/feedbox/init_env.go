@@ -12,6 +12,8 @@ import (
 
 	"github.com/dhcmrlchtdj/feedbox/internal/database"
 	"github.com/dhcmrlchtdj/feedbox/internal/email"
+	"github.com/dhcmrlchtdj/feedbox/internal/logwriter"
+	"github.com/dhcmrlchtdj/feedbox/internal/proc"
 	"github.com/dhcmrlchtdj/feedbox/internal/sign"
 	"github.com/dhcmrlchtdj/feedbox/internal/telegram"
 	"github.com/dhcmrlchtdj/feedbox/internal/util"
@@ -26,8 +28,21 @@ func initEnv() {
 	util.CheckEnvs("ENV")
 }
 
-func initLogger() {
+func initLogger() zerolog.Logger {
 	zerolog.ErrorStackMarshaler = pkgerrors.MarshalStack // nolint:reassign
+
+	httplogger := logwriter.NewHttpLogWriter()
+	multi := zerolog.MultiLevelWriter(os.Stderr, httplogger)
+	logger := zerolog.New(multi).With().Timestamp().Logger()
+
+	proc.WaitGroup.Add(1)
+	go func() {
+		<-proc.Context.Done()
+		httplogger.Close()
+		proc.WaitGroup.Done()
+	}()
+
+	return logger
 }
 
 func initDatabase(ctx context.Context) {

@@ -12,6 +12,7 @@ import (
 	"github.com/rs/zerolog"
 
 	"github.com/dhcmrlchtdj/feedbox/internal/database"
+	"github.com/dhcmrlchtdj/feedbox/internal/proc"
 	"github.com/dhcmrlchtdj/feedbox/internal/util"
 	"github.com/dhcmrlchtdj/feedbox/server"
 	"github.com/dhcmrlchtdj/feedbox/worker"
@@ -36,12 +37,11 @@ func main() {
 ///
 
 func startServerAndWorker() {
-	logger := zerolog.New(os.Stderr).With().Timestamp().Logger()
+	logger := initLogger()
 	ctx, cancel := context.WithCancel(context.Background())
 	ctx = logger.WithContext(ctx)
 
 	initEnv()
-	initLogger()
 	initDatabase(ctx)
 	defer database.Close()
 	initEmail()
@@ -66,32 +66,34 @@ func startServerAndWorker() {
 	wg.Wait()
 
 	logger.Info().Str("module", "app").Msg("app stopped")
+
+	proc.WaitGroup.Wait()
 }
 
 func startServer() {
-	logger := zerolog.New(os.Stderr).With().Timestamp().Logger()
-	ctx, cancel := context.WithCancel(context.Background())
-	ctx = logger.WithContext(ctx)
+	logger := initLogger()
+	ctx := logger.WithContext(proc.Context)
+	proc.Context = ctx
 
 	initEnv()
-	initLogger()
 	initDatabase(ctx)
 	defer database.Close()
 	initEmail()
 	initTelegram()
 	initSign()
-	initQuitSignal(ctx, cancel)
+	initQuitSignal(ctx, proc.Cancel)
 
 	runServer(ctx)
 	logger.Info().Str("module", "app").Msg("app stopped")
+
+	proc.WaitGroup.Wait()
 }
 
 func startWorker() {
-	logger := zerolog.New(os.Stderr).With().Timestamp().Logger()
+	logger := initLogger()
 	ctx := logger.WithContext(context.Background())
 
 	initEnv()
-	initLogger()
 	initDatabase(ctx)
 	initEmail()
 	initTelegram()

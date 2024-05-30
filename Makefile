@@ -16,7 +16,8 @@ build:
 	CGO_ENABLED=0 go build $(GOFLAGS) -o _build/ ./cmd/...
 
 dev:
-	make --jobs=2 _dev_ui _dev_server
+	go run -tags=dev -race ./cmd/feedbox server 2>&1 
+	# make --jobs=2 _dev_ui _dev_server
 
 _dev_ui:
 	cd ui && make dev
