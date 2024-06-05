@@ -7,6 +7,7 @@ import (
 	"syscall"
 
 	"github.com/joho/godotenv"
+	"github.com/rs/xid"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/pkgerrors"
 
@@ -26,8 +27,17 @@ func initEnv() {
 	util.CheckEnvs("ENV")
 }
 
-func initLogger() {
+type LogIdHook struct{}
+
+func (h LogIdHook) Run(e *zerolog.Event, _ zerolog.Level, _ string) {
+	e.Str("logId", xid.New().String())
+}
+
+func initLogger() zerolog.Logger {
 	zerolog.ErrorStackMarshaler = pkgerrors.MarshalStack // nolint:reassign
+	logger := zerolog.New(os.Stderr).With().Timestamp().Logger()
+	logger = logger.Hook(LogIdHook{})
+	return logger
 }
 
 func initDatabase(ctx context.Context) {

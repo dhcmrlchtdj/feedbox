@@ -36,12 +36,11 @@ func main() {
 ///
 
 func startServerAndWorker() {
-	logger := zerolog.New(os.Stderr).With().Timestamp().Logger()
+	initEnv()
+	logger := initLogger()
 	ctx, cancel := context.WithCancel(context.Background())
 	ctx = logger.WithContext(ctx)
 
-	initEnv()
-	initLogger()
 	initDatabase(ctx)
 	defer database.Close()
 	initEmail()
@@ -69,12 +68,11 @@ func startServerAndWorker() {
 }
 
 func startServer() {
-	logger := zerolog.New(os.Stderr).With().Timestamp().Logger()
+	initEnv()
+	logger := initLogger()
 	ctx, cancel := context.WithCancel(context.Background())
 	ctx = logger.WithContext(ctx)
 
-	initEnv()
-	initLogger()
 	initDatabase(ctx)
 	defer database.Close()
 	initEmail()
@@ -87,11 +85,10 @@ func startServer() {
 }
 
 func startWorker() {
-	logger := zerolog.New(os.Stderr).With().Timestamp().Logger()
+	initEnv()
+	logger := initLogger()
 	ctx := logger.WithContext(context.Background())
 
-	initEnv()
-	initLogger()
 	initDatabase(ctx)
 	initEmail()
 	initTelegram()
