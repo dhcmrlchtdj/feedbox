@@ -21,10 +21,11 @@ func New() fiber.Handler {
 			// c.Set("referrer-policy", "strict-origin-when-cross-origin")
 			c.Set("referrer-policy", "no-referrer")
 			c.Set("content-security-policy", buildCSP(
-				"default-src 'none'",
+				"default-src 'self'",
 				"script-src 'self'",
 				"style-src 'self' 'unsafe-inline'",
 				"base-uri 'none'",
+				"object-src 'none'",
 				"frame-ancestors 'none'",
 				"form-action 'self'",
 			))
