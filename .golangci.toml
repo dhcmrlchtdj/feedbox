@@ -28,6 +28,7 @@ disable = [
 	"paralleltest",
 	"revive",
 	"depguard",
+	"sqlclosecheck",
 ]
 
 [linters-settings.wrapcheck]

@@ -28,6 +28,7 @@ lint:
 		-A=react-in-jsx-scope \
 		-A=jsx-no-useless-fragment \
 		-A=max-classes-per-file \
+		-A=max-dependencies \
 		--import-plugin
 	prettier --check . "!pnpm-lock.yaml"
 
