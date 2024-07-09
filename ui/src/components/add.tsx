@@ -13,10 +13,7 @@ const handleSubmit = (event: Event) => {
 		return
 	}
 
-	if (url.value === "") return
-	try {
-		new URL(url.value)
-	} catch (_) {
+	if (!URL.canParse(url.value)) {
 		window.alert("Invalid URL")
 		return
 	}

@@ -10,7 +10,7 @@ const auth = async <T>(r: Response) => {
 
 type data = Record<string, unknown>
 
-const req = async <T>(method: string, url: string, data: null | data) => {
+const req = <T>(method: string, url: string, data: null | data) => {
 	return fetch(url, {
 		method,
 		headers: {

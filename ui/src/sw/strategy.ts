@@ -15,11 +15,11 @@ export const cacheFirst: strategy = async (cache, req) => {
 	}
 }
 
-export const networkOnly: strategy = async (_cache, req) => {
+export const networkOnly: strategy = (_cache, req) => {
 	return fetch(req)
 }
 
-export const networkFirst: strategy = async (cache, req) => {
+export const networkFirst: strategy = (cache, req) => {
 	const fetched = fetchResource(req, cache)
 	const resp = fetched.catch(async (err) => {
 		const cached = await cache.match(req)

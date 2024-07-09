@@ -55,7 +55,7 @@ export const router = new Router<RouterContext>()
 			strategy.cacheOnly(apiCache, "/api/v1/user"),
 			strategy.cacheOnly(apiCache, "/api/v1/feeds"),
 		])
-			.then(async ([user, feeds]) => {
+			.then(([user, feeds]) => {
 				if (user && user.ok && feeds && feeds.ok) {
 					return Promise.all([
 						user.json() as Promise<User>,
