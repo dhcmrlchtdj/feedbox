@@ -89,15 +89,24 @@ const Item = (props: { feed: Feed } & TransitionProps) => {
 
 export const List = () => {
 	return (
-		<TransitionGroup>
+		<>
 			{feeds.value.map((feed) => (
-				<Transition key={feed.id}>
-					<Item
-						key={feed.id}
-						feed={feed}
-					/>
-				</Transition>
+				<Item
+					key={feed.id}
+					feed={feed}
+				/>
 			))}
-		</TransitionGroup>
+		</>
 	)
+	//     <TransitionGroup>
+	//         {feeds.value.map((feed) => (
+	//             <Transition key={feed.id}>
+	//                 <Item
+	//                     key={feed.id}
+	//                     feed={feed}
+	//                 />
+	//             </Transition>
+	//         ))}
+	//     </TransitionGroup>
+	// )
 }

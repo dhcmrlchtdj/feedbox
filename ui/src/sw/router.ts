@@ -1,3 +1,4 @@
+import { batch } from "@preact/signals"
 import { renderToString } from "preact-render-to-string"
 import { jsx } from "preact/jsx-runtime"
 import { App } from "../components/app.js"
@@ -70,9 +71,11 @@ export const router = new Router<RouterContext>()
 					email: user.addition.email,
 					feeds: feed,
 				}
-				email.value = state.email
-				feeds.value = feed
-				loaded.value = true
+				batch(() => {
+					email.value = state.email
+					feeds.value = feed
+					loaded.value = true
+				})
 
 				const tpl = await resp.clone().text()
 				const app = renderToString(jsx(App, {}))
