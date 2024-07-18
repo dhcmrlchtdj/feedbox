@@ -117,7 +117,7 @@ export const TransitionGroup: FunctionComponent<
 		},
 		[nextChildren],
 	)
-	useEffect(() => {
+	useLayoutEffect(() => {
 		nextChildren.value = mergePrevCurrChildren(
 			nextChildren.peek(),
 			currChildren,
