@@ -4,7 +4,7 @@ import { jsx } from "preact/jsx-runtime"
 import { App } from "../components/app.js"
 import { sanitize, versionGuarder } from "../shared/helper.js"
 import { Router } from "../shared/router.js"
-import { email, feeds, loaded, type Feed, type User } from "../shared/state.js"
+import { email, feeds, type Feed, type User } from "../shared/state.js"
 import * as strategy from "./strategy.js"
 import * as version from "./version.js"
 
@@ -74,7 +74,6 @@ export const router = new Router<RouterContext>()
 				batch(() => {
 					email.value = state.email
 					feeds.value = feed
-					loaded.value = true
 				})
 
 				const tpl = await resp.clone().text()
