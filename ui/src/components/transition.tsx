@@ -7,14 +7,7 @@ import {
 	type VNode,
 } from "preact"
 import type { HTMLAttributes } from "preact/compat"
-import {
-	useCallback,
-	useEffect,
-	useLayoutEffect,
-	useReducer,
-	useRef,
-	useState,
-} from "preact/hooks"
+import { useCallback, useLayoutEffect, useState } from "preact/hooks"
 
 export type TransitionProps = {
 	onEnd?: () => void
