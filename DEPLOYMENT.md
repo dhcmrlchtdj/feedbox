@@ -53,3 +53,67 @@ curl -s -XPOST 'https://s3' \
 	-u 'username:password' \
 	-F file=@/opt/app/feedbox/feedbox.backup.db.tar.zst
 ```
+
+## log
+
+```sh
+$ cat /etc/vector/vector.json
+
+{
+	"data_dir": "/var/lib/vector",
+	"sources": {
+		"feedbox_source": {
+			"type": "journald",
+			"include_units": ["feedbox.service"]
+		}
+	},
+	"transforms": {
+		"feedbox_transform": {
+			"type": "remap",
+			"inputs": ["feedbox_source"],
+			"source": ". = parse_json!(.message)"
+		},
+		"feedbox_err_transform": {
+			"type": "filter",
+			"inputs": ["feedbox_transform"],
+			"condition": ".level == \"error\""
+		}
+	},
+	"sinks": {
+		"feedbox_err_telegram": {
+			"type": "http",
+			"inputs": ["feedbox_err_transform"],
+			"uri": "https://xxx",
+			"auth": {
+				"strategy": "basic",
+				"user": "xxxxxxx",
+				"password": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+			},
+			"encoding": {
+				"codec": "json",
+				"json": {
+					"pretty": true
+				}
+			}
+		},
+		"feedbox_s3": {
+			"type": "aws_s3",
+			"inputs": ["feedbox_transform"],
+			"endpoint": "https://xxx",
+			"bucket": "log",
+			"region": "auto",
+			"auth": {
+				"access_key_id": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+				"secret_access_key": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+			},
+			"key_prefix": "feedbox/",
+			"content_type": "application/zstd",
+			"filename_extension": "json.zstd",
+			"encoding": {
+				"codec": "json"
+			},
+			"compression": "zstd"
+		}
+	}
+}
+```
