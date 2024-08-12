@@ -1,11 +1,29 @@
+@keyframes fly-animate {
+	from {
+		transform: translateX(100%);
+	}
+	to {
+		transform: translateX(0);
+	}
+}
 .fly {
 	transition: transform 0.5s ease;
+	animation: fly-animate 0.5s ease;
 }
 .fly-leave {
 	transform: translateX(100%);
 }
 
+/* @keyframes slide-animate { */
+/*     from { */
+/*         grid-template-rows: 0fr; */
+/*     } */
+/*     to { */
+/*         grid-template-rows: 1fr; */
+/*     } */
+/* } */
 .slide {
+	/* animation: slide-animate 0.5s ease; */
 	transition: all 0.5s ease;
 	display: grid;
 	grid-template-rows: 1fr;
