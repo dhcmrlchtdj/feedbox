@@ -71,3 +71,15 @@ export function sanitize(data: string): string {
 	}
 	return data.replaceAll(unsafeChars, (c) => escaped[c]!)
 }
+
+///
+
+let _inServiceWorker: boolean | undefined = undefined
+export function inServiceWorker(): boolean {
+	if (_inServiceWorker === undefined) {
+		_inServiceWorker =
+			typeof ServiceWorkerGlobalScope !== "undefined" &&
+			self instanceof ServiceWorkerGlobalScope
+	}
+	return _inServiceWorker
+}

@@ -1,7 +1,7 @@
 import { batch } from "@preact/signals"
 import { renderToString } from "preact-render-to-string"
 import { jsx } from "preact/jsx-runtime"
-import { App } from "../components/app.js"
+import { AppInner } from "../components/app.js"
 import { sanitize, versionGuarder } from "../shared/helper.js"
 import { Router } from "../shared/router.js"
 import { email, feeds, type Feed, type User } from "../shared/state.js"
@@ -77,7 +77,7 @@ export const router = new Router<RouterContext>()
 				})
 
 				const tpl = await resp.clone().text()
-				const app = renderToString(jsx(App, {}))
+				const app = renderToString(jsx(AppInner, {}))
 				const inlinedState = `window.__STATE__=${sanitize(
 					JSON.stringify(state),
 				)}`

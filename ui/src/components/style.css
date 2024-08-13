@@ -14,16 +14,18 @@
 	transform: translateX(100%);
 }
 
-/* @keyframes slide-animate { */
-/*     from { */
-/*         grid-template-rows: 0fr; */
-/*     } */
-/*     to { */
-/*         grid-template-rows: 1fr; */
-/*     } */
-/* } */
+@keyframes slide-animate {
+	from {
+		grid-template-rows: 0fr;
+	}
+	to {
+		grid-template-rows: 1fr;
+	}
+}
+.slide.slide-new {
+	animation: slide-animate 0.5s ease;
+}
 .slide {
-	/* animation: slide-animate 0.5s ease; */
 	transition: all 0.5s ease;
 	display: grid;
 	grid-template-rows: 1fr;

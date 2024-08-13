@@ -14,6 +14,22 @@ import { Heading } from "./heading.tsx"
 import { List } from "./list.tsx"
 import { Notification } from "./notification.tsx"
 
+export const AppInner = () => {
+	return (
+		<div class="container grid-sm">
+			<div class="columns">
+				<Heading
+					email={email.value}
+					loaded={loaded.value}
+				/>
+				<Add />
+				<List />
+			</div>
+			<Notification />
+		</div>
+	)
+}
+
 export const App = () => {
 	if (loadingError.value) {
 		return (
@@ -22,19 +38,7 @@ export const App = () => {
 			</div>
 		)
 	} else if (hydrated || loaded.value) {
-		return (
-			<div class="container grid-sm">
-				<div class="columns">
-					<Heading
-						email={email.value}
-						loaded={loaded.value}
-					/>
-					<Add />
-					<List />
-				</div>
-				<Notification />
-			</div>
-		)
+		return AppInner()
 	} else {
 		return (
 			<div class="container grid-sm">

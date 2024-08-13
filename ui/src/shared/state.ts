@@ -6,19 +6,18 @@ import * as http from "./http"
 
 declare global {
 	interface Window {
-		__STATE__: {
+		__STATE__?: {
 			email: string
 			feeds: Feed[]
 		}
 	}
 }
-const prevState = self.__STATE__ || {}
 
 export const hydrated = !!self.__STATE__
 export const loaded = signal(false)
 export const loadingError = signal("")
-export const email = signal(prevState.email || "")
-export const feeds = signal(prevState.feeds || [])
+export const email = signal(self.__STATE__?.email ?? "")
+export const feeds = signal(self.__STATE__?.feeds ?? [])
 
 export const initState = () => {
 	// keep the loading animation

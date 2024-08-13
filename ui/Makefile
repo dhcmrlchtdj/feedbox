@@ -29,6 +29,7 @@ lint:
 		-A=jsx-no-useless-fragment \
 		-A=max-classes-per-file \
 		-A=max-dependencies \
+		-A=no-useless-undefined \
 		--import-plugin
 	prettier --check . "!pnpm-lock.yaml"
 

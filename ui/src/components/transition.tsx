@@ -8,6 +8,7 @@ import {
 } from "preact"
 import type { HTMLAttributes } from "preact/compat"
 import { useCallback, useLayoutEffect, useState } from "preact/hooks"
+import { inServiceWorker } from "../shared/helper"
 
 export type TransitionProps = {
 	onEnd?: () => void
@@ -21,6 +22,8 @@ export const Transition: FunctionComponent<{
 	show?: boolean
 	onTransitionEnd?: OnTransitionEnd
 }> = (props) => {
+	if (inServiceWorker()) return <>{props.children}</>
+
 	const [state, setState] = useState(props.show ? "enter" : "leave")
 	const [display, setDisplay] = useState(props.show)
 	const onEnd = () => {
@@ -73,7 +76,11 @@ const mergePrevCurrChildren = (
 			while (j <= found) {
 				const e = curr[j]!
 				next.push(
-					cloneElement(e, { id: e.key, show: true, onTransitionEnd }),
+					cloneElement(e, {
+						id: e.key,
+						show: true,
+						onTransitionEnd,
+					}),
 				)
 				j++
 			}
@@ -87,7 +94,13 @@ const mergePrevCurrChildren = (
 	}
 	while (j < jLen) {
 		const e = curr[j]!
-		next.push(cloneElement(e, { id: e.key, show: true, onTransitionEnd }))
+		next.push(
+			cloneElement(e, {
+				id: e.key,
+				show: true,
+				onTransitionEnd,
+			}),
+		)
 		j++
 	}
 
@@ -97,9 +110,11 @@ const mergePrevCurrChildren = (
 export const TransitionGroup: FunctionComponent<
 	HTMLAttributes<HTMLDivElement>
 > = (props) => {
-	const currChildren = toChildArray(props.children).filter(
+	if (inServiceWorker()) return <>{props.children}</>
+
+	const currChildren: VNode[] = toChildArray(props.children).filter(
 		(x) => typeof x === "object",
-	) as VNode[]
+	)
 	const nextChildren = useSignal<VNode[]>([])
 
 	const onTransitionEnd = useCallback(
@@ -117,6 +132,5 @@ export const TransitionGroup: FunctionComponent<
 			onTransitionEnd,
 		)
 	}, [props.children])
-
 	return <>{nextChildren}</>
 }
