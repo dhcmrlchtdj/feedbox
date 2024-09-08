@@ -3,6 +3,7 @@ package server
 import (
 	"context"
 	"os"
+	"strings"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/expvar"
@@ -42,7 +43,11 @@ func Create(ctx context.Context) *fiber.App {
 			Generator: func() string { return xid.New().String() },
 		}))
 	app.Use(logger.New(ctx))
-	app.Use(etag.New())
+	app.Use(etag.New(etag.Config{
+		Skip: func(c *fiber.Ctx) bool {
+			return strings.HasPrefix(c.Path(), "/api")
+		},
+	}))
 	app.Use(secure.New())
 	if os.Getenv("ENV") != "prod" {
 		app.Use(pprof.New())

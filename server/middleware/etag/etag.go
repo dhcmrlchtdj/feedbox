@@ -8,8 +8,16 @@ import (
 	"github.com/zeebo/xxh3"
 )
 
-func New() fiber.Handler {
+type Config struct {
+	Skip func(c *fiber.Ctx) bool
+}
+
+func New(cfg Config) fiber.Handler {
 	return func(c *fiber.Ctx) error {
+		if cfg.Skip != nil && cfg.Skip(c) {
+			return c.Next()
+		}
+
 		err := c.Next()
 		if err != nil {
 			return err
