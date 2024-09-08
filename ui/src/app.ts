@@ -1,4 +1,4 @@
-import { hydrate, render } from "preact"
+import { hydrate } from "preact"
 import { jsx } from "preact/jsx-runtime"
 import "spectre.css"
 import { App } from "./components/app.tsx"

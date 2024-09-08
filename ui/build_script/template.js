@@ -1,5 +1,4 @@
 import * as fs from "node:fs/promises"
-import * as path from "node:path"
 
 export async function template(input, output, pattern) {
 	const replace = (tmpl) => {

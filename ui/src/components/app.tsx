@@ -1,13 +1,4 @@
-import { signal } from "@preact/signals"
-import {
-	email,
-	feeds,
-	hydrated,
-	loaded,
-	loadingError,
-	type Feed,
-	type User,
-} from "../shared/state.ts"
+import { email, hydrated, loaded, loadingError } from "../shared/state.ts"
 import { Add } from "./add.tsx"
 import { Auth } from "./auth.tsx"
 import { Heading } from "./heading.tsx"

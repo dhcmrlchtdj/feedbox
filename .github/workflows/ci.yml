@@ -13,14 +13,14 @@ jobs:
             # https://github.com/marketplace/actions/checkout
             - uses: actions/checkout@v4.1.7
             # https://github.com/marketplace/actions/setup-go-environment
-            - uses: actions/setup-go@v5.0.1
+            - uses: actions/setup-go@v5.0.2
               with:
                   go-version: "1.23"
             # https://github.com/marketplace/actions/golangci-lint
-            - uses: golangci/golangci-lint-action@v6.0.1
+            - uses: golangci/golangci-lint-action@v6.1.0
               with:
                   # https://github.com/golangci/golangci-lint/releases
-                  version: "v1.59.1"
+                  version: "v1.60.3"
             - run: make test
               env:
                   DATABASE_URL: "sqlite://feedbox.db"
@@ -34,7 +34,7 @@ jobs:
                   GITHUB_CLIENT_ID: "https://github.com/settings/developers"
                   GITHUB_CLIENT_SECRET: "https://github.com/settings/developers"
             # https://github.com/marketplace/actions/setup-node-js-environment
-            - uses: actions/setup-node@v4.0.2
+            - uses: actions/setup-node@v4.0.3
               with:
                   node-version: "22.x"
             # https://github.com/marketplace/actions/cache
@@ -46,7 +46,7 @@ jobs:
             - run: |
                   corepack enable
                   # https://www.npmjs.com/package/pnpm
-                  corepack prepare pnpm@9.5.0 --activate
+                  corepack prepare pnpm@9.9.0 --activate
                   pnpm config set store-dir ~/.local/share/pnpm/store
                   pnpm install
                   make lint

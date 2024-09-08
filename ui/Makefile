@@ -30,6 +30,10 @@ lint:
 		-A=max-classes-per-file \
 		-A=max-dependencies \
 		-A=no-useless-undefined \
+		-A=anchor-is-valid \
+		--jsx-a11y-plugin \
+		--react-perf-plugin \
+		--promise-plugin \
 		--import-plugin
 	prettier --check . "!pnpm-lock.yaml"
 
