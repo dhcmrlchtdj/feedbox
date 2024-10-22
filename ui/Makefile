@@ -31,6 +31,8 @@ lint:
 		-A=max-dependencies \
 		-A=no-useless-undefined \
 		-A=anchor-is-valid \
+		-A=no-else-return \
+		-A=no-control-regex \
 		--jsx-a11y-plugin \
 		--react-perf-plugin \
 		--promise-plugin \
