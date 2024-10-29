@@ -6,9 +6,10 @@ import (
 	"sync/atomic"
 	"time"
 
+	"github.com/pkg/errors"
+
 	"github.com/dhcmrlchtdj/feedbox/internal/database/common"
 	"github.com/dhcmrlchtdj/feedbox/internal/database/sqlite"
-	"github.com/pkg/errors"
 )
 
 type Database interface {
