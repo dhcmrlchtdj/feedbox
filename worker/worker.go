@@ -117,12 +117,15 @@ func parseFeed(ctx context.Context, done *sync.WaitGroup, qFeedFetched <-chan *f
 
 	qFeedParsed := make(chan *feedItem)
 
+	now := time.Now()
 	worker := func(feed *feedItem) {
 		updated := getLatestUpdated(feed.fetched)
 		if updated == nil {
 			err := errors.WithMessage(errors.New("can't parse date field"), feed.feed.URL)
 			logger.Warn().Str("module", "worker").Stack().Err(err).Send()
-			now := time.Now()
+			updated = &now
+		}
+		if updated.Compare(now) > 0 {
 			updated = &now
 		}
 
