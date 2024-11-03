@@ -51,7 +51,7 @@ const Item = (props: { feed: Feed } & TransitionProps) => {
 			class={`column col-12 ${ani}`}
 			onTransitionEnd={handleLeave}
 		>
-			<div style="overflow:hidden;">
+			<div style={{ overflow: "hidden" }}>
 				<div class="tile">
 					<div class="tile-content">
 						<div class="tile-title text-break">
