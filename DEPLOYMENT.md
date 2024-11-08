@@ -83,11 +83,11 @@ $ cat /etc/vector/vector.json
 		"feedbox_err_telegram": {
 			"type": "http",
 			"inputs": ["feedbox_err_transform"],
-			"uri": "https://xxx",
+			"uri": "https://xxxx",
 			"auth": {
 				"strategy": "basic",
-				"user": "xxxxxxx",
-				"password": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+				"user": "xxxx",
+				"password": "xxxx"
 			},
 			"encoding": {
 				"codec": "json",
@@ -99,14 +99,14 @@ $ cat /etc/vector/vector.json
 		"feedbox_s3": {
 			"type": "aws_s3",
 			"inputs": ["feedbox_transform"],
-			"endpoint": "https://xxx",
+			"endpoint": "https://xxxx",
 			"bucket": "log",
 			"region": "auto",
 			"auth": {
-				"access_key_id": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
-				"secret_access_key": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+				"access_key_id": "xxxx",
+				"secret_access_key": "xxxx"
 			},
-			"key_prefix": "feedbox/",
+			"key_prefix": "feedbox/%Y/%m/%d/",
 			"content_type": "application/zstd",
 			"filename_extension": "json.zstd",
 			"encoding": {
