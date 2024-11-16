@@ -42,7 +42,9 @@ async function collect(...entries) {
 				})
 				for (const subEntry of subEntries) {
 					if (subEntry.isFile()) {
-						files.push(path.join(subEntry.path, subEntry.name))
+						files.push(
+							path.join(subEntry.parentPath, subEntry.name),
+						)
 					}
 				}
 			}
