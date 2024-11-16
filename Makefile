@@ -4,8 +4,7 @@ MAKEFLAGS += --warn-undefined-variables
 MAKEFLAGS += --no-builtin-rules
 MAKEFLAGS += --no-builtin-variables
 
-GOFLAGS := -buildvcs=false -buildmode=pie -mod=readonly -trimpath
-# -ldflags="-w -s"
+GOFLAGS := -buildvcs=false -buildmode=pie -mod=readonly -trimpath -ldflags="-w -s"
 
 ###
 
