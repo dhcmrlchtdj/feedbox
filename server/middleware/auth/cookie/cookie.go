@@ -28,7 +28,7 @@ func New(cfg Config) fiber.Handler {
 		credential, err := cfg.Validator(ctx, token)
 		if err != nil {
 			Clear(c)
-			zerolog.Ctx(ctx).Trace().
+			zerolog.Ctx(ctx).Debug().
 				Str("module", "server.auth.cookie").
 				Stack().
 				Err(err).

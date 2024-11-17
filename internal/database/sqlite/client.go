@@ -28,7 +28,7 @@ func New(ctx context.Context, uri string) (*Database, error) {
 	}
 
 	zerolog.Ctx(ctx).
-		Debug().
+		Info().
 		Str("module", "database").
 		Str("uri", uri).
 		Msg("connecting to database")
@@ -57,15 +57,14 @@ func (db *Database) Exec(ctx context.Context, query string, args ...any) (sql.Re
 	logger := zerolog.Ctx(ctx).With().
 		Str("module", "database").
 		Str("dbrid", xid.New().String()).
-		Logger()
-	logger.Trace().
 		Str("query", query).
 		Str("args", jsonify(args...)).
-		Msg("Exec")
+		Logger()
+	logger.Trace().Msg("Exec")
 	start := time.Now()
 	defer func() {
 		latency := time.Since(start)
-		logger.Trace().Dur("latency", latency).Send()
+		logger.Info().Dur("latency", latency).Send()
 	}()
 	r, err := db.db.ExecContext(ctx, query, args...)
 	return r, errors.WithStack(err)
@@ -75,15 +74,14 @@ func (db *Database) Query(ctx context.Context, query string, args ...any) (*sql.
 	logger := zerolog.Ctx(ctx).With().
 		Str("module", "database").
 		Str("dbrid", xid.New().String()).
-		Logger()
-	logger.Trace().
 		Str("query", query).
 		Str("args", jsonify(args...)).
-		Msg("Query")
+		Logger()
+	logger.Trace().Msg("Query")
 	start := time.Now()
 	defer func() {
 		latency := time.Since(start)
-		logger.Trace().Dur("latency", latency).Send()
+		logger.Info().Dur("latency", latency).Send()
 	}()
 	r, err := db.db.QueryContext(ctx, query, args...)
 	return r, errors.WithStack(err)
@@ -93,15 +91,14 @@ func (db *Database) QueryRow(ctx context.Context, query string, args ...any) *sq
 	logger := zerolog.Ctx(ctx).With().
 		Str("module", "database").
 		Str("dbrid", xid.New().String()).
-		Logger()
-	logger.Trace().
 		Str("query", query).
 		Str("args", jsonify(args...)).
-		Msg("QueryRow")
+		Logger()
+	logger.Trace().Msg("QueryRow")
 	start := time.Now()
 	defer func() {
 		latency := time.Since(start)
-		logger.Trace().Dur("latency", latency).Send()
+		logger.Info().Dur("latency", latency).Send()
 	}()
 	return db.db.QueryRowContext(ctx, query, args...)
 }
