@@ -115,10 +115,10 @@ func (db *Database) GetFeedIDByURL(ctx context.Context, url string) (int64, erro
 }
 
 func (db *Database) GetFeedByUser(ctx context.Context, userID int64, orderBy string) ([]Feed, error) {
-	query := `SELECT id, url, updated, etag
+	query := `SELECT feeds.id, feeds.url, feeds.updated, feeds.etag
 	FROM feeds
-	WHERE EXISTS
-	(SELECT 1 FROM r_user_feed WHERE user_id=$1 AND feed_id=feeds.id)`
+	INNER JOIN r_user_feed ON r_user_feed.feed_id = feeds.id
+	WHERE r_user_feed.user_id = $1`
 
 	switch orderBy {
 	case "updated":
@@ -138,10 +138,10 @@ func (db *Database) GetFeedByUser(ctx context.Context, userID int64, orderBy str
 func (db *Database) GetActiveFeeds(ctx context.Context) ([]Feed, error) {
 	rows, err := db.Query(
 		ctx,
-		`SELECT id, url, updated, etag
+		`SELECT DISTINCT feeds.id, feeds.url, feeds.updated, feeds.etag
 		FROM feeds
-		WHERE EXISTS
-		(SELECT 1 FROM r_user_feed WHERE feed_id=feeds.id)`,
+		INNER JOIN r_user_feed
+		ON r_user_feed.feed_id = feeds.id`,
 	)
 	if err != nil {
 		return nil, err
@@ -225,10 +225,10 @@ func (db *Database) GetLinks(ctx context.Context, feedID int64) ([]string, error
 func (db *Database) GetSubscribers(ctx context.Context, feedID int64) ([]User, error) {
 	rows, err := db.Query(
 		ctx,
-		`SELECT id, platform, pid, addition
+		`SELECT users.id, users.platform, users.pid, users.addition
 		FROM users
-		WHERE EXISTS
-		(SELECT 1 FROM r_user_feed WHERE feed_id=$1 AND user_id=users.id)`,
+		INNER JOIN r_user_feed ON r_user_feed.user_id = users.id
+		WHERE r_user_feed.feed_id = $1`,
 		feedID,
 	)
 	if err != nil {
