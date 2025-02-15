@@ -13,14 +13,14 @@ jobs:
             # https://github.com/marketplace/actions/checkout
             - uses: actions/checkout@v4.2.2
             # https://github.com/marketplace/actions/setup-go-environment
-            - uses: actions/setup-go@v5.1.0
+            - uses: actions/setup-go@v5.3.0
               with:
-                  go-version: "1.23"
+                  go-version: "1.24"
             # https://github.com/marketplace/actions/golangci-lint
-            - uses: golangci/golangci-lint-action@v6.1.1
+            - uses: golangci/golangci-lint-action@v6.4.1
               with:
                   # https://github.com/golangci/golangci-lint/releases
-                  version: "v1.61.0"
+                  version: "v1.64.5"
             - run: make test
               env:
                   DATABASE_URL: "sqlite://feedbox.db"
@@ -34,19 +34,18 @@ jobs:
                   GITHUB_CLIENT_ID: "https://github.com/settings/developers"
                   GITHUB_CLIENT_SECRET: "https://github.com/settings/developers"
             # https://github.com/marketplace/actions/setup-node-js-environment
-            - uses: actions/setup-node@v4.1.0
+            - uses: actions/setup-node@v4.2.0
               with:
                   node-version: "22.x"
             # https://github.com/marketplace/actions/cache
-            - uses: actions/cache@v4.1.2
+            - uses: actions/cache@v4.2.0
               with:
                   path: ~/.local/share/pnpm/store
                   key: ${{ runner.os }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}
                   restore-keys: ${{ runner.os }}-pnpm-
             - run: |
-                  corepack enable
                   # https://www.npmjs.com/package/pnpm
-                  corepack prepare pnpm@9.12.3 --activate
+                  npm install -g pnpm@10.4.0
                   pnpm config set store-dir ~/.local/share/pnpm/store
                   pnpm install
                   make lint
@@ -63,7 +62,7 @@ jobs:
                   source: "_build/feedbox"
                   target: "/opt/app/feedbox"
             # https://github.com/marketplace/actions/ssh-remote-commands
-            - uses: appleboy/ssh-action@v1.1.0
+            - uses: appleboy/ssh-action@v1.2.0
               with:
                   host: ${{ secrets.SSH_HOST }}
                   username: ${{ secrets.SSH_USERNAME }}
