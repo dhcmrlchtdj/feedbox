@@ -33,7 +33,9 @@ lint:
 		-A=anchor-is-valid \
 		-A=no-else-return \
 		-A=no-control-regex \
-		-A=rules-of-hooks \
+		-A=max-lines-per-function \
+		-A=max-depth \
+		-A=max-nested-callbacks \
 		--jsx-a11y-plugin \
 		--react-perf-plugin \
 		--promise-plugin \

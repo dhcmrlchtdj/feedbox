@@ -5,16 +5,16 @@
 	"type": "module",
 	"dependencies": {
 		"@preact/signals": "2.0.1",
-		"preact": "10.25.4",
+		"preact": "10.26.4",
 		"preact-render-to-string": "6.5.13",
 		"spectre.css": "0.5.9"
 	},
 	"devDependencies": {
 		"esbuild": "0.25.0",
-		"oxlint": "0.15.10",
-		"prettier": "3.5.1",
+		"oxlint": "0.15.13",
+		"prettier": "3.5.3",
 		"prettier-plugin-organize-imports": "4.1.0",
-		"typescript": "5.7.3"
+		"typescript": "5.8.2"
 	},
 	"prettier": {
 		"printWidth": 80,

@@ -22,8 +22,6 @@ export const Transition: FunctionComponent<{
 	show?: boolean
 	onTransitionEnd?: OnTransitionEnd
 }> = (props) => {
-	if (inServiceWorker()) return <>{props.children}</>
-
 	const [state, setState] = useState(props.show ? "enter" : "leave")
 	const [display, setDisplay] = useState(props.show)
 	const onEnd = () => {
@@ -36,6 +34,7 @@ export const Transition: FunctionComponent<{
 		setState(props.show ? "enter" : "leave")
 	}, [props.show])
 
+	if (inServiceWorker()) return <>{props.children}</>
 	if (!display) return null
 	const childArr = toChildArray(props.children)
 	if (childArr.length > 1) throw new Error("children length !== 1")
@@ -110,8 +109,6 @@ const mergePrevCurrChildren = (
 export const TransitionGroup: FunctionComponent<
 	HTMLAttributes<HTMLDivElement>
 > = (props) => {
-	if (inServiceWorker()) return <>{props.children}</>
-
 	const currChildren: VNode[] = toChildArray(props.children).filter(
 		(x) => typeof x === "object",
 	)
@@ -132,5 +129,7 @@ export const TransitionGroup: FunctionComponent<
 			onTransitionEnd,
 		)
 	}, [props.children])
+
+	if (inServiceWorker()) return <>{props.children}</>
 	return <>{nextChildren}</>
 }
