@@ -1,5 +1,4 @@
 import { Signal, useSignal } from "@preact/signals"
-import { useRef } from "preact/hooks"
 import { formatDate } from "../shared/helper"
 import * as http from "../shared/http"
 import {
@@ -8,8 +7,6 @@ import {
 	notificationAdd,
 	type Feed,
 } from "../shared/state"
-import "./style.css"
-import { Transition, TransitionGroup, type TransitionProps } from "./transition"
 
 const formatUpdated = (date: string) => {
 	if (!date) return "never"
@@ -37,20 +34,11 @@ const handleRemove = (feed: Feed, loading: Signal<boolean>) => {
 		})
 }
 
-const Item = (props: { feed: Feed } & TransitionProps) => {
+const Item = (props: { feed: Feed }) => {
 	const loading = useSignal(false)
 	const handleClick = () => handleRemove(props.feed, loading)
-	const el = useRef(null)
-	const handleLeave = (e: Event) => {
-		if (el.current === e.target) props.onEnd?.()
-	}
-	const ani = props.state === "leave" ? "slide slide-leave" : "slide"
 	return (
-		<div
-			ref={el}
-			class={`column col-12 ${ani}`}
-			onTransitionEnd={handleLeave}
-		>
+		<div class={`column col-12`}>
 			<div style={{ overflow: "hidden" }}>
 				<div class="tile">
 					<div class="tile-content">
@@ -89,15 +77,13 @@ const Item = (props: { feed: Feed } & TransitionProps) => {
 
 export const List = () => {
 	return (
-		<TransitionGroup>
+		<>
 			{feeds.value.map((feed) => (
-				<Transition key={feed.id}>
-					<Item
-						key={feed.id}
-						feed={feed}
-					/>
-				</Transition>
+				<Item
+					key={feed.id}
+					feed={feed}
+				/>
 			))}
-		</TransitionGroup>
+		</>
 	)
 }
