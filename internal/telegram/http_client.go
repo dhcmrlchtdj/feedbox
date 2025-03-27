@@ -7,8 +7,9 @@ import (
 	"io"
 	"net/http"
 
-	"github.com/dhcmrlchtdj/feedbox/internal/multipart"
 	"github.com/pkg/errors"
+
+	"github.com/dhcmrlchtdj/feedbox/internal/multipart"
 )
 
 var _ Client = (*httpClient)(nil)
@@ -98,7 +99,7 @@ func (c *httpClient) rawSend(ctx context.Context, cmd string, payload any) (io.R
 
 	if resp.StatusCode == 429 {
 		defer resp.Body.Close()
-		err429 := new(ErrTooManyRequests)
+		err429 := new(TooManyRequestsError)
 		err := json.NewDecoder(resp.Body).Decode(err429)
 		if err == nil {
 			err = err429

@@ -52,7 +52,7 @@ func (c *mailgun) Send(ctx context.Context, addr string, subject string, text st
 		return errors.WithStack(err)
 	}
 	req.SetBasicAuth("api", c.apiKey)
-	req.Header.Set("content-type", m.ContentType)
+	req.Header.Set("Content-Type", m.ContentType)
 
 	resp, err := c.client.Do(req)
 	if err != nil {

@@ -29,7 +29,7 @@ func initEnv() {
 
 type LogIdHook struct{}
 
-func (h LogIdHook) Run(e *zerolog.Event, _ zerolog.Level, _ string) {
+func (LogIdHook) Run(e *zerolog.Event, _ zerolog.Level, _ string) {
 	e.Str("logId", xid.New().String())
 }
 

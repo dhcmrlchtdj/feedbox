@@ -150,7 +150,7 @@ func TestUser(t *testing.T) {
 func TestAddFeed(t *testing.T) {
 	payload := strings.NewReader(`{"url":"http://127.0.0.1"}`)
 	req := httptest.NewRequest("PUT", "http://127.0.0.1:8000/api/v1/feeds/add", payload)
-	req.Header.Set("content-type", "application/json")
+	req.Header.Set("Content-Type", "application/json")
 	resp, err := app.Test(req)
 	if err != nil {
 		t.Fatal(err)

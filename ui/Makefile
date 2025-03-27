@@ -36,6 +36,7 @@ lint:
 		-A=max-lines-per-function \
 		-A=max-depth \
 		-A=max-nested-callbacks \
+		-A=require-post-message-target-origin \
 		--jsx-a11y-plugin \
 		--react-perf-plugin \
 		--promise-plugin \

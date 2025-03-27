@@ -25,7 +25,7 @@ func telegramSendMsg(ctx context.Context, msg *telegram.SendMessagePayload, rl *
 		rl.Wait()
 		err := telegram.SendMessage(ctx, msg)
 		if err != nil {
-			var err429 *telegram.ErrTooManyRequests
+			var err429 *telegram.TooManyRequestsError
 			if errors.As(err, &err429) {
 				maxSleep := math.Min(err429.Parameters.RetryAfter, 120)
 				time.Sleep(time.Second * time.Duration(maxSleep))

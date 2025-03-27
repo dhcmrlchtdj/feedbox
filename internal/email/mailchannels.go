@@ -27,7 +27,7 @@ func NewMailChannels(workerUrl string, username string, password string) *mailch
 	}
 }
 
-func (c *mailchannels) buildSendPayload(addr string, subject string, text string) mcPayload {
+func (*mailchannels) buildSendPayload(addr string, subject string, text string) mcPayload {
 	payload := mcPayload{
 		Subject: subject,
 		Content: []mcContent{
@@ -57,7 +57,7 @@ func (c *mailchannels) Send(ctx context.Context, addr string, subject string, te
 		return errors.WithStack(err)
 	}
 	req.SetBasicAuth(c.username, c.password)
-	req.Header.Set("content-type", "application/json")
+	req.Header.Set("Content-Type", "application/json")
 
 	resp, err := c.client.Do(req)
 	if err != nil {

@@ -215,6 +215,7 @@ func (db *Database) GetLinks(ctx context.Context, feedID int64) ([]string, error
 	if err != nil {
 		return nil, err
 	}
+	defer rows.Close()
 	links, err := readLinks(rows)
 	if err != nil {
 		return nil, err

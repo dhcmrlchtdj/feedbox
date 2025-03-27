@@ -83,7 +83,7 @@ func (db *Database) Query(ctx context.Context, query string, args ...any) (*sql.
 		latency := time.Since(start)
 		logger.Info().Dur("latency", latency).Send()
 	}()
-	r, err := db.db.QueryContext(ctx, query, args...)
+	r, err := db.db.QueryContext(ctx, query, args...) // nolint: sqlclosecheck
 	return r, errors.WithStack(err)
 }
 

@@ -68,6 +68,7 @@ type ChatMember struct {
 
 ///
 
+// nolint: errname
 type Response struct {
 	Ok          bool   `json:"ok"`
 	ErrorCode   *int   `json:"error_code,omitempty"`
@@ -87,14 +88,14 @@ func (r *Response) Error() string {
 
 ///
 
-type ErrTooManyRequests struct {
+type TooManyRequestsError struct {
 	Response
 	Parameters struct {
 		RetryAfter float64 `json:"retry_after"`
 	} `json:"parameters"`
 }
 
-func (e *ErrTooManyRequests) Error() string {
+func (e *TooManyRequestsError) Error() string {
 	return e.Description
 }
 

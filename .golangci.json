@@ -1,0 +1,112 @@
+{
+	"version": "2",
+	"linters": {
+		"default": "all",
+		"disable": [
+			"canonicalheader",
+			"cyclop",
+			"depguard",
+			"dupl",
+			"exhaustruct",
+			"forbidigo",
+			"forcetypeassert",
+			"funcorder",
+			"funlen",
+			"gochecknoglobals",
+			"gocognit",
+			"goconst",
+			"gocyclo",
+			"godox",
+			"interfacebloat",
+			"ireturn",
+			"lll",
+			"mnd",
+			"nestif",
+			"nilnil",
+			"nlreturn",
+			"nolintlint",
+			"paralleltest",
+			"tagliatelle",
+			"usestdlibvars",
+			"varnamelen",
+			"wrapcheck",
+			"wsl"
+		],
+		"exclusions": {
+			"generated": "strict",
+			"presets": [
+				"comments",
+				"common-false-positives",
+				"legacy",
+				"std-error-handling"
+			]
+		},
+		"settings": {
+			"errcheck": {
+				"check-blank": true,
+				"check-type-assertions": false
+			},
+			"revive": {
+				"enable-all-rules": true,
+				"rules": [
+					{ "name": "unchecked-type-assertion", "disabled": true },
+					{ "name": "early-return", "disabled": true },
+					{ "name": "blank-imports", "disabled": true },
+					{ "name": "max-public-structs", "disabled": true },
+					{ "name": "import-alias-naming", "disabled": true },
+					{ "name": "unexported-return", "disabled": true },
+					{ "name": "add-constant", "disabled": true },
+					{ "name": "cognitive-complexity", "disabled": true },
+					{ "name": "comment-spacings", "disabled": true },
+					{ "name": "cyclomatic", "disabled": true },
+					{ "name": "flag-parameter", "disabled": true },
+					{ "name": "function-length", "disabled": true },
+					{ "name": "indent-error-flow", "disabled": true },
+					{ "name": "line-length-limit", "disabled": true },
+					{ "name": "nested-structs", "disabled": true },
+					{ "name": "unused-parameter", "disabled": true },
+					{ "name": "var-naming", "disabled": true }
+				]
+			},
+			"gocritic": {
+				"disabled-checks": [
+					"commentedOutCode",
+					"ifElseChain",
+					"paramTypeCombine",
+					"sprintfQuotedString",
+					"unnamedResult",
+					"whyNoLint",
+					"sloppyReassign"
+				],
+				"enabled-tags": [
+					"diagnostic",
+					"style",
+					"performance",
+					"experimental",
+					"opinionated"
+				]
+			},
+			"govet": {
+				"enable-all": true,
+				"disable": ["fieldalignment"]
+			}
+		}
+	},
+	"formatters": {
+		"enable": ["gofmt", "gofumpt", "goimports"],
+		"settings": {
+			"goimports": {
+				"local-prefixes": ["github.com/dhcmrlchtdj/feedbox"]
+			}
+		}
+	},
+	"issues": {
+		"uniq-by-line": false
+	},
+	"output": {},
+	"run": {
+		"timeout": "5m",
+		"tests": true,
+		"modules-download-mode": "readonly"
+	}
+}

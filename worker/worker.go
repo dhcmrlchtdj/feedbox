@@ -181,7 +181,6 @@ func parseFeed(ctx context.Context, done *sync.WaitGroup, qFeedFetched <-chan *f
 	go func() {
 		defer done.Done()
 		for feed := range qFeedFetched {
-			feed := feed
 			worker(feed)
 		}
 		close(qFeedParsed)

@@ -71,8 +71,8 @@ func Clear(c *fiber.Ctx) {
 ///
 
 type UserProfile struct {
-	UserID    int64
-	ExpiresAt int64
+	UserID    int64 `json:"UserID"`
+	ExpiresAt int64 `json:"ExpiresAt"`
 }
 
 func EncodeToToken(userID int64) (string, error) {
