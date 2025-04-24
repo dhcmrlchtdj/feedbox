@@ -28,6 +28,8 @@ func New() fiber.Handler {
 				"object-src 'none'",
 				"frame-ancestors 'none'",
 				"form-action 'self'",
+				"trusted-types sw",
+				"require-trusted-types-for 'script'",
 			))
 		}
 
