@@ -28,6 +28,7 @@ const esbuildOpts = {
 	outdir: r(`../_build/`),
 	jsxDev: !prod,
 	jsx: "automatic",
+	jsxImportSource: "preact",
 }
 
 export async function buildApp(enableWatch = false) {
