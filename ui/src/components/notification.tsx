@@ -1,7 +1,11 @@
+import { useCallback } from "preact/hooks"
 import { notification, notificationRemove, type Message } from "../shared/state"
 
 const Item = (props: { msg: Message }) => {
-	const handleClick = () => notificationRemove(props.msg.key)
+	const handleClick = useCallback(
+		() => notificationRemove(props.msg.key),
+		[props.msg.key],
+	)
 	return (
 		<div class={`toast toast-success mb-2`}>
 			<button

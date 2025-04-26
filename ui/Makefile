@@ -24,6 +24,7 @@ lint:
 		-D=correctness \
 		-D=suspicious \
 		-D=pedantic \
+		-D=exhaustive-deps \
 		-A=ban-ts-comment \
 		-A=no-useless-undefined \
 		-A=anchor-is-valid \

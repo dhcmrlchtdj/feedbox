@@ -1,4 +1,5 @@
 import { useSignal, type Signal } from "@preact/signals"
+import { useCallback } from "preact/hooks"
 import { formatDate } from "../shared/helper"
 import * as http from "../shared/http"
 import {
@@ -36,7 +37,10 @@ const handleRemove = (feed: Feed, loading: Signal<boolean>) => {
 
 const Item = (props: { feed: Feed }) => {
 	const loading = useSignal(false)
-	const handleClick = () => handleRemove(props.feed, loading)
+	const handleClick = useCallback(
+		() => handleRemove(props.feed, loading),
+		[props.feed, loading],
+	)
 	return (
 		<div class={`column col-12`}>
 			<div style={{ overflow: "hidden" }}>
