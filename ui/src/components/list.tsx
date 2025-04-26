@@ -1,4 +1,4 @@
-import { Signal, useSignal } from "@preact/signals"
+import { useSignal, type Signal } from "@preact/signals"
 import { formatDate } from "../shared/helper"
 import * as http from "../shared/http"
 import {

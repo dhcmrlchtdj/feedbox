@@ -25,18 +25,17 @@ lint:
 		-D=suspicious \
 		-D=pedantic \
 		-A=ban-ts-comment \
-		-A=react-in-jsx-scope \
-		-A=jsx-no-useless-fragment \
-		-A=max-classes-per-file \
-		-A=max-dependencies \
 		-A=no-useless-undefined \
 		-A=anchor-is-valid \
 		-A=no-else-return \
 		-A=no-control-regex \
+		-A=max-classes-per-file \
+		-A=max-dependencies \
 		-A=max-lines-per-function \
 		-A=max-depth \
 		-A=max-nested-callbacks \
 		-A=require-post-message-target-origin \
+		-A=react-in-jsx-scope \
 		--jsx-a11y-plugin \
 		--react-perf-plugin \
 		--promise-plugin \
