@@ -4,6 +4,7 @@ import (
 	"context"
 	"net/http"
 	"os"
+	"time"
 
 	"github.com/mmcdole/gofeed"
 	"github.com/pkg/errors"
@@ -17,7 +18,10 @@ type FeedParser struct {
 func New() *FeedParser {
 	parser := gofeed.NewParser()
 	parser.RSSTranslator = newCustomRSSTranslator()
-	return &FeedParser{parser, new(http.Client)}
+	client := &http.Client{
+		Timeout: 10 * time.Second,
+	}
+	return &FeedParser{parser, client}
 }
 
 func (p *FeedParser) ParseURL(ctx context.Context, url string, etag string) (*gofeed.Feed, string, error) {
