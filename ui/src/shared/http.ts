@@ -8,9 +8,9 @@ const auth = async <T>(r: Response) => {
 	}
 }
 
-type data = Record<string, unknown>
+type Data = Record<string, unknown>
 
-const req = <T>(method: string, url: string, data: null | data) => {
+const req = <T>(method: string, url: string, data: null | Data) => {
 	return fetch(url, {
 		method,
 		headers: {
@@ -24,6 +24,6 @@ const req = <T>(method: string, url: string, data: null | data) => {
 }
 
 export const get = <T>(url: string) => req<T>("GET", url, null)
-export const post = <T>(url: string, data: data) => req<T>("POST", url, data)
-export const put = <T>(url: string, data: data) => req<T>("PUT", url, data)
-export const del = <T>(url: string, data: data) => req<T>("DELETE", url, data)
+export const post = <T>(url: string, data: Data) => req<T>("POST", url, data)
+export const put = <T>(url: string, data: Data) => req<T>("PUT", url, data)
+export const del = <T>(url: string, data: Data) => req<T>("DELETE", url, data)
