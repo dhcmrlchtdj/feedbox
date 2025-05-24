@@ -5,17 +5,17 @@
 	"type": "module",
 	"dependencies": {
 		"@preact/signals": "2.0.4",
-		"preact": "10.26.5",
+		"preact": "10.26.6",
 		"preact-render-to-string": "6.5.13",
 		"spectre.css": "0.5.9"
 	},
 	"devDependencies": {
 		"@types/trusted-types": "2.0.7",
-		"esbuild": "0.25.3",
-		"oxlint": "0.16.7",
+		"@typescript/native-preview": "7.0.0-dev.20250523.1",
+		"esbuild": "0.25.4",
+		"oxlint": "0.16.11",
 		"prettier": "3.5.3",
-		"prettier-plugin-organize-imports": "4.1.0",
-		"typescript": "5.8.3"
+		"prettier-plugin-organize-imports": "4.1.0"
 	},
 	"prettier": {
 		"printWidth": 80,

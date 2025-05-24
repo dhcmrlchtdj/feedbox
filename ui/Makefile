@@ -37,6 +37,7 @@ lint:
 		-A=max-nested-callbacks \
 		-A=require-post-message-target-origin \
 		-A=react-in-jsx-scope \
+		-A=import/no-unassigned-import \
 		--jsx-a11y-plugin \
 		--react-perf-plugin \
 		--promise-plugin \
@@ -65,7 +66,7 @@ node_modules:
 	pnpm install
 
 check:
-	tsc --noEmit
+	tsgo --noEmit
 	@touch -cm node_modules/tsconfig.tsbuildinfo # force update mtime
 
 force: check build
