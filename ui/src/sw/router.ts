@@ -18,7 +18,7 @@ const just =
 			| "networkFirst",
 	) =>
 	async ({ event }: { event: FetchEvent }) => {
-		console.log(
+		console.debug(
 			`[SW] | just | ${cacheName} | ${strategyName} | ${event.request.url}`,
 		)
 		const cache = await caches.open(cacheName)
@@ -30,7 +30,7 @@ const createFeedsSetter = versionGuarder((cache: Cache, r: Response) =>
 	cache.put("/api/v1/feeds", r),
 )
 const getThenUpdate = async ({ event }: { event: FetchEvent }) => {
-	console.log(
+	console.debug(
 		`[SW] | getThenUpdate | ${version.API} | networkOnly | ${event.request.url}`,
 	)
 	const setFeeds = createFeedsSetter()
