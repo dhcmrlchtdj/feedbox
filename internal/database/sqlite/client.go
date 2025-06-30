@@ -33,7 +33,7 @@ func New(ctx context.Context, uri string) (*Database, error) {
 		Str("uri", uri).
 		Msg("connecting to database")
 
-	_, err = db.Exec(`
+	_, err = db.ExecContext(ctx, `
 		PRAGMA journal_mode = WAL;
 		PRAGMA synchronous = NORMAL;
 		PRAGMA temp_store = MEMORY;

@@ -32,20 +32,16 @@ func TestMain(m *testing.M) {
 		return
 	}
 
-	code := func() int {
-		setupDatabase()
+	setupDatabase()
 
-		var err error
-		db, err = sqlite.New(ctx, os.Getenv("DATABASE_URL"))
-		if err != nil {
-			panic(err)
-		}
-		defer db.Close()
+	var err error
+	db, err = sqlite.New(ctx, os.Getenv("DATABASE_URL"))
+	if err != nil {
+		panic(err)
+	}
+	defer db.Close()
 
-		return m.Run()
-	}()
-
-	os.Exit(code)
+	m.Run()
 }
 
 func setupDatabase() {

@@ -3,6 +3,8 @@
 	"linters": {
 		"default": "all",
 		"disable": [
+			"noinlineerr",
+			"wsl_v5",
 			"canonicalheader",
 			"cyclop",
 			"depguard",

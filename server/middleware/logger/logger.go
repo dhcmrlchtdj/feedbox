@@ -25,10 +25,10 @@ func New(ctx context.Context) fiber.Handler {
 		})
 
 		reqHeader := zerolog.Dict()
-		c.Request().Header.VisitAll(func(key []byte, value []byte) {
+		for key, value := range c.Request().Header.All() {
 			// k := *(*string)(unsafe.Pointer(&key))
 			reqHeader = reqHeader.Bytes(string(key), value)
-		})
+		}
 
 		start := time.Now()
 		chainErr := c.Next()
@@ -43,9 +43,9 @@ func New(ctx context.Context) fiber.Handler {
 		resp := c.Response()
 
 		respHeader := zerolog.Dict()
-		resp.Header.VisitAll(func(key []byte, value []byte) {
+		for key, value := range resp.Header.All() {
 			respHeader = respHeader.Bytes(string(key), value)
-		})
+		}
 
 		logger.
 			Info().

@@ -37,8 +37,9 @@ func (c *httpClient) GetChatMember(ctx context.Context, payload *GetChatMemberPa
 	defer body.Close()
 
 	var resp struct {
-		Result *ChatMember `json:"result"`
 		Response
+
+		Result *ChatMember `json:"result"`
 	}
 	if err := DecodeResponse(body, &resp); err != nil {
 		return nil, errors.Wrap(err, "telegram/getChatMember")

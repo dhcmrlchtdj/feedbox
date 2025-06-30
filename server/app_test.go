@@ -40,29 +40,25 @@ func TestMain(m *testing.M) {
 		panic(err)
 	}
 
-	code := func() int {
-		setupDatabase()
-		defer cleanupDatabase()
+	setupDatabase()
+	defer cleanupDatabase()
 
-		db, err := database.New(ctx, os.Getenv("DATABASE_URL"))
-		if err != nil {
-			panic(err)
-		}
-		database.Init(db)
-		defer database.Close()
+	db, err := database.New(ctx, os.Getenv("DATABASE_URL"))
+	if err != nil {
+		panic(err)
+	}
+	database.Init(db)
+	defer database.Close()
 
-		s, err := sign.New(os.Getenv("COOKIE_SECRET"))
-		if err != nil {
-			panic(err)
-		}
-		sign.Init(s)
+	s, err := sign.New(os.Getenv("COOKIE_SECRET"))
+	if err != nil {
+		panic(err)
+	}
+	sign.Init(s)
 
-		setupApp()
+	setupApp()
 
-		return m.Run()
-	}()
-
-	os.Exit(code)
+	m.Run()
 }
 
 func setupDatabase() {

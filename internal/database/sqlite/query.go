@@ -125,6 +125,8 @@ func (db *Database) GetFeedByUser(ctx context.Context, userID int64, orderBy str
 		query += " ORDER BY updated DESC NULLS FIRST, url ASC"
 	case "url":
 		query += " ORDER BY url ASC"
+	default:
+		panic("unreachable")
 	}
 
 	rows, err := db.Query(ctx, query, userID)

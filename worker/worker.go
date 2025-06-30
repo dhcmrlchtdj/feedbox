@@ -260,6 +260,8 @@ func dispatchFeed(ctx context.Context, done *sync.WaitGroup, qFeedItem <-chan *f
 				} else {
 					telegramUsers = append(telegramUsers, pid)
 				}
+			default:
+				panic("unreachable")
 			}
 		}
 		for i := range item.items {

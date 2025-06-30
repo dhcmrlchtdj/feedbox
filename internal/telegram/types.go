@@ -90,6 +90,7 @@ func (r *Response) Error() string {
 
 type TooManyRequestsError struct {
 	Response
+
 	Parameters struct {
 		RetryAfter float64 `json:"retry_after"`
 	} `json:"parameters"`
