@@ -12,7 +12,7 @@ GOFLAGS := -buildvcs=false -buildmode=pie -mod=readonly -trimpath -ldflags="-w -
 
 build:
 	cd ui && make build
-	CGO_ENABLED=0 go build $(GOFLAGS) -o _build/ ./cmd/...
+	GOEXPERIMENT=greenteagc,jsonv2 CGO_ENABLED=0 go build $(GOFLAGS) -o _build/ ./cmd/...
 
 dev:
 	make --jobs=2 _dev_ui _dev_server
