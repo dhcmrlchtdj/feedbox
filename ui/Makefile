@@ -11,10 +11,10 @@ PATH := ./node_modules/.bin:$(PATH)
 .PHONY: dev build fmt lint test clean outdated upgrade
 
 build: clean node_modules/tsconfig.tsbuildinfo
-	NODE_ENV=production node ./build_script/build_dist.js
+	NODE_ENV=production node ./build_script/build.js
 
 dev: clean node_modules/tsconfig.tsbuildinfo
-	NODE_ENV=development node ./build_script/build_watch.js
+	NODE_ENV=development node ./build_script/build.js --watch
 
 fmt:
 	prettier --write . "!pnpm-lock.yaml"

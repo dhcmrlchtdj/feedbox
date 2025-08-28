@@ -5,7 +5,6 @@ import * as fs from "node:fs/promises"
 import * as path from "node:path"
 import * as url from "node:url"
 import { hashFiles } from "./hash_files.js"
-import { template } from "./template.js"
 
 const r = (p) =>
 	path.relative(process.cwd(), url.fileURLToPath(new URL(p, import.meta.url)))
@@ -25,13 +24,20 @@ const esbuildOpts = {
 	target: "esnext",
 	sourcemap: prod ? "linked" : "inline",
 	minify: prod,
-	outdir: r(`../_build/`),
+	outdir: r("../_build/"),
 	jsxDev: !prod,
 	jsx: "automatic",
 	jsxImportSource: "preact",
 }
 
-export async function buildApp(enableWatch = false) {
+main()
+
+async function main() {
+	const watch = process.argv.slice(2).includes("--watch")
+	await Promise.all([buildApp(watch), buildServiceWorker(watch)])
+}
+
+async function buildApp(enableWatch) {
 	const opt = {
 		...esbuildOpts,
 		define: env,
@@ -47,7 +53,7 @@ export async function buildApp(enableWatch = false) {
 	}
 }
 
-export async function buildServiceWorker(enableWatch = false) {
+async function buildServiceWorker(enableWatch) {
 	const hashStatic = await hashFiles(
 		r("./"),
 		r("../src/"),
@@ -186,6 +192,20 @@ async function extractInputOutput(result) {
 	const inputOutput = (await Promise.all(inputOutputTask)).flat()
 
 	return inputOutput
+}
+
+async function template(input, output, pattern) {
+	const replace = (tmpl) => {
+		return pattern.reduce((content, [fromPattern, toPattern]) => {
+			return content.replaceAll(`{{${fromPattern}}}`, toPattern)
+		}, tmpl)
+	}
+
+	const tmpl = await fs.readFile(input, "utf8")
+	const content = replace(tmpl)
+	await fs.writeFile(output, content)
+
+	return [[input, output]]
 }
 
 function printInputOutput(result) {
