@@ -4,16 +4,16 @@
 	"version": "0.0.0",
 	"type": "module",
 	"dependencies": {
-		"@preact/signals": "2.2.1",
-		"preact": "10.27.0",
-		"preact-render-to-string": "6.5.13",
+		"@preact/signals": "2.3.1",
+		"preact": "10.27.1",
+		"preact-render-to-string": "6.6.1",
 		"spectre.css": "0.5.9"
 	},
 	"devDependencies": {
 		"@types/trusted-types": "2.0.7",
-		"@typescript/native-preview": "7.0.0-dev.20250813.1",
+		"@typescript/native-preview": "7.0.0-dev.20250828.1",
 		"esbuild": "0.25.9",
-		"oxlint": "1.11.2",
+		"oxlint": "1.13.0",
 		"prettier": "3.6.2",
 		"prettier-plugin-organize-imports": "4.2.0"
 	},

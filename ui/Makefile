@@ -38,6 +38,7 @@ lint:
 		-A=require-post-message-target-origin \
 		-A=react-in-jsx-scope \
 		-A=import/no-unassigned-import \
+		-A=always-return \
 		--jsx-a11y-plugin \
 		--react-perf-plugin \
 		--promise-plugin \
