@@ -63,12 +63,9 @@ func sendEmail(ctx context.Context, done *sync.WaitGroup, qGithub <-chan githubI
 		}
 	}
 
-	done.Add(1)
-	go func() {
-		defer done.Done()
-
+	done.Go(func() {
 		for item := range qGithub {
 			worker(item)
 		}
-	}()
+	})
 }

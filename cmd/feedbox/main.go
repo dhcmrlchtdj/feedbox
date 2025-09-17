@@ -50,17 +50,13 @@ func startServerAndWorker() {
 
 	var wg sync.WaitGroup
 
-	wg.Add(1)
-	go func() {
-		defer wg.Done()
+	wg.Go(func() {
 		runWorker(ctx)
-	}()
+	})
 
-	wg.Add(1)
-	go func() {
-		defer wg.Done()
+	wg.Go(func() {
 		runServer(ctx)
-	}()
+	})
 
 	wg.Wait()
 

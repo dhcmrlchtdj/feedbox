@@ -67,14 +67,11 @@ func sendTelegram(ctx context.Context, done *sync.WaitGroup, qTelegram <-chan te
 		}
 	}
 
-	done.Add(1)
-	go func() {
-		defer done.Done()
-
+	done.Go(func() {
 		for item := range qTelegram {
 			worker(item)
 		}
-	}()
+	})
 }
 
 func buildContent(tgItem *telegramItem) string {
