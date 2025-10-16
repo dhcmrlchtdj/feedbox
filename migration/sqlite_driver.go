@@ -1,3 +1,6 @@
+// https://github.com/golang-migrate/migrate/blob/master/database/sqlite3/sqlite3.go
+// MIT License
+
 package migration
 
 import (

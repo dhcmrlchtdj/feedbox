@@ -3,8 +3,6 @@
 	"linters": {
 		"default": "all",
 		"disable": [
-			"noinlineerr",
-			"wsl_v5",
 			"canonicalheader",
 			"cyclop",
 			"depguard",
@@ -18,6 +16,7 @@
 			"gocognit",
 			"goconst",
 			"gocyclo",
+			"godoclint",
 			"godox",
 			"interfacebloat",
 			"ireturn",
@@ -26,13 +25,15 @@
 			"nestif",
 			"nilnil",
 			"nlreturn",
+			"noinlineerr",
 			"nolintlint",
 			"paralleltest",
 			"tagliatelle",
 			"usestdlibvars",
 			"varnamelen",
 			"wrapcheck",
-			"wsl"
+			"wsl",
+			"wsl_v5"
 		],
 		"exclusions": {
 			"generated": "strict",
@@ -41,7 +42,8 @@
 				"common-false-positives",
 				"legacy",
 				"std-error-handling"
-			]
+			],
+			"paths": ["migration/sqlite_driver.go"]
 		},
 		"settings": {
 			"errcheck": {
