@@ -7,10 +7,11 @@ import (
 	"strings"
 	"time"
 
+	_ "github.com/ncruces/go-sqlite3/driver"
+	_ "github.com/ncruces/go-sqlite3/embed"
 	"github.com/pkg/errors"
 	"github.com/rs/xid"
 	"github.com/rs/zerolog"
-	_ "modernc.org/sqlite"
 )
 
 type Database struct {
@@ -22,7 +23,7 @@ func New(ctx context.Context, uri string) (*Database, error) {
 		return nil, errors.WithMessage(errors.New("invalid DATABASE_URL"), uri)
 	}
 	dbURI := uri[9:]
-	db, err := sql.Open("sqlite", dbURI)
+	db, err := sql.Open("sqlite3", dbURI)
 	if err != nil {
 		return nil, errors.WithStack(err)
 	}

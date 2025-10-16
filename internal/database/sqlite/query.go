@@ -7,8 +7,8 @@ import (
 	netUrl "net/url"
 	"time"
 
+	_ "github.com/ncruces/go-sqlite3/driver"
 	"github.com/pkg/errors"
-	_ "modernc.org/sqlite"
 
 	"github.com/dhcmrlchtdj/feedbox/internal/database/common"
 )
