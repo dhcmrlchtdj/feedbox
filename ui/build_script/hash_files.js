@@ -5,8 +5,8 @@ import * as path from "node:path"
 export async function hashFiles(...entries) {
 	const files = await collect(...entries)
 	const digest = await files
-		.filter(shouldBeHash)
-		.sort()
+		.filter((file) => shouldBeHash(file))
+		.toSorted()
 		.reduce(async (acc, file) => {
 			const hash = await acc
 			const data = await fs.readFile(file)

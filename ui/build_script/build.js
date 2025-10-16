@@ -30,7 +30,7 @@ const esbuildOpts = {
 	jsxImportSource: "preact",
 }
 
-main()
+await main()
 
 async function main() {
 	const watch = process.argv.slice(2).includes("--watch")
