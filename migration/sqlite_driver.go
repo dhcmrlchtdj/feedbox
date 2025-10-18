@@ -21,7 +21,6 @@ import (
 
 func init() {
 	database.Register("sqlite", &Sqlite{})
-
 }
 
 var DefaultMigrationsTable = "schema_migrations"
