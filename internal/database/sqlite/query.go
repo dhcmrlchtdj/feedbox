@@ -194,10 +194,10 @@ func (db *Database) SetFeedUpdated(ctx context.Context, id int64, updated *time.
 
 	_, err := db.Exec(
 		ctx,
-		`UPDATE feeds SET updated=$2, etag=$3 WHERE id=$1`,
-		id,
+		`UPDATE feeds SET updated=$1, etag=$2 WHERE id=$3`,
 		updated.UnixMilli(),
 		etag,
+		id,
 	)
 	if err != nil {
 		return err

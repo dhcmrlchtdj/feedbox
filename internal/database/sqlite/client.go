@@ -55,51 +55,51 @@ func (db *Database) Close() {
 }
 
 func (db *Database) Exec(ctx context.Context, query string, args ...any) (sql.Result, error) {
-	logger := zerolog.Ctx(ctx).With().
-		Str("module", "database").
-		Str("dbrid", xid.New().String()).
-		Str("query", query).
-		Str("args", jsonify(args...)).
-		Logger()
-	logger.Trace().Msg("Exec")
 	start := time.Now()
 	defer func() {
 		latency := time.Since(start)
-		logger.Info().Dur("latency", latency).Send()
+		zerolog.Ctx(ctx).
+			Info().
+			Str("module", "database").
+			Str("dbrid", xid.New().String()).
+			Str("query", query).
+			Str("args", jsonify(args...)).
+			Dur("latency", latency).
+			Msg("Exec")
 	}()
 	r, err := db.db.ExecContext(ctx, query, args...)
 	return r, errors.WithStack(err)
 }
 
 func (db *Database) Query(ctx context.Context, query string, args ...any) (*sql.Rows, error) {
-	logger := zerolog.Ctx(ctx).With().
-		Str("module", "database").
-		Str("dbrid", xid.New().String()).
-		Str("query", query).
-		Str("args", jsonify(args...)).
-		Logger()
-	logger.Trace().Msg("Query")
 	start := time.Now()
 	defer func() {
 		latency := time.Since(start)
-		logger.Info().Dur("latency", latency).Send()
+		zerolog.Ctx(ctx).
+			Info().
+			Str("module", "database").
+			Str("dbrid", xid.New().String()).
+			Str("query", query).
+			Str("args", jsonify(args...)).
+			Dur("latency", latency).
+			Msg("Query")
 	}()
 	r, err := db.db.QueryContext(ctx, query, args...) // nolint: sqlclosecheck
 	return r, errors.WithStack(err)
 }
 
 func (db *Database) QueryRow(ctx context.Context, query string, args ...any) *sql.Row {
-	logger := zerolog.Ctx(ctx).With().
-		Str("module", "database").
-		Str("dbrid", xid.New().String()).
-		Str("query", query).
-		Str("args", jsonify(args...)).
-		Logger()
-	logger.Trace().Msg("QueryRow")
 	start := time.Now()
 	defer func() {
 		latency := time.Since(start)
-		logger.Info().Dur("latency", latency).Send()
+		zerolog.Ctx(ctx).
+			Info().
+			Str("module", "database").
+			Str("dbrid", xid.New().String()).
+			Str("query", query).
+			Str("args", jsonify(args...)).
+			Dur("latency", latency).
+			Msg("QueryRow")
 	}()
 	return db.db.QueryRowContext(ctx, query, args...)
 }

@@ -5,7 +5,6 @@ import (
 	"strings"
 
 	"github.com/golang-migrate/migrate/v4"
-	"github.com/golang-migrate/migrate/v4/database"
 	"github.com/golang-migrate/migrate/v4/source"
 	"github.com/golang-migrate/migrate/v4/source/iofs"
 	"github.com/pkg/errors"
@@ -15,8 +14,6 @@ import (
 var fs embed.FS
 
 func InitMigration(uri string) (*migrate.Migrate, error) {
-	database.Register("sqlite", &Sqlite{})
-
 	var migrationDir source.Driver
 	var err error
 	if strings.HasPrefix(uri, "sqlite://") {

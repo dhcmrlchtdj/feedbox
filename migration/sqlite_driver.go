@@ -19,6 +19,11 @@ import (
 	_ "github.com/ncruces/go-sqlite3/embed"
 )
 
+func init() {
+	database.Register("sqlite", &Sqlite{})
+
+}
+
 var DefaultMigrationsTable = "schema_migrations"
 var (
 	ErrDatabaseDirty  = fmt.Errorf("database is dirty")
