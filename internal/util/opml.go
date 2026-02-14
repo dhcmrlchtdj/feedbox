@@ -59,7 +59,7 @@ func BuildOPML(urls []string) []byte {
 }
 
 func BuildOPMLFromFeed(feeds []common.Feed) []byte {
-	urls := []string{}
+	urls := make([]string, 0, len(feeds))
 	for _, feed := range feeds {
 		urls = append(urls, feed.URL)
 	}

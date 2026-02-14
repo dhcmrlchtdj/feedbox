@@ -12,7 +12,7 @@ GOFLAGS := -buildvcs=false -buildmode=pie -mod=readonly -trimpath -ldflags="-w -
 
 build:
 	cd ui && make build
-	GOEXPERIMENT=greenteagc,jsonv2 CGO_ENABLED=0 go build $(GOFLAGS) -o _build/ ./cmd/...
+	GOEXPERIMENT=jsonv2 CGO_ENABLED=0 go build $(GOFLAGS) -o _build/ ./cmd/...
 
 dev:
 	make --jobs=2 _dev_ui _dev_server
@@ -33,9 +33,9 @@ lint:
 	golangci-lint run
 
 test:
-	ENV=test TZ=UTC GOEXPERIMENT=greenteagc,jsonv2 go test -race ./internal/util
-	ENV=test TZ=UTC GOEXPERIMENT=greenteagc,jsonv2 go test -race ./internal/database/...
-	ENV=test TZ=UTC GOEXPERIMENT=greenteagc,jsonv2 go test -race ./server
+	ENV=test TZ=UTC GOEXPERIMENT=jsonv2 go test -race ./internal/util
+	ENV=test TZ=UTC GOEXPERIMENT=jsonv2 go test -race ./internal/database/...
+	ENV=test TZ=UTC GOEXPERIMENT=jsonv2 go test -race ./server
 
 clean:
 	# rm -rf ./**/.snapshots
