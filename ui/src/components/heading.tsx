@@ -13,10 +13,7 @@ export const Heading = (props: { email: string; loaded: boolean }) => {
 				<span>&nbsp;</span>
 				<span
 					class={`loading d-inline-block ${props.loaded ? "d-invisible" : ""}`}
-					style={{
-						width: "0.8rem",
-						"vertical-align": "text-top",
-					}}
+					style={"width: 0.8rem; vertical-align: text-top;"}
 				></span>
 				<span>&nbsp;</span>
 				<span>{props.email}</span>

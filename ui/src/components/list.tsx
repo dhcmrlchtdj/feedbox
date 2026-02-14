@@ -42,8 +42,8 @@ const Item = (props: { feed: Feed }) => {
 		[props.feed, loading],
 	)
 	return (
-		<div class={`column col-12`}>
-			<div style={{ overflow: "hidden" }}>
+		<div class={"column col-12"}>
+			<div style={"overflow: hidden;"}>
 				<div class="tile">
 					<div class="tile-content">
 						<div class="tile-title text-break">

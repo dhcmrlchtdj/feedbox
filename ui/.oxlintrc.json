@@ -1,0 +1,44 @@
+{
+	"$schema": "./node_modules/oxlint/configuration_schema.json",
+	"env": {
+		"builtin": true
+	},
+	"plugins": [
+		"eslint",
+		"import",
+		"jsx-a11y",
+		"oxc",
+		"promise",
+		"react",
+		"react-perf",
+		"unicorn"
+	],
+	"categories": {
+		"correctness": "deny",
+		"pedantic": "deny",
+		"perf": "deny",
+		"suspicious": "deny"
+	},
+	"rules": {
+		"exhaustive-deps": "deny",
+		"style-prop-object": "allow",
+		"always-return": "allow",
+		"anchor-is-valid": "allow",
+		"ban-ts-comment": "allow",
+		"import/no-unassigned-import": "allow",
+		"max-classes-per-file": "allow",
+		"max-dependencies": "allow",
+		"max-depth": "allow",
+		"max-lines-per-function": "allow",
+		"max-nested-callbacks": "allow",
+		"no-control-regex": "allow",
+		"no-else-return": "allow",
+		"no-promise-executor-return": "allow",
+		"no-useless-undefined": "allow",
+		"react-in-jsx-scope": "allow",
+		"require-post-message-target-origin": "allow"
+	},
+	"settings": {},
+	"globals": {},
+	"ignorePatterns": ["build_script/"]
+}

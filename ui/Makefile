@@ -17,33 +17,12 @@ dev: clean node_modules/tsconfig.tsbuildinfo
 	NODE_ENV=development node ./build_script/build.js --watch
 
 fmt:
-	prettier --write . "!pnpm-lock.yaml"
+	oxfmt --write . "!pnpm-lock.yaml"
 
 lint:
-	oxlint --deny-warnings \
-		-D=correctness \
-		-D=suspicious \
-		-D=pedantic \
-		-D=exhaustive-deps \
-		-A=ban-ts-comment \
-		-A=no-useless-undefined \
-		-A=anchor-is-valid \
-		-A=no-else-return \
-		-A=no-control-regex \
-		-A=max-classes-per-file \
-		-A=max-dependencies \
-		-A=max-lines-per-function \
-		-A=max-depth \
-		-A=max-nested-callbacks \
-		-A=require-post-message-target-origin \
-		-A=react-in-jsx-scope \
-		-A=import/no-unassigned-import \
-		-A=always-return \
-		--jsx-a11y-plugin \
-		--react-perf-plugin \
-		--promise-plugin \
-		--import-plugin
-	prettier --check . "!pnpm-lock.yaml"
+	oxlint --type-aware
+	@echo ""
+	oxfmt --check . "!pnpm-lock.yaml"
 
 # test:
 
