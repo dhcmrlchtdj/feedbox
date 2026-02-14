@@ -59,17 +59,21 @@ func slice2chan(ctx context.Context, done *sync.WaitGroup) <-chan database.Feed 
 	qFeed := make(chan database.Feed)
 
 	done.Go(func() {
+		defer close(qFeed)
+
 		feeds, err := database.GetActiveFeeds(ctx)
 		if err != nil {
 			logger.Error().Str("module", "worker").Stack().Err(err).Send()
 			return
 		}
 
-		for i := range feeds {
-			qFeed <- feeds[i]
+		for _, f := range feeds {
+			select {
+			case <-ctx.Done():
+				return
+			case qFeed <- f:
+			}
 		}
-
-		close(qFeed)
 	})
 
 	return qFeed
@@ -82,8 +86,7 @@ func fetchFeed(ctx context.Context, done *sync.WaitGroup, qFeed <-chan database.
 
 	worker := func() {
 		fp := feedparser.New()
-		for databaseFeed := range qFeed {
-			dbFeed := databaseFeed
+		for dbFeed := range qFeed {
 			feed, etag, err := fp.ParseURL(ctx, dbFeed.URL, dbFeed.ETag)
 			if err != nil {
 				logger.Warn().Str("module", "worker").Stack().Err(err).Send()
@@ -99,8 +102,9 @@ func fetchFeed(ctx context.Context, done *sync.WaitGroup, qFeed <-chan database.
 	}
 
 	done.Go(func() {
+		defer close(qFeedFetched)
+
 		parallel(5, worker)
-		close(qFeedFetched)
 	})
 
 	return qFeedFetched
@@ -172,10 +176,10 @@ func parseFeed(ctx context.Context, done *sync.WaitGroup, qFeedFetched <-chan *f
 	}
 
 	done.Go(func() {
+		defer close(qFeedParsed)
 		for feed := range qFeedFetched {
 			worker(feed)
 		}
-		close(qFeedParsed)
 	})
 
 	return qFeedParsed
@@ -264,11 +268,12 @@ func dispatchFeed(ctx context.Context, done *sync.WaitGroup, qFeedItem <-chan *f
 	}
 
 	done.Go(func() {
+		defer close(qGithub)
+		defer close(qTelegram)
+
 		for item := range qFeedItem {
 			worker(item)
 		}
-		close(qGithub)
-		close(qTelegram)
 	})
 
 	return qGithub, qTelegram
