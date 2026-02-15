@@ -20,6 +20,11 @@ type Feed struct {
 	ETag    string     `json:"etag"`
 }
 
+type Task struct {
+	Platform string `json:"platform"`
+	Payload  string `json:"payload"`
+}
+
 var (
 	ErrEmptyRow   = errors.New("empty row")
 	ErrInvalidURL = errors.New("invalid url")
