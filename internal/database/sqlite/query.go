@@ -312,17 +312,7 @@ func (db *Database) PopTasks(ctx context.Context) ([]Task, error) {
 		return nil, err
 	}
 	defer rows.Close()
-
-	tasks := []Task{}
-	for rows.Next() {
-		var task Task
-		err := rows.Scan(&task.Platform, &task.Payload)
-		if err != nil {
-			return nil, errors.WithStack(err)
-		}
-		tasks = append(tasks, task)
-	}
-	return tasks, nil
+	return readTasks(rows)
 }
 
 ///
@@ -362,7 +352,7 @@ func readUsers(rows *sql.Rows) ([]User, error) {
 		}
 		users = append(users, user)
 	}
-	return users, nil
+	return users, rows.Err()
 }
 
 func readFeeds(rows *sql.Rows) ([]Feed, error) {
@@ -377,7 +367,20 @@ func readFeeds(rows *sql.Rows) ([]Feed, error) {
 		feed.Updated = parseTime(ts)
 		feeds = append(feeds, feed)
 	}
-	return feeds, nil
+	return feeds, rows.Err()
+}
+
+func readTasks(rows *sql.Rows) ([]Task, error) {
+	tasks := []Task{}
+	for rows.Next() {
+		var task Task
+		err := rows.Scan(&task.Platform, &task.Payload)
+		if err != nil {
+			return nil, errors.WithStack(err)
+		}
+		tasks = append(tasks, task)
+	}
+	return tasks, rows.Err()
 }
 
 func parseTime(msec *int64) *time.Time {
@@ -399,7 +402,7 @@ func readLinks(rows *sql.Rows) ([]string, error) {
 		}
 		links = append(links, link)
 	}
-	return links, nil
+	return links, rows.Err()
 }
 
 func isValidURL(link string) bool {
