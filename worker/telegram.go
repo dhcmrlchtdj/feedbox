@@ -2,27 +2,93 @@ package worker
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
 	"html"
 	"math"
+	"strconv"
 	"strings"
-	"sync"
 	"time"
 
 	"github.com/mmcdole/gofeed"
 	"github.com/rs/zerolog"
 
+	"github.com/dhcmrlchtdj/feedbox/internal/database"
 	"github.com/dhcmrlchtdj/feedbox/internal/telegram"
 )
 
-func telegramSendMsg(ctx context.Context, msg *telegram.SendMessagePayload, rl *RateLimiter) {
+func buildTelegramPayload(to string, feed *database.Feed, item *gofeed.Item) (string, error) {
+	chatID, err := strconv.ParseInt(to, 10, 64)
+	if err != nil {
+		return "", err
+	}
+	text := buildTelegramContent(feed.URL, item)
+	payload := telegram.SendMessagePayload{
+		ChatID:    chatID,
+		Text:      text,
+		ParseMode: telegram.ParseModeHTML,
+	}
+	b, err := json.Marshal(payload)
+	if err != nil {
+		return "", err
+	}
+	return string(b), nil
+}
+
+func buildTelegramContent(feedURL string, item *gofeed.Item) string {
+	if isLobsters(feedURL) {
+		return buildTelegramContentForLobsters(item)
+	} else {
+		return buildTelegramContentForCommon(item)
+	}
+}
+
+func buildTelegramContentForCommon(item *gofeed.Item) string {
+	var text strings.Builder
+	text.WriteString(html.EscapeString(item.Title))
+	text.WriteString("\n\n")
+	text.WriteString(html.EscapeString(item.Link))
+	if len(item.Categories) > 0 {
+		text.WriteString("\n\n")
+		for _, tag := range item.Categories {
+			text.WriteByte('#')
+			text.WriteString(html.EscapeString(strings.TrimSpace(tag)))
+			text.WriteByte(' ')
+		}
+	}
+	return text.String()
+}
+
+func isLobsters(url string) bool {
+	return url == "https://lobste.rs/rss"
+}
+
+func buildTelegramContentForLobsters(item *gofeed.Item) string {
+	var text strings.Builder
+	text.WriteString(html.EscapeString(item.Link))
+	if len(item.Categories) > 0 {
+		text.WriteString("\n\n")
+		for _, tag := range item.Categories {
+			text.WriteByte('#')
+			text.WriteString(html.EscapeString(strings.TrimSpace(tag)))
+			text.WriteByte(' ')
+		}
+	}
+	if comment, ok := item.Custom["comments"]; ok {
+		text.WriteString("\n\n")
+		text.WriteString("comment: ")
+		text.WriteString(html.EscapeString(comment))
+	}
+	return text.String()
+}
+
+func telegramSendMsg(ctx context.Context, msg *telegram.SendMessagePayload) error {
 	logger := zerolog.Ctx(ctx)
 
 	retry := 1
 	for retry > 0 {
 		retry--
 
-		rl.Wait()
 		err := telegram.SendMessage(ctx, msg)
 		if err != nil {
 			var err429 *telegram.TooManyRequestsError
@@ -36,88 +102,21 @@ func telegramSendMsg(ctx context.Context, msg *telegram.SendMessagePayload, rl *
 			if errors.As(err, &errResp) {
 				if *errResp.ErrorCode == 403 {
 					logger.Warn().Str("module", "worker").Stack().Err(err).Send()
-					return
+					return nil
 				}
 			}
 
-			logger.Error().Str("module", "worker").Stack().Err(err).Send()
+			return err
 		}
-		return
+		return nil
 	}
+	return nil
 }
 
-func sendTelegram(ctx context.Context, done *sync.WaitGroup, qTelegram <-chan telegramItem) {
-	// https://core.telegram.org/bots/faq#my-bot-is-hitting-limits-how-do-i-avoid-this
-	rateLimiter := NewRateLimiter(20, time.Second)
-
-	worker := func(x telegramItem) {
-		if len(x.users) == 0 {
-			return
-		}
-
-		content := buildContent(&x)
-
-		for _, user := range x.users {
-			payload := telegram.SendMessagePayload{
-				ChatID:    user,
-				Text:      content,
-				ParseMode: "HTML",
-			}
-			telegramSendMsg(ctx, &payload, rateLimiter)
-		}
+func handleTelegramTask(ctx context.Context, task *database.Task) error {
+	var msg telegram.SendMessagePayload
+	if err := json.Unmarshal([]byte(task.Payload), &msg); err != nil {
+		return err
 	}
-
-	done.Go(func() {
-		for item := range qTelegram {
-			worker(item)
-		}
-	})
-}
-
-func buildContent(tgItem *telegramItem) string {
-	if isLobsters(tgItem.feed.URL) {
-		return buildContentForLobsters(tgItem.item)
-	} else {
-		return buildContentForCommon(tgItem.item, false)
-	}
-}
-
-func buildContentForCommon(item *gofeed.Item, withTitle bool) string {
-	var text strings.Builder
-	text.WriteString(item.Link)
-	if len(item.Categories) > 0 {
-		text.WriteString("\n\n")
-		for _, tag := range item.Categories {
-			text.WriteByte('#')
-			text.WriteString(strings.TrimSpace(tag))
-			text.WriteByte(' ')
-		}
-	}
-	if withTitle {
-		text.WriteString(html.EscapeString(item.Title))
-	}
-	return html.EscapeString(text.String())
-}
-
-func isLobsters(url string) bool {
-	return url == "https://lobste.rs/rss"
-}
-
-func buildContentForLobsters(item *gofeed.Item) string {
-	var text strings.Builder
-	text.WriteString(item.Link)
-	if len(item.Categories) > 0 {
-		text.WriteString("\n\n")
-		for _, tag := range item.Categories {
-			text.WriteByte('#')
-			text.WriteString(strings.TrimSpace(tag))
-			text.WriteByte(' ')
-		}
-	}
-	if comment, ok := item.Custom["comments"]; ok {
-		text.WriteString("\n\n")
-		text.WriteString("comment: ")
-		text.WriteString(comment)
-	}
-	return html.EscapeString(text.String())
+	return telegramSendMsg(ctx, &msg)
 }
