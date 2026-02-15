@@ -278,3 +278,30 @@ func TestUnsubscribeAll(t *testing.T) {
 	}
 	cupaloy.SnapshotT(t, r)
 }
+
+func TestQueue(t *testing.T) {
+	err := db.PushTask(ctx, "tg", "1")
+	if err != nil {
+		t.Fatal(err)
+	}
+	err = db.PushTask(ctx, "email", "2")
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	t.Run("pop all", func(t *testing.T) {
+		tasks, err := db.PopTasks(ctx)
+		if err != nil {
+			t.Fatal(err)
+		}
+		cupaloy.SnapshotT(t, tasks)
+	})
+
+	t.Run("pop empty", func(t *testing.T) {
+		tasks, err := db.PopTasks(ctx)
+		if err != nil {
+			t.Fatal(err)
+		}
+		cupaloy.SnapshotT(t, tasks)
+	})
+}

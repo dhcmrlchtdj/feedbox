@@ -1,0 +1,10 @@
+([]common.Task) (len=2) {
+  (common.Task) {
+    Platform: (string) (len=2) "tg",
+    Payload: (string) (len=1) "1"
+  },
+  (common.Task) {
+    Platform: (string) (len=5) "email",
+    Payload: (string) (len=1) "2"
+  }
+}
