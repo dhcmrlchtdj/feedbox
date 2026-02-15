@@ -29,6 +29,8 @@ type Database interface {
 	UnsubscribeAll(ctx context.Context, userID int64) error
 	SubscribeURL(ctx context.Context, userID int64, url string) error
 	SubscribeURLs(ctx context.Context, userID int64, urls []string) error
+	PushTask(ctx context.Context, platform string, payload string) error
+	PopTasks(ctx context.Context) ([]Task, error)
 }
 
 ///
@@ -109,11 +111,20 @@ func SubscribeURLs(ctx context.Context, userID int64, urls []string) error {
 	return Default().SubscribeURLs(ctx, userID, urls)
 }
 
+func PushTask(ctx context.Context, platform string, payload string) error {
+	return Default().PushTask(ctx, platform, payload)
+}
+
+func PopTasks(ctx context.Context) ([]Task, error) {
+	return Default().PopTasks(ctx)
+}
+
 ///
 
 type (
 	User = common.User
 	Feed = common.Feed
+	Task = common.Task
 )
 
 var (

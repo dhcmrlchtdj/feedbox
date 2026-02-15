@@ -16,6 +16,7 @@ import (
 type (
 	User = common.User
 	Feed = common.Feed
+	Task = common.Task
 )
 
 var (
@@ -289,6 +290,39 @@ func (db *Database) SubscribeURLs(ctx context.Context, userID int64, urls []stri
 	}
 
 	return nil
+}
+
+func (db *Database) PushTask(ctx context.Context, platform string, payload string) error {
+	_, err := db.Exec(
+		ctx,
+		`INSERT INTO queue(platform, payload) VALUES ($1, $2)`,
+		platform,
+		payload,
+	)
+	return err
+}
+
+func (db *Database) PopTasks(ctx context.Context) ([]Task, error) {
+	rows, err := db.Query(
+		ctx,
+		`DELETE FROM queue
+		RETURNING platform, payload`,
+	)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	tasks := []Task{}
+	for rows.Next() {
+		var task Task
+		err := rows.Scan(&task.Platform, &task.Payload)
+		if err != nil {
+			return nil, errors.WithStack(err)
+		}
+		tasks = append(tasks, task)
+	}
+	return tasks, nil
 }
 
 ///
