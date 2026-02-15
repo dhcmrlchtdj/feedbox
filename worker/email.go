@@ -2,70 +2,69 @@ package worker
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"strings"
-	"sync"
-	"time"
 
-	"github.com/rs/zerolog"
+	"github.com/mmcdole/gofeed"
 
+	"github.com/dhcmrlchtdj/feedbox/internal/database"
 	"github.com/dhcmrlchtdj/feedbox/internal/email"
 	"github.com/dhcmrlchtdj/feedbox/internal/util"
 )
 
-func isTelegramChannel(ghItem githubItem) bool {
-	return strings.HasPrefix(ghItem.feed.URL, "https://rsshub.app/telegram/channel")
+type EmailPayload struct {
+	To      string `json:"to"`
+	Subject string `json:"subject"`
+	Content string `json:"content"`
 }
 
-func sendEmail(ctx context.Context, done *sync.WaitGroup, qGithub <-chan githubItem) {
-	rateLimiter := NewRateLimiter(5, time.Second)
+func buildEmailPayload(to string, feed *database.Feed, item *gofeed.Item) (string, error) {
+	subject, content := buildEmailContent(feed.URL, item)
+	payload := EmailPayload{
+		To:      to,
+		Subject: subject,
+		Content: content,
+	}
+	b, err := json.Marshal(payload)
+	if err != nil {
+		return "", err
+	}
+	return string(b), nil
+}
 
-	logger := zerolog.Ctx(ctx)
-
-	worker := func(x githubItem) {
-		if len(x.users) == 0 {
-			return
-		}
-
-		item := x.item
-
-		site := util.ExtractSiteName(x.feed.URL)
-		subject := fmt.Sprintf(`"%s" from "%s"`, item.Title, site)
-		if isTelegramChannel(x) {
-			subject = fmt.Sprintf(`"%s" from "%s"`, item.Link, site)
-		}
-
-		var text strings.Builder
-		text.WriteString(item.Link)
-		if len(item.Categories) > 0 {
-			text.WriteString("<br><br>")
-			for _, tag := range item.Categories {
-				text.WriteByte('#')
-				text.WriteString(strings.TrimSpace(tag))
-				text.WriteByte(' ')
-			}
-		}
-		if item.Content != "" {
-			text.WriteString("<br><br>")
-			text.WriteString(item.Content)
-		} else if item.Description != "" {
-			text.WriteString("<br><br>")
-			text.WriteString(item.Description)
-		}
-		content := text.String()
-
-		for _, user := range x.users {
-			rateLimiter.Wait()
-			err := email.Send(ctx, user, subject, content)
-			if err != nil {
-				logger.Error().Str("module", "worker").Stack().Err(err).Send()
-			}
-		}
+func buildEmailContent(feedURL string, item *gofeed.Item) (string, string) {
+	site := util.ExtractSiteName(feedURL)
+	subject := fmt.Sprintf(`"%s" from "%s"`, item.Title, site)
+	if strings.HasPrefix(feedURL, "https://rsshub.app/telegram/channel") {
+		subject = fmt.Sprintf(`"%s" from "%s"`, item.Link, site)
 	}
 
-	done.Go(func() {
-		for item := range qGithub {
-			worker(item)
+	var text strings.Builder
+	text.WriteString(item.Link)
+	if len(item.Categories) > 0 {
+		text.WriteString("<br><br>")
+		for _, tag := range item.Categories {
+			text.WriteByte('#')
+			text.WriteString(strings.TrimSpace(tag))
+			text.WriteByte(' ')
 		}
-	})
+	}
+	if item.Content != "" {
+		text.WriteString("<br><br>")
+		text.WriteString(item.Content)
+	} else if item.Description != "" {
+		text.WriteString("<br><br>")
+		text.WriteString(item.Description)
+	}
+
+	return subject, text.String()
+}
+
+func handleEmailTask(ctx context.Context, task *database.Task) error {
+	var payload EmailPayload
+	if err := json.Unmarshal([]byte(task.Payload), &payload); err != nil {
+		return err
+	}
+	return email.Send(ctx, payload.To, payload.Subject, payload.Content)
 }

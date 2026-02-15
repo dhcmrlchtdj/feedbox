@@ -3,7 +3,6 @@ package worker
 import (
 	"context"
 	"slices"
-	"strconv"
 	"sync"
 	"time"
 
@@ -20,19 +19,7 @@ type feedItem struct {
 	feed    *database.Feed
 	fetched *gofeed.Feed
 	etag    string
-	items   []gofeed.Item
-}
-
-type githubItem struct {
-	feed  *database.Feed
-	item  *gofeed.Item
-	users []string
-}
-
-type telegramItem struct {
-	feed  *database.Feed
-	item  *gofeed.Item
-	users []int64
+	items   []*gofeed.Item
 }
 
 func Start(ctx context.Context) {
@@ -45,10 +32,10 @@ func Start(ctx context.Context) {
 	qFeed := slice2chan(ctx, &wg)
 	qFeedFetched := fetchFeed(ctx, &wg, qFeed)
 	qFeedParsed := parseFeed(ctx, &wg, qFeedFetched)
-	qGithub, qTelegram := dispatchFeed(ctx, &wg, qFeedParsed)
-	sendEmail(ctx, &wg, qGithub)
-	sendTelegram(ctx, &wg, qTelegram)
+	dispatchFeed(ctx, &wg, qFeedParsed)
 	wg.Wait()
+
+	processQueue(ctx)
 
 	logger.Info().Str("module", "worker").Msg("completed")
 }
@@ -146,14 +133,14 @@ func parseFeed(ctx context.Context, done *sync.WaitGroup, qFeedFetched <-chan *f
 		}
 
 		newLinks := []string{}
-		newItems := []gofeed.Item{}
+		newItems := []*gofeed.Item{}
 		for i := range feed.fetched.Items {
 			item := feed.fetched.Items[i]
 			link := item.Link
 			if _, present := oldLinkSet[link]; !present {
 				oldLinkSet[link] = true
 				newLinks = append(newLinks, link)
-				newItems = append(newItems, *item)
+				newItems = append(newItems, item)
 			}
 		}
 
@@ -211,31 +198,28 @@ func updateFeedStatus(ctx context.Context, dbFeed *database.Feed, updated *time.
 	return nil
 }
 
-func dispatchFeed(ctx context.Context, done *sync.WaitGroup, qFeedItem <-chan *feedItem) (<-chan githubItem, <-chan telegramItem) {
+func sortFeedItems(a *gofeed.Item, b *gofeed.Item) int {
+	x := a.PublishedParsed
+	y := b.PublishedParsed
+	if x != nil && y != nil {
+		if x.Before(*y) {
+			return -1
+		} else {
+			return 1
+		}
+	} else if x != nil {
+		return -1
+	} else if y != nil {
+		return 1
+	} else {
+		return 0
+	}
+}
+
+func dispatchFeed(ctx context.Context, done *sync.WaitGroup, qFeedItem <-chan *feedItem) {
 	logger := zerolog.Ctx(ctx)
 
-	qGithub := make(chan githubItem)
-	qTelegram := make(chan telegramItem)
-
 	worker := func(item *feedItem) {
-		slices.SortFunc(item.items, func(a gofeed.Item, b gofeed.Item) int {
-			x := a.PublishedParsed
-			y := b.PublishedParsed
-			if x != nil && y != nil {
-				if x.Before(*y) {
-					return -1
-				} else {
-					return 1
-				}
-			} else if x != nil {
-				return -1
-			} else if y != nil {
-				return 1
-			} else {
-				return 0
-			}
-		})
-
 		feed := item.feed
 		users, err := database.GetSubscribers(ctx, feed.ID)
 		if err != nil {
@@ -243,38 +227,78 @@ func dispatchFeed(ctx context.Context, done *sync.WaitGroup, qFeedItem <-chan *f
 			return
 		}
 
-		githubUsers := []string{}
-		telegramUsers := []int64{}
-		for _, user := range users {
-			switch user.Platform {
-			case "github":
-				githubUsers = append(githubUsers, user.Addition["email"])
-			case "telegram":
-				pid, err := strconv.ParseInt(user.PID, 10, 64)
+		slices.SortFunc(item.items, sortFeedItems)
+
+		for i := range item.items {
+			rssItem := item.items[i]
+			for _, user := range users {
+				var platform string
+				var payload string
+				var err error
+
+				switch user.Platform {
+				case "github":
+					platform = "email"
+					payload, err = buildEmailPayload(user.Addition["email"], feed, rssItem)
+				case "telegram":
+					platform = "telegram"
+					payload, err = buildTelegramPayload(user.PID, feed, rssItem)
+				default:
+					logger.Error().Str("module", "worker").Str("platform", user.Platform).Msg("unknow user platform")
+					continue
+				}
+
 				if err != nil {
 					logger.Error().Str("module", "worker").Stack().Err(err).Send()
-				} else {
-					telegramUsers = append(telegramUsers, pid)
+					continue
 				}
-			default:
-				panic("unreachable")
+
+				if payload != "" {
+					err = database.PushTask(ctx, platform, payload)
+					if err != nil {
+						logger.Error().Str("module", "worker").Stack().Err(err).Send()
+					}
+				}
 			}
-		}
-		for i := range item.items {
-			item := &item.items[i]
-			qGithub <- githubItem{feed, item, githubUsers}
-			qTelegram <- telegramItem{feed, item, telegramUsers}
 		}
 	}
 
 	done.Go(func() {
-		defer close(qGithub)
-		defer close(qTelegram)
-
 		for item := range qFeedItem {
 			worker(item)
 		}
 	})
+}
 
-	return qGithub, qTelegram
+func processQueue(ctx context.Context) {
+	logger := zerolog.Ctx(ctx)
+	tasks, err := database.PopTasks(ctx)
+	if err != nil {
+		logger.Error().Str("module", "worker").Stack().Err(err).Send()
+		return
+	}
+
+	rl := NewRateLimiter(10, time.Second)
+	for i := range tasks {
+		rl.Wait()
+		task := &tasks[i]
+
+		var err error
+		switch task.Platform {
+		case "email":
+			err = handleEmailTask(ctx, task)
+		case "telegram":
+			err = handleTelegramTask(ctx, task)
+		default:
+			logger.Error().Str("module", "worker").Str("platform", task.Platform).Msg("unknown task platform")
+			continue
+		}
+
+		if err != nil {
+			logger.Error().Str("module", "worker").Stack().Err(err).Send()
+			if err := database.PushTask(ctx, task.Platform, task.Payload); err != nil {
+				logger.Error().Str("module", "worker").Stack().Err(err).Send()
+			}
+		}
+	}
 }
