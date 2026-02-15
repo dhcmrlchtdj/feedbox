@@ -1,15 +1,17 @@
-package worker
+package worker_test
 
 import (
 	"testing"
 	"time"
+
+	"github.com/dhcmrlchtdj/feedbox/worker"
 )
 
 func TestRateLimiter(t *testing.T) {
 	t.Run("basic", func(t *testing.T) {
-		rl := NewRateLimiter(5, 100*time.Millisecond)
+		rl := worker.NewRateLimiter(5, 100*time.Millisecond)
 		start := time.Now()
-		for i := 0; i < 5; i++ {
+		for range 5 {
 			rl.Wait()
 		}
 		elapsed := time.Since(start)
@@ -25,7 +27,7 @@ func TestRateLimiter(t *testing.T) {
 	})
 
 	t.Run("reset", func(t *testing.T) {
-		rl := NewRateLimiter(1, 100*time.Millisecond)
+		rl := worker.NewRateLimiter(1, 100*time.Millisecond)
 		rl.Wait()
 		time.Sleep(150 * time.Millisecond)
 		start := time.Now()

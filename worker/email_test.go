@@ -1,10 +1,12 @@
-package worker
+package worker_test
 
 import (
 	"testing"
 
 	"github.com/bradleyjkemp/cupaloy/v2"
 	"github.com/mmcdole/gofeed"
+
+	"github.com/dhcmrlchtdj/feedbox/worker"
 )
 
 func TestBuildEmailContent(t *testing.T) {
@@ -36,7 +38,7 @@ func TestBuildEmailContent(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			subject, content := buildEmailContent(tt.feedURL, tt.item)
+			subject, content := worker.BuildEmailContent(tt.feedURL, tt.item)
 			cupaloy.SnapshotT(t, subject, content)
 		})
 	}

@@ -1,4 +1,4 @@
-package worker
+package worker_test
 
 import (
 	"sync/atomic"
@@ -7,6 +7,8 @@ import (
 
 	"github.com/bradleyjkemp/cupaloy/v2"
 	"github.com/mmcdole/gofeed"
+
+	"github.com/dhcmrlchtdj/feedbox/worker"
 )
 
 func TestSortFeedItems(t *testing.T) {
@@ -23,11 +25,11 @@ func TestSortFeedItems(t *testing.T) {
 	}
 
 	results := []int{
-		sortFeedItems(items[0], items[1]), // now vs past: 1
-		sortFeedItems(items[1], items[0]), // past vs now: -1
-		sortFeedItems(items[3], items[0]), // nil vs now: 1
-		sortFeedItems(items[0], items[3]), // now vs nil: -1
-		sortFeedItems(items[3], items[4]), // nil vs nil: 0
+		worker.SortFeedItems(items[0], items[1]), // now vs past: 1
+		worker.SortFeedItems(items[1], items[0]), // past vs now: -1
+		worker.SortFeedItems(items[3], items[0]), // nil vs now: 1
+		worker.SortFeedItems(items[0], items[3]), // now vs nil: -1
+		worker.SortFeedItems(items[3], items[4]), // nil vs nil: 0
 	}
 
 	cupaloy.SnapshotT(t, results)
@@ -44,7 +46,7 @@ func TestGetLatestUpdated(t *testing.T) {
 				{PublishedParsed: &now},
 			},
 		}
-		latest := getLatestUpdated(feed)
+		latest := worker.GetLatestUpdated(feed)
 		if latest == nil || !latest.Equal(now) {
 			t.Errorf("got %v, want %v", latest, now)
 		}
@@ -57,7 +59,7 @@ func TestGetLatestUpdated(t *testing.T) {
 				{PublishedParsed: nil},
 			},
 		}
-		latest := getLatestUpdated(feed)
+		latest := worker.GetLatestUpdated(feed)
 		if latest == nil || !latest.Equal(now) {
 			t.Errorf("got %v, want %v", latest, now)
 		}
@@ -65,7 +67,7 @@ func TestGetLatestUpdated(t *testing.T) {
 
 	t.Run("nil", func(t *testing.T) {
 		feed := &gofeed.Feed{}
-		latest := getLatestUpdated(feed)
+		latest := worker.GetLatestUpdated(feed)
 		if latest != nil {
 			t.Errorf("got %v, want nil", latest)
 		}
@@ -74,7 +76,7 @@ func TestGetLatestUpdated(t *testing.T) {
 
 func TestParallel(t *testing.T) {
 	var count atomic.Int32
-	parallel(5, func() {
+	worker.Parallel(5, func() {
 		count.Add(1)
 	})
 	if count.Load() != 5 {
