@@ -54,6 +54,7 @@
 				"enable-all-rules": true,
 				"rules": [
 					{ "name": "unchecked-type-assertion", "disabled": true },
+					{ "name": "confusing-results", "disabled": true },
 					{ "name": "early-return", "disabled": true },
 					{ "name": "blank-imports", "disabled": true },
 					{ "name": "max-public-structs", "disabled": true },
