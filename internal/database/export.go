@@ -22,6 +22,8 @@ type Database interface {
 	GetActiveFeeds(ctx context.Context) ([]Feed, error)
 	AddFeedLinks(ctx context.Context, id int64, links []string, updated *time.Time, etag string) error
 	SetFeedUpdated(ctx context.Context, id int64, updated *time.Time, etag string) error
+	SetFeedErr(ctx context.Context, id int64, err string) error
+	RemoveFeedErr(ctx context.Context, id int64) error
 	GetLinks(ctx context.Context, feedID int64) ([]string, error)
 	GetSubscribers(ctx context.Context, feedID int64) ([]User, error)
 	Subscribe(ctx context.Context, userID int64, feedID int64) error
@@ -81,6 +83,14 @@ func AddFeedLinks(ctx context.Context, id int64, links []string, updated *time.T
 
 func SetFeedUpdated(ctx context.Context, id int64, updated *time.Time, etag string) error {
 	return Default().SetFeedUpdated(ctx, id, updated, etag)
+}
+
+func SetFeedErr(ctx context.Context, id int64, err string) error {
+	return Default().SetFeedErr(ctx, id, err)
+}
+
+func RemoveFeedErr(ctx context.Context, id int64) error {
+	return Default().RemoveFeedErr(ctx, id)
 }
 
 func GetLinks(ctx context.Context, feedID int64) ([]string, error) {

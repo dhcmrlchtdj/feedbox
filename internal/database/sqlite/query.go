@@ -116,7 +116,7 @@ func (db *Database) GetFeedIDByURL(ctx context.Context, url string) (int64, erro
 }
 
 func (db *Database) GetFeedByUser(ctx context.Context, userID int64, orderBy string) ([]Feed, error) {
-	query := `SELECT feeds.id, feeds.url, feeds.updated, feeds.etag
+	query := `SELECT feeds.id, feeds.url, feeds.updated, feeds.etag, feeds.err, feeds.errtime
 	FROM feeds
 	INNER JOIN r_user_feed ON r_user_feed.feed_id = feeds.id
 	WHERE r_user_feed.user_id = $1`
@@ -141,7 +141,7 @@ func (db *Database) GetFeedByUser(ctx context.Context, userID int64, orderBy str
 func (db *Database) GetActiveFeeds(ctx context.Context) ([]Feed, error) {
 	rows, err := db.Query(
 		ctx,
-		`SELECT DISTINCT feeds.id, feeds.url, feeds.updated, feeds.etag
+		`SELECT DISTINCT feeds.id, feeds.url, feeds.updated, feeds.etag, feeds.err, feeds.errtime
 		FROM feeds
 		INNER JOIN r_user_feed
 		ON r_user_feed.feed_id = feeds.id`,
@@ -205,6 +205,26 @@ func (db *Database) SetFeedUpdated(ctx context.Context, id int64, updated *time.
 	}
 
 	return nil
+}
+
+func (db *Database) SetFeedErr(ctx context.Context, id int64, err string) error {
+	_, e := db.Exec(
+		ctx,
+		`UPDATE feeds SET err=$1, errtime=$2 WHERE id=$3`,
+		err,
+		time.Now().UnixMilli(),
+		id,
+	)
+	return e
+}
+
+func (db *Database) RemoveFeedErr(ctx context.Context, id int64) error {
+	_, err := db.Exec(
+		ctx,
+		`UPDATE feeds SET err='', errtime=NULL WHERE id=$1`,
+		id,
+	)
+	return err
 }
 
 func (db *Database) GetLinks(ctx context.Context, feedID int64) ([]string, error) {
@@ -360,11 +380,13 @@ func readFeeds(rows *sql.Rows) ([]Feed, error) {
 	for rows.Next() {
 		var feed Feed
 		var ts *int64
-		err := rows.Scan(&feed.ID, &feed.URL, &ts, &feed.ETag)
+		var ets *int64
+		err := rows.Scan(&feed.ID, &feed.URL, &ts, &feed.ETag, &feed.Err, &ets)
 		if err != nil {
 			return nil, errors.WithStack(err)
 		}
 		feed.Updated = parseTime(ts)
+		feed.ErrTime = parseTime(ets)
 		feeds = append(feeds, feed)
 	}
 	return feeds, rows.Err()

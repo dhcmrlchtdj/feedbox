@@ -305,3 +305,65 @@ func TestQueue(t *testing.T) {
 		cupaloy.SnapshotT(t, tasks)
 	})
 }
+
+func TestFeedErr(t *testing.T) {
+	user, err := db.GetOrCreateUserByTelegram(ctx, "test_err_user")
+	if err != nil {
+		t.Fatal(err)
+	}
+	feedID, err := db.GetFeedIDByURL(ctx, "http://err.example.com")
+	if err != nil {
+		t.Fatal(err)
+	}
+	err = db.Subscribe(ctx, user.ID, feedID)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	err = db.SetFeedErr(ctx, feedID, "test error")
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	feeds, err := db.GetActiveFeeds(ctx)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	found := false
+	for _, f := range feeds {
+		if f.ID == feedID {
+			found = true
+			if f.Err != "test error" {
+				t.Errorf("expected err 'test error', got '%s'", f.Err)
+			}
+			if f.ErrTime == nil {
+				t.Error("expected errtime to be set, got nil")
+			}
+		}
+	}
+	if !found {
+		t.Fatalf("feed %d not found", feedID)
+	}
+
+	err = db.RemoveFeedErr(ctx, feedID)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	feeds, err = db.GetActiveFeeds(ctx)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	for _, f := range feeds {
+		if f.ID == feedID {
+			if f.Err != "" {
+				t.Errorf("expected err to be empty, got '%s'", f.Err)
+			}
+			if f.ErrTime != nil {
+				t.Errorf("expected errtime to be nil, got %v", f.ErrTime)
+			}
+		}
+	}
+}

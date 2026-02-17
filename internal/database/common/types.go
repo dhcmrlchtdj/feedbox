@@ -18,6 +18,8 @@ type Feed struct {
 	URL     string     `json:"url"`
 	Updated *time.Time `json:"updated"`
 	ETag    string     `json:"etag"`
+	Err     string     `json:"err,omitempty"`
+	ErrTime *time.Time `json:"errTime,omitempty"`
 }
 
 type Task struct {
