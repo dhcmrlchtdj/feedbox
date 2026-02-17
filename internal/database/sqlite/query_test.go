@@ -337,7 +337,7 @@ func TestFeedErr(t *testing.T) {
 			if f.Err != "test error" {
 				t.Errorf("expected err 'test error', got '%s'", f.Err)
 			}
-			if f.ErrTime == nil {
+			if f.ErrAt == nil {
 				t.Error("expected errtime to be set, got nil")
 			}
 		}
@@ -361,8 +361,8 @@ func TestFeedErr(t *testing.T) {
 			if f.Err != "" {
 				t.Errorf("expected err to be empty, got '%s'", f.Err)
 			}
-			if f.ErrTime != nil {
-				t.Errorf("expected errtime to be nil, got %v", f.ErrTime)
+			if f.ErrAt != nil {
+				t.Errorf("expected errtime to be nil, got %v", f.ErrAt)
 			}
 		}
 	}

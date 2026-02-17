@@ -5,6 +5,6 @@
     Updated: (*time.Time)(<nil>),
     ETag: (string) "",
     Err: (string) "",
-    ErrTime: (*time.Time)(<nil>)
+    ErrAt: (*time.Time)(<nil>)
   }
 }

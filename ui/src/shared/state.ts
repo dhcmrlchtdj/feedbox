@@ -60,6 +60,8 @@ export type Feed = {
 	id: number
 	updated: string
 	url: string
+	err?: string
+	errAt?: string
 }
 
 export const createFeedsSetter = versionGuarder(

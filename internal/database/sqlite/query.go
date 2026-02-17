@@ -386,7 +386,7 @@ func readFeeds(rows *sql.Rows) ([]Feed, error) {
 			return nil, errors.WithStack(err)
 		}
 		feed.Updated = parseTime(ts)
-		feed.ErrTime = parseTime(ets)
+		feed.ErrAt = parseTime(ets)
 		feeds = append(feeds, feed)
 	}
 	return feeds, rows.Err()

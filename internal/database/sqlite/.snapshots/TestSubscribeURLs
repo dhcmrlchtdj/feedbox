@@ -5,7 +5,7 @@
     Updated: (*time.Time)(<nil>),
     ETag: (string) "",
     Err: (string) "",
-    ErrTime: (*time.Time)(<nil>)
+    ErrAt: (*time.Time)(<nil>)
   },
   (common.Feed) {
     ID: (int64) 1,
@@ -13,6 +13,6 @@
     Updated: (*time.Time)(2020-01-01 00:00:00 +0000 UTC),
     ETag: (string) (len=5) "etag2",
     Err: (string) "",
-    ErrTime: (*time.Time)(<nil>)
+    ErrAt: (*time.Time)(<nil>)
   }
 }
