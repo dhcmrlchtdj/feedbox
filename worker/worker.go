@@ -77,7 +77,16 @@ func fetchFeed(ctx context.Context, done *sync.WaitGroup, qFeed <-chan database.
 			feed, etag, err := fp.ParseURL(ctx, dbFeed.URL, dbFeed.ETag)
 			if err != nil {
 				logger.Warn().Str("module", "worker").Stack().Err(err).Send()
+				if err := database.SetFeedErr(ctx, dbFeed.ID, err.Error()); err != nil {
+					logger.Error().Str("module", "worker").Stack().Err(err).Send()
+				}
 				continue
+			}
+
+			if dbFeed.Err != "" {
+				if err := database.RemoveFeedErr(ctx, dbFeed.ID); err != nil {
+					logger.Error().Str("module", "worker").Stack().Err(err).Send()
+				}
 			}
 
 			if feed == nil {
