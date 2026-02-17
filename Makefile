@@ -15,17 +15,17 @@ build:
 	GOEXPERIMENT=jsonv2 CGO_ENABLED=0 go build $(GOFLAGS) -o _build/ ./cmd/...
 
 dev:
-	make --jobs=2 _dev_ui _dev_server
+	GOEXPERIMENT=jsonv2 make --jobs=2 _dev_ui _dev_server
 
 _dev_ui:
 	cd ui && make dev
 
 _dev_server:
-	go run -tags=dev -race ./cmd/feedbox server 2>&1 | \
+	GOEXPERIMENT=jsonv2 go run -tags=dev -race ./cmd/feedbox server 2>&1 | \
 		jq -R '. as $$line | try fromjson catch $$line'
 
 fmt:
-	golangci-lint fmt
+	GOEXPERIMENT=jsonv2 golangci-lint fmt
 	# gopls format -w **/*.go
 	# gofumpt -w .
 
