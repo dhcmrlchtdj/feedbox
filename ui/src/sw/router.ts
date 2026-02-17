@@ -56,11 +56,11 @@ export const router = new Router<RouterContext>()
 			strategy.cacheOnly(apiCache, "/api/v1/user"),
 			strategy.cacheOnly(apiCache, "/api/v1/feeds"),
 		])
-			.then(([user, feeds]) => {
-				if (user && user.ok && feeds && feeds.ok) {
+			.then(([userResp, feedsResp]) => {
+				if (userResp && userResp.ok && feedsResp && feedsResp.ok) {
 					return Promise.all([
-						user.json() as Promise<User>,
-						feeds.json() as Promise<Feed[]>,
+						userResp.json() as Promise<User>,
+						feedsResp.json() as Promise<Feed[]>,
 					])
 				} else {
 					throw new Error("cache missing")

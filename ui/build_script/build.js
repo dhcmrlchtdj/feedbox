@@ -1,9 +1,9 @@
 // https://esbuild.github.io/api/#build-api
 
-import * as esbuild from "esbuild"
 import * as fs from "node:fs/promises"
 import * as path from "node:path"
 import * as url from "node:url"
+import * as esbuild from "esbuild"
 import { hashFiles } from "./hash_files.js"
 
 const r = (p) =>
