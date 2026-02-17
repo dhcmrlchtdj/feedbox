@@ -30,7 +30,7 @@ fmt:
 	# gofumpt -w .
 
 lint:
-	golangci-lint run
+	GOEXPERIMENT=jsonv2 golangci-lint run
 
 test:
 	ENV=test TZ=UTC GOEXPERIMENT=jsonv2 go test -race ./internal/util
