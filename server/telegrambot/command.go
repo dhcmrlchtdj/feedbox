@@ -100,6 +100,13 @@ func list(ctx context.Context, msg *telegram.Message) error {
 			builder.WriteString("\n\n")
 		}
 		builder.WriteString(feed.URL)
+		if feed.Err != "" {
+			builder.WriteString("\n")
+			builder.WriteString(feed.Err)
+			builder.WriteString(" @ ")
+			builder.WriteString(feed.ErrAt.UTC().Format("2006-01-02 15:04:05"))
+			builder.WriteString("\n")
+		}
 	}
 	text := builder.String()
 

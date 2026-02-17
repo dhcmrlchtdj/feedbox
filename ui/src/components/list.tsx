@@ -59,6 +59,12 @@ const Item = (props: { feed: Feed }) => {
 							<span>
 								updated @ {formatUpdated(props.feed.updated)}
 							</span>
+							{props.feed.err && (
+								<span>
+									{" | " + props.feed.err + " @ "}
+									{formatUpdated(props.feed.errAt!)}
+								</span>
+							)}
 						</div>
 					</div>
 					<div class="tile-action">
