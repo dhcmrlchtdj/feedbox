@@ -3,7 +3,7 @@ package email
 import (
 	"bytes"
 	"context"
-	"encoding/json"
+	"encoding/json/v2"
 	"net/http"
 
 	"github.com/pkg/errors"
@@ -65,7 +65,7 @@ func (c *mailgun) Send(ctx context.Context, addr string, subject string, text st
 		var r struct {
 			Message string `json:"message,omitempty"`
 		}
-		if err := json.NewDecoder(resp.Body).Decode(&r); err != nil {
+		if err := json.UnmarshalRead(resp.Body, &r); err != nil {
 			return errors.WithMessage(e, err.Error())
 		}
 		return errors.WithMessage(e, r.Message)

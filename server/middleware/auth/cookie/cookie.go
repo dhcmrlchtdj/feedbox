@@ -2,7 +2,7 @@ package cookie
 
 import (
 	"context"
-	"encoding/json"
+	"encoding/json/v2"
 	"time"
 
 	"github.com/gofiber/fiber/v2"

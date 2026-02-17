@@ -3,7 +3,7 @@ package telegram
 import (
 	"bytes"
 	"context"
-	"encoding/json"
+	"encoding/json/v2"
 	"io"
 	"net/http"
 
@@ -83,7 +83,7 @@ func (c *httpClient) rawSend(ctx context.Context, cmd string, payload any) (io.R
 	url := "https://api.telegram.org/bot" + c.token + "/" + cmd
 
 	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(payload); err != nil {
+	if err := json.MarshalWrite(&buf, payload); err != nil {
 		return nil, errors.Wrap(err, "telegram/"+cmd)
 	}
 
@@ -101,7 +101,7 @@ func (c *httpClient) rawSend(ctx context.Context, cmd string, payload any) (io.R
 	if resp.StatusCode == 429 {
 		defer resp.Body.Close()
 		err429 := new(TooManyRequestsError)
-		err := json.NewDecoder(resp.Body).Decode(err429)
+		err := json.UnmarshalRead(resp.Body, err429)
 		if err == nil {
 			err = err429
 		}
@@ -150,7 +150,7 @@ func (c *httpClient) rawSendFileSimple(ctx context.Context, cmd string, contentT
 ///
 
 func DecodeResponse(body io.Reader, t interface{ Check() error }) error {
-	if err := json.NewDecoder(body).Decode(t); err != nil {
+	if err := json.UnmarshalRead(body, t); err != nil {
 		return errors.WithStack(err)
 	}
 	return errors.WithStack(t.Check())

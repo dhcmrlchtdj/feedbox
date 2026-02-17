@@ -2,7 +2,7 @@ package github
 
 import (
 	"context"
-	"encoding/json"
+	"encoding/json/v2"
 	"net/http"
 	"sort"
 
@@ -41,7 +41,7 @@ func getProfile(ctx context.Context, client *http.Client) (*Profile, error) {
 	}
 
 	var profile Profile
-	err = json.NewDecoder(resp.Body).Decode(&profile)
+	err = json.UnmarshalRead(resp.Body, &profile)
 	if err != nil {
 		return nil, errors.WithStack(err)
 	}
@@ -77,7 +77,7 @@ func getEmail(ctx context.Context, client *http.Client) (string, error) {
 	}
 
 	var emails []githubEmail
-	err = json.NewDecoder(resp.Body).Decode(&emails)
+	err = json.UnmarshalRead(resp.Body, &emails)
 	if err != nil {
 		return "", errors.WithStack(err)
 	}

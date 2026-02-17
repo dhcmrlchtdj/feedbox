@@ -3,7 +3,7 @@ package email
 import (
 	"bytes"
 	"context"
-	"encoding/json"
+	"encoding/json/v2"
 	"net/http"
 
 	"github.com/pkg/errors"
