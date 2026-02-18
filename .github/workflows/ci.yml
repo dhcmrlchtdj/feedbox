@@ -20,8 +20,10 @@ jobs:
             # https://github.com/marketplace/actions/golangci-lint
             - uses: golangci/golangci-lint-action@v9.2.0
               with:
+                  install-only: true
                   # https://github.com/golangci/golangci-lint/releases
                   version: "v2.9.0"
+            - run: make lint
             - run: make test
               env:
                   DATABASE_URL: "sqlite://feedbox.db"
