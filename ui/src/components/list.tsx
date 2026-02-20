@@ -61,8 +61,7 @@ const Item = (props: { feed: Feed }) => {
 							</span>
 							{props.feed.err && (
 								<span>
-									{" | " + props.feed.err + " @ "}
-									{formatUpdated(props.feed.errAt!)}
+									{` | error @ ${formatUpdated(props.feed.errAt!)} | ${props.feed.err}`}
 								</span>
 							)}
 						</div>
