@@ -91,21 +91,17 @@ func telegramSendMsg(ctx context.Context, msg *telegram.SendMessagePayload) erro
 
 		err := telegram.SendMessage(ctx, msg)
 		if err != nil {
-			var err429 *telegram.TooManyRequestsError
-			if errors.As(err, &err429) {
+			if err429, ok := errors.AsType[*telegram.TooManyRequestsError](err); ok {
 				maxSleep := math.Min(err429.Parameters.RetryAfter, 120)
 				time.Sleep(time.Second * time.Duration(maxSleep))
 				continue
 			}
-
-			var errResp *telegram.Response
-			if errors.As(err, &errResp) {
+			if errResp, ok := errors.AsType[*telegram.Response](err); ok {
 				if *errResp.ErrorCode == 403 {
 					logger.Warn().Str("module", "worker").Stack().Err(err).Send()
 					return nil
 				}
 			}
-
 			return err
 		}
 		return nil
