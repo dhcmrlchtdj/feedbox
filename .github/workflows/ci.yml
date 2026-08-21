@@ -12,17 +12,17 @@ jobs:
         runs-on: ubuntu-latest
         steps:
             # https://github.com/marketplace/actions/checkout
-            - uses: actions/checkout@v6.0.2
+            - uses: actions/checkout@v7.0.1
             # https://github.com/marketplace/actions/setup-go-environment
-            - uses: actions/setup-go@v6.2.0
+            - uses: actions/setup-go@v7.0.0
               with:
-                  go-version: "1.26"
+                  go-version: "1.27"
             # https://github.com/marketplace/actions/golangci-lint
-            - uses: golangci/golangci-lint-action@v9.2.0
+            - uses: golangci/golangci-lint-action@v9.3.0
               with:
                   install-only: true
                   # https://github.com/golangci/golangci-lint/releases
-                  version: "v2.9.0"
+                  version: "v2.13.1"
             - run: make lint
             - run: make test
               env:
@@ -37,18 +37,18 @@ jobs:
                   GITHUB_CLIENT_ID: "https://github.com/settings/developers"
                   GITHUB_CLIENT_SECRET: "https://github.com/settings/developers"
             # https://github.com/marketplace/actions/setup-node-js-environment
-            - uses: actions/setup-node@v6.2.0
+            - uses: actions/setup-node@v7.0.0
               with:
-                  node-version: "24.x"
+                  node-version: "26.x"
             # https://github.com/marketplace/actions/cache
-            - uses: actions/cache@v5.0.3
+            - uses: actions/cache@v6.1.0
               with:
                   path: ~/.local/share/pnpm/store
                   key: ${{ runner.os }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}
                   restore-keys: ${{ runner.os }}-pnpm-
             # https://www.npmjs.com/package/pnpm
             - run: |
-                  npm install -g pnpm@10.29.3
+                  npm install -g pnpm@11.22.0
                   pnpm config set store-dir ~/.local/share/pnpm/store
                   pnpm install
                   make lint
