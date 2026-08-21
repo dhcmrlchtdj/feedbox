@@ -4,17 +4,17 @@
 	"private": true,
 	"type": "module",
 	"dependencies": {
-		"@preact/signals": "2.8.1",
-		"preact": "10.28.4",
-		"preact-render-to-string": "6.6.6",
+		"@preact/signals": "2.11.1",
+		"preact": "10.29.8",
+		"preact-render-to-string": "6.7.0",
 		"spectre.css": "0.5.9"
 	},
 	"devDependencies": {
 		"@types/trusted-types": "2.0.7",
-		"@typescript/native-preview": "7.0.0-dev.20260226.1",
-		"esbuild": "0.27.3",
-		"oxfmt": "0.35.0",
-		"oxlint": "1.50.0",
-		"oxlint-tsgolint": "0.15.0"
+		"esbuild": "0.28.2",
+		"oxfmt": "0.64.0",
+		"oxlint": "1.79.0",
+		"oxlint-tsgolint": "7.0.2001",
+		"typescript": "7.0.2"
 	}
 }

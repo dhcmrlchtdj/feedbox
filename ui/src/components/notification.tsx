@@ -9,6 +9,7 @@ const Item = (props: { msg: Message }) => {
 	return (
 		<div class={`toast toast-success mb-2`}>
 			<button
+				aria-label="Close"
 				class="btn btn-clear float-right"
 				onClick={handleClick}
 			></button>

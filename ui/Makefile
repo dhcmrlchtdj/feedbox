@@ -46,7 +46,7 @@ node_modules:
 	pnpm install
 
 check:
-	tsgo --noEmit
+	tsc --noEmit
 	@touch -cm node_modules/tsconfig.tsbuildinfo # force update mtime
 
 force: check build

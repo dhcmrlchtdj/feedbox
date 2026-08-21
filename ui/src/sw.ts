@@ -16,7 +16,7 @@ const unregisterServiceWorker = async () => {
 const genSwUrl = (s: string): string => {
 	if (window.trustedTypes) {
 		const scriptPolicy = window.trustedTypes.createPolicy("sw", {
-			createScriptURL: (x) => x,
+			createScriptURL: (x: string) => x,
 		})
 		return scriptPolicy.createScriptURL(s) as unknown as string
 	} else {

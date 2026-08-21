@@ -23,7 +23,6 @@
 		"incremental": true,
 
 		"resolveJsonModule": false,
-		"esModuleInterop": false,
 		"forceConsistentCasingInFileNames": true,
 		"verbatimModuleSyntax": true,
 

@@ -4,7 +4,7 @@ import (
 	"context"
 	"encoding/json/v2"
 	"net/http"
-	"sort"
+	"slices"
 
 	"github.com/pkg/errors"
 )
@@ -93,7 +93,7 @@ func getEmail(ctx context.Context, client *http.Client) (string, error) {
 		}
 	}
 	if len(verifiedEmails) > 0 {
-		sort.Strings(verifiedEmails)
+		slices.Sort(verifiedEmails)
 		return verifiedEmails[0], nil
 	}
 

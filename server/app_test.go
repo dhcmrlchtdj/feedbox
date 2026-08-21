@@ -110,7 +110,7 @@ func setupApp() {
 }
 
 func TestCreateUser(t *testing.T) {
-	req := httptest.NewRequest("GET", "http://127.0.0.1:8000/api/connect/github", http.NoBody)
+	req := httptest.NewRequestWithContext(context.Background(), "GET", "/api/connect/github", http.NoBody)
 	resp, err := app.Test(req)
 	if err != nil {
 		t.Fatal(err)
@@ -120,7 +120,7 @@ func TestCreateUser(t *testing.T) {
 }
 
 func TestLogout(t *testing.T) {
-	req := httptest.NewRequest("GET", "http://127.0.0.1:8000/api/logout", http.NoBody)
+	req := httptest.NewRequestWithContext(context.Background(), "GET", "/api/logout", http.NoBody)
 	resp, err := app.Test(req)
 	if err != nil {
 		t.Fatal(err)
@@ -130,7 +130,7 @@ func TestLogout(t *testing.T) {
 }
 
 func TestUser(t *testing.T) {
-	req := httptest.NewRequest("GET", "http://127.0.0.1:8000/api/v1/user", http.NoBody)
+	req := httptest.NewRequestWithContext(context.Background(), "GET", "/api/v1/user", http.NoBody)
 	resp, err := app.Test(req)
 	if err != nil {
 		t.Fatal(err)
@@ -145,7 +145,7 @@ func TestUser(t *testing.T) {
 
 func TestAddFeed(t *testing.T) {
 	payload := strings.NewReader(`{"url":"http://127.0.0.1"}`)
-	req := httptest.NewRequest("PUT", "http://127.0.0.1:8000/api/v1/feeds/add", payload)
+	req := httptest.NewRequestWithContext(context.Background(), "PUT", "/api/v1/feeds/add", payload)
 	req.Header.Set("Content-Type", "application/json")
 	resp, err := app.Test(req)
 	if err != nil {
@@ -160,7 +160,7 @@ func TestAddFeed(t *testing.T) {
 }
 
 func TestListFeed(t *testing.T) {
-	req := httptest.NewRequest("GET", "http://127.0.0.1:8000/api/v1/feeds", http.NoBody)
+	req := httptest.NewRequestWithContext(context.Background(), "GET", "/api/v1/feeds", http.NoBody)
 	resp, err := app.Test(req)
 	if err != nil {
 		t.Fatal(err)
@@ -174,7 +174,7 @@ func TestListFeed(t *testing.T) {
 }
 
 func TestExportFeed(t *testing.T) {
-	req := httptest.NewRequest("GET", "http://127.0.0.1:8000/api/v1/feeds/export", http.NoBody)
+	req := httptest.NewRequestWithContext(context.Background(), "GET", "/api/v1/feeds/export", http.NoBody)
 	resp, err := app.Test(req)
 	if err != nil {
 		t.Fatal(err)
@@ -204,7 +204,7 @@ func TestImportFeed(t *testing.T) {
 	if err := m.Close(); err != nil {
 		t.Fatal(err)
 	}
-	req := httptest.NewRequest("POST", "http://127.0.0.1:8000/api/v1/feeds/import", &payload)
+	req := httptest.NewRequestWithContext(context.Background(), "POST", "/api/v1/feeds/import", &payload)
 	req.Header.Set("content-type", m.ContentType)
 
 	resp, err := app.Test(req)
@@ -222,7 +222,7 @@ func TestImportFeed(t *testing.T) {
 
 func TestRemoveFeed(t *testing.T) {
 	payload := strings.NewReader(`{"feedID":1}`)
-	req := httptest.NewRequest("DELETE", "http://127.0.0.1:8000/api/v1/feeds/remove", payload)
+	req := httptest.NewRequestWithContext(context.Background(), "DELETE", "/api/v1/feeds/remove", payload)
 	req.Header.Set("content-type", "application/json")
 	resp, err := app.Test(req)
 	if err != nil {

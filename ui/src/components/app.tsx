@@ -29,7 +29,7 @@ export const App = () => {
 			</div>
 		)
 	} else if (hydrated || loaded.value) {
-		return AppInner()
+		return <AppInner />
 	} else {
 		return (
 			<div class="container grid-sm">
