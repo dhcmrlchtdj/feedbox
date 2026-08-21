@@ -20,11 +20,11 @@
 		"suspicious": "deny"
 	},
 	"rules": {
-		"exhaustive-deps": "deny",
-		"style-prop-object": "allow",
 		"always-return": "allow",
 		"anchor-is-valid": "allow",
 		"ban-ts-comment": "allow",
+		"exhaustive-deps": "deny",
+		"import/namespace": "allow",
 		"import/no-unassigned-import": "allow",
 		"max-classes-per-file": "allow",
 		"max-dependencies": "allow",
@@ -34,12 +34,12 @@
 		"no-control-regex": "allow",
 		"no-else-return": "allow",
 		"no-promise-executor-return": "allow",
+		"no-underscore-dangle": "allow",
 		"no-useless-undefined": "allow",
 		"react-in-jsx-scope": "allow",
 		"require-post-message-target-origin": "allow",
-		"no-underscore-dangle": "allow",
 		"require-unicode-regexp": "allow",
-		"import/namespace": "allow"
+		"style-prop-object": "allow"
 	},
 	"settings": {},
 	"globals": {},
