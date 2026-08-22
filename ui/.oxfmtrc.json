@@ -5,7 +5,7 @@
 	"bracketSpacing": true,
 	"embeddedLanguageFormatting": "auto",
 	"endOfLine": "lf",
-	"experimentalSortImports": {
+	"sortImports": {
 		"newlinesBetween": false
 	},
 	"experimentalSortPackageJson": true,
