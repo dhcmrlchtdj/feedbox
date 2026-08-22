@@ -10,7 +10,7 @@ import (
 	"strconv"
 	"sync"
 
-	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v3"
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 )

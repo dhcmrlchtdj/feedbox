@@ -4,7 +4,7 @@ import (
 	"bytes"
 	"strings"
 
-	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v3"
 )
 
 // https://helmetjs.github.io/

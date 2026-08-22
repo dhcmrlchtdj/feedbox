@@ -13,7 +13,7 @@ import (
 	"time"
 
 	"github.com/bradleyjkemp/cupaloy/v2"
-	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v3"
 	"github.com/golang-migrate/migrate/v4"
 	"github.com/joho/godotenv"
 	"github.com/rs/zerolog"

@@ -5,11 +5,12 @@ import (
 	"os"
 	"strings"
 
-	"github.com/gofiber/fiber/v2"
-	"github.com/gofiber/fiber/v2/middleware/expvar"
-	"github.com/gofiber/fiber/v2/middleware/pprof"
-	"github.com/gofiber/fiber/v2/middleware/recover"
-	"github.com/gofiber/fiber/v2/middleware/requestid"
+	"github.com/gofiber/fiber/v3"
+	"github.com/gofiber/fiber/v3/middleware/etag"
+	"github.com/gofiber/fiber/v3/middleware/expvar"
+	"github.com/gofiber/fiber/v3/middleware/pprof"
+	"github.com/gofiber/fiber/v3/middleware/recover"
+	"github.com/gofiber/fiber/v3/middleware/requestid"
 	"github.com/pkg/errors"
 	"github.com/rs/xid"
 	"github.com/rs/zerolog"
@@ -18,7 +19,7 @@ import (
 	"github.com/dhcmrlchtdj/feedbox/server/handler"
 	"github.com/dhcmrlchtdj/feedbox/server/middleware/auth/cookie"
 	"github.com/dhcmrlchtdj/feedbox/server/middleware/auth/github"
-	"github.com/dhcmrlchtdj/feedbox/server/middleware/etag"
+	// "github.com/dhcmrlchtdj/feedbox/server/middleware/etag"
 	"github.com/dhcmrlchtdj/feedbox/server/middleware/logger"
 	"github.com/dhcmrlchtdj/feedbox/server/middleware/secure"
 	"github.com/dhcmrlchtdj/feedbox/server/middleware/validate"
@@ -44,7 +45,8 @@ func Create(ctx context.Context) *fiber.App {
 		}))
 	app.Use(logger.New(ctx))
 	app.Use(etag.New(etag.Config{
-		Skip: func(c *fiber.Ctx) bool {
+		Weak: true,
+		Next: func(c fiber.Ctx) bool {
 			return strings.HasPrefix(c.Path(), "/api")
 		},
 	}))

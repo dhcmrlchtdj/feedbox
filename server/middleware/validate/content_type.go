@@ -3,7 +3,7 @@ package validate
 import (
 	"strings"
 
-	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v3"
 )
 
 func ContentType(t string) fiber.Handler {

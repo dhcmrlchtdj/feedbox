@@ -1,7 +1,7 @@
 package handler
 
 import (
-	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v3"
 
 	"github.com/dhcmrlchtdj/feedbox/internal/database"
 	"github.com/dhcmrlchtdj/feedbox/server/middleware/auth/cookie"

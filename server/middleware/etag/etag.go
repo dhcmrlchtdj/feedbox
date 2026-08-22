@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v3"
 	"github.com/zeebo/xxh3"
 )
 
