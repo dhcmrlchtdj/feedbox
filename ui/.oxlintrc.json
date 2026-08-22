@@ -31,6 +31,7 @@
 		"max-depth": "allow",
 		"max-lines-per-function": "allow",
 		"max-nested-callbacks": "allow",
+		"no-array-callback-reference": "allow",
 		"no-control-regex": "allow",
 		"no-else-return": "allow",
 		"no-promise-executor-return": "allow",

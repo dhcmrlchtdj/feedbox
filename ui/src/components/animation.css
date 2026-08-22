@@ -1,0 +1,18 @@
+.presence.fade {
+	transition-property: opacity;
+	transition-timing-function: ease;
+}
+
+.presence.fade.presence-entering {
+	opacity: 0;
+	transition-duration: 100ms;
+}
+
+.presence.fade.presence-present {
+	opacity: 1;
+}
+
+.presence.fade.presence-exiting {
+	opacity: 0;
+	transition-duration: 300ms;
+}

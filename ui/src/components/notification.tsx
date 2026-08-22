@@ -1,4 +1,5 @@
 import { useCallback } from "preact/hooks"
+import { Presence, usePresenceList } from "../shared/presence"
 import { notification, notificationRemove, type Message } from "../shared/state"
 
 const Item = (props: { msg: Message }) => {
@@ -28,13 +29,17 @@ const style = {
 }
 
 export const Notification = () => {
+	const xs = usePresenceList(notification.value, (x) => x.key, 100, 300)
 	return (
 		<div style={style}>
-			{notification.value.map((msg) => (
-				<Item
-					key={msg.key}
-					msg={msg}
-				/>
+			{xs.map((x) => (
+				<Presence
+					key={x.key}
+					status={x.status}
+					style={`fade`}
+				>
+					<Item msg={x.item} />
+				</Presence>
 			))}
 		</div>
 	)
