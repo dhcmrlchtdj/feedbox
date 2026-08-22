@@ -10,13 +10,13 @@ import (
 	"github.com/dhcmrlchtdj/feedbox/server/middleware/auth/github"
 )
 
-func Logout(c *fiber.Ctx) error {
+func Logout(c fiber.Ctx) error {
 	cookie.Clear(c)
-	return c.Redirect("/")
+	return c.Redirect().Status(fiber.StatusFound).To("/")
 }
 
-func ConnectGithub(c *fiber.Ctx) error {
-	ctx := c.UserContext()
+func ConnectGithub(c fiber.Ctx) error {
+	ctx := c.Context()
 	credential := c.Locals("credential").(*github.Profile)
 
 	id := strconv.FormatInt(credential.ID, 10)
@@ -31,5 +31,5 @@ func ConnectGithub(c *fiber.Ctx) error {
 	}
 	cookie.Set(c, tokenStr)
 
-	return c.Redirect("/")
+	return c.Redirect().Status(fiber.StatusFound).To("/")
 }

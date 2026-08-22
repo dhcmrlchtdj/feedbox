@@ -7,11 +7,11 @@ import (
 	"github.com/dhcmrlchtdj/feedbox/server/telegrambot"
 )
 
-func TelegramWebhook(c *fiber.Ctx) error {
+func TelegramWebhook(c fiber.Ctx) error {
 	var b telegram.Update
-	if err := c.BodyParser(&b); err != nil {
+	if err := c.Bind().JSON(&b); err != nil {
 		return err
 	}
-	go telegrambot.HandleWebhook(c.UserContext(), &b)
+	go telegrambot.HandleWebhook(c.Context(), &b)
 	return c.SendString("ok")
 }

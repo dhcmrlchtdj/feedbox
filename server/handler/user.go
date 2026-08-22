@@ -7,8 +7,8 @@ import (
 	"github.com/dhcmrlchtdj/feedbox/server/middleware/auth/cookie"
 )
 
-func UserInfo(c *fiber.Ctx) error {
-	ctx := c.UserContext()
+func UserInfo(c fiber.Ctx) error {
+	ctx := c.Context()
 	credential := c.Locals("credential").(cookie.UserProfile)
 
 	user, err := database.GetUserByID(ctx, credential.UserID)

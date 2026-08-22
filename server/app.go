@@ -19,7 +19,6 @@ import (
 	"github.com/dhcmrlchtdj/feedbox/server/handler"
 	"github.com/dhcmrlchtdj/feedbox/server/middleware/auth/cookie"
 	"github.com/dhcmrlchtdj/feedbox/server/middleware/auth/github"
-	// "github.com/dhcmrlchtdj/feedbox/server/middleware/etag"
 	"github.com/dhcmrlchtdj/feedbox/server/middleware/logger"
 	"github.com/dhcmrlchtdj/feedbox/server/middleware/secure"
 	"github.com/dhcmrlchtdj/feedbox/server/middleware/validate"
@@ -27,12 +26,11 @@ import (
 
 func Create(ctx context.Context) *fiber.App {
 	appConfig := fiber.Config{
-		DisableStartupMessage: true,
 		// BodyLimit: 4 * 1024 * 1024,
 		// Concurrency: 256 * 1024,
 		ErrorHandler:  errorHandler,
-		StrictRouting: true,
 		CaseSensitive: true,
+		StrictRouting: true,
 		// ProxyHeader: "X-Forwarded-For"
 	}
 	app := fiber.New(appConfig)
@@ -127,11 +125,11 @@ func setupRoute(app fiber.Router) {
 	))
 }
 
-func errorHandler(c *fiber.Ctx, err error) error {
+func errorHandler(c fiber.Ctx, err error) error {
 	notCare := fiber.DefaultErrorHandler(c, err)
 	code := c.Response().StatusCode()
 	if code >= 500 {
-		zerolog.Ctx(c.UserContext()).Error().Str("module", "app").Stack().Err(err).Send()
+		zerolog.Ctx(c.Context()).Error().Str("module", "app").Stack().Err(err).Send()
 	}
 	return notCare
 }

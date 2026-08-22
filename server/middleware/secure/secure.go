@@ -11,7 +11,7 @@ import (
 // https://csp-evaluator.withgoogle.com/
 
 func New() fiber.Handler {
-	return func(c *fiber.Ctx) error {
+	return func(c fiber.Ctx) error {
 		c.Set("x-content-type-options", "nosniff")
 
 		err := c.Next()

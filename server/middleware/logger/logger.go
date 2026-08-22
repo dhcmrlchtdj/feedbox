@@ -13,12 +13,12 @@ func New(ctx context.Context) fiber.Handler {
 	var once sync.Once
 	var errHandler fiber.ErrorHandler
 
-	return func(c *fiber.Ctx) error {
+	return func(c fiber.Ctx) error {
 		logger := zerolog.Ctx(ctx).
 			With().
-			Str("traceId", c.Locals("requestid").(string)).
+			Str("traceId", c.RequestID()).
 			Logger()
-		c.SetUserContext(logger.WithContext(ctx))
+		c.SetContext(logger.WithContext(ctx))
 
 		once.Do(func() {
 			errHandler = c.App().Config().ErrorHandler

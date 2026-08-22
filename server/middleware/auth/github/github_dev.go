@@ -7,7 +7,7 @@ import (
 )
 
 func New(cfg Config) fiber.Handler {
-	return func(c *fiber.Ctx) error {
+	return func(c fiber.Ctx) error {
 		profile := &Profile{
 			Email: "email@example.com",
 			ID:    1,

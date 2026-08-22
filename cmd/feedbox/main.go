@@ -9,6 +9,7 @@ import (
 	"sync"
 	"time"
 
+	"github.com/gofiber/fiber/v3"
 	"github.com/rs/zerolog"
 
 	"github.com/dhcmrlchtdj/feedbox/internal/database"
@@ -98,19 +99,13 @@ func runServer(ctx context.Context) {
 	util.CheckEnvs("GITHUB_CLIENT_ID", "GITHUB_CLIENT_SECRET")
 	util.CheckEnvs("HOST", "PORT", "TELEGRAM_WEBHOOK_PATH")
 
-	app := server.Create(ctx)
-	go func() {
-		<-ctx.Done()
-		err := app.Shutdown()
-		if err != nil {
-			panic(err)
-		}
-	}()
-
 	host := net.JoinHostPort(os.Getenv("HOST"), os.Getenv("PORT"))
 	url := "http://" + host + os.Getenv("SERVER_SUB_DIR")
 	zerolog.Ctx(ctx).Info().Str("module", "app").Str("url", url).Msg("app started")
-	err := app.Listen(host)
+	err := server.Create(ctx).Listen(host, fiber.ListenConfig{
+		DisableStartupMessage: true,
+		GracefulContext:       ctx,
+	})
 	if err != nil {
 		panic(err)
 	}

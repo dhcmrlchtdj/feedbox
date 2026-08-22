@@ -5,7 +5,7 @@ import (
 )
 
 func Set(credential any) fiber.Handler {
-	return func(c *fiber.Ctx) error {
+	return func(c fiber.Ctx) error {
 		c.Locals("credential", credential)
 		return c.Next()
 	}

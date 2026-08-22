@@ -18,13 +18,13 @@ type Config struct {
 }
 
 func New(cfg Config) fiber.Handler {
-	return func(c *fiber.Ctx) error {
+	return func(c fiber.Ctx) error {
 		token := c.Cookies(cfg.Name)
 		if token == "" {
 			return fiber.ErrUnauthorized
 		}
 
-		ctx := c.UserContext()
+		ctx := c.Context()
 		credential, err := cfg.Validator(ctx, token)
 		if err != nil {
 			Clear(c)
@@ -44,7 +44,7 @@ func New(cfg Config) fiber.Handler {
 
 ///
 
-func Set(c *fiber.Ctx, cookie string) {
+func Set(c fiber.Ctx, cookie string) {
 	c.Cookie(&fiber.Cookie{
 		Name:     "token",
 		Value:    cookie,
@@ -56,7 +56,7 @@ func Set(c *fiber.Ctx, cookie string) {
 	})
 }
 
-func Clear(c *fiber.Ctx) {
+func Clear(c fiber.Ctx) {
 	c.Cookie(&fiber.Cookie{
 		Name:     "token",
 		Value:    "",

@@ -40,13 +40,13 @@ func New(cfg Config) fiber.Handler {
 		return profile, nil
 	}
 
-	return func(c *fiber.Ctx) error {
+	return func(c fiber.Ctx) error {
 		code := c.Query("code")
 		if code == "" {
 			url := conf.AuthCodeURL("state")
-			return c.Redirect(url)
+			return c.Redirect().Status(fiber.StatusFound).To(url)
 		}
-		profile, err := fetchProfile(c.UserContext(), code)
+		profile, err := fetchProfile(c.Context(), code)
 		if err != nil {
 			return fiber.NewError(fiber.StatusUnauthorized, err.Error())
 		}

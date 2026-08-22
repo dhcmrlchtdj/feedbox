@@ -16,20 +16,20 @@ import (
 )
 
 func StaticFile(filename string, handlers ...fiber.Handler) fiber.Handler {
-	return func(c *fiber.Ctx) error {
+	return func(c fiber.Ctx) error {
 		return sendFile(c, filename, handlers...)
 	}
 }
 
 func StaticDir(dirname string, handlers ...fiber.Handler) fiber.Handler {
-	return func(c *fiber.Ctx) error {
+	return func(c fiber.Ctx) error {
 		filename := c.Params("filename")
 		return sendFile(c, filepath.Join(dirname, filename), handlers...)
 	}
 }
 
 func StaticWithHeader(key string, val string) fiber.Handler {
-	return func(c *fiber.Ctx) error {
+	return func(c fiber.Ctx) error {
 		c.Set(key, val)
 		return nil
 	}
@@ -50,7 +50,7 @@ type customHeader struct {
 }
 
 func StaticWithCustomHeader(filename string) fiber.Handler {
-	return func(c *fiber.Ctx) error {
+	return func(c fiber.Ctx) error {
 		content, err := frontendReadFile(filename)
 		if err != nil {
 			return err
@@ -70,8 +70,8 @@ func StaticWithCustomHeader(filename string) fiber.Handler {
 	}
 }
 
-func sendFile(c *fiber.Ctx, filename string, handlers ...fiber.Handler) error {
-	ctx := c.UserContext()
+func sendFile(c fiber.Ctx, filename string, handlers ...fiber.Handler) error {
+	ctx := c.Context()
 	content, err := frontendReadFile(filename)
 	if err != nil {
 		if errors.Is(err, fs.ErrNotExist) {

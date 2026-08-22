@@ -12,30 +12,30 @@ GOFLAGS := -buildvcs=false -buildmode=pie -mod=readonly -trimpath -ldflags="-w -
 
 build:
 	cd ui && make build
-	GOEXPERIMENT=jsonv2 CGO_ENABLED=0 go build $(GOFLAGS) -o _build/ ./cmd/...
+	CGO_ENABLED=0 go build $(GOFLAGS) -o _build/ ./cmd/...
 
 dev:
-	GOEXPERIMENT=jsonv2 make --jobs=2 _dev_ui _dev_server
+	make --jobs=2 _dev_ui _dev_server
 
 _dev_ui:
 	cd ui && make dev
 
 _dev_server:
-	GOEXPERIMENT=jsonv2 go run -tags=dev -race ./cmd/feedbox server 2>&1 | \
+	go run -tags=dev -race ./cmd/feedbox server 2>&1 | \
 		jq -R '. as $$line | try fromjson catch $$line'
 
 fmt:
-	GOEXPERIMENT=jsonv2 golangci-lint fmt
+	golangci-lint fmt
 	# gopls format -w **/*.go
 	# gofumpt -w .
 
 lint:
-	GOEXPERIMENT=jsonv2 golangci-lint run
+	golangci-lint run
 
 test:
-	ENV=test TZ=UTC GOEXPERIMENT=jsonv2 go test -race ./internal/util
-	ENV=test TZ=UTC GOEXPERIMENT=jsonv2 go test -race ./internal/database/...
-	ENV=test TZ=UTC GOEXPERIMENT=jsonv2 go test -race ./server
+	ENV=test TZ=UTC go test -race ./internal/util
+	ENV=test TZ=UTC go test -race ./internal/database/...
+	ENV=test TZ=UTC go test -race ./server
 
 clean:
 	# rm -rf ./**/.snapshots
