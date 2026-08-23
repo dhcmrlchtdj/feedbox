@@ -10,7 +10,9 @@ export interface PresentItem<T> {
 	status: PresenceStatus
 }
 
-type Timer = ReturnType<typeof setTimeout>
+type Timer =
+	| { type: "timeout"; id: ReturnType<typeof setTimeout> }
+	| { type: "frame"; id: number }
 
 export function usePresenceList<T>(
 	currList: T[],
@@ -33,7 +35,11 @@ export function usePresenceList<T>(
 	const clearTimer = (key: Key) => {
 		const timer = timersRef.current.get(key)
 		if (timer === undefined) return
-		clearTimeout(timer)
+		if (timer.type === "timeout") {
+			clearTimeout(timer.id)
+		} else {
+			cancelAnimationFrame(timer.id)
+		}
 		timersRef.current.delete(key)
 	}
 
@@ -43,16 +49,24 @@ export function usePresenceList<T>(
 			timersRef.current.delete(key)
 			callback()
 		}, duration)
-		timersRef.current.set(key, timer)
+		timersRef.current.set(key, { type: "timeout", id: timer })
+	}
+
+	const setFrame = (key: Key, callback: () => void) => {
+		clearTimer(key)
+		const frame = requestAnimationFrame(() => {
+			timersRef.current.delete(key)
+			callback()
+		})
+		timersRef.current.set(key, { type: "frame", id: frame })
 	}
 
 	useEffect(() => {
 		const timers = timersRef.current
 		return () => {
-			for (const timer of timers.values()) {
-				clearTimeout(timer)
+			for (const key of timers.keys()) {
+				clearTimer(key)
 			}
-			timers.clear()
 		}
 	}, [])
 
@@ -117,22 +131,24 @@ export function usePresenceList<T>(
 
 		// entering -> present
 		for (const key of addedKeys) {
-			setTimer(
-				key,
-				() =>
-					setRenderedList((xs) =>
-						xs.map((x) => {
-							if (x.key === key && x.status === "entering") {
-								return {
-									...x,
-									status: "present",
+			setFrame(key, () =>
+				setTimer(
+					key,
+					() =>
+						setRenderedList((xs) =>
+							xs.map((x) => {
+								if (x.key === key && x.status === "entering") {
+									return {
+										...x,
+										status: "present",
+									}
+								} else {
+									return x
 								}
-							} else {
-								return x
-							}
-						}),
-					),
-				enterDuration,
+							}),
+						),
+					enterDuration,
+				),
 			)
 		}
 

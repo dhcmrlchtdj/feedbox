@@ -28,8 +28,10 @@ const style = {
 	contain: "content",
 }
 
+const getMessageKey = (x: Message) => x.key
+
 export const Notification = () => {
-	const xs = usePresenceList(notification.value, (x) => x.key, 100, 300)
+	const xs = usePresenceList(notification.value, getMessageKey, 300, 300)
 	return (
 		<div style={style}>
 			{xs.map((x) => (

@@ -1,18 +1,21 @@
 .presence.fade {
-	transition-property: opacity;
+	overflow: hidden;
+	transition-duration: 300ms;
+	transition-property: opacity, max-height;
 	transition-timing-function: ease;
 }
 
 .presence.fade.presence-entering {
 	opacity: 0;
-	transition-duration: 100ms;
+	max-height: 0;
 }
 
 .presence.fade.presence-present {
 	opacity: 1;
+	max-height: 20rem;
 }
 
 .presence.fade.presence-exiting {
+	max-height: 0;
 	opacity: 0;
-	transition-duration: 300ms;
 }

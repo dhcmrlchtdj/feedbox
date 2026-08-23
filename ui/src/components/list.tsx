@@ -84,7 +84,7 @@ const Item = (props: { feed: Feed }) => {
 }
 
 export const List = () => {
-	const xs = usePresenceList(feeds.value, (x) => x.id, 100, 300)
+	const xs = usePresenceList(feeds.value, (x) => x.id, 300, 300)
 	return (
 		<>
 			{xs.map((x) => (
