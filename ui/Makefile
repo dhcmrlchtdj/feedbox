@@ -10,16 +10,16 @@ PATH := ./node_modules/.bin:$(PATH)
 
 .PHONY: dev build fmt lint test clean outdated upgrade
 
-build: clean lint
+build: clean node_modules lint
 	NODE_ENV=production node ./build_script/build.js
 
-dev: clean
+dev: clean node_modules
 	NODE_ENV=development node ./build_script/build.js --watch
 
-fmt:
+fmt: node_modules
 	oxfmt --write . "!pnpm-lock.yaml"
 
-lint:
+lint: node_modules
 	tsc --noEmit
 	@echo ""
 	oxlint --type-aware
@@ -36,3 +36,6 @@ outdated:
 
 upgrade:
 	pnpm update --latest # --interactive
+
+node_modules:
+	pnpm install
