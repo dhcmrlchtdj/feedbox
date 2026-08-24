@@ -2,7 +2,7 @@ import { useSignal, type Signal } from "@preact/signals"
 import { useCallback } from "preact/hooks"
 import { formatDate } from "../shared/helper"
 import * as http from "../shared/http"
-import { Presence, usePresenceList } from "../shared/presence"
+import { usePresenceList, type PresenceStatus } from "../shared/presence"
 import {
 	createFeedsSetter,
 	feeds,
@@ -36,70 +36,67 @@ const handleRemove = (feed: Feed, loading: Signal<boolean>) => {
 		})
 }
 
-const Item = (props: { feed: Feed }) => {
+const Item = (props: { feed: Feed; status: PresenceStatus }) => {
 	const loading = useSignal(false)
 	const handleClick = useCallback(
 		() => handleRemove(props.feed, loading),
 		[props.feed, loading],
 	)
 	return (
-		<div style={"overflow: hidden;"}>
-			<div class="tile">
-				<div class="tile-content">
-					<div class="tile-title text-break">
-						<a
-							target="_blank"
-							rel="noopener noreferrer"
-							href={props.feed.url}
-						>
-							{props.feed.url}
-						</a>
-					</div>
-					<div class="tile-subtitle text-gray">
-						<span>
-							updated @ {formatUpdated(props.feed.updated)}
-						</span>
-						{props.feed.err && (
-							<span>
-								{` | error @ ${formatUpdated(props.feed.errAt!)} | ${props.feed.err}`}
-							</span>
-						)}
-					</div>
+		<article
+			class={`feed-item feed-item--motion feed-item--${props.status}`}
+		>
+			<div class="feed-main">
+				<div class="feed-title">
+					<a
+						target="_blank"
+						rel="noopener noreferrer"
+						href={props.feed.url}
+					>
+						{props.feed.url}
+					</a>
 				</div>
-				<div class="tile-action">
-					<div>
-						<button
-							type="button"
-							class={`btn btn-error ${loading.value ? "loading disabled" : ""}`}
-							onClick={handleClick}
-						>
-							remove
-						</button>
-					</div>
+				<div class="feed-meta">
+					<div>Updated {formatUpdated(props.feed.updated)}</div>
+					{props.feed.err && (
+						<div class="feed-error">
+							Error {formatUpdated(props.feed.errAt!)} —{" "}
+							{props.feed.err}
+						</div>
+					)}
 				</div>
 			</div>
-			<div class="divider"></div>
-		</div>
+			<button
+				type="button"
+				class="button button-remove"
+				onClick={handleClick}
+				disabled={loading.value}
+			>
+				{loading.value ? "Removing…" : "Remove"}
+			</button>
+		</article>
 	)
 }
 
 export const List = () => {
 	const xs = usePresenceList(feeds.value, (x) => x.id, 300, 300)
 	return (
-		<>
+		<section
+			class="feed-list"
+			aria-label="Your feeds"
+		>
 			{xs.map((x) => (
-				<div
-					class={"column col-12"}
+				<Item
+					feed={x.item}
+					status={x.status}
 					key={x.key}
-				>
-					<Presence
-						status={x.status}
-						style={`fade`}
-					>
-						<Item feed={x.item} />
-					</Presence>
-				</div>
+				/>
 			))}
-		</>
+			{xs.length === 0 && (
+				<p class="feed-meta">
+					No feeds yet. Add one above to get started.
+				</p>
+			)}
+		</section>
 	)
 }

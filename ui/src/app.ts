@@ -1,7 +1,6 @@
 import { hydrate } from "preact"
 import { jsx } from "preact/jsx-runtime"
-import "spectre.css"
-import "./components/animation.css"
+import "./components/style.css"
 import { App } from "./components/app.tsx"
 import { initState } from "./shared/state.ts"
 import { registerServiceWorker } from "./sw.ts"

@@ -7,34 +7,38 @@ const logout = () => {
 
 export const Heading = (props: { email: string; loaded: boolean }) => {
 	return (
-		<>
-			<div class="column col-12">
-				<h1 class="d-inline-block mb-0">FeedBox</h1>
-				<span>&nbsp;</span>
-				<span
-					class={`loading d-inline-block ${props.loaded ? "d-invisible" : ""}`}
-					style={"width: 0.8rem; vertical-align: text-top;"}
-				></span>
-				<span>&nbsp;</span>
-				<span>{props.email}</span>
-				<span>&nbsp;</span>
-				<a
-					href="/api/v1/feeds/export"
-					target="_blank"
+		<header class="site-header">
+			<div class="brand-row">
+				<div class="brand-lockup">
+					<h1>FeedBox</h1>
+					<p class="account-line">
+						<span
+							class="sync-status"
+							aria-live="polite"
+						>
+							{props.loaded ? "synced" : "syncing"}
+						</span>
+						<span>{props.email}</span>
+					</p>
+				</div>
+				<nav
+					class="header-actions"
+					aria-label="Account actions"
 				>
-					export
-				</a>
-				<span>&nbsp;</span>
-				<a
-					href="/api/logout"
-					onClick={logout}
-				>
-					logout
-				</a>
+					<a
+						href="/api/v1/feeds/export"
+						target="_blank"
+					>
+						export
+					</a>
+					<a
+						href="/api/logout"
+						onClick={logout}
+					>
+						logout
+					</a>
+				</nav>
 			</div>
-			<div class="column col-12">
-				<div class="divider"></div>
-			</div>
-		</>
+		</header>
 	)
 }

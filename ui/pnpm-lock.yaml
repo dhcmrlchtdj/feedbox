@@ -17,9 +17,6 @@ importers:
       preact-render-to-string:
         specifier: 6.7.0
         version: 6.7.0(preact@10.29.8)
-      spectre.css:
-        specifier: 0.5.9
-        version: 0.5.9
     devDependencies:
       '@types/trusted-types':
         specifier: 2.0.7
@@ -651,9 +648,6 @@ packages:
       preact-render-to-string:
         optional: true
 
-  spectre.css@0.5.9:
-    resolution: {integrity: sha512-9jUqwZmCnvflrxFGcK+ize43TvjwDjqMwZPVubEtSIHzvinH0TBUESm1LcOJx3Ur7bdPaeOHQIjOqBl1Y5kLFw==}
-
   tinypool@2.1.0:
     resolution: {integrity: sha512-Pugqs6M0m7Lv1I7FtxN4aoyToKg1C4tu+/381vH35y8oENM/Ai7f7C4StcoK4/+BSw9ebcS8jRiVrORFKCALLw==}
     engines: {node: ^20.0.0 || >=22.0.0}
@@ -1036,8 +1030,6 @@ snapshots:
   preact@10.29.8(preact-render-to-string@6.7.0):
     optionalDependencies:
       preact-render-to-string: 6.7.0(preact@10.29.8)
-
-  spectre.css@0.5.9: {}
 
   tinypool@2.1.0: {}
 

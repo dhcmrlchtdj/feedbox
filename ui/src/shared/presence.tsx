@@ -1,4 +1,3 @@
-import type { ComponentChildren } from "preact"
 import { useEffect, useRef, useState } from "preact/hooks"
 
 type PresenceStatus = "entering" | "present" | "exiting"
@@ -167,14 +166,4 @@ export function usePresenceList<T>(
 	return renderedList
 }
 
-export const Presence = (props: {
-	children: ComponentChildren
-	status: PresenceStatus
-	style?: string
-}) => {
-	return (
-		<div class={`presence ${props.style ?? ""} presence-${props.status}`}>
-			{props.children}
-		</div>
-	)
-}
+export type { PresenceStatus }

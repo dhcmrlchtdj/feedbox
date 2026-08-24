@@ -7,15 +7,15 @@ import { Notification } from "./notification.tsx"
 
 export const AppInner = () => {
 	return (
-		<div class="container grid-sm">
-			<div class="columns">
-				<Heading
-					email={email.value}
-					loaded={loaded.value}
-				/>
+		<div class="page-shell">
+			<Heading
+				email={email.value}
+				loaded={loaded.value}
+			/>
+			<main class="feed-section">
 				<Add />
 				<List />
-			</div>
+			</main>
 			<Notification />
 		</div>
 	)
@@ -24,20 +24,18 @@ export const AppInner = () => {
 export const App = () => {
 	if (loadingError.value) {
 		return (
-			<div class="container grid-sm">
-				<Auth err={loadingError.value} />
+			<div class="page-shell">
+				<div class="auth-state">
+					<Auth err={loadingError.value} />
+				</div>
 			</div>
 		)
 	} else if (hydrated || loaded.value) {
 		return <AppInner />
 	} else {
 		return (
-			<div class="container grid-sm">
-				<div class="columns">
-					<div class="column col-12">
-						<div class="loading loading-lg"></div>
-					</div>
-				</div>
+			<div class="page-shell">
+				<output class="loading-screen">Loading your feeds…</output>
 			</div>
 		)
 	}

@@ -40,31 +40,28 @@ const handleInput = (event: Event) => {
 
 export const Add = () => {
 	return (
-		<>
-			<div class="column col-12">
-				<form
-					class="input-group"
-					onSubmit={handleSubmit}
+		<section class="add-section">
+			<form
+				class="add-form"
+				onSubmit={handleSubmit}
+			>
+				<input
+					aria-label="Feed URL"
+					class="feed-input"
+					id="feed-url"
+					type="url"
+					placeholder="Paste a feed URL"
+					value={url}
+					onInput={handleInput}
+				/>
+				<button
+					type="submit"
+					class="button button-primary"
+					disabled={loading.value}
 				>
-					<input
-						class="form-input"
-						type="text"
-						placeholder="feed url"
-						value={url}
-						onInput={handleInput}
-					/>
-					<button
-						type="submit"
-						class={`btn btn-primary input-group-btn ${loading.value ? "loading disabled" : ""}`}
-						disabled={loading}
-					>
-						add
-					</button>
-				</form>
-			</div>
-			<div class="column col-12">
-				<div class="divider"></div>
-			</div>
-		</>
+					{loading.value ? "Adding…" : "Add feed"}
+				</button>
+			</form>
+		</section>
 	)
 }
