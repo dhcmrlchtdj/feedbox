@@ -75,7 +75,7 @@ func fetchFeed(ctx context.Context, done *sync.WaitGroup, qFeed <-chan database.
 		fp := feedparser.New()
 		errThreshold := time.Now().UTC().AddDate(0, 0, -1)
 		for dbFeed := range qFeed {
-			if dbFeed.Err != "" && dbFeed.ErrAt.UTC().Before(errThreshold) {
+			if dbFeed.ErrAt != nil && dbFeed.ErrAt.UTC().After(errThreshold) {
 				continue
 			}
 
