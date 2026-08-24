@@ -10,6 +10,7 @@ import (
 	"github.com/rs/zerolog"
 
 	"github.com/dhcmrlchtdj/feedbox/internal/sign"
+	"github.com/dhcmrlchtdj/feedbox/internal/util"
 )
 
 type Config struct {
@@ -50,7 +51,7 @@ func Set(c fiber.Ctx, cookie string) {
 		Value:    cookie,
 		Path:     "/api",
 		MaxAge:   int((time.Hour * 24 * 3) / time.Second),
-		Secure:   true,
+		Secure:   !util.IS_DEV,
 		HTTPOnly: true,
 		SameSite: "strict",
 	})
@@ -62,7 +63,7 @@ func Clear(c fiber.Ctx) {
 		Value:    "",
 		Path:     "/api",
 		Expires:  time.Date(1970, time.January, 1, 0, 0, 0, 0, time.UTC),
-		Secure:   true,
+		Secure:   !util.IS_DEV,
 		HTTPOnly: true,
 		SameSite: "strict",
 	})
