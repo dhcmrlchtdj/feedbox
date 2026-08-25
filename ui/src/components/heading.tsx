@@ -26,16 +26,17 @@ export const Heading = (props: { email: string; loaded: boolean }) => {
 					aria-label="Account actions"
 				>
 					<a
+						aria-label="Export feeds (opens in a new tab)"
 						href="/api/v1/feeds/export"
 						target="_blank"
 					>
-						export
+						Export
 					</a>
 					<a
 						href="/api/logout"
 						onClick={logout}
 					>
-						logout
+						Log out
 					</a>
 				</nav>
 			</div>

@@ -17,14 +17,14 @@ dev: clean node_modules
 	NODE_ENV=development node ./build_script/build.js --watch
 
 fmt: node_modules
-	oxfmt --write . "!pnpm-lock.yaml"
+	oxfmt --write
 
 lint: node_modules
 	tsc --noEmit
 	@echo ""
 	oxlint --type-aware
 	@echo ""
-	oxfmt --check . "!pnpm-lock.yaml"
+	oxfmt --check .
 
 # test:
 

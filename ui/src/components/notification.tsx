@@ -18,7 +18,7 @@ const Item = (props: { msg: Message; status: PresenceStatus }) => {
 				onClick={handleClick}
 				type="button"
 			>
-				×
+				X
 			</button>
 		</output>
 	)

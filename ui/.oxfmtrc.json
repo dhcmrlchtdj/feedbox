@@ -1,14 +1,11 @@
 {
 	"$schema": "./node_modules/oxfmt/configuration_schema.json",
+	"ignorePatterns": ["pnpm-lock.yaml"],
 	"arrowParens": "always",
 	"bracketSameLine": false,
 	"bracketSpacing": true,
 	"embeddedLanguageFormatting": "auto",
 	"endOfLine": "lf",
-	"sortImports": {
-		"newlinesBetween": false
-	},
-	"experimentalSortPackageJson": true,
 	"htmlWhitespaceSensitivity": "ignore",
 	"insertFinalNewline": true,
 	"jsxSingleQuote": false,
@@ -19,6 +16,10 @@
 	"semi": false,
 	"singleAttributePerLine": true,
 	"singleQuote": false,
+	"sortImports": {
+		"newlinesBetween": false
+	},
+	"sortPackageJson": true,
 	"tabWidth": 4,
 	"trailingComma": "all",
 	"useTabs": true
